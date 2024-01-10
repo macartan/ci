@@ -1,0 +1,11 @@
+---
+title: "Causal inference and experimental design"
+format: html
+---
+
+* This syllabus: [https://macartan.github.io/teaching/ci_2024/syllabus.pdf](https://macartan.github.io/teaching/ci_2024/syllabus.pdf)
+
+* Slides (in progress): [https://macartan.github.io/teaching/ci_2024/slides/ci_2024.html](https://macartan.github.io/teaching/ci_2024/slides/ci_2024.html)
+
+* Puzzles  (in progress): [https://macartan.github.io/teaching/ci_2024/exercises.html](https://macartan.github.io/teaching/ci_2024/exercises.html)
+
