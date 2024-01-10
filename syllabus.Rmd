@@ -1,0 +1,162 @@
+---
+title: 'Causal inference and experimental design'
+date: HU | Spring 2024
+author: "Macartan Humphreys"
+output: 
+  pdf_document:
+      number_sections: true
+urlcolor: red
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Class resources
+
+* This syllabus: [https://macartan.github.io/teaching/ci_2024/syllabus.pdf](https://macartan.github.io/teaching/ci_2024/syllabus.pdf)
+
+* Slides (in progress): [https://macartan.github.io/teaching/ci_2024/slides/ci_2024.html](https://macartan.github.io/teaching/ci_2024/slides/ci_2024.html)
+
+* Puzzles  (in progress): [https://macartan.github.io/teaching/ci_2024/exercises.html](https://macartan.github.io/teaching/ci_2024/exercises.html)
+
+
+# Times and locations 
+
+Raum: K12B
+
+* Jan 12: 12-14 (short introductory lecture)
+* Jan 19: 12-18
+* Jan 26: 12-18
+* Feb 2: 12-18
+* Feb 9: 12-18
+
+The longer sessions will be structured roughly as follows.
+
+* 12:00 - 13:50: lecture
+* 13:40 - 14:30: team presentations and discussions
+* 14:30 - 15:15: late lunch break 
+* 15:15 - 17:00: lecture
+* 17:00 - 17:10: break
+* 17:10 - 18:00: team presentations and discussions
+
+
+# Abstract
+
+The course addresses advanced topics in causal inference and experimental design. It is a hands on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. Topics likely include sampling and randomization schemes, including multilevel trials, restricted randomization, and patient preference trials; Bayesian approaches to causal inference, exact inference: sharp nulls for complex hypotheses, inverting hypothesis tests, Mediation analysis, Multiple comparisons, Open science workflows.
+
+
+# Readings
+
+All readings are linked from this document. 
+
+
+I will draw material especially from my two books, both open access:
+
+* [Research Design in the Social Sciences](https://book.declaredesign.org/)
+* [Integrated Inferences](https://macartan.github.io/integrated_inferences/)
+
+I point a number of times to bits from this excellent draft text, also open access: 
+
+* [Hernan/Robins: What if](https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf)
+
+Recommended non open access readings include:
+
+* [Green and Gerber: Field Experiments](https://wwnorton.com/books/9780393979954) with supplementary material available here: [https://isps.yale.edu/FEDAI](https://isps.yale.edu/FEDAI)
+
+# Prerequisites
+
+You should already have background in statistics and fundamentals of causal inference. 
+
+In addition you should know some `R`. Really, the more you can invest on getting on top of `R` before the class the better.  
+
+* Resources for learning `R`: http://www.r-bloggers.com/how-to-learn-r-2/
+
+Please make sure your `R` is up-to-date and that you are working in `R studio`. Then make sure you have the following packages installed.
+
+```{r, eval = FALSE}
+pacman::p_load(
+  rstan, 
+  dagitty, 
+  DeclareDesign, 
+  CausalQueries,
+  ri2,
+  tidyverse,
+  knitr
+  )
+```
+
+
+## File Sharing via Git
+
+I encourage you to set up and send me your git user names and we can access all materials on github.
+
+
+## Writing with `Rmd` or `qmd`
+
+Please plan to do drafting in `Quarto`.  This is a  simple markup language that lets you integrate writing and coding.  This document is written in `quarto` and the slides will be also. 
+
+The key thing is that you can insert code chunks like this.
+
+```{r}
+# Define a random number
+x <- rnorm(1)
+```
+
+which are run as the document compiles, and can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
+
+I recommend using `Rstudio` as an editor. More information here: 
+https://quarto.org/docs/get-started/hello/rstudio.html
+
+
+
+# Modules and Readings
+
+
+
+Day 1: Intro
+
+* 1.1	Course outline, tools, 
+* 1.2	Introduction to Declare design
+
+[DD, ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html)
+[DD, ch 13](https://book.declaredesign.org/declaration-diagnosis-redesign/declaration-in-code.html)
+
+
+Day 2: Causality
+
+* 2.1	Fundamental problems and basic solutions
+[II ch 2](https://macartan.github.io/integrated_inferences/HJC2.html), 
+[Holland]
+Hernan Robbins Ch 6
+
+* 2.2	General inquiries and causal identification
+See also: Hernan Robbins  (Section 3.1, 7.2, 8.4, 10.1)
+
+[II ch 4](https://macartan.github.io/integrated_inferences/HJC4.html)
+* [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
+
+Day 3: Estimation and Inference
+
+* 3.1	Frequentist
+
+@Lin
+
+* 3.2	Bayesian 
+
+* [`rstan` Getting started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started)
+* [II ch 5](https://macartan.github.io/integrated_inferences/HJC5.html)
+
+Day 4:
+
+* 4.1	Experimental Design
+* [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
+
+* 4.2	Design evaluation
+* [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/diagnosing-designs.html)
+
+Day 5: 
+
+* 5.1	Topics and techniques
+* 5.2	Open science
+

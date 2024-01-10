@@ -1,0 +1,782 @@
+---
+title: "Design diagnosis"
+subtitle: "Power and more"
+author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
+format:
+ revealjs:    
+  embed-resources: true
+  theme: moon
+  highlight: tango
+  slide-number: true
+  preview-links: auto
+  center: true
+  transition: none
+---
+
+
+```{r, message = FALSE, echo = FALSE, include = FALSE}
+source("setup.R")
+run <- FALSE
+```
+
+
+# Design diagnosis
+
+## Outline
+
+1. Tests review
+2. $p$ values and significance
+3. Power
+4. Sources of power
+5. Advanced applications
+
+## Tests
+
+### Review
+
+In the classical approach to testing a hypothesis we ask:
+
+**How likely are we to see  data like this if indeed the hypothesis is true?**
+
+* If the answer is "not very likely" then we treat the hypothesis as suspect.
+* If the answer is *not* "not very likely" then the hypothesis is maintained (some say "accepted" but this is tricky as you may  want to "maintain" multiple incompatible hypotheses)
+
+How unlikely is "not very likely"?
+
+### Weighing Evidence
+
+When we test a hypothesis we decide first on what sort of evidence we need to see in order to decide that the hypothesis is not reliable.
+
+* **Othello** has a hypothesis that Desdemona is innocent. 
+* **Iago** confronts him with evidence:
+
+  * See how she looks at him: would she look a him like that if she were innocent?
+  * ... would she defend him like that if she were innocent?
+  * ... would he have her handkerchief if she were innocent?
+  * Othello, the chances of all of these things arising if she were innocent is surely less than 5%
+
+### Hypotheses are often rejected, sometimes maintained, but  rarely accepted
+
+
+* Note that Othello is focused on the probability of the events if she were innocent but not the probability of the events if Iago were trying to trick him.
+
+* He is not assessing his belief in whether she is faithful, but rather how likely the data would be if she were faithful.
+
+So:
+
+* He assesses: $\Pr(\text{Data} | \text{Hypothesis is TRUE})$
+* While a Bayesian would assess: $\Pr(\text{Hypothesis is TRUE} | \text{Data})$
+
+
+
+### Recap: Calculate a $p$ value in your head
+
+*   Illustrating $p$ values via "randomization inference"
+
+*   Say you randomized assignment to treatment and your data looked like this.
+
+
+| Unit         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|--------------|---|---|---|---|---|---|---|---|---|----|
+| Treatment    | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0  |
+| Health score | 4 | 2 | 3 | 1 | 2 | 3 | 4 | 8 | 7 | 6  |
+
+Then:
+
+* Does the treatment improve your health?
+* What's the $p$ value for the  null that treatment had no effect on anybody?
+
+
+
+
+
+### Calculate a $p$ value in your head
+
+*   Illustrating $p$ values via "randomization inference"
+*   Say you randomized assignment to treatment and your data looked like this.
+
+
+| Unit         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|--------------|---|---|---|---|---|---|---|---|---|----|
+| Treatment    | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0  |
+| Health score | 4 | 2 | 3 | 1 | 2 | 3 | 4 | 8 | 7 | 6  |
+
+Then:
+
+* Does the treatment improve your health?
+* What's the $p$ value for the  null that treatment had no effect on anybody?
+
+
+## Power
+
+## What power is
+
+Power is just the probability of ~~getting a significant result~~ rejecting a hypothesis.
+
+Simple enough but it presupposes:
+
+* A well defined hypothesis
+* An actual stipulation of the world under which you evaluate the probability
+* A procedure for producing results and determining of they are significant / rejecting a hypothesis
+
+
+### By hand
+
+I want to test the hypothesis that a six never comes up on this dice. 
+
+Here's my **test**: 
+
+* I will roll the dice **once**.
+* If a six comes up I will reject the hypothesis. 
+
+What is the power of this test?
+
+```{r dice, echo = FALSE}
+knitr::include_graphics("assets/dice.jpeg")
+```
+
+### By hand
+
+I want to test the hypothesis that a six never comes up on this dice. 
+
+Here's my **test**: 
+
+* I will roll the dice **twice**.
+* If a six comes up **either time** I will reject the hypothesis. 
+
+What is the power of *this* test?
+
+```{r dice2, echo = FALSE}
+knitr::include_graphics("assets/dice.jpeg")
+```
+
+
+### Two probabilities
+
+Power sometimes seems more complicated because hypothesis rejection involves a calculated probability and so you need the probability of a probability.
+
+I want to test the hypothesis that this dice is *fair*. 
+
+Here's my **test**: 
+
+* I will roll the dice **1000** times and if I see fewer than *x* 6s or more than *y* 6s I will reject the hypothesis.
+
+Now:
+
+* What should *x* and *y* be? 
+* What is the power of this test?
+
+
+
+### Step 1: When do you reject?
+
+For this we need to figure a rule for rejection. This is based on identifying events that should be unlikely under the hypothesis.
+
+Here is how many 6's I would expect  if the dice is fair:
+
+```{r, fig.height = 1.5, fig.width = 6}
+fabricate(N = 1001, sixes = 0:1000, p = dbinom(sixes, 1000, 1/6)) |>
+  ggplot(aes(sixes, p)) + geom_line()
+
+```
+
+### Step 1: When do you reject?
+
+I can figure out from this that 143 or fewer is really very few and 190 or more is really very many:
+
+```{r}
+c(lower = pbinom(143, 1000, 1/6), upper = 1 - pbinom(189, 1000, 1/6))
+```
+
+### Step 2: What is the power?
+
+* Now we need to stipulate some belief about how the world really works---this is not the null hypothesis that we plan to reject, but something that we actually take to be true.
+
+* For instance: we think that *in fact* sixes appear 20% of the time.
+
+Now what's the probability of seeing at least 190 sixes?
+
+```{r}
+1 - pbinom(189, 1000, .2)
+```
+
+So given I think 6s appear 20% of the time, I think it likely I'll see at least 190 sixes and reject the hypothesis of a fair dice.
+
+### Rule of thumb
+
+* 80% or 90% is a common rule of thumb for "sufficient" power
+* but really, how much power you need depends on the purpose
+
+### Think about
+
+* Are there other tests I could have implemented?
+* Are there other ways to improve this test?
+
+### Last subtleties
+
+* Is a significant result from an underpowered study less credible? (only if there is a significance filter)
+* What significance level should you choose for power? (Obviously the stricter the level the lower the power, so use what you will use when you actually implement tests)
+* Do you really have to know the effect size to do power analysis? (No, but you should know at least what effects sizes you would want to be sure about picking up if they were present)
+* Power is just one of many possible diagnosands
+* What's power for Bayesians?
+
+### Power via design diagnosis
+
+```{r}
+N <- 100
+b <- .5
+
+design <- 
+  declare_model(N = N, 
+    U = rnorm(N),
+    potential_outcomes(Y ~ b * Z + U)) + 
+  declare_assignment(Z = simple_ra(N),
+                     Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+```
+
+### "Run" the design once
+
+
+```{r, eval = FALSE}
+run_design(design)
+```
+
+
+```{r, echo = FALSE}
+run_design(design) |>
+  
+  kable(digits = 2, caption = "Summary of a single 'run' of the design")
+
+```
+
+### Run it many times
+
+```{r, eval = FALSE, echo = TRUE}
+sims_1 <- simulate_design(design) 
+
+sims_1 |> select(sim_ID, estimate, p.value)
+```
+
+```{r, echo = FALSE}
+if(run)
+  simulate_design(design, sims = 3000) |>
+  write_rds("saved/simple_simulations_1")
+
+sims_1 <- 
+  read_rds("saved/simple_simulations_1")
+
+sims_1 |>  select(sim_ID, estimate, p.value) |> head() |> kable(digits = 2)
+```
+
+### Power is mass of the sampling distribution of decisions under the model
+
+
+```{r, message = FALSE, fig.height = 1.5, fig.width = 6}
+sims_1 |>
+  ggplot(aes(p.value)) + 
+  geom_histogram() +
+  geom_vline(xintercept = .05, color = "red")
+
+```
+
+### Power is mass of the sampling distribution of decisions under the model
+
+Obviously related to the estimates you might get
+
+```{r, fig.height = 1.5, fig.width = 6}
+sims_1 |>
+  mutate(significant = p.value <= .05) |>
+  ggplot(aes(estimate, p.value, color = significant)) + 
+  geom_point()
+
+```
+
+### Check coverage is correct
+
+```{r}
+sims_1 |>
+  mutate(within = (b > sims_1$conf.low) & (b < sims_1$conf.high)) |> 
+  pull(within) |> mean()
+```
+
+### Check validity of $p$ value
+
+A valid $p$-value satisfies $\Pr(p≤x)≤x$ for every $x \in[0,1]$ (under the null)
+
+```{r, eval = FALSE, echo = TRUE}
+sims_2 <- 
+  
+  redesign(design, b = 0) |>
+  
+  simulate_design() 
+
+```
+
+```{r, echo = FALSE}
+if(run)
+  redesign(design, b = 0) |> 
+  simulate_design(sims = 10000) |>
+  write_rds("saved/simple_simulations_2")
+
+sims_2 <- 
+  read_rds("saved/simple_simulations_2")
+
+```
+
+
+```{r, echo = TRUE, message = FALSE, echo = FALSE, fig.height = 1.5, fig.width = 6}
+sims_2 |>
+  ggplot(aes(p.value)) + 
+  geom_histogram() +
+  geom_vline(xintercept = .05, color = "red")
+
+```
+
+### Design diagnosis does it all (over multiple designs)
+
+
+```{r, eval  = FALSE}
+  diagnose_design(design)
+```
+
+
+```{r, echo = FALSE}
+if(run)
+  design |> 
+  diagnose_design(sims = 10000) |>
+  write_rds("saved/simple_diagnosis_1")
+
+read_rds("saved/simple_diagnosis_1") |>
+  reshape_diagnosis() |>
+  select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+  kable()
+
+```
+
+### Design diagnosis does it all
+
+```{r, eval = FALSE}
+design |>
+  redesign(b = c(0, 0.25, 0.5, 1)) |>
+  diagnose_design()
+```
+
+
+```{r, echo = FALSE}
+if(run)
+design |>
+  redesign(b = c(0, 0.25, 0.5, 1)) |>
+  diagnose_design(sims = 10000) |>
+  write_rds("saved/simple_diagnosis_2")
+
+  read_rds("saved/simple_diagnosis_2") |>
+    reshape_diagnosis() |>
+    select(b, "Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+    kable()
+
+  
+```
+
+### Diagnose over multiple moving parts (and ggplot)
+
+```{r, eval = FALSE}
+design |>
+  ## Redesign
+  redesign(b = c(0.1, 0.3, 0.5), N = 100, 200, 300) |>
+  ## Diagnosis
+  diagnose_design() |>
+  ## Prep
+  tidy() |>
+  filter(diagnosand == "power") |>
+  ## Plot
+  ggplot(aes(N, estimate, color = factor(b))) +
+  geom_line()
+
+```
+
+### Diagnose over multiple moving parts (and ggplot)
+
+
+```{r, echo = FALSE}
+if(run)
+design |>
+  redesign(b = c(0.1, 0.3, 0.5), N = c(100, 200, 300)) |>
+  diagnose_design(sims = 2000) |>
+  write_rds("saved/simple_diagnosis_mult.rds")
+
+read_rds("saved/simple_diagnosis_mult.rds") |>
+    tidy() |> 
+    filter(diagnosand == "power") |>
+    ggplot(aes(N, estimate, color = factor(b))) +
+    geom_line() + ylab("power") 
+
+```
+
+### Diagnose over multiple moving parts and multiple diagnosands (and ggplot)
+
+```{r, eval = FALSE}
+design |>
+
+  ## Redesign
+  redesign(b = c(0.1, 0.3, 0.5), N = 100, 200, 300) |>
+  
+  ## Diagnosis
+  diagnose_design() |>
+  
+  ## Prep
+  tidy() |>
+  
+  ## Plot
+  ggplot(aes(N, estimate, color = factor(b))) +
+  geom_line()+
+  facet_wrap(~diagnosand)
+
+```
+
+### Diagnose over multiple moving parts and multiple diagnosands (and ggplot)
+
+
+```{r, echo = FALSE}
+if(run)
+design |>
+  redesign(b = c(0.1, .3, .5), N = c(100, 200, 300)) |>
+  diagnose_design(sims = 2000) |>
+  write_rds("saved/simple_diagnosis_mult.rds")
+
+read_rds("saved/simple_diagnosis_mult.rds") |>
+    tidy() |> 
+    ggplot(aes(N, estimate, color = factor(b))) +
+    geom_line() + 
+  facet_wrap(~diagnosand)
+
+```
+
+
+
+## Beyond basics
+
+### Power tips
+
+coming up: 
+
+* power everywhere
+* power with bias
+* power with the wrong standard errors
+* power with uncertainty over effect sizes
+* power and multiple comparisons
+
+### Power depends on all parts of MIDA
+
+We often focus on sample sizes
+
+**But** 
+
+Power also depends on 
+
+* the model -- obviously signal  to noise
+* the assignments and specifics of sampling strategies
+* estimation procedures
+
+
+### Power when estimates are biased
+
+```{r}
+bad_design <- 
+  
+  declare_model(N = 100, 
+    U = rnorm(N),
+    potential_outcomes(Y ~ 0 * X + U, conditions = list(X = 0:1)),
+    X = ifelse(U > 0, 1, 0)) + 
+  
+  declare_measurement(Y = reveal_outcomes(Y ~ X)) + 
+  
+  declare_inquiry(ate = mean(Y_X_1 - Y_X_0)) + 
+  
+  declare_estimator(Y ~ X, inquiry = "ate", .method = lm_robust)
+```
+
+### Power when estimates are biased
+
+You can see from the null design that power is great but bias is terrible and coverage is way off.
+
+```{r, eval = FALSE}
+diagnose_design(bad_design)
+```
+
+
+```{r, echo = FALSE}
+if(run)
+  diagnose_design(bad_design) |>
+  write_rds("saved/bad_design_diagnosis.rds")
+
+read_rds("saved/bad_design_diagnosis.rds") |>
+    reshape_diagnosis() |>
+    select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+    kable()
+  
+
+```
+
+Power without unbiasedness corrupts, absolutely 
+
+### Power with a more subtly biased experimental design
+
+```{r}
+another_bad_design <- 
+  
+  declare_model(
+    N = 100, 
+    female = rep(0:1, N/2),
+    U = rnorm(N),
+    potential_outcomes(Y ~ female * Z + U)) + 
+  
+  declare_assignment(
+    Z = block_ra(blocks = female, block_prob = c(.1, .5)),
+    Y = reveal_outcomes(Y ~ Z)) + 
+
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  
+  declare_estimator(Y ~ Z + female, inquiry = "ate", 
+                    .method = lm_robust)
+```
+
+```{r, eval = FALSE}
+  diagnose_design(another_bad_design)
+```
+
+### Power with a more subtly biased experimental design
+
+You can see from the null design that power is great but bias is terrible and coverage is way off.
+
+
+
+```{r, echo = FALSE}
+if(run)
+  diagnose_design(another_bad_design) |>
+  write_rds("saved/bad_design_diagnosis_2.rds")
+
+read_rds("saved/bad_design_diagnosis_2.rds") |>
+    reshape_diagnosis() |>
+    select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+    kable()
+  
+
+```
+
+### Power with the wrong standard errors
+
+```{r}
+clustered_design <-
+  declare_model(
+    cluster = add_level(N = 10, cluster_shock = rnorm(N)),
+    individual = add_level(
+        N = 100,
+        Y_Z_0 = rnorm(N) + cluster_shock,
+        Y_Z_1 = rnorm(N) + cluster_shock)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = cluster_ra(clusters = cluster)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, inquiry = "ATE")
+```
+```{r, echo = FALSE}
+if(run)
+diagnose_design(clustered_design, sims = 2000) |>
+write_rds("saved/clustered.rds")
+
+read_rds("saved/clustered.rds") |>
+  reshape_diagnosis() |>
+    select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+  kable()
+
+```
+
+What alerts you to a problem?
+
+### Let's fix that one
+
+```{r}
+clustered_design_2  <-
+  clustered_design |> replace_step(5, 
+  declare_estimator(Y ~ Z, clusters = cluster))
+```
+
+```{r, echo = FALSE}
+if(run)
+diagnose_design(clustered_design_2, sims = 2000) |>
+write_rds("saved/clustered_2.rds")
+
+read_rds("saved/clustered_2.rds") |>
+  reshape_diagnosis() |>
+    select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+  kable()
+
+```
+
+### Power when you are not sure about effect sizes (always!)
+
+* you can do power analysis for multiple stipulations
+* or you can design with a distribution of effect sizes 
+
+
+
+```{r, eval = TRUE}
+
+design_uncertain <-
+  declare_model(N = 1000, b = 1+rnorm(1), Y_Z_1 = rnorm(N), Y_Z_2 = rnorm(N) + b, Y_Z_3 = rnorm(N) + b) +
+  declare_assignment(Z = complete_ra(N = N, num_arms = 3, conditions = 1:3)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ate = mean(b)) +
+  declare_estimator(Y ~ factor(Z), term = TRUE)
+
+draw_estimands(design_uncertain)
+draw_estimands(design_uncertain)
+```
+
+
+
+### Multiple comparisons correction (complex code)
+
+Say I run two tests and want to correct for multiple comparisons. 
+
+Two approaches. First, by hand:
+
+```{r}
+b = .2
+
+design_mc <-
+  declare_model(N = 1000, Y_Z_1 = rnorm(N), Y_Z_2 = rnorm(N) + b, Y_Z_3 = rnorm(N) + b) +
+  declare_assignment(Z = complete_ra(N = N, num_arms = 3, conditions = 1:3)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ate = b) +
+  declare_estimator(Y ~ factor(Z), term = TRUE)
+```
+
+### Multiple comparisons correction (complex code)
+
+
+```{r, eval = FALSE}
+design_mc |>
+  simulate_designs(sims = 1000) |>
+  filter(term != "(Intercept)") |>
+  group_by(sim_ID) |>
+  mutate(p_bonferroni = p.adjust(p = p.value, method = "bonferroni"),
+         p_holm = p.adjust(p = p.value, method = "holm"),
+         p_fdr = p.adjust(p = p.value, method = "fdr")) |>
+  ungroup() |>
+  summarize(
+    "Power using naive p-values" = mean(p.value <= 0.05),
+    "Power using Bonferroni correction" = mean(p_bonferroni <= 0.05),
+    "Power using Holm correction" = mean(p_holm <= 0.05),
+    "Power using FDR correction" = mean(p_fdr <= 0.05)
+    ) 
+  
+```
+
+
+```{r, echo = FALSE}
+if(run)
+simulate_designs(design_mc, sims = 5000) |>
+  write_rds("saved/multiple_comparisons.rds")
+
+read_rds("saved/multiple_comparisons.rds")  |>
+  filter(term != "(Intercept)") |>
+  group_by(sim_ID) |>
+  mutate(p_bonferroni = p.adjust(p = p.value, method = "bonferroni"),
+         p_holm = p.adjust(p = p.value, method = "holm"),
+         p_fdr = p.adjust(p = p.value, method = "fdr")) |>
+  ungroup() |>
+  summarize(
+    "Power using naive p-values" = mean(p.value <= 0.05),
+    "Power using Bonferroni correction" = mean(p_bonferroni <= 0.05),
+    "Power using Holm correction" = mean(p_holm <= 0.05),
+    "Power using FDR correction" = mean(p_fdr <= 0.05)
+    ) |> kable()
+```
+
+
+### Multiple comparisons correction (approach 2)
+
+The alternative approach (generally better!) is to design with  a custom estimator that includes your corrections.
+
+```{r}
+
+my_estimator <- function(data) 
+  lm_robust(Y ~ factor(Z), data = data) |> 
+  tidy() |>
+  filter(term != "(Intercept)") |>
+  mutate(p.naive = p.value,
+         p.value = p.adjust(p = p.naive, method = "bonferroni"))
+  
+
+design_mc_2 <- design_mc |>
+  replace_step(5, declare_estimator(handler = label_estimator(my_estimator))) 
+
+run_design(design_mc_2) |> 
+  select(term, estimate, p.value, p.naive) |> kable()
+
+
+```
+
+
+
+### Multiple comparisons correction (Null model case)
+
+Lets try same thing for a null model (using `redesign(design_mc_2, b = 0)`)
+
+
+```{r, eval = TRUE}
+design_mc_3 <- 
+  design_mc_2 |> 
+  redesign(b = 0) 
+
+run_design(design_mc_3) |> select(estimate, p.value, p.naive) |> kable()
+
+```
+
+### Multiple comparisons correction (Null model case)
+
+...and power: 
+
+```{r, echo = FALSE}
+if(run)
+  design_mc_2 |> 
+  redesign(b = 0) |>
+  diagnose_design(sims = 1000) |>
+  write_rds("saved/design_mc_3.rds")
+
+read_rds("saved/design_mc_3.rds") |> reshape_diagnosis() |>
+    select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+  kable()
+
+
+```
+
+
+bothered?
+
+
+
+### You might try
+
+* Power for an interaction (in a factorial design)
+* Power for a binary variable (versus a continuous variable?)
+* Power from adding covariates in the analysis stage
+* Power gains from blocked randomization
+* Power losses from clustering at different levels
+* Controlling the ICC directly? (see book cluster designs section)
+
+
+### Big takeaways
+
+* Power is affected not just by sample size, variability and effect size but also by you data and analysis strategies.
+* Try to estimate power under multiple scenarios
+* Try to use the same code for calculating power as you will use in your ultimate analysis
+* Basically the same procedure can be used for any design. If you can declare a design and have a test, you can calculate power
+* Your power might be right but misleading. For confidence:
+   * Don't just check power, check bias and coverage also
+   * Check power especially *under the null*
+* Don't let a focus on power distract you from more *substantive* diagnosands
+
+

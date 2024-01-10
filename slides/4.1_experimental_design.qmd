@@ -1,0 +1,641 @@
+---
+format: 
+   beamer:
+    theme: "AnnArbor"
+    colortheme: "seahorse"
+    slide-level: 3
+    keep-tex: true
+    includes:
+      header-includes: include_nav.txt
+title: "Lectures on causal inference and experimental methods"
+author: "Macartan Humphreys"
+numbersections: true
+header-includes:
+  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
+  - \newcommand\E{\mathbb{E}}
+  - \newcommand\V{\mathbb{V}}
+  - \hypersetup{colorlinks=true,linkcolor=red}
+  - \usepackage{ulem}
+  - \pdfstringdefDisableCommands{\let\sout\relax}
+fontsize: 11pt  
+---
+
+  
+```{r, include = FALSE}
+
+source("setup.R")
+
+```
+
+
+# Design
+
+## Topics
+
+* Sampling schemes 
+* Randomization schemes
+
+
+### Experiments
+
+
+* Experiments are investigations in which an intervention, in all its essential elements, is under the control of the investigator. (Cox \& Reid)
+* Two major types of control:
+
+			1. control over assignment to treatment -- this is at the heart of many field experiments 
+			2. control over the treatment itself -- this is at the heart of many lab experiments
+		
+*  Main focus today is on 1 and on the question: \textit{how does control over assignment to treatment allow you to make reasonable statements about causal effects?}
+
+
+
+### Experiments
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figs/labfield}
+\end{figure}
+
+
+
+### Basic randomization \label{schemes}
+
+\hyperlink{ideas}{\beamergotobutton{Top}}
+
+*  Basic randomization is very simple. For example, say you want to assign 5 of 10 units to treatment. Here is simple code:
+
+```{r}
+1:10 %in% sample(1:10, 5)	 
+```
+
+### ...should be replicable
+
+In general you might want to set things up so that your randomization is \textbf{replicable}. You can do this by setting a \textbf{seed}:
+
+```{r} 
+set.seed(20111112)
+1:10 %in% sample(1:10, 5) 
+
+set.seed(20111112)
+1:10 %in% sample(1:10, 5) 
+```
+
+
+### Basic randomization
+
+Even better is to set it up so that it can reproduce \textbf{lots of possible draws} so that you can check the propensities for each unit.
+
+
+```{r} 
+set.seed(20111112)
+P <- sapply(1:1000, function(i) 1:10 %in% sample(1:10, 5)) 
+apply(P, 1, mean)
+```
+
+
+Here the $P$ matrix gives 1000 possible ways of allocating 5 of 10 units to treatment. We can then confirm that the average propensity is 0.5.
+
+*  A huge advantage of this approach is that if you make a mess of the random assignment; \textbf{you can still generate the P matrix and use that for all analyses}!
+
+
+
+### Do it in advance
+
+
+*  Unless you need them to keep subjects at ease, leave your spinners and your dice and your cards behind.
+*  Especially when you have multiple or complex randomizations you are generally much better doing it with a computer in advance
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{figs/dictionary.png}
+\caption{A survey dictionary with results from a complex randomization presented in a simple way for enumerators}
+\label{fig:dictionary}
+\end{figure}
+
+
+### Did the randomization ``work''?
+
+ \footnotesize
+* People often wonder: did randomization work?
+* Common practice is to implement a set of $t$-tests to see if there is balance
+* This makes no sense.
+
+
+ \footnotesize
+* If you doubt whether it was \textbf{implemented} properly do an $F$ test
+* If you worry about \textbf{variance} specify controls in advance as a function of relation with outcomes (more on this later)
+* If you worry about \textbf{conditional bias} then look at substantive differences between groups, not $t$--tests
+
+
+
+## Cluster Randomization
+
+### Cluster Randomization
+
+ 
+* Simply place units into groups (clusters) and then randomly assign the groups to treatment and control.
+* All units in a given group get the same treatment
+
+
+**Note:** clusters are part of your design, not part of the world.
+
+
+
+
+### Cluster Randomization
+	
+* Often used if intervention has to function at the cluster level \textit{or} if outcome defined at the cluster level.
+* **Disadvantage:* }** loss of statistical power
+* However: perfectly possible to assign *some* treatments at cluster level and then *other* treatments at the individual level
+	
+	 \footnotesize
+		
+* **Principle:** (unless you are worried about spillovers) generally make clusters as small as possible
+* **Principle:** Surprisingly, variability in cluster size makes analysis harder. (See analysis section)	
+*  **Be clear** about whether you believe effects are operating at the cluster level or at the individual level. This matters for power calculations. 
+*  **Be clear** about whether spillover effects operate only within clusters or also across them. If within only you might be able to interpret treatment as the effect of being in a treated cluster\dots 
+
+
+
+
+
+
+### Cluster Randomization: Block by cluster size
+\small Surprisingly, if clusters are of different sizes the difference in means estimator is \textit{not} unbiased, even if all units are assigned to treatment with the same probability.
+\bigskip
+\textbf{Here's the intuition.}  Say there are two clusters each with homogeneous treatment effects:
+\begin{table}
+\begin{tabular}{cccc}
+Cluster	& Size	& Y0 & 	Y1 \\ \hline
+1	&  1000000	&  0	&  1 \\
+2	&  1	&  0	&  0
+\end{tabular} 
+\end{table}
+
+Then: 
+* What is the true average treatment effect?
+* What do you expect to estimate from cluster random assignment?
+
+
+The solution is to block by cluster size. For more see: \url{http://gking.harvard.edu/files/cluster.pdf}
+
+
+
+
+
+
+
+
+## Blocked assignments and other restricted randomizations \label{blocked}
+
+### Blocking 
+There are more or less **efficient** ways to randomize.
+
+* Randomization helps ensure good balance on all covariates (observed and unobserved) \textit{in expectation}.  
+* But balance may not be so great \textit{in realization}
+* Blocking can help ensure balance ex post on observables
+
+Consider a case with four units and two strata. There are 6 possible assignments of 2 units to treatment:
+\begin{table} \scriptsize
+	\centering
+		\begin{tabular}{cccc|cccccc} 
+		ID	&	X	&	Y(0)	&	Y(1)	&	R1	&	R2	&	R3	&	R4	&	R5	&	R6	\\ \hline
+		1	&	1	&	0	&	1	&	1	&	1	&	1	&	0	&	0	&	0	\\
+		2	&	1	&	0	&	1	&	1	&	0	&	0	&	1	&	1	&	0	\\ \hline
+		3	&	2	&	1	&	2	&	0	&	1	&	0	&	1	&	0	&	1	\\
+		4	&	2	&	1	&	2	&	0	&	0	&	1	&	0	&	1	&	1	\\ \hline \hline
+		$\widehat{\tau}$:	&		&		&		&	0	&	1	&	1	&	1	&	1	&	2	\\
+		\end{tabular}
+\end{table}
+
+Even with a constant treatment effect and everything uniform within blocks, there is variance in the estimation of $\widehat{\tau}$. This can be eliminated by excluding R1 and R6.
+
+
+
+
+
+### Blocking
+Simple blocking in R (5 pairs):
+
+
+```{r, eval = FALSE} 
+sapply(1:5, function(i) rank(runif(2))==1)
+```
+
+
+```{r, echo = FALSE} 
+kable(
+  sapply(1:5, function(i) rank(runif(2))==1), col.names = 1:5)
+```
+
+### Of blocks and clusters
+\begin{figure}
+\centering
+\includegraphics[width=0.6\linewidth]{figs/bf}
+\label{fig:bf}
+\end{figure}
+
+
+
+
+### Blocking
+* Blocking is a case of **restricted randomization**. Although each unit is sampled with equal probability, the \textit{profiles} of possible assignments are not.
+* You have to take account of this when doing analysis
+* There are many other approaches. 
+  * **Matched Pairs** are a particularly fine approach to blocking
+  * You could also randomize and then **replace the randomization** if you do not like the balance. This sounds tricky (and it is) but it is OK as long as you understand the true lottery process you are employing and incorporate that into analysis
+  * It is even possible to block on **covariates for which you don't have data** ex ante, by using methods in which you allocate treatment over time as a function of features of your sample (also tricky)
+
+
+
+### Other types of restricted randomization
+
+
+* Really you can set whatever criterion you want for your set of treated units to have (eg no treated unit beside another treated unit; at least 5 from the north, 10 from the south, guaranteed balance by some continuous variable etc)
+* You just have to be sure that you understand the random process that was used and that you can use it in the analysis stage
+* But here be dragons
+	* The more complex your design, the more complex your analysis.
+  * General injunction (\href{http://www.ncbi.nlm.nih.gov/pubmed/15580598}{Senn 2004} ``as ye randomize so shall ye analyze'')
+  * In general you should make sure that a given randomization procedure coupled with a given estimation procedure will produce an unbiased estimate. `DeclareDesign` can help with this.
+
+
+
+
+
+
+## Factorial Designs
+
+### Factorial Designs
+
+* Often when you set up an experiment you want to look at more than one treatment. 
+* Should you do this or not? How should you use your power?
+
+### Factorial Designs
+
+* Often when you set up an experiment you want to look at more than one treatment. 
+* Should you do this or not? How should you use your power?
+
+\begin{table} 
+\tiny
+\begin{minipage}[b]{0.2\linewidth}\centering
+	\begin{tabular}{c|cc}
+	\footnotesize
+		&				$T2=0$ & $T2=1$ \\ \hline 
+	T1 = 0	& 	$50\%$ & $0\%$ \\
+	T1 = 1	& 	$50\%$ &  $0\%$ \\
+	\end{tabular}
+\end{minipage}
+\bigskip
+\hspace{0.1cm}
+
+\begin{minipage}[b]{0.2\linewidth}\centering
+	\begin{tabular}{c|cc}
+	\tiny
+	&				$T2=0$ & $T2=1$ \\ \hline
+	T1 = 0	& 	$25\%$ & $25\%$ \\
+	T1 = 1	& 	$25\%$ &  $25\%$ \\
+	\end{tabular}
+\end{minipage}
+\bigskip
+\hspace{0.1cm}
+
+\begin{minipage}[b]{0.2\linewidth}
+	\centering
+	\begin{tabular}{c|cc}
+	\tiny
+	&				$T2 = 0$ & $T2 = 1$ \\ \hline
+	T1 = 0	& 	$33.3\%$ & $33.3\%$ \\
+	T1 = 1	& 	$33.3\%$ &  $0\%$ \\
+	\end{tabular}
+	\end{minipage}
+\end{table}
+
+
+
+
+### Factorial Designs
+
+*  Surprisingly adding multiple treatments does not eat into your power (unless you are decomposing a complex treatment -- then it can. Why?)
+*  Especially when you use a fully crossed design like the middle one above.
+*  Fisher: "No aphorism is more frequently repeated in connection with field trials, than that we must ask Nature few questions, or, ideally, one question, at a time. The writer is convinced that this view is wholly mistaken."
+* However -- adding multiple treatments \textit{does} alter the \textbf{interpretation} of your treatment effects. If T2 is an unusual treatment for example, then half the T1 effect is measured for unusual situations. 
+
+
+
+
+
+
+
+### Factorial Designs: In practice
+
+*  In practice if you have a lot of treatments it can be hard to do full factorial designs -- there may be too many combinations.  
+* In such cases people use \textbf{fractional factorial designs}, like the one below (5 treatments but only 8 units!)
+\begin{table}[htbp]\scriptsize
+	\centering
+		\begin{tabular}{cccccc}\scriptsize
+			Variation	&	T1	&	T2	&	T3	&	T4	&	T5	\\ \hline
+			1	&	0	&	0	&	0	&	1	&	1	\\
+			2	&	0	&	0	&	1	&	0	&	0	\\
+			3	&	0	&	1	&	0	&	0	&	1	\\
+			4	&	0	&	1	&	1	&	1	&	0	\\
+			5	&	1	&	0	&	0	&	1	&	0	\\
+			6	&	1	&	0	&	1	&	0	&	1	\\
+			7	&	1	&	1	&	0	&	0	&	0	\\
+			8	&	1	&	1	&	1	&	1	&	1	\\
+		\end{tabular}
+\end{table}
+* Then randomly assign units to rows. Note columns might also be blocking covariates.
+* In R, look at \color{red} \scriptsize {\ttfamily library(survey); hadamard(7)}
+
+
+
+
+
+### Factorial Designs: In practice
+
+*  But be careful: you have to be comfortable with possibly not having any simple counterfactual unit for any unit (invoke sparsity-of-effects principle). 
+\begin{table}[htbp]\scriptsize
+	\centering
+		\begin{tabular}{cccccc}\scriptsize
+			Unit	&	T1	&	T2	&	T3	&	T4	&	T5	\\ \hline
+			1	&	0	&	0	&	0	&	1	&	1	\\
+			2	&	0	&	0	&	1	&	0	&	0	\\
+			3	&	0	&	1	&	0	&	0	&	1	\\
+			4	&	0	&	1	&	1	&	1	&	0	\\
+			5	&	1	&	0	&	0	&	1	&	0	\\
+			6	&	1	&	0	&	1	&	0	&	1	\\
+			7	&	1	&	1	&	0	&	0	&	0	\\
+			8	&	1	&	1	&	1	&	1	&	1	\\
+		\end{tabular}
+\end{table}
+* In R, look at \color{red} \scriptsize {\ttfamily library(survey); hadamard(7)}
+
+
+
+
+## External Validity: Can randomization strategies help?
+
+### Principle: Address **external validity** at the design stage
+
+Anything to be done on randomization to address external validity concerns?
+
+* **Note 1**: There is little or nothing about field experiments that makes the external validity problem greater for these than for other ``sample based'' research
+* **Note 2**: Studies that use up the available universe (cross national studies) actually have a distinct external validity problem
+* Two ways to think about external validity issues:
+    1. Are things likely to operate in other units like they operate in these units? (even with the same intervention)
+    2. Are the processes in operation in this treatment likely to operate in other treatments? (even in this population)
+
+
+
+
+
+### Principle: Address \textbf{external validity} at the design stage
+
+* Two ways to think about external validity issues:
+    1. Are things likely to operate in other units like they operate in these units? (even with the same intervention)
+    2.Are the processes in operation in this treatment likely to operate in other treatments? (even in this population)
+
+* Two approaches for 1. 
+    +  Try to sample cases and estimate \textit{population average treatment effects} 
+    +  Exploit internal variation: block on features that make the case unusal and assess importance of these (eg is unit poor? assess how effects differ in poor and wealthy components)
+* 2 is harder and requires a sharp identification of context free primitives, if there are such things.   
+
+
+## Assignments with `DeclareDesign``
+
+### A design: Multilevel data
+
+A design with hierarchical data and different assignment schemes.
+
+```{r}
+design <- 
+  declare_model(
+    school = add_level(N = 16, 
+                       u_school = rnorm(N, mean = 0)),     
+    classroom = add_level(N = 4,    
+                  u_classroom = rnorm(N, mean = 0)),
+    student =  add_level(N = 20,    
+                         u_student = rnorm(N, mean = 0))
+    ) +
+  declare_model(
+    potential_outcomes(Y ~ .1*Z + u_classroom + u_student + u_school)
+    ) +
+  declare_assignment(Z = simple_ra(N)) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z))  +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, .method = difference_in_means)    
+
+```
+
+
+
+
+### Sample data \label{simpleAass}
+Here are the first couple of rows and columns of the resulting data frame.
+
+```{r}
+my_data <- draw_data(design)
+kable(head(my_data), digits = 2)
+```
+
+### Sample data
+
+Here is the distribution between treatment and control:
+
+```{r}
+kable(t(as.matrix(table(my_data$Z))), 
+      col.names = c("control", "treatment"))
+```
+
+### Complete Random Assignment using the built in function \label{completeAss}
+
+```{r, echo = TRUE}
+assignment_complete <-   declare_assignment(Z = complete_ra(N))  
+
+design_complete <- 
+  replace_step(design, "assignment", assignment_complete)
+
+```
+
+### Data from complete assignment 
+
+We can draw a new set of data and look at the number of subjects in the treatment and control groups.
+
+```{r}
+set.seed(1:5)
+data_complete <- draw_data(design_complete)
+
+kable(t(as.matrix(table(data_complete$Z))))
+```
+
+### Plotted
+
+```{r, warning = F, message = F, echo = F, fig.width = 7, fig.height= 2.2}
+
+tile_design <- function(design)
+  
+  design |>  draw_data() |>
+  arrange(classroom, Z) |>
+  group_by(school, classroom) |>
+  mutate(student_in_class = 1:n()) |>
+  ungroup() |>
+  mutate(Z  = factor(Z, 0:1, c("control", "treatment"))) |>
+  
+  ggplot(aes(as.factor(classroom),
+           as.factor(student_in_class),
+           fill = Z, order = -as.numeric(Z))) + 
+  geom_tile(colour = "white") + 
+  scale_fill_discrete(na.value = 'light gray', h = c(240, 120)) +
+  theme(axis.line=element_blank(),
+      axis.ticks=element_blank(),
+      panel.background=element_blank(),
+      panel.border=element_blank(),
+      panel.grid.major=element_blank(),
+      panel.grid.minor=element_blank(),
+      plot.background=element_blank(),
+      text = element_text(size=8),
+      axis.text = element_text(size=5)) +
+  xlab("Classroom") + ylab("Student")
+
+tile_design(design_complete)
+```
+
+
+
+### Block Random Assignment \label{blockedAss}
+
+* The treatment and control group will **in expectation** contain the same share of students in  different classrooms. 
+* But as we saw this does necessarily hold in **realization**
+* We make this more obvious by sorting the students by treatment status with schools
+ 
+
+### Blocked design
+
+```{r, echo = TRUE}
+assignment_blocked <-   
+  declare_assignment(Z = block_ra(blocks = classroom))  
+
+estimator_blocked <- 
+  declare_estimator(Y ~ Z, blocks = classroom, 
+                    .method = difference_in_means)  
+
+design_blocked <- 
+  design |> 
+  replace_step("assignment", assignment_blocked) |>
+  replace_step("estimator", estimator_blocked)
+
+```
+
+
+### Illustration of blocked assignment
+
+* Note that subjects are sorted here after the assignment to make it easier to see that in this case blocking ensures that exactly 5 students within each classroom are assigned to treatment. 
+
+```{r, warning = F, message = F, echo = F, fig.width = 7, fig.height= 3}
+
+tile_design(design_blocked)
+```
+
+
+### Clustering
+
+But what if all students in a given class have to be assigned the same treatment?
+
+```{r, echo = TRUE}
+assignment_clustered <- 
+  declare_assignment(Z = cluster_ra(clusters = classroom))  
+estimator_clustered <- 
+  declare_estimator(Y ~ Z, clusters = classroom, 
+                    .method = difference_in_means)  
+
+
+design_clustered <- 
+  design |> 
+  replace_step("assignment", assignment_clustered) |> 
+  replace_step("estimator", estimator_clustered)
+
+```
+
+### Illustration of clustered assignment
+
+
+```{r, warning = F, message = F, echo = F, fig.width = 7, fig.height= 3}
+
+tile_design(design_clustered)
+```
+
+
+
+### Clustered and Blocked 
+
+```{r, echo = TRUE}
+assignment_clustered_blocked <-   
+  declare_assignment(Z = block_and_cluster_ra(blocks = school,
+                                              clusters = classroom))  
+estimator_clustered_blocked <- 
+  declare_estimator(Y ~ Z, blocks = school, clusters = classroom, 
+                    .method = difference_in_means)  
+
+
+design_clustered_blocked <- 
+  design |> 
+  replace_step("assignment", assignment_clustered_blocked) |> 
+  replace_step("estimator", estimator_clustered_blocked)
+
+```
+
+### Illustration of clustered and blocked assignment
+
+
+```{r, warning = F, message = F, echo = F, fig.width = 7, fig.height= 3}
+
+tile_design(design_clustered_blocked)
+```
+
+
+### Illustration of efficiency gains from blocking
+
+```{r, warning = F, message = F}
+designs <- 
+  list(
+    simple = design, 
+    complete = design_complete, 
+    blocked = design_blocked, 
+    clustered = design_clustered,  
+    clustered_blocked = design_clustered_blocked) 
+```
+
+```{r, eval = FALSE}
+diagnoses <- diagnose_design(designs)
+```
+
+### Illustration of efficiency gains from blocking
+
+```{r, echo = FALSE}
+if(run)
+  diagnose_design(designs, sims = 1000) |>
+  write_rds("saved/assignment_diagnosis.rds")
+
+diagnoses <- read_rds("saved/assignment_diagnosis.rds") 
+
+diagnoses |>
+  reshape_diagnosis() |> 
+    select(Design, Power, Coverage) |>
+  kable()
+```
+
+
+### Sampling distributions
+
+```{r}
+
+diagnoses$simulations_df |> 
+  mutate(design = factor(design, c("blocked", "complete", "simple", "clustered_blocked", "clustered"))) |>
+  ggplot(aes(estimate)) +
+  geom_histogram() + facet_grid(~design)
+
+```
+
+
+### Nasty integer issues
+

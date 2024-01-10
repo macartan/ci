@@ -1,0 +1,1476 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    number-sections: true
+title: "Design declaration, diagnosis, and redesign "
+subtitle: "MIDA and more"
+author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
+---
+
+
+## `DeclareDesign`
+
+### Topics
+
+1. The MIDA framework and the declaration-diagnosis-redesign cycle
+2. `DeclareDesign`: key resources
+3. The Declare-Diagnose-Redesign life cycle
+4. Using designs
+5. Hands-on declaration and diagnosis
+7. An illustration of power
+6. A deeper dive into declaration functionality
+8. Topics and Exercises
+9. Solutions
+
+
+```{r, include=FALSE}
+source("setup.R")
+run <- FALSE
+```
+
+
+
+## The MIDA Framework
+
+### Four elements of any research design
+
+- `Model`: set of models of what causes what and how
+- `Inquiry`: a question stated in terms of the model
+- `Data strategy`: the set of procedures we use to gather information from the world (sampling, assignment, measurement)
+- `Answer strategy`: how we summarize the data produced by the data strategy
+
+### Four elements of any research design
+
+```{r midaplot, echo = FALSE}
+knitr::include_graphics("assets/mida.png")
+```
+
+### Declaration
+
+Design declaration is telling the computer (and readers) what `M`, `I`, `D`, and `A` are.
+
+### Diagnosis
+
+Design diagnosis is figuring out how the design will perform under imagined conditions.
+
+Estimating "diagnosands" like power, bias, rmse, error rates, ethical harm, amount learned.
+
+Diagnosis take account of model uncertainty: it seems to identify models for which the design works well and models for which it does not
+
+### Redesign 
+
+Redesign is the fine-tuning of  features of the data and answer strategies to understand how changing them affects  the diagnosands
+
+* Different sample sizes
+* Different randomization procedures
+* Different estimation strategies
+* Implementation: effort into compliance versus more effort into sample size
+
+### Very often you have to simulate!
+
+* Doing all this is often too hard to work out from rules of thumb or power calculators
+* Specialized formulas exist for some diagnosands, but not all
+
+
+## DeclareDesign: Overview of key functions and resources
+
+
+### Key commands for making a design
+
+* `declare_model()`
+* `declare_inquiry()`
+
+* `declare_sampling()`
+* `declare_assignment()`
+* `declare_measurement()`
+
+* `declare_estimator()`
+
+and there are more `declare_` functions!
+
+### Key commands for using a design
+
+* `draw_data(design)`
+* `draw_estimands(design)`
+* `draw_estimates(design)`
+* `get_estimates(design, data)`
+* `run_design(design)`, `simulate_design(design)`
+* `diagnose_design(design)`
+* `redesign(design, N = 200)`
+* `compare_designs()`, `compare_diagnoses()`
+
+### Pipeable commands
+
+```{r, echo = TRUE, eval = FALSE}
+design |> 
+  redesign(N = c(200, 400)) |>
+  diagnose_designs() |> 
+  tidy() |> 
+  ggplot(...)` 
+```
+
+
+### Cheat sheet
+
+[https://raw.githubusercontent.com/rstudio/cheatsheets/master/declaredesign.pdf](https://raw.githubusercontent.com/rstudio/cheatsheets/master/declaredesign.pdf)
+
+
+```{r, echo = FALSE}
+knitr::include_graphics("assets/cheat_sheet.png") 
+```
+
+### Other resources
+
+* The website: https://declaredesign.org/
+* The book: https://book.declaredesign.org
+* The console: `?DeclareDesign`
+
+## Design declaration-diagnosis-redesign workflow: Design
+
+### The simplest possible (diagnosable) design?
+
+```{r}
+mean <- 1
+
+simplest_design <- 
+  
+  declare_model(N = 100, Y = rnorm(N, mean)) +
+  declare_inquiry(Q = mean) +
+  declare_estimator(Y ~ 1)
+
+```
+
+* We draw 100 units from a standard normal distribution, we define our inquiry as the population expectation (0), we estimate the average using a regression with a constant term.
+
+
+### The simplest possible design?
+
+
+```{r}
+simplest_design <- 
+  
+  declare_model(N = 100, Y = rnorm(N)) +
+  declare_inquiry(Q = 0) +
+  declare_estimator(Y ~ 1)
+
+```
+
+* This design has three steps, with steps connected by a `+`
+* The design itself is just a list of steps and has class `design`
+
+```{r, echo = FALSE}
+if(run)
+  simplest_design |>
+  diagnose_design() |>
+  write_rds("saved/simplest_design.rds")
+```
+
+
+```{r}
+str(simplest_design)
+```
+
+
+### The simplest possible design? It's a pipe
+
+Each step is a function (or rather: a function that generates functions) and each function presupposes what is created by previous functions. 
+
+* The ordering of steps is quite important
+* Most steps take the `main` data frame in and push the `main` dataframe out; this data frame normally builds up as you move along the pipe. 
+* `declare_estimator`  steps take the `main` data frame in and send out an `estimator_df` dataframe;   `declare_inquiry`  steps take the `main` data frame in and send out an `estimand_df` dataframe. 
+
+
+### The simplest possible design? It's a pipe
+
+* You can run these functions one at a time if you like.
+* For instance the third step presupposes the data from the first step:
+
+
+```{r}
+df <- simplest_design[[1]]()
+A  <- simplest_design[[3]](df)
+
+A |> kable(digits = 2)
+
+Estimand  <- simplest_design[[2]](df)
+
+Estimand |> kable(digits = 2)
+
+```
+
+### The simplest possible design? Run it once
+
+You can also just run through the whole design once by typing the name of the design:
+
+```{r}
+simplest_design
+```
+
+### The simplest possible design? Run it again
+
+Or by asking for a run of the design
+
+```{r}
+one_run <- simplest_design |> run_design()
+one_run |> kable(digits = 2)
+```
+
+A single run creates data, calculates estimands (the answer to inquiries) and calculates estimates plus ancillary statistics.
+
+### The simplest possible design?: Simulation
+
+
+Or by asking for a run of the design
+
+```{r, warning = FALSE}
+some_runs <- simplest_design |> simulate_design(sims = 1000)
+some_runs |> kable(digits = 2)
+```
+
+
+### The simplest possible design?: Diagnosis
+
+Once you have simulated many times you can "diagnose".
+
+This is the next topic
+
+## Design declaration-diagnosis-redesign workflow: Diagnosis
+
+### Diagnosis by hand
+
+Once you have simulated many times you can "diagnose".
+
+For instance we can ask about bias: the average difference between the estimand and the estimate:
+
+```{r}
+some_runs |> mutate(error = estimate - estimand) |>
+  summarize(mean_estimate = mean(estimate), 
+            mean_estimand = mean(estimand), 
+            bias = mean(error)) |>
+  kable(digits= 2)
+```
+
+
+### The simplest possible design?
+
+`diagnose_design()` does this in one step for a set of common  "diagnosands":
+
+
+```{r, eval = FALSE}
+diagnosis <-
+  simplest_design |>
+  diagnose_design()
+```
+
+
+
+```{r, echo = FALSE}
+
+if(run)
+  simplest_design |>
+  diagnose_design() |>
+  write_rds("saved/simplest_design.rds")
+
+diagnosis <- read_rds("saved/simplest_design.rds") 
+
+diagnosis |>
+  reshape_diagnosis() |>
+  select(-Inquiry, -Estimator, -Outcome, -Term) |>
+  kable() |> kable_styling()
+
+```
+
+### What is the diagnosis object?
+
+The diagnosis object is also a list; of class `diagnosis`
+
+```{r}
+names(diagnosis)
+class(diagnosis)
+```
+
+### What is the diagnosis object?
+
+```{r}
+diagnosis$simulations_df |> 
+  head() |> kable(digits = 2)
+
+```
+
+### What is the diagnosis object?
+
+```{r}
+diagnosis$diagnosands_df |> 
+  head() |> kable(digits = 2)
+```
+
+### What is the diagnosis object?
+
+```{r}
+diagnosis$bootstrap_replicates |> 
+  head() |> kable(digits = 2)
+```
+
+### Diagnosis: Bootstraps
+
+* The bootstraps dataframe is produced by resampling from the simulations dataframe and producing a diagnosis dataframe from each resampling. 
+
+* This lets us generate estimates of uncertainty around our diagnosands.
+
+* It can be controlled thus:
+
+```{r, eval = FALSE}
+
+diagnose_design(
+  ...,
+  bootstrap_sims = 100
+)
+```
+
+
+### After Diagnosis 
+
+It's reshapeable: as a tidy dataframe, ready for graphing
+
+```{r}
+diagnosis |> 
+  tidy() |> kable(digits = 2)
+```
+
+
+### After Diagnosis 
+
+It's reshapeable: as a tidy dataframe, ready for graphing
+
+```{r, fig.width = 6, fig.height = 2}
+diagnosis |> 
+  tidy() |> 
+  ggplot(aes(estimate, diagnosand)) + geom_point() + 
+  geom_errorbarh(aes(xmax = conf.high, xmin = conf.low, height = .2))
+```
+
+
+
+### After Diagnosis: Tables 
+
+Or turn into a formatted table:
+
+```{r}
+diagnosis |> 
+  reshape_diagnosis() |> kable()
+```
+
+### Advanced Diagnosis: Variations
+
+```{r, eval = FALSE}
+DeclareDesign:::default_diagnosands
+```
+
+```{r, eval = FALSE}
+    mean_estimand <- mean(estimand)
+    mean_estimate <- mean(estimate)
+    bias <- mean(estimate - estimand)
+    sd_estimate <- sd(estimate)
+    rmse <- sqrt(mean((estimate - estimand)^2))
+    power <- mean(p.value <= alpha)
+    coverage <- mean(estimand <= conf.high & estimand >= conf.low)
+```
+
+
+### Advanced Diagnosis:  Other diagnosands
+
+```{r, eval = FALSE}
+
+    mean_se = mean(std.error)
+    type_s_rate = mean((sign(estimate) != sign(estimand))[p.value <= alpha])
+    exaggeration_ratio = mean((estimate/estimand)[p.value <= alpha])
+    var_estimate = pop.var(estimate)
+    mean_var_hat = mean(std.error^2)
+    prop_pos_sig = estimate > 0 & p.value <= alpha
+    mean_ci_length = mean(conf.high - conf.low)
+
+```
+
+### Advanced Diagnosis: Custom diagnosands
+
+```{r, warning = FALSE}
+
+my_diagnosands <-
+  declare_diagnosands(median_bias = median(estimate - estimand))
+
+diagnose_design(simplest_design, diagnosands = my_diagnosands, sims = 10) |>
+  reshape_diagnosis() |> kable()
+```
+
+### Advanced Diagnosis: Adding diagnosands to a design
+
+```{r, warning = FALSE}
+simplest_design <- 
+  set_diagnosands(simplest_design, my_diagnosands)
+
+simplest_design |> diagnose_design(sims = 10)|>
+  reshape_diagnosis() |> kable()
+
+```
+
+
+### Advanced Diagnosis:  Diagnosing multiple designs
+
+You can diagnose multiple designs or a list of designs
+
+```{r, warning = FALSE}
+
+list(dum = simplest_design, dee = simplest_design) |>
+  diagnose_design(sims = 5) |>
+  reshape_diagnosis() |> 
+  kable()
+```
+
+### Advanced Diagnosis:  Diagnosing in groups
+
+
+You can partition the simulations data frame into groups before calculating diagnosands. 
+
+```{r, eval = FALSE}
+grouped_diagnosis <- 
+  
+  simplest_design |>
+  diagnose_design(
+    make_groups = vars(significant = p.value <= 0.05),
+    sims = 500
+  )
+```
+
+
+```{r, echo = FALSE}
+if(run)
+  simplest_design |>
+  
+  
+  set_diagnosands() |>
+
+    diagnose_design(
+    make_groups = vars(significant = p.value <= 0.05),
+    sims = 500
+  ) |>
+  write_rds("saved/group_rep.rds")
+
+grouped_diagnosis <-   read_rds("saved/group_rep.rds") 
+
+grouped_diagnosis |>
+    reshape_diagnosis() |>
+    select(-Inquiry, - Estimator, -Outcome, -Term) |>
+    kable(digits = 2)
+
+```
+
+Note especially the mean estimate,  the power, the coverage, the RMSE, and the bias.
+(Bias is not large because we have both under and over estimates)
+
+### Significance filter
+
+```{r, fig.height = 2, fig.width = 6}
+grouped_diagnosis$simulations_df |>
+  ggplot(aes(estimate, p.value, color = significant)) + geom_point()
+```
+
+### Advanced Diagnosis: Multistage simulation 
+
+* Usually a design simulation simulates "from the top": going from the beginning to the end of the design in each run and repeating
+* But sometimes you might want to follow a tree like structure and simulate different steps a different number of times
+
+
+Consider for instance this sampling design:
+
+```{r}
+sampling_design <- 
+  
+  declare_model(N = 500, Y = rnorm(N, sd = 10)) +
+  declare_inquiry(Q = mean(Y)) +
+  declare_sampling(S = complete_rs(N = N, n = 100)) + 
+  declare_estimator(Y ~ 1)
+
+```
+
+
+### Advanced Diagnosis: Multistage simulation 
+
+Compare these two diagnoses:
+
+```{r, warning = FALSE, eval = FALSE}
+diagnosis_1 <- diagnose_design(sampling_design, sims = c(5000, 1, 1, 1)) 
+diagnosis_2 <- diagnose_design(sampling_design, sims = c(1, 5000, 1, 1))
+```
+
+
+
+```{r, warning = FALSE, echo = FALSE}
+if(run){
+set.seed(1)
+diagnose_design(sampling_design, sims = c(5000, 1, 1, 1)) |> write_rds("saved/multistage1.rds") 
+diagnose_design(sampling_design, sims = c(1, 5000, 1, 1)) |> write_rds("saved/multistage2.rds")
+}
+
+list(diagnosis_1 = read_rds("saved/multistage1.rds") |> reshape_diagnosis(),
+     diagnosis_2 = read_rds("saved/multistage2.rds") |> reshape_diagnosis()) |>
+  bind_rows(.id = "diagnosis") |>
+  select(-Design, -Inquiry, -Estimator, -Outcome, -Term) |>
+  kable(digits = 2)
+     
+
+```
+
+
+
+### Spotting design problems with diagnosis
+
+Diagnosis alerts to problems in a design. Consider the following simple alternative design.
+
+
+```{r}
+simplest_design_2 <- 
+  
+  declare_model(N = 100, Y = rnorm(N)) +
+  declare_inquiry(Q = mean(Y)) +
+  declare_estimator(Y ~ 1)
+
+```
+
+Here we define the inquiry as the average $Y$, but otherwise things stay the same. 
+
+What do we think of this design?
+
+### Spotting design problems with diagnosis
+
+Here is the diagnosis
+
+```{r, echo = FALSE}
+if(run)
+  simplest_design_2 |>
+  diagnose_design() |>
+  write_rds("saved/simplest_design_2.rds")
+```
+
+```{r, echo = FALSE}
+
+read_rds("saved/simplest_design_2.rds") |>
+  reshape_diagnosis() |>
+  select(-Inquiry, -Estimator, -Outcome, -Term) |>
+  kable()
+
+```
+
+
+* Why is power 5%?  is that OK?
+* Why is coverage so high? is that OK?
+* Why is the RMSE 0 but the mean standard error > 0?  is that OK?
+   * Is it because the RMSE is too low?
+   * Or the standard error is too large?
+
+
+### It depends on the inquiry
+
+* If we are really interested in the sample average then our standard error is too low.
+* If we are really interested in the population average then our inquiry is badly defined.
+
+
+## Design declaration-diagnosis-redesign workflow: Redesign
+
+### Redesign
+
+Redesign is the process of taking a design and modifying it in some way.
+
+There are a few ways to do this:
+
+1. Just make a new design using modified code
+2. Take a design and alter some steps using `replace_step`, `insert_step` or `delete_step`
+3. Modify a design *parameter* using `redesign`
+
+we will focus on the third approach
+
+### Redesign
+
+* A design parameter is a modifiable quantity of a design. 
+* These quantities are objects that were in your global environment when you made your design, get referred to explicitly in your design, and got scooped up when the design was formed.
+
+* In our simplest design above we had a fixed `N`, but we could make `N`  a modifiable quantity like this:
+
+
+```{r}
+N <- 100
+
+simplest_design_N <- 
+  
+  declare_model(N = N, Y = rnorm(N)) +
+  declare_inquiry(Q = 0) +
+  declare_estimator(Y ~ 1)
+
+```
+
+### Redesign
+
+
+```{r}
+N <- 100
+
+simplest_design_N <- 
+  
+  declare_model(N = N, Y = rnorm(N)) +
+  declare_inquiry(Q = 0) +
+  declare_estimator(Y ~ 1)
+
+```
+
+
+Note that `N` is defined in memory; and it gets called in one of the steps. It has now become a parameter of the design and it can be modified using redesign. 
+
+### Simple Redesign
+
+Here is a version of the design with `N = 200`:
+
+```{r}
+
+design_200 <- simplest_design_N |> redesign(N = 200)
+  
+design_200 |> draw_data() |> nrow()
+
+```
+
+
+
+### Redesigning to a list
+
+Here is a list of three different designs with different *N*s.
+
+```{r}
+design_Ns <- simplest_design_N |> redesign(N = c(200, 400, 800))
+
+design_Ns |> lapply(draw_data) |> lapply(nrow)
+```
+
+### Redesigning to a list
+
+The good thing here is that it is now easy to diagnose over multiple designs and compare diagnoses. The parameter names then end up in the `diagnosis_df`
+
+Consider this:
+
+
+```{r}
+N <- 100
+m <- 0
+
+design <- 
+  declare_model(N = N, Y = rnorm(N, m)) +
+  declare_inquiry(Q = m) +
+  declare_estimator(Y ~ 1) 
+```
+
+Then:
+
+```{r, eval = FALSE}
+designs <-  redesign(design, N = c(100, 200, 300), m = c(0, .1, .2))
+  
+designs |> diagnose_design() |> tidy() 
+```
+
+### Redesigning to a list
+
+Output:
+
+```{r, eval = FALSE}
+designs |> diagnose_design() |> tidy() 
+```
+
+```{r, echo = FALSE}
+if(run)
+  redesign(design, N = c(100, 200, 300), m = c(0, .1, .2)) |> diagnose_design() |> tidy() |> write_rds("saved/redesigns.rds")
+
+read_rds("saved/redesigns.rds") |>
+  select(N, m, diagnosand, estimate, std.error, conf.low, conf.high) |> slice(c(1:2, 8:9, 29:30)) |> kable(digits = 2)
+```
+
+  
+### Redesigning to a list
+
+Graphing after redesign is especially easy:
+
+
+```{r, eval = FALSE}
+designs |> diagnose_design() |> 
+  tidy() |>
+  filter(diagnosand %in% c("power", "rmse")) |> 
+  ggplot(aes(N, estimate, color = factor(m))) + 
+  geom_line() + 
+  facet_wrap(~diagnosand)
+```
+
+
+```{r, echo = FALSE, fig.cap = "Power depends on N and m, rmse depends on N only", fig.height = 2, fig.width = 6}
+read_rds("saved/redesigns.rds") |>
+  filter(diagnosand %in% c("power", "rmse")) |> 
+  ggplot(aes(N, estimate, color = factor(m))) + 
+  geom_line() + 
+  facet_wrap(~diagnosand)
+```
+
+### Redesign with vector arguments
+
+When redesigning with arguments that are vectors,
+use `list()` in redesign, with each list item representing a design you wish to create
+
+```{r, eval = FALSE}
+
+prob_each <- c(.1, .5, .4)
+
+design_multi  <- 
+  declare_model(N = 10) +
+  declare_assignment(Z = complete_ra(N = N, prob_each = prob_each))
+
+## returns two designs
+
+designs <- design_multi |> redesign(prob_each = list(c(.2, .5, .3), c(0, .5, .5)))
+  
+designs |> lapply(draw_data)
+```
+
+
+### Redesign warnings
+
+
+A parameter has to be called correctly. And you get no warning if you misname.
+
+```{r}
+simplest_design_N  |> redesign(n = 200) |> draw_data() |> nrow()
+```
+
+why not 200?
+
+### Redesign warnings
+
+
+A parameter has to be called explicitly
+
+```{r}
+N <- 100
+
+my_N <- function(n = N) n
+
+simplest_design_N2 <- 
+  
+  declare_model(N = my_N(), Y = rnorm(N)) +
+  declare_inquiry(Q = 0) +
+  declare_estimator(Y ~ 1)
+
+simplest_design_N2 |> redesign(N = 200) |> draw_data() |> nrow()
+```
+
+why not 200?
+
+### Redesign warnings
+
+
+A parameter has to be called explicitly
+
+```{r}
+N <- 100
+
+my_N <- function(n = N) n
+
+simplest_design_N2 <- 
+  
+  declare_model(N = my_N(N), Y = rnorm(N)) +
+  declare_inquiry(Q = 0) +
+  declare_estimator(Y ~ 1)
+
+simplest_design_N2 |> redesign(N = 200) |> draw_data() |> nrow()
+```
+
+
+OK
+
+### Redesign with a function
+
+Here is an example of redesigning where the "parameter" is a function
+
+```{r}
+new_N <- function(n, factor = 1.31) n*factor
+
+simplest_design_N2 |> redesign(my_N = new_N) |> draw_data() |> nrow()
+
+```
+
+
+
+## Using a design
+
+What can you do with a design once you have it?
+
+We will start with a very simple experimental design (more on the components of this later)
+
+```{r}
+b <-1
+N <- 100
+design <- 
+  declare_model(N = N, U = rnorm(N), potential_outcomes(Y ~ b * Z + U)) + 
+  declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+```
+
+
+### Make data from the design
+
+```{r}
+data <- draw_data(design)
+
+data |> head () |> kable()
+```
+
+### Make data from the design
+
+Play with the data:
+
+```{r, comment = ""}
+lm_robust(Y ~ Z, data = data) |>
+  tidy() |>
+  kable(digits = 2)
+
+```
+
+### Draw estimands
+
+
+```{r, comment = ""}
+
+draw_estimands(design) |>
+  tidy() |>
+  kable(digits = 2)
+
+```
+
+### Draw estimates
+
+
+```{r, comment = ""}
+
+draw_estimates(design) |> 
+  tidy() |>
+  kable(digits = 2)
+
+```
+
+
+### Get estimates
+
+Using your actual data:
+
+```{r, comment = ""}
+
+get_estimates(design, data) |>
+  tidy() |>
+  kable(digits = 2)
+
+```
+
+### Simulate design
+
+```{r, comment = "", warning = FALSE}
+
+simulate_design(design, sims = 3) |>
+  kable(digits = 2)
+
+```
+
+### Diagnose design
+
+```{r, eval = FALSE, message = FALSE}
+
+design |> 
+  diagnose_design(sims = 100) 
+
+```
+
+```{r, echo = FALSE, message = FALSE}
+
+design |> 
+  diagnose_design(sims = 100) |>
+  reshape_diagnosis() |>
+  select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+  kable(digits = 2) 
+
+```
+
+### Redesign
+
+```{r, comment = "", message = FALSE}
+
+new_design <-
+  
+  design |> redesign(b = 0)
+
+```
+
+* Modify any arguments that are explicitly called on by design steps.
+* Or add, remove, or replace steps
+
+
+### Compare designs
+
+```{r, eval = FALSE}
+redesign(design, N = 50) %>%
+  
+  compare_diagnoses(design) 
+
+```
+
+
+```{r, echo = FALSE}
+if(run)
+redesign(design, N = 50) %>%
+  compare_diagnoses(design)  %>%
+  write_rds("saved/compare_diagnoses.rds")
+
+  read_rds("saved/compare_diagnoses.rds")$compared_diagnoses_df |>
+    select(-design_1, -design_2, -inquiry, -estimator, -term, -se_1, -se_2, -se_difference,
+           -sims, -bootstrap_sims) |>
+    kable(digits = 2)
+
+```
+
+
+
+### Illustration of power calculation
+
+Recall?: The power of a design is the *probability* that you will reject a null hypothesis
+
+
+```{r}
+N <- 100
+b <- .5
+
+design <- 
+  declare_model(N = N, 
+    U = rnorm(N),
+    potential_outcomes(Y ~ b * Z + U)) + 
+  declare_assignment(Z = simple_ra(N),
+                     Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+```
+
+### "Run" the design once
+
+
+```{r, eval = FALSE}
+run_design(design)
+```
+
+
+```{r, echo = FALSE}
+run_design(design) |>
+  
+  kable(digits = 2, caption = "Summary of a single 'run' of the design")
+
+```
+
+### Run it many times
+
+```{r, eval = FALSE, echo = TRUE}
+sims_1 <- simulate_design(design) 
+
+sims_1 |> select(sim_ID, estimate, p.value)
+```
+
+```{r, echo = FALSE}
+if(run)
+  simulate_design(design, sims = 3000) |>
+  write_rds("saved/simple_simulations_1")
+
+sims_1 <- 
+  read_rds("saved/simple_simulations_1")
+
+sims_1 |>  select(sim_ID, estimate, p.value) |> head() |> kable(digits = 2)
+```
+
+### Power is mass of the sampling distribution of decisions under the model
+
+
+```{r, message = FALSE, fig.height = 1.5, fig.width = 6}
+sims_1 |>
+  ggplot(aes(p.value)) + 
+  geom_histogram() +
+  geom_vline(xintercept = .05, color = "red")
+
+```
+
+
+```{r, echo = FALSE}
+if(run)
+  redesign(design, b = 0) |> 
+  simulate_design(sims = 10000) |>
+  write_rds("saved/simple_simulations_2")
+
+sims_2 <- 
+  read_rds("saved/simple_simulations_2")
+
+```
+
+
+```{r, echo = TRUE, message = FALSE, echo = FALSE, fig.height = 1.5, fig.width = 6}
+sims_2 |>
+  ggplot(aes(p.value)) + 
+  geom_histogram() +
+  geom_vline(xintercept = .05, color = "red")
+
+```
+
+### Design diagnosis does it all (over multiple designs)
+
+
+```{r, eval  = FALSE}
+  diagnose_design(design)
+```
+
+
+```{r, echo = FALSE}
+if(run)
+  design |> 
+  diagnose_design(sims = 10000) |>
+  write_rds("saved/simple_diagnosis_1")
+
+read_rds("saved/simple_diagnosis_1") |>
+  reshape_diagnosis() |>
+  select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+  kable()
+
+```
+
+### Design diagnosis does it all
+
+```{r, eval = FALSE}
+design |>
+  redesign(b = c(0, 0.25, 0.5, 1)) |>
+  diagnose_design()
+```
+
+
+```{r, echo = FALSE}
+if(run)
+design |>
+  redesign(b = c(0, 0.25, 0.5, 1)) |>
+  diagnose_design(sims = 10000) |>
+  write_rds("saved/simple_diagnosis_2")
+
+  read_rds("saved/simple_diagnosis_2") |>
+    reshape_diagnosis() |>
+    select(b, "Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
+    kable()
+
+  
+```
+
+
+
+
+## Declaration a deeper dive (Reference)
+
+We start with a simple experimental design and then show ways to extend.
+
+* Variations to *M* and *I* are supported by the `fabricatr` package (and others)
+* Variations to *D*  are supported by the `randomizr` package (and others)
+* Variations to *A*  are supported by the `estimatr` package (and others)
+
+
+### Steps: A simple experimental design
+
+
+```{r}
+
+N <- 100
+b <- .5
+
+design <- 
+  declare_model(N = N, U = rnorm(N), 
+                potential_outcomes(Y ~ b * Z + U)) + 
+  declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+
+```
+
+A few new elements here:
+
+* `declare_model` can be used much like `mutate` with multiple columns created in sequence
+* the `potential_outcomes` function is a special function that creates potential outcome columns
+* when you assign a treatment that affects an outcome you can use `reveal_outcome` to reveal the outcome; `Z` and `Y` are  default
+
+### Steps: A simple experimental design
+
+
+```{r}
+
+N <- 100
+b <- .5
+
+design <- 
+  declare_model(N = N, U = rnorm(N), 
+                potential_outcomes(Y ~ b * Z + U)) + 
+  declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust, label = "estimator 1")
+
+```
+
+A few new elements here:
+
+* when you declare an estimator you should normally associate an inquiry with the estimator and provide the method to be used; `lm_robust` is default
+* you should generally label estimators as you may have many
+
+### Steps: Order matters
+
+e.g. If you sample before defining the inquiry you get a different inquiry to if you sample after you define the inquiry
+
+
+```{r}
+design_1 <- 
+  declare_model(N = 1000, X = rep(0:1, N/2), Y = X + rnorm(N)) + 
+  declare_sampling(S= strata_rs(strata = X, strata_prob = c(.2, .8))) +
+  declare_inquiry(m = mean(Y))
+
+design_1 |> draw_estimands()
+```
+
+### Steps: Order matters
+
+e.g. If you sample before defining the inquiry you get a different inquiry to if you sample after you define the inquiry
+
+```{r}
+design_2 <- 
+  declare_model(N = 1000, X = rep(0:1, N/2), Y = X + rnorm(N)) + 
+  declare_inquiry(m = mean(Y)) +
+  declare_sampling(S= strata_rs(strata = X, strata_prob = c(.2, .8))) 
+
+design_2 |> draw_estimands()
+```
+
+### Key extensions to model declaration
+
+You can generate hierarchical data like this:
+
+```{r}
+M <- 
+  declare_model(
+    households = add_level(
+      N = 100, 
+      N_members = sample(c(1, 2, 3, 4), N, 
+                         prob = c(0.2, 0.3, 0.25, 0.25), replace = TRUE)
+    ),
+    individuals = add_level(
+      N = N_members, 
+      age = sample(18:90, N, replace = TRUE)
+    )
+  )
+```
+
+### Key extensions to model declaration
+
+You can generate hierarchical data like this:
+```{r}
+M() |> head() |> kable(digits = 2)
+```
+
+### Key extensions to model declaration
+You can generate panel data like this:
+
+```{r}
+M <- 
+  declare_model(
+    countries = add_level(
+      N = 196, 
+      country_shock = rnorm(N)
+    ),
+    years = add_level(
+      N = 100, 
+      time_trend = 1:N,
+      year_shock = runif(N, 1, 10), 
+      nest = FALSE
+    ),
+    observation = cross_levels(
+      by = join_using(countries, years),
+      observation_shock = rnorm(N),
+      Y = 0.01 * time_trend + country_shock + year_shock + observation_shock 
+    )
+  )
+```
+
+### Key extensions to model declaration
+
+You can generate panel data like this:
+```{r}
+M() |> head() |> kable(digits = 2)
+```
+
+
+### You can pull in preexisting data
+
+```{r, eval = FALSE}
+M <- 
+  declare_model(
+    data = baseline_data,
+    attitudes = sample(1:5, N, replace = TRUE)
+  )
+```
+
+### A simple experimental design
+
+You can repeat steps and play with the order, always conscious of the direction of the pipe
+
+```{r}
+design <- 
+  declare_model(N = N, X = rep(0:1, N/2)) +
+  declare_model(U = rnorm(N), potential_outcomes(Y ~ b * Z * X + U)) + 
+  declare_assignment(Z = block_ra(blocks = X), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_inquiry(cate = mean(Y_Z_1[X==0] - Y_Z_0[X==0])) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", label = "ols") + 
+  declare_estimator(Y ~ Z*X, inquiry = "cate", label = "fe")
+
+```
+
+
+### You can generate multiple columns together
+
+```{r multiplecolumns}
+
+M2 <-
+  declare_model(
+    draw_multivariate(c(X1, X2) ~ MASS::mvrnorm(
+      n = 1000,
+      mu = c(0, 0),
+      Sigma = matrix(c(1, 0.3, 0.3, 1), nrow = 2)
+    )))
+
+```
+
+### You can generate multiple columns together
+
+```{r}
+
+M2() |> head() |> kable()
+```
+
+### Cluster structures with cluster correlations
+
+```{r}
+M <-
+  declare_model(households = add_level(N = 1000),
+                individuals = add_level(
+                  N = 4,
+                  X = draw_normal_icc(
+                    mean = 0,
+                    clusters = households,
+                    ICC = 0.65
+                  )
+                ))
+```
+
+### Cluster structures with cluster correlations
+
+```{r}
+model <- lm_robust(X ~ households, data = M())
+model$adj.r.squared
+```
+
+### Assignment schemes
+
+The `randomizr` package has a set of functions for different types of block and cluster assignments.
+
+
+* Simple random assignment: "Coin flip" or Bernoulli random assignment. All units have the same probability of assignment:  `simple_ra(N = 100, prob = 0.25)`
+* Complete random assignment: Exactly m of N units are assigned to treatment, and all units have the same probability of assignment m/N `complete_ra(N = 100, m = 40)`
+
+### Assignment schemes
+
+* Block random assignment: Complete random assignment within pre-defined blocks. Units within the same block have the same probability of assignment m_b / N_b `block_ra(blocks = regions)`
+* Cluster random assignment:  Whole groups of units are assigned to the same treatment condition. `cluster_ra(clusters = households)`                         * Block-and-cluster assignment: Cluster random assignment within blocks of clusters `block_and_cluster_ra(blocks = regions, clusters = villages)`                               
+
+### Assignment schemes
+
+You can combine these in various ways. For examples with saturation random assignment first clusters are assigned to a saturation level, then units within clusters are assigned to treatment conditions according to the saturation level:
+
+```{r, eval = FALSE}
+saturation = cluster_ra(clusters = villages, conditions = c(0, 0.25, 0.5, 0.75))
+block_ra(blocks = villages, prob_unit = saturation)
+```
+
+### Inquiries
+
+Many causal inquiries are simple summaries of potential outcomes:
+
+| Inquiry                                                    | Units                                            | Code                                                              |  
+| ---------------------------------------------------------- | ------------------------------------------------ |----------------------------------------------------------------- |
+| Average treatment effect in a finite population (PATE)     | Units in the population                          | `mean(Y_D_1 - Y_D_0)`                                             | 
+| Conditional average treatment effect (CATE) for X = 1      | Units for whom X = 1                             | `mean(Y_D_1[X == 1] - Y_D_0[X == 1])`                             | 
+| Complier average causal effect (CACE)                      | Complier units                                   | `mean(Y_D_1[D_Z_1 > D_Z_0] - Y_D_0[D_Z_1 > D_Z_0])`               | 
+| Causal interactions of $D_1$ and $D_2$                     | Units in the population                          | `mean((Y_D1_1_D2_1 - Y_D1_0_D2_1) - (Y_D1_1_D2_0 - Y_D1_0_D2_0))` | 
+
+Generating potential outcomes columns gets you far
+
+### Inquiries
+
+Often though we need to define inquiries as a function of continuous variables. For this generating a potential outcomes function can make life easier. This helps for:
+
+* Continuous quantities
+* Spillover quantities
+* Complex counterfactuals
+
+### Inquiries: Complex counterfactuals
+
+Here is an example of using functions to define complex counterfactuals:
+
+```{r}
+
+f_M <- function(X, UM) 1*(UM < X)
+f_Y <- function(X, M, UY) X + M - .4*X*M + UY
+
+design <- 
+  declare_model(N = 100,
+                X = simple_rs(N),
+                UM = runif(N),
+                UY = rnorm(N),
+                M = f_M(X, UM),
+                Y = f_Y(X, M, UY)) +
+  declare_inquiry(Q1 = mean(f_Y(1, f_M(0, UM), UY) - f_Y(0, f_M(0, UM), UY)))
+
+design |> draw_estimands() |> kable()
+```
+
+
+### Inquiries: Complex counterfactuals
+
+Here is an example of using functions to define effects of continuous treatments.
+
+```{r}
+
+f_Y <- function(X, UY) X - .25*X^2 + UY
+
+design <- 
+  declare_model(N = 100,
+                X  = rnorm(N),
+                UY = rnorm(N),
+                Y = f_Y(X, UY)) +
+  declare_inquiry(
+    Q1 = mean(f_Y(X+1, UY) - f_Y(X, UY)),
+    Q2 = mean(f_Y(1, UY) - f_Y(0, UY)),
+    Q3 = (lm_robust(Y ~ X)|> tidy())[2,2]
+    )
+
+design |> draw_estimands() |> kable()
+```
+
+which one is the ATE?
+
+
+### Answers: terms
+
+By default `declare_estimates()` assumes you are interested in the *first term after the constant* from the output of an estimation procedure.
+
+But you can say what you are interested in directly using `term` and you can also associate different terms with different quantities of interest using `inquiry`.
+
+```{r terms}
+design <-
+  declare_model(N = 100,
+                X1 = rnorm(N),
+                X2 = rnorm(N),
+                X3 = rnorm(N),
+                Y = X1 - X2 + X3 + rnorm(N)) +
+  declare_inquiries(ate_2 = -1, ate_3 = 1) +
+  declare_estimator(Y ~ X1 + X2 + X3, term = c("X2", "X3"), inquiry = c("ate_2", "ate_3"))
+
+design  |> run_design()  |> kable(digits = 2)
+```
+
+### Answers: terms
+
+Sometimes it can be confusing what the names of a term is but you can figure this by running the estimation strategy directly. Here's an example where the names of a term might be confusing.
+
+```{r}
+lm_robust(Y ~ A*B, 
+          data = data.frame(A = rep(c("a",  "b"), 3), 
+                            B = rep(c("p", "q"), each = 3), 
+                            Y = rnorm(6))) |>
+  coef() |> kable()
+```
+
+The names are they appear in the output here is the name of the term that `declare_estimator` will look for.
+
+### Answers: other packages
+
+`DeclareDesign` works natively with `estimatr` but you you can use whatever packages you like. You do have to make sure though that estimatr gets as input a nice tidy dataframe of estimates, and that might require some tidying.
+
+```{r glm}
+design <- 
+  declare_model(N = 1000, U = runif(N), 
+                potential_outcomes(Y ~ as.numeric(U < .5 + Z/3))) + 
+  declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", 
+                    .method = glm, 
+                    family = binomial(link = "probit"))
+```
+
+Note that we passed additional arguments to `glm`; that's easy. 
+
+It's not a good design though. Just look at the diagnosis:
+
+### Answers: other packages
+
+```{r, eval = FALSE}
+diagnose_design(design)
+```
+
+```{r}
+if(run)
+  diagnose_design(design) |> write_rds("saved/probit.rds")
+
+read_rds("saved/probit.rds") |> reshape_diagnosis() |> kable()
+```
+
+Why is it so terrible?
+
+
+### Answers: other packages
+
+Because the probit estimate does not target the ATE directly; you need to do more work to get there. 
+
+You essentially have to write a function to get the estimates, calculate  the quantity of interest and other stats, and turn these into a nice dataframe.
+
+Luckily you can use the `margins` package with  `tidy` to create a `.summary` function which you can pass to `declare_estimator` to do all this for you
+
+```{r margins}
+
+tidy_margins <- function(x) broom::tidy(margins::margins(x, data = x$data), conf.int = TRUE)
+
+design <- design +  
+  declare_estimator(Y ~ Z, inquiry = "ate", 
+                    .method = glm, 
+                    family = binomial(link = "probit"),
+                    .summary = tidy_margins,
+                    label = "margins")
+```
+
+### Answers: other packages
+
+```{r}
+if(run)
+  diagnose_design(design) |> write_rds("saved/probit_2.rds")
+
+read_rds("saved/probit_2.rds") |> reshape_diagnosis() |> kable()
+```
+
+
+Much better
+

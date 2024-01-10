@@ -1,0 +1,120 @@
+---
+format: 
+   beamer:
+    theme: "AnnArbor"
+    colortheme: "seahorse"
+    slide-level: 3
+    keep-tex: true
+    includes:
+      header-includes: include_nav.txt
+title: "Lectures on causal inference and experimental methods"
+author: "Macartan Humphreys"
+numbersections: true
+header-includes:
+  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
+  - \newcommand\E{\mathbb{E}}
+  - \newcommand\V{\mathbb{V}}
+  - \hypersetup{colorlinks=true,linkcolor=red}
+  - \usepackage{ulem}
+  - \pdfstringdefDisableCommands{\let\sout\relax}
+fontsize: 11pt  
+---
+
+  
+```{r, include = FALSE}
+
+source("setup.R")
+
+```
+
+```{css}
+##| echo: false
+##| include: false
+
+.reveal table {
+  font-size: medium;
+}
+
+## also: smaller, small
+
+```
+
+
+# Roadmap
+
+### Road Map 
+
+Day 1: Intro
+
+* 1.1	Course outline, tools, 
+* 1.2	Introduction to Declare design
+
+Day 2: Causality
+
+* 2.1	Fundamental problems and basic solutions
+* 2.2	General inquiries and causal identification
+
+Day 3: Estimation and Inference
+
+* 3.1	Frequentist
+* 3.2	Bayesian 
+
+Day 4:
+
+* 4.1	Experimental Design
+* 4.2	Design evaluation
+
+Day 5: 
+
+* 5.1	Topics and techniques
+* 5.2	Open science
+
+
+```{r, child = "1.1_intro.qmd"}
+
+```
+
+
+```{r, child = "1.2_declaredesign.qmd"}
+
+```
+
+
+```{r, child = "2.1_causality.qmd"}
+
+```
+
+```{r, child = "2.2_estimands.qmd"}
+
+```
+
+
+```{r, child = "3.1_fisher.qmd"}
+
+```
+
+
+```{r, child = "3.2_bayes.qmd"}
+
+```
+
+
+```{r, child = "4.1_experimental_design.qmd"}
+
+```
+
+
+```{r, child = "4.2_evaluation.qmd"}
+
+```
+
+
+```{r, child = "5.1_topics.qmd"}
+
+```
+
+
+```{r, child = "5.2_process.qmd"}
+
+```
+
