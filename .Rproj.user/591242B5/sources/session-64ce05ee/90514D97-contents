@@ -45,7 +45,8 @@ run <- FALSE
 
 ### Syllabus 
 
-[https://macartan.github.io/teaching/ci_2024/syllabus.pdf](https://macartan.github.io/teaching/ci_2024/syllabus.pdf)
+
+[https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
 
 
 ### The topics
@@ -134,5 +135,6 @@ Nothing local, everything relative: so please do not include hardcoded paths to 
 * Do not get in the business of passing attachments around
 * Share self contained folders; folders contain a small set of live documents plus an archive. Old versions of documents are in archive. Only one version of the most recent document is in a main folder.
 * Data is self contained folder (`in`) and is never edited directly
+* Update to github frequently
 
 
