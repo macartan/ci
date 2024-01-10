@@ -1,0 +1,35 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: simple
+    slide-level: 3
+    number-sections: true
+title: "Design declaration, diagnosis, and redesign "
+subtitle: "MIDA and more"
+author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
+---
+
+
+```{r, message = FALSE, echo = FALSE, include = FALSE}
+source("setup.R")
+run <- FALSE
+```
+
+## `DeclareDesign`
+
+### Topics
+
+
+
+```{r, eval = FALSE, echo = TRUE}
+mean <- 1
+simplest_design <-
+  
+  declare_model(N = 100, Y = rnorm(N, mean)) +
+  
+  declare_inquiry(Q = mean) +
+  
+  declare_estimator(Y ~ 1)
+```
+
