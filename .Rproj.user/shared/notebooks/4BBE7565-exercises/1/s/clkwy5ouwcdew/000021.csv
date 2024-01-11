@@ -1,0 +1,2 @@
+"0","library(CausalQueries)"
+"0","make_model(""X -> M -> Y <-> X"") |> plot(x_coord = 1:3, y_coord = c(1,1,1))"

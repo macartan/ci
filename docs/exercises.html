@@ -21,7 +21,26 @@ ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
 }
-</style>
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging-indent div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}</style>
 
 
 <script>/*!
@@ -3184,31 +3203,20 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">1: Intro</a>
+  <li><a href="#course-outline-tools" id="toc-course-outline-tools" class="nav-link active" data-scroll-target="#course-outline-tools"><span class="header-section-number">1</span> Course outline, tools,</a></li>
+  <li><a href="#introduction-to-declaredesign" id="toc-introduction-to-declaredesign" class="nav-link" data-scroll-target="#introduction-to-declaredesign"><span class="header-section-number">2</span> Introduction to <code>DeclareDesign</code></a></li>
+  <li><a href="#causality-fundamental-problems" id="toc-causality-fundamental-problems" class="nav-link" data-scroll-target="#causality-fundamental-problems"><span class="header-section-number">3</span> Causality: Fundamental problems</a>
   <ul class="collapse">
-  <li><a href="#course-outline-tools" id="toc-course-outline-tools" class="nav-link" data-scroll-target="#course-outline-tools">1.1 Course outline, tools,</a></li>
-  <li><a href="#introduction-to-declaredesign" id="toc-introduction-to-declaredesign" class="nav-link" data-scroll-target="#introduction-to-declaredesign">1.2 Introduction to <code>DeclareDesign</code></a></li>
+  <li><a href="#potential-outcomes" id="toc-potential-outcomes" class="nav-link" data-scroll-target="#potential-outcomes"><span class="header-section-number">3.1</span> Potential outcomes</a></li>
   </ul></li>
-  <li><a href="#causality" id="toc-causality" class="nav-link" data-scroll-target="#causality">2: Causality</a>
-  <ul class="collapse">
-  <li><a href="#fundamental-problems-and-basic-solutions" id="toc-fundamental-problems-and-basic-solutions" class="nav-link" data-scroll-target="#fundamental-problems-and-basic-solutions">2.1 Fundamental problems and basic solutions</a></li>
-  <li><a href="#general-inquiries-and-causal-identification" id="toc-general-inquiries-and-causal-identification" class="nav-link" data-scroll-target="#general-inquiries-and-causal-identification">2.2 General inquiries and causal identification</a></li>
-  </ul></li>
-  <li><a href="#estimation-and-inference" id="toc-estimation-and-inference" class="nav-link" data-scroll-target="#estimation-and-inference">3: Estimation and Inference</a>
-  <ul class="collapse">
-  <li><a href="#frequentist" id="toc-frequentist" class="nav-link" data-scroll-target="#frequentist">3.1 Frequentist</a></li>
-  <li><a href="#bayesian" id="toc-bayesian" class="nav-link" data-scroll-target="#bayesian">3.2 Bayesian</a></li>
-  </ul></li>
-  <li><a href="#design" id="toc-design" class="nav-link" data-scroll-target="#design">4: Design</a>
-  <ul class="collapse">
-  <li><a href="#experimental-design" id="toc-experimental-design" class="nav-link" data-scroll-target="#experimental-design">4.1 Experimental Design</a></li>
-  <li><a href="#design-evaluation" id="toc-design-evaluation" class="nav-link" data-scroll-target="#design-evaluation">4.2 Design evaluation</a></li>
-  </ul></li>
-  <li><a href="#practice" id="toc-practice" class="nav-link" data-scroll-target="#practice">5 Practice</a>
-  <ul class="collapse">
-  <li><a href="#topics-and-techniques" id="toc-topics-and-techniques" class="nav-link" data-scroll-target="#topics-and-techniques">5.1 Topics and techniques</a></li>
-  <li><a href="#open-science" id="toc-open-science" class="nav-link" data-scroll-target="#open-science">5.2 Open science</a></li>
-  </ul></li>
+  <li><a href="#inquiries-and-identification" id="toc-inquiries-and-identification" class="nav-link" data-scroll-target="#inquiries-and-identification"><span class="header-section-number">4</span> Inquiries and identification</a></li>
+  <li><a href="#estimation-and-inference-frequentist" id="toc-estimation-and-inference-frequentist" class="nav-link" data-scroll-target="#estimation-and-inference-frequentist"><span class="header-section-number">5</span> Estimation and Inference: Frequentist</a></li>
+  <li><a href="#bayesian" id="toc-bayesian" class="nav-link" data-scroll-target="#bayesian"><span class="header-section-number">6</span> Bayesian</a></li>
+  <li><a href="#experimental-design" id="toc-experimental-design" class="nav-link" data-scroll-target="#experimental-design"><span class="header-section-number">7</span> Experimental Design</a></li>
+  <li><a href="#design-evaluation" id="toc-design-evaluation" class="nav-link" data-scroll-target="#design-evaluation"><span class="header-section-number">8</span> Design evaluation</a></li>
+  <li><a href="#topics-and-techniques" id="toc-topics-and-techniques" class="nav-link" data-scroll-target="#topics-and-techniques"><span class="header-section-number">9</span> Topics and techniques</a></li>
+  <li><a href="#open-science" id="toc-open-science" class="nav-link" data-scroll-target="#open-science"><span class="header-section-number">10</span> Open science</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">11</span> References</a></li>
   </ul>
 </nav>
 </div>
@@ -3243,47 +3251,75 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 
 </header>
 
-<section id="intro" class="level1">
-<h1>1: Intro</h1>
-<section id="course-outline-tools" class="level2">
-<h2 class="anchored" data-anchor-id="course-outline-tools">1.1 Course outline, tools,</h2>
+<p>Class: <a href="https://macartan.github.io/ci/">https://macartan.github.io/ci/</a></p>
+<p>For each puzzle: explore the issues raised by the puzzle and generate a self contained presentation in <code>.qmd</code> (or <code>.Rmd</code>) that reports on your investigations. Present in the next class session.</p>
+<section id="course-outline-tools" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Course outline, tools,</h1>
 </section>
-<section id="introduction-to-declaredesign" class="level2">
-<h2 class="anchored" data-anchor-id="introduction-to-declaredesign">1.2 Introduction to <code>DeclareDesign</code></h2>
+<section id="introduction-to-declaredesign" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Introduction to <code>DeclareDesign</code></h1>
 <div id="q-ddstartup" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 1.1</strong></summary><div>
-<p>Challenge. False positives and <span class="math inline">\(N\)</span>s</p>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.1</strong></summary><div>
+<p><strong>False positives and <span class="math inline">\(N\)</span>s</strong></p>
 <ul>
 <li><p>Sometimes people worry that with larger samples you are more likely to get a false positive. Is that true?</p></li>
-<li><p>Assess by generating a simple experimental design from scratch in which we can vary the <code>N</code> and in which there is no true effect.</p></li>
+<li><p>Assess by generating a simple experimental design from scratch in which we can vary the <code>N</code> and <em>in which there is no true effect</em> of some treatment.</p></li>
 </ul>
-<p>Challenge. False positives and <span class="math inline">\(N\)</span>s</p>
 <p>Then:</p>
 <ul>
 <li>Plot the distribution of <span class="math inline">\(p\)</span> values from the <code>simulations_df</code>. What shape is it and why?</li>
 <li>Plot the power as <span class="math inline">\(N\)</span> increases, using the <code>diagnosands_df</code></li>
 <li>Plot the estimates against <span class="math inline">\(p\)</span> values for different values of <span class="math inline">\(N\)</span>; what do you see?</li>
-</ul>
-<p>Add a covariate</p>
-<ul>
-<li>Take the experimental design</li>
-<li>Add a binary covariate, gender</li>
-<li>Define a conditional average treatment effect (CATE) for men</li>
-<li>Estimate both the CATE and the ATE</li>
-<li>Graph how the power for each changes as <code>N</code> changes</li>
+<li>Discuss</li>
 </ul>
 </div></details>
 </div>
+<div id="q-ses2" class="Q">
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.2</strong></summary><div>
+<p><strong>Clustering</strong></p>
+<ul>
+<li>Say that you have a set of 20 schools randomly sampled from a superpopulation of schools. There are 5 classrooms in each school and 5 students in each class room.</li>
+<li>Say you assign a treatment at the classroom level. Should you cluster your standard errors at the level of the school or at the level of the classroom?</li>
+</ul>
+<p>Now:</p>
+<ul>
+<li>Declare a design with this hierarchical data structure. Allow for the possibility that treatment effects vary at the school level. Assess the performance of the standard errors when you cluster at each of these levels (and when you do not cluster at all.</li>
+<li>Examine whether the performance depends on whether you are interested in the population average effects or the sample average effects.</li>
+</ul>
+</div></details>
+</div>
+<div id="q-ses" class="Q">
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.3</strong></summary><div>
+<p><strong>Learning about standard errors</strong></p>
+<ul>
+<li><p>The standard error is standard deviation of the sampling distribution of an estimate.</p></li>
+<li><p>That sounds complicated, but actually the sampling distribution of an estimate lives in the simulations data frame so you can look at its standard deviation and assess whether standard errors estimate it well.</p></li>
+<li><p><code>Challenge</code>: Generate a simple experimental design in which there is a correlation (<code>rho</code>) between the two potential outcomes (<code>Y_Z_0</code> and <code>Y_Z_1</code>). (You can use the <code>fabricatr::correlate</code> function).</p></li>
+<li><p>Show the distribution of the estimates over different values of <code>rho</code></p></li>
+<li><p>Assess the performance of the estimates of the standard errors and the coverage as <code>rho</code> goes from -1 to 0 to 1. Describe how coverage changes. (Be sure to be clear on what coverage is!)</p></li>
+</ul>
+</div></details>
+</div>
+<div id="q-confounded" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.4</strong></summary><div><strong>Confounded.</strong><p></p>
+<p>Declare a design in which:</p>
+<ul>
+<li>The assignment of a treatment <span class="math inline">\(X\)</span> depends in part on upon some other, binary, variable <span class="math inline">\(W\)</span>: in particular <span class="math inline">\(\Pr(X=1|W=0) = .2\)</span> and <span class="math inline">\(\Pr(X=1|W=1) = .5\)</span>)</li>
+<li>The outcome <span class="math inline">\(Y\)</span> depends on both <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span>: in particular <span class="math inline">\(Y = X*W + u\)</span> where <span class="math inline">\(u\)</span> is a random shock.</li>
+<li>Diagnose a design with three approaches to estimating the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>: (a) ignoring <span class="math inline">\(W\)</span> (b) adding <span class="math inline">\(W\)</span> as a linear control (c) including both <span class="math inline">\(W\)</span> and an interaction between <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span>.</li>
+</ul>
+<p>Discuss results. Do any of these return the right answer?</p>
+</div></details>
+</div>
 </section>
-</section>
-<section id="causality" class="level1">
-<h1>2: Causality</h1>
-<section id="fundamental-problems-and-basic-solutions" class="level2">
-<h2 class="anchored" data-anchor-id="fundamental-problems-and-basic-solutions">2.1 Fundamental problems and basic solutions</h2>
+<section id="causality-fundamental-problems" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Causality: Fundamental problems</h1>
+<section id="potential-outcomes" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="potential-outcomes"><span class="header-section-number">3.1</span> Potential outcomes</h2>
 <div id="q-pos1" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.1</strong></summary><div>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.1</strong></summary><div>
 <p>Potential outcomes</p>
-<p>Consider an outcome Y that can be affected by two variables X1 and X2. All variables are binary. Can you fill in the potential outcomes (rows) for each of the column types?</p>
+<p>Consider an outcome <span class="math inline">\(Y\)</span> that can be affected by two variables <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>. All variables are binary. Can you fill in the potential outcomes (rows) for each of the column types?</p>
 <table class="table">
 <colgroup>
 <col style="width: 26%">
@@ -3329,104 +3365,49 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </div></details>
 </div>
 <div id="q-pos2" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.2</strong></summary><div>Consider an outcome Y that can be affected by two variables X1 and X2 but say that X2 can itself be affected by X1. Write down possible potential outcomes for Y1 and X2 when: X1 causes X2 and Y, but X1 does not cause Y through X2<p></p>
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.2</strong></summary><div>Consider an outcome Y that can be affected by two variables X1 and X2 but say that X2 can itself be affected by X1. Write down possible potential outcomes for Y1 and X2 when: X1 causes X2 and Y, but X1 does not cause Y through X2<p></p>
 <p>Y(0,0) = <strong> Y(1,0) = </strong> Y(0,1) = <strong> Y(1,1) = </strong> X2(0) = <strong> X2(1) = </strong></p>
 </div></details>
 </div>
 <div id="q-pos2" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.3</strong></summary><div>
-<p>Consider a process with: Y(0,0) =0, Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.</p>
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.3</strong></summary><div>Consider a process with: Y(0,0) =0, Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.<p></p>
 <ul>
 <li>Say X1=1, X2=1. Then Y = 1. What caused Y = 1?</li>
 <li>Say X1=0, X2=0. Then Y = 0. What caused Y = 0?</li>
-<li>Say X1 = 1 with 10% probability, otherwise 0 and, independently, X2 = 1 with 50% probability, otherwise 0. Then what is the average effect of X1 on Y? What is the average effect of X2 on Y? Which cause has the biggest effect?</li>
+<li>Say X1 = 1 with 10% probability, otherwise 0 and, independently, X2 = 1 with 50% probability, otherwise 0.</li>
 </ul>
+<p>Then what is the average effect of X1 on Y? What is the average effect of X2 on Y? Which cause has the biggest effect?</p>
+</div></details>
+</div>
+<div id="q-diff" class="Q">
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.4</strong></summary><div>
+<ul>
+<li>A set of units have outcome <span class="math inline">\(Y^1_i\)</span> at baseline.</li>
+<li>At endline they have potential outcomes <span class="math inline">\(Y^2_i(0)\)</span> and <span class="math inline">\(Y^2_i(1)\)</span></li>
+</ul>
+<ol type="1">
+<li>Write down the estimand for the average effect of treatment on endline outcomes</li>
+<li>Write down the estimand for the average effect of treatment on the change from baseline to endline for all units</li>
+</ol>
+<p>Compare these and discuss.</p>
 </div></details>
 </div>
 </section>
-<section id="general-inquiries-and-causal-identification" class="level2">
-<h2 class="anchored" data-anchor-id="general-inquiries-and-causal-identification">2.2 General inquiries and causal identification</h2>
+</section>
+<section id="inquiries-and-identification" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Inquiries and identification</h1>
 <!-- See \ref{q-1}. -->
 <div id="q-dagitty" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.4</strong></summary><div>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.1</strong></summary><div>
 <ul>
-<li>Draw a DAG with 5 nodes.</li>
+<li>Draw a DAG with 5 nodes representing a situation in which <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> though <span class="math inline">\(M\)</span>, <span class="math inline">\(C\)</span> affects both <span class="math inline">\(X\)</span> and <span class="math inline">\(M\)</span> and <span class="math inline">\(D\)</span> affects both <span class="math inline">\(M\)</span> and <span class="math inline">\(Y\)</span>.</li>
 <li>Figure out a set of nodes which, when controlled for, allow for the identification of the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></li>
 <li>Represent it in <code>dagitty</code> and check your answer</li>
 </ul>
 </div></details>
 </div>
-<div id="q-1" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.5</strong></summary><div>
-<p>Make a DAG that is consistent with this distribution</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: right;">A</th>
-<th style="text-align: right;">B</th>
-<th style="text-align: right;">C</th>
-<th style="text-align: right;">p</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.125</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div></details>
-</div>
 <div id="q-dag2" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 2.6</strong></summary><div>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.2</strong></summary><div>
 <p>Make a DAG that is consistent with this distribution</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -3494,60 +3475,28 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </div>
 </div></details>
 </div>
+<div id="q-dag2" class="Q">
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.3</strong></summary><div>
+<p>Imagine a model that looks like this:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="data:image/png;base64,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" class="img-fluid" width="960"></p>
+</div>
+</div>
+<ul>
+<li>Say that in truth ATE of <span class="math inline">\(X\)</span> on <span class="math inline">\(M\)</span> is .9 and that the ATE of <span class="math inline">\(M\)</span> on <span class="math inline">\(Y\)</span> is .9. Is the implied effect of 0.81 on <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> identified?<br>
+</li>
+<li>Say that in truth ATE of <span class="math inline">\(X\)</span> on <span class="math inline">\(M\)</span> is 1 and that the ATE of <span class="math inline">\(M\)</span> on <span class="math inline">\(Y\)</span> is 1. Is the implied effect of 1 on <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> identified?<br>
+</li>
+<li>Discuss</li>
+</ul>
+</div></details>
+</div>
 </section>
-</section>
-<section id="estimation-and-inference" class="level1">
-<h1>3: Estimation and Inference</h1>
-<section id="frequentist" class="level2">
-<h2 class="anchored" data-anchor-id="frequentist">3.1 Frequentist</h2>
-<div id="q-lin" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.1</strong></summary><div>Replicate Table 1 in <span class="citation" data-cites="lin2012agnostic">@lin2012agnostic</span>; ignore first rows which are theoretical results; include standard errors of estimates (these are not included in Table 1 but are produced by <code>diagnose_design</code>); ‘Tyranny of the minority’ estimator is optional.<p></p>
-</div></details>
-</div>
-<div id="q-controls" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.2</strong></summary><div>
-<p>Sometimes researchers running an experiment look for imbalance on a covariate and then include the covariate as a control if and onlyif they see imbalance. Set up a design in which a covariate may or may not affect potential outcomes and assess the performance given different rules</p>
-<ul>
-<li>no control</li>
-<li>control as a function of correlations of covariates with outcomes</li>
-<li>control as a function of correlations of covariates with outcomes in control only</li>
-<li>control as a function of correlations of covariates with treatments</li>
-<li>control regardless of correlations</li>
-</ul>
-</div></details>
-</div>
-<div id="q-ses" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.3</strong></summary><div>
-<p>Learning about standard errors: Challenge</p>
-<ul>
-<li><p>The standard error is standard deviation of the sampling distribution of an estimate.</p></li>
-<li><p>That sounds complicated, but actually the sampling distribution of an estimate lives in the simulations data frame so you can look at its standard deviation and assess whether standard errors estimate it well.</p></li>
-<li><p><code>Challenge</code>: Generate a simple experimental design in which there is a correlation (<code>rho</code>) between the two potential outcomes (<code>Y_Z_0</code> and <code>Y_Z_1</code>). (You can use the <code>fabricatr:correlate</code> function). Assess the performance of the estimates of the standard errors and the coverage as <code>rho</code> goes from -1 to 0 to 1.</p></li>
-<li><p>Say that you have a set of 20 schools randomly sampled from a superpopulation of schools. There are 5 classrooms in each school and 5 students in each class room.</p></li>
-<li><p>Say you assign a treatment at the classroom level. Should you cluster your standard errors at the level of the school or at the level of the classroom?</p></li>
-</ul>
-<p>Now:</p>
-<ul>
-<li>Declare a design with this hierarchical data structure. Allow for the possibility that treatment effects vary at the school level. Assess the performance of the standard errors when you cluster at each of these levels (and when you do not cluster at all.</li>
-<li>Examine whether the performance depends on whether you are interested in the population average effects or the sample average effects.</li>
-</ul>
-</div></details>
-</div>
-<div id="q-missing" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.4</strong></summary><div>Missing data on controls<p></p>
-<p>Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it?</p>
-<p>Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to <code>b</code>, and so to treatment effects. Say <code>X</code> is missing with probability <code>p</code>.</p>
-<p>Compare answer strategies in which you:</p>
-<ol type="a">
-<li>do not control for <span class="math inline">\(X\)</span></li>
-<li>do control for <span class="math inline">\(X\)</span> but drop whenever <span class="math inline">\(X\)</span> is missing and</li>
-<li>Treat <span class="math inline">\(X\)</span> as a block in your analysis design with three values (0, 1, and missing).</li>
-</ol>
-<p>Assess performance (RMSE) over a range of values for <code>p</code> and <code>b</code>. How do you think the comparison of strategies depends upon N?</p>
-</div></details>
-</div>
+<section id="estimation-and-inference-frequentist" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Estimation and Inference: Frequentist</h1>
 <div id="q-blockestimates" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.5</strong></summary><div>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 5.1</strong></summary><div>
 <p>Consider the following data. Treatment is assigned in two blocks. One third of block 1 got treatment (randomly); one third of block two got treatment (randomly). The data are as below:</p>
 <table class="table">
 <thead>
@@ -3612,60 +3561,49 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </ul>
 </div></details>
 </div>
-<div id="q-propensities" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.6</strong></summary><div>Propensities<p></p>
-<p>Two of four units are going to be assigned to treatment. A researcher sets up a design in which subjects can decide for themselves the probability with which they receive a treatment. Requested propensities are as below.</p>
-<p>Can you :</p>
-<ol type="1">
-<li>List the set of admissible treatment allocations</li>
-<li>Describe a scheme for allocating subjects to treatment</li>
-<li>Calculate your estimate under each allocation</li>
-<li>Assess whether your estimate will be biased or not.</li>
-</ol>
-<p>|—————-|——–|——–| | Requested propensity | Y0 | Y1| | 0.2 |0 |1 | |0.4 |0 |2 | |0.6 |1 |3 | |0.8 |1 |4 |</p>
-<p>[This is hard and long; so focus on the principles even if you do not have time to do all the calculations]</p>
-</div></details>
-</div>
 <div id="q-weights" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.7</strong></summary><div>what weights<p></p>
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 5.2</strong></summary><div><strong>what weights</strong><p></p>
 <p>Say you sampled subject A with probability .6 and subject B with probability .4. Say you assigned each to treatment with probability .6. What weight should you put on A in your analysis if they end up in treatment? What if they end up in control? How about B?</p>
 </div></details>
 </div>
-<div id="q-hyp" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.8</strong></summary><div>Hypothesis testing Say there are 20 students. One of them is randomly assigned to have an extra maths class. They take a test and are given grades. The student that got the extra class scored 73% which is higher than any of the other 19 students.<p></p>
-<p>You are interested in calculating a p value for the hypothesis that the math class had no effect on grades. As a test statistic you use the difference in means between the treated student and the rest. What is the probability that the difference you see is so big under the null of no effect?</p>
+<div id="q-lin" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 5.3</strong></summary><div>Replicate Table 1 in <span class="citation" data-cites="lin2012agnostic">Lin (<a href="#ref-lin2012agnostic" role="doc-biblioref">2012</a>)</span>; ignore first rows which are theoretical results; include standard errors of estimates (these are not included in Table 1 but are produced by <code>diagnose_design</code>); ‘Tyranny of the minority’ estimator is optional.<p></p>
 </div></details>
 </div>
-<div id="q-ci" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.9</strong></summary><div>Confidence Intervals<p></p>
-<p>Consider the same problem and say there were a gazillion students with grades spread evenly between 0 and 100. Say there was one treated student and this student had a grade of 95%. The difference in means estimate for the treatment effect is 45. Under the assumption of homogeneous treatment effects (and so allowing for the possibility that grades could go over 100 for treated units) can you construct a 90% confidence interval for this estimate.</p>
-</div></details>
-</div>
-</section>
-<section id="bayesian" class="level2">
-<h2 class="anchored" data-anchor-id="bayesian">3.2 Bayesian</h2>
-<div id="pt" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 3.10</strong></summary><div>
-<p>PT by hand</p>
-<ol type="1">
-<li><p><strong>Simple process tracing</strong>. Consider a “hoop” test: Say <span class="math inline">\(Pr(K|H) = 1, Pr(K|\neg H) = .5\)</span>. For each possible prior on <span class="math inline">\(p(H)\)</span> over <span class="math inline">\(0,1\)</span> graph your posterior or <span class="math inline">\(H\)</span> if <span class="math inline">\(K\)</span> is observed. Graph the posterior for when <span class="math inline">\(K\)</span> is not observed.</p></li>
-<li><p><strong>Simple correlation inference.</strong> You know in a population that <span class="math inline">\(X=1\)</span> about half the time and that <span class="math inline">\(Y=1\)</span> about half the time; otherwise 0. Say you have a prior that puts equal weight on the possibilites that (a) <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> for all units (ie <span class="math inline">\(Y=1\)</span> iff <span class="math inline">\(X=1\)</span>), and (b) <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are orthogonal to each other.</p>
-<ul>
-<li>What do you infer if you observe only one case and <span class="math inline">\(X \neq Y\)</span></li>
-<li>What do you infer if you observe only one case and <span class="math inline">\(X = Y\)</span></li>
-<li>What do you infer if you 100 cases and <span class="math inline">\(X = Y\)</span> in 99 of these and <span class="math inline">\(X \neq Y\)</span> in one of these? (Bonus: in this case what is the <span class="math inline">\(p\)</span> value for the hypothesis that <span class="math inline">\(X\)</span> does not cause <span class="math inline">\(Y\)</span> )</li>
-</ul></li>
+<div id="q-missing" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 5.4</strong></summary><div>Missing data on controls<p></p>
+<p>Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it?</p>
+<p>Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to <code>b</code>, and so to treatment effects. Say <code>X</code> is missing with probability <code>p</code>.</p>
+<p>Compare answer strategies in which you:</p>
+<ol type="a">
+<li>do not control for <span class="math inline">\(X\)</span></li>
+<li>do control for <span class="math inline">\(X\)</span> but drop whenever <span class="math inline">\(X\)</span> is missing and</li>
+<li>Treat <span class="math inline">\(X\)</span> as a block in your analysis design with three values (0, 1, and missing).</li>
 </ol>
+<p>Assess performance (RMSE) over a range of values for <code>p</code> and <code>b</code>. How do you think the comparison of strategies depends upon N?</p>
 </div></details>
 </div>
 </section>
+<section id="bayesian" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Bayesian</h1>
+<div id="q-POC" class="Q">
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 6.1</strong></summary><div>
+<ul>
+<li>Set up a model in which <span class="math inline">\(X \rightarrow Y\)</span> (<span class="math inline">\(X\)</span> as if <span class="math inline">\(Y\)</span>) and there is a true effect of 0.56.</li>
+<li>Update using large data generated according to some distribution over causal types</li>
+<li>Calculate a posterior on the share of <span class="math inline">\(X=1, Y=1\)</span> cases for which <span class="math inline">\(Y=1\)</span> is due to <span class="math inline">\(X=1\)</span></li>
+<li>Say you know that the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> passes through <span class="math inline">\(M\)</span> and so you have model <span class="math inline">\(X \rightarrow M \rightarrow Y\)</span> and effects of 0.8 at the first stage and .7 at the second stage.</li>
+<li>Update using large data generated according to some distribution over causal types</li>
+<li>Calculate a posterior on the share of <span class="math inline">\(X=1, Y=1\)</span> cases for which <span class="math inline">\(Y=1\)</span> is due to <span class="math inline">\(X=1\)</span> (a) when you know that <span class="math inline">\(M=1\)</span> and (b) when you know that <span class="math inline">\(M=0\)</span></li>
+</ul>
+</div></details>
+</div>
+<p>To come</p>
 </section>
-<section id="design" class="level1">
-<h1>4: Design</h1>
-<section id="experimental-design" class="level2">
-<h2 class="anchored" data-anchor-id="experimental-design">4.1 Experimental Design</h2>
+<section id="experimental-design" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Experimental Design</h1>
 <div id="q-rand1" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.1</strong></summary><div>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 7.1</strong></summary><div>
 <p>Randomization</p>
 <p>100 students sign up to take part in an experiment. You want to measure the effect of immigration on social trust. Half your subjects are men and half are women and you believe gender is very predictive of social trust.</p>
 <p>Your experiment involves varying whether a “native” or an “immigrant” facilitator instructs players in how to play a trust game. You have five native and five immigrant facilitators and you want them each to conduct one session with 10 subjects.</p>
@@ -3675,59 +3613,101 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </ul>
 </div></details>
 </div>
+<div id="q-propensities" class="Q">
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 7.2</strong></summary><div>
+<p>Heterogeneous propensities</p>
+<p>Two of four units are going to be assigned to treatment. A researcher sets up a design in which subjects can decide for themselves the probability with which they receive a treatment. Requested propensities are as below.</p>
+<p>Can you :</p>
+<ol type="1">
+<li>List the set of admissible treatment allocations</li>
+<li>Describe a scheme for allocating subjects to treatment</li>
+<li>Calculate your estimate under each allocation</li>
+<li>Assess whether your estimate will be biased or not.</li>
+</ol>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Requested propensity</th>
+<th>Y0</th>
+<th>Y1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.2</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>0.4</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>0.6</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>0.8</td>
+<td>1</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+</div>
 <div id="q-rand2" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.2</strong></summary><div>Network Randomization<p></p>
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 7.3</strong></summary><div>Network Randomization<p></p>
 <p>You have access to a network of all friendship links in a classroom. You want to provide political information to a set of students and see how muc more likely it is that a student that you do not give information to receives the information if a friend is treated compared to the situation in which a friend of a friend is treated. So you want to be sure that some subjects have friends treated and some have only friends of friends treated. How would you assign treatment? How can you work out your treatment assignment probabilities?</p>
 </div></details>
 </div>
 </section>
-<section id="design-evaluation" class="level2">
-<h2 class="anchored" data-anchor-id="design-evaluation">4.2 Design evaluation</h2>
+<section id="design-evaluation" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Design evaluation</h1>
 <div id="q-blocks" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.3</strong></summary><div>
-<p>Assess</p>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 8.1</strong></summary><div>
+<p><strong>Covariates 1</strong></p>
+<p>Compare the power gains from two strategies:</p>
 <ul>
-<li>Power for an interaction (in a factorial design)</li>
-<li>Power for a binary variable (versus a continuous variable?)</li>
-<li>Power from adding covariates in the analysis stage</li>
-<li>Power gains from blocked randomization</li>
-<li>Power losses from clustering at different levels</li>
+<li>Adding covariates in the analysis stage</li>
+<li>Blocked randomization in the design stage</li>
 </ul>
 </div></details>
 </div>
 <div id="q-blocks" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.4</strong></summary><div>Gain from covariates<p></p>
-<p>Equation (4.6) in FEDAI suggests that if the sum of two slopes exceeds 1 then there are gains in efficiency from adding a covariate. Show that this is true in practice using a design declaration.</p>
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 8.2</strong></summary><div><strong>Covariates 2</strong><p></p>
+<p>Equation (4.6) in <span class="citation" data-cites="gerber2012field">Gerber and Green (<a href="#ref-gerber2012field" role="doc-biblioref">2012</a>)</span> suggests that if the sum of two slopes exceeds 1 then there are gains in efficiency from adding a covariate. Show that this is true in practice using a design declaration.</p>
 </div></details>
 </div>
 <div id="q-blocks" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.5</strong></summary><div>Comparing estimators<p></p>
-<p>It is not uncommon that different units are assigned to treatments with different probabilities. e.g. men and women, or people in different counties. This might happen for example if 100 people are selected from each group but groups are different sizes. But there can be many reasons for this.</p>
-<p>The go-to approach is to control for blocks using fixed effects. But this is not guaranteed to be correct.</p>
-<p>Declare a design that compares different approaches to taking account for blocks. e.g.</p>
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 8.3</strong></summary><div><strong>Covariates 3</strong><p></p>
+<p>Compare the performance of the Lin estimator an the doubly robust estimator dicussed in slides</p>
+</div></details>
+</div>
+<div id="q-controls" class="Q">
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 8.4</strong></summary><div>
+<p><strong>Covariates 4</strong></p>
+<p>Sometimes researchers running an experiment look for imbalance on a covariate and then include the covariate as a control if and only if they see imbalance. Set up a design in which a covariate may or may not affect potential outcomes and assess the performance given different rules</p>
 <ul>
-<li>Fixed effects</li>
-<li>Blocked differences in means</li>
-<li>The saturated (Lin) estimator</li>
-<li>IPW</li>
-<li>Horvitz Thompson</li>
+<li>no control</li>
+<li>control as a function of correlations of covariates with outcomes</li>
+<li>control as a function of correlations of covariates with outcomes in control only</li>
+<li>control as a function of correlations of covariates with treatments</li>
+<li>control regardless of correlations</li>
 </ul>
-<p>Compare how they perform in terms of the bias of the effect estimate and the bias of the standard error estimate.</p>
-<p>Try with three blocks with different assignment probabilities and also with heterogeneous effects by group.</p>
 </div></details>
 </div>
 </section>
-</section>
-<section id="practice" class="level1">
-<h1>5 Practice</h1>
-<section id="topics-and-techniques" class="level2">
-<h2 class="anchored" data-anchor-id="topics-and-techniques">5.1 Topics and techniques</h2>
+<section id="topics-and-techniques" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Topics and techniques</h1>
 <div id="q-spillovers" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 5.1</strong></summary><div>
-<p>Imagine a study with three subjects. Each subjects potential outcomes are as follows:</p>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 9.1</strong></summary><div>
+<p><strong>Spillovers</strong></p>
+<p>Imagine a study with three subjects. Each subject’s potential outcomes are as follows:</p>
 <ul>
 <li>0 if in control</li>
-<li>n if in treatment and n subjects are assigned to treatment</li>
+<li><span class="math inline">\(n\)</span> if in treatment when <span class="math inline">\(n\)</span> subjects are assigned to treatment</li>
 </ul>
 <p>So for example if one unit is in treatment that unit has outcome Y=1, and the others have Y = 0; if all 3 are in treatment they all have Y=3.</p>
 <ol type="1">
@@ -3739,10 +3719,23 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </ol>
 </div></details>
 </div>
+<div id="q-mediation" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 9.2</strong></summary><div><strong>Mediation</strong><p></p>
+<p>Baron Kenny have provided a popular method to implement mediation analysis.</p>
+<p>Declare a design with a mediation process and possible violations of sequential ignorability, governened by some parameters <code>k</code>.</p>
+<p>Demonstrate under what conditions estimates using the Baron-Kenny procedure are misleading.</p>
+</div></details>
+</div>
+<div id="q-diffdiff" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 9.3</strong></summary><div><strong>Difference in Differences</strong><p></p>
+<p><a href="https://book.declaredesign.org/library/observational-causal.html#sec-ch16s3">DD 16.3</a> shows poor behavior of a multi period difference in differences design when there is effect heterogeneity.</p>
+<p><a href="https://web.mit.edu/insong/www/pdf/FEmatch-twoway.pdf"><span class="citation" data-cites="imai2021use">Imai and Kim (<span>2021</span>)</span></a> highlights the risk of negative weights in this setting. Can you recover the implied weights and identify which units contribute negatively to estimates?</p>
+</div></details>
+</div>
 <div id="q-late" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 5.2</strong></summary><div>
-<p>LATE</p>
-<p>Which of these problems could be addressed using instrumental variables. In each case what kinds of concern might you have about the IV strategy?</p>
+<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 9.4</strong></summary><div>
+<p><strong>LATE</strong></p>
+<p>Which of these problems could be addressed using instrumental variables? In each case, what kinds of concern might you have about the IV strategy?</p>
 <ol type="1">
 <li>Experimenters introduce a unconditional cash transfers into a set of villages in 2012 and use it to measure access school attendance in 2015. You come on the scene later and are interested in whether the transfer could have led to greater political participation in 2017.</li>
 <li>Experimenters introduce an unconditional cash transfers into a set of villages in 2012 and use it to measure access school attendance in 2015. You come on the scene later and are interested in whether the increased school attendance could have led to greater political participation in 2017.</li>
@@ -3754,12 +3747,26 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </div></details>
 </div>
 </section>
-<section id="open-science" class="level2">
-<h2 class="anchored" data-anchor-id="open-science">5.2 Open science</h2>
+<section id="open-science" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Open science</h1>
+<p>No exercises</p>
 </section>
+<section id="references" class="level1 unnumbered" data-number="11">
+
+
 </section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">11 References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-gerber2012field" class="csl-entry" role="listitem">
+Gerber, Alan S, and Donald P Green. 2012. <em>Field Experiments: Design, Analysis, and Interpretation</em>. Norton.
+</div>
+<div id="ref-imai2021use" class="csl-entry" role="listitem">
+Imai, Kosuke, and In Song Kim. 2021. <span>“On the Use of Two-Way Fixed Effects Regression Models for Causal Inference with Panel Data.”</span> <em>Political Analysis</em> 29 (3): 405–15.
+</div>
+<div id="ref-lin2012agnostic" class="csl-entry" role="listitem">
+Lin, Winston. 2012. <span>“Agnostic Notes on Regression Adjustments to Experimental Data: Reexamining Freedman’s Critique.”</span> <em>arXiv Preprint arXiv:1208.2301</em>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
