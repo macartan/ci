@@ -193,9 +193,10 @@ A |> kable(digits = 2)
 
 Estimand  <- simplest_design[[2]](df)
 
-Estimand |> kable(digits = 2)
+Estimand |> kable(digits = 2) |> kable()
 
 ```
+
 
 ### The simplest possible design? Run it once
 

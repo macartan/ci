@@ -400,24 +400,6 @@ Experiments often give rise to endogenous subgroups. The potential outcomes fram
 
 
 ### Heterogeneous Effects with Endogeneous Categories
-
-It is possible that in truth no one's reporting behavior has changed, what has changed is the propensity of people with different propensities to report to experience violence:
-
-	\begin{table} \scriptsize
-		\centering
-		\begin{tabular}{rcc|cc|cc}
-			
-			& \multicolumn{ 2}{c}{Violence(Treatment)} & \multicolumn{ 4}{c}{Reporting(Treatment, Violence)} \\
-			
-			&       V(0) &       V(1) &     R(0,1) &     R(1,1) &     R(0,0) &     R(1,0) \\ \hline
-			
-			Type 1 (reporter) &          1 &          1 &          1 &          1 &          0 &          0 \\
-			
-			Type 2 (non reporter) &          1 &          0 &          0 &          0 &          0 &          0 \\			
-		\end{tabular}  
-	\end{table}
-
-### Heterogeneous Effects with Endogeneous Categories
 	
 * **Violence(Treatment)**
 * **Reporting(Treatment, Violence)**    
@@ -440,20 +422,12 @@ Expected reporting given violence in treatment = 100%
 ### Heterogeneous Effects with Endogeneous Categories 
 
 It is possible that in truth no one's reporting behavior has changed, what has changed is the propensity of people with different propensities to report to experience violence:
-\begin{table}
-\centering
-\begin{tabular}{c|cc|cc|c}\scriptsize
 
-           & \multicolumn{ 2}{c}{Reporters} & \multicolumn{ 2}{c}{Non reporters} &            \\ \hline
-           & \multicolumn{ 2}{c}{Experience Violence} & \multicolumn{ 2}{c}{Experience Violence} &            \\ \hline \hline
-           &         No &        Yes &        No  &        Yes &  \% Report \\
-
-   Control &         25 &         {25} &         25 &        {25} &       { $\frac{25}{25+25}$}= 50\% \\  
-   & & & & \\
-  Treatment &         25 &         {25} &         50 &          {0} &      {$\frac{25}{25+0}$}=100\% \\ \hline
-
-\end{tabular}  
-\end{table}
+|                       | Reporters  |          | Non  | reporters | % Report              |
+|-----------------------|------------|----------|------|-----------|-----------------------|
+| *Experience Violence* | *No*       | *Yes*    | *No* | *Yes*     |                       |
+| Control               | 25         | 25       | 25   | 25        |$\frac{25}{25+25}=50\%$ |
+| Treatment             | 25         | 25       | 50   | 0         |$\frac{25}{25+0}=100\%$ |
 
 
 ### Heterogeneous Effects with Endogeneous Categories
@@ -560,6 +534,10 @@ Multistage games can also present an endogenous group problem since collections 
 
 ### Multistage games
 Question: Does **visibility** alter the extent to which subjects follow norms to punish antisocial behavior (and reward prosocial behavior)? Consider a trust game in which we are interested in how information on receivers affects their actions
+
+
+|                       
+
 \begin{table}[h!] \scriptsize
   \centering
   \caption{Return rates given investments under different conditions}
