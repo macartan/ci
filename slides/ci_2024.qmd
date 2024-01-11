@@ -19,31 +19,12 @@ bibliography: bib.bib
 
 ## Road Map 
 
-* Day 1: Intro
+1. Intro | [Course outline, tools](#secoutline) |  [Introduction to Declare design](#secdd)
+2. Causality | [Fundamental problems and solutions](#seccausality) | [Inquiries and identification](#secestimands) 
+3. Estimation and Inference |  [Frequentist](#secfisher) | [Bayesian](#secbayes)
+4. Design |  [Experimental Design](#secdesign) |  [Design evaluation](#secdiagnosis)
+5. Practice | [Topics and techniques](#citopics) |  [Open science](#openscience)
 
-  * 1.1	Course outline, tools, 
-  * 1.2	Introduction to Declare design
-
-* Day 2: Causality
-
-  * 2.1	Fundamental problems and basic solutions
-  * 2.2	General inquiries and causal identification
-
-* Day 3: Estimation and Inference
-
-  * 3.1	Frequentist
-  * 3.2	Bayesian 
-
-* Day 4:
-
-  * 4.1	Experimental Design
-  * 4.2	Design evaluation
-
-* Day 5: 
-
-  * 5.1	Topics and techniques
-  * 5.2	Open science
-  
 
 ```{css}
 ##| echo: false
