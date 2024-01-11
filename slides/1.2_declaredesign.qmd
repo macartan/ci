@@ -189,11 +189,11 @@ Each step is a function (or rather: a function that generates functions) and eac
 df <- simplest_design[[1]]()
 A  <- simplest_design[[3]](df)
 
-A |> kable(digits = 2)
+A |> kable(digits = 2) |> kable_styling(font_size = 20)
 
 Estimand  <- simplest_design[[2]](df)
 
-Estimand |> kable(digits = 2) |> kable()
+Estimand |> kable(digits = 2) |> kable_styling(font_size = 20)
 
 ```
 
@@ -212,7 +212,7 @@ Or by asking for a run of the design
 
 ```{r}
 one_run <- simplest_design |> run_design()
-one_run |> kable(digits = 2)
+one_run |> kable(digits = 2) |> kable_styling(font_size = 18)
 ```
 
 A single run creates data, calculates estimands (the answer to inquiries) and calculates estimates plus ancillary statistics.
@@ -224,7 +224,7 @@ Or by asking for a run of the design
 
 ```{r, warning = FALSE}
 some_runs <- simplest_design |> simulate_design(sims = 1000)
-some_runs |> kable(digits = 2)
+some_runs |> kable(digits = 2) |> kable_styling(font_size = 16)
 ```
 
 
@@ -247,7 +247,8 @@ some_runs |> mutate(error = estimate - estimand) |>
   summarize(mean_estimate = mean(estimate), 
             mean_estimand = mean(estimand), 
             bias = mean(error)) |>
-  kable(digits= 2)
+  kable(digits= 2) |> 
+  kable_styling(font_size = 20)
 ```
 
 
@@ -276,7 +277,7 @@ diagnosis <- read_rds("saved/simplest_design.rds")
 diagnosis |>
   reshape_diagnosis() |>
   select(-Inquiry, -Estimator, -Outcome, -Term) |>
-  kable() |> kable_styling()
+  kable() |> kable_styling(font_size = 20)
 
 ```
 
@@ -293,7 +294,7 @@ class(diagnosis)
 
 ```{r}
 diagnosis$simulations_df |> 
-  head() |> kable(digits = 2)
+  head() |> kable(digits = 2) |> kable_styling(font_size = 16)
 
 ```
 
@@ -301,14 +302,14 @@ diagnosis$simulations_df |>
 
 ```{r}
 diagnosis$diagnosands_df |> 
-  head() |> kable(digits = 2)
+  head() |> kable(digits = 2) |> kable_styling(font_size = 16)
 ```
 
 ### What is the diagnosis object?
 
 ```{r}
 diagnosis$bootstrap_replicates |> 
-  head() |> kable(digits = 2)
+  head() |> kable(digits = 2) |> kable_styling(font_size = 16)
 ```
 
 ### Diagnosis: Bootstraps
@@ -334,7 +335,7 @@ It's reshapeable: as a tidy dataframe, ready for graphing
 
 ```{r}
 diagnosis |> 
-  tidy() |> kable(digits = 2)
+  tidy() |> kable(digits = 2) |> kable_styling(font_size = 18)
 ```
 
 
@@ -357,7 +358,7 @@ Or turn into a formatted table:
 
 ```{r}
 diagnosis |> 
-  reshape_diagnosis() |> kable()
+  reshape_diagnosis() |> kable() |> kable_styling(font_size = 18)
 ```
 
 ### Advanced Diagnosis: Variations
@@ -399,7 +400,7 @@ my_diagnosands <-
   declare_diagnosands(median_bias = median(estimate - estimand))
 
 diagnose_design(simplest_design, diagnosands = my_diagnosands, sims = 10) |>
-  reshape_diagnosis() |> kable()
+  reshape_diagnosis() |> kable() |> kable_styling(font_size = 20)
 ```
 
 ### Advanced Diagnosis: Adding diagnosands to a design
@@ -409,7 +410,7 @@ simplest_design <-
   set_diagnosands(simplest_design, my_diagnosands)
 
 simplest_design |> diagnose_design(sims = 10)|>
-  reshape_diagnosis() |> kable()
+  reshape_diagnosis() |> kable() |> kable_styling(font_size = 20)
 
 ```
 
@@ -423,7 +424,8 @@ You can diagnose multiple designs or a list of designs
 list(dum = simplest_design, dee = simplest_design) |>
   diagnose_design(sims = 5) |>
   reshape_diagnosis() |> 
-  kable()
+  kable() |> 
+  kable_styling(font_size = 20)
 ```
 
 ### Advanced Diagnosis:  Diagnosing in groups
@@ -458,9 +460,10 @@ if(run)
 grouped_diagnosis <-   read_rds("saved/group_rep.rds") 
 
 grouped_diagnosis |>
-    reshape_diagnosis() |>
-    select(-Inquiry, - Estimator, -Outcome, -Term) |>
-    kable(digits = 2)
+  reshape_diagnosis() |>
+  select(-Inquiry, - Estimator, -Outcome, -Term) |>
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -515,7 +518,8 @@ list(diagnosis_1 = read_rds("saved/multistage1.rds") |> reshape_diagnosis(),
      diagnosis_2 = read_rds("saved/multistage2.rds") |> reshape_diagnosis()) |>
   bind_rows(.id = "diagnosis") |>
   select(-Design, -Inquiry, -Estimator, -Outcome, -Term) |>
-  kable(digits = 2)
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
      
 
 ```
@@ -556,7 +560,8 @@ if(run)
 read_rds("saved/simplest_design_2.rds") |>
   reshape_diagnosis() |>
   select(-Inquiry, -Estimator, -Outcome, -Term) |>
-  kable()
+  kable() |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -686,7 +691,9 @@ if(run)
   redesign(design, N = c(100, 200, 300), m = c(0, .1, .2)) |> diagnose_design() |> tidy() |> write_rds("saved/redesigns.rds")
 
 read_rds("saved/redesigns.rds") |>
-  select(N, m, diagnosand, estimate, std.error, conf.low, conf.high) |> slice(c(1:2, 8:9, 29:30)) |> kable(digits = 2)
+  select(N, m, diagnosand, estimate, std.error, conf.low, conf.high) |> slice(c(1:2, 8:9, 29:30)) |>           
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 ```
 
   
@@ -728,7 +735,8 @@ design_multi  <-
 
 ## returns two designs
 
-designs <- design_multi |> redesign(prob_each = list(c(.2, .5, .3), c(0, .5, .5)))
+designs <- design_multi |> 
+  redesign(prob_each = list(c(.2, .5, .3), c(0, .5, .5)))
   
 designs |> lapply(draw_data)
 ```
@@ -823,7 +831,7 @@ design <-
 ```{r}
 data <- draw_data(design)
 
-data |> head () |> kable()
+data |> head () |> kable() |> kable_styling(font_size = 20)
 ```
 
 ### Make data from the design
@@ -833,7 +841,8 @@ Play with the data:
 ```{r, comment = ""}
 lm_robust(Y ~ Z, data = data) |>
   tidy() |>
-  kable(digits = 2)
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -843,8 +852,8 @@ lm_robust(Y ~ Z, data = data) |>
 ```{r, comment = ""}
 
 draw_estimands(design) |>
-  tidy() |>
-  kable(digits = 2)
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -854,8 +863,8 @@ draw_estimands(design) |>
 ```{r, comment = ""}
 
 draw_estimates(design) |> 
-  tidy() |>
-  kable(digits = 2)
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -867,8 +876,8 @@ Using your actual data:
 ```{r, comment = ""}
 
 get_estimates(design, data) |>
-  tidy() |>
-  kable(digits = 2)
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -877,7 +886,8 @@ get_estimates(design, data) |>
 ```{r, comment = "", warning = FALSE}
 
 simulate_design(design, sims = 3) |>
-  kable(digits = 2)
+  kable(digits = 2) |> 
+  kable_styling(font_size = 16)
 
 ```
 
@@ -896,7 +906,8 @@ design |>
   diagnose_design(sims = 100) |>
   reshape_diagnosis() |>
   select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
-  kable(digits = 2) 
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -933,7 +944,8 @@ redesign(design, N = 50) %>%
   read_rds("saved/compare_diagnoses.rds")$compared_diagnoses_df |>
     select(-design_1, -design_2, -inquiry, -estimator, -term, -se_1, -se_2, -se_difference,
            -sims, -bootstrap_sims) |>
-    kable(digits = 2)
+    kable(digits = 2) |> 
+    kable_styling(font_size = 20)
 
 ```
 
@@ -969,7 +981,8 @@ run_design(design)
 ```{r, echo = FALSE}
 run_design(design) |>
   
-  kable(digits = 2, caption = "Summary of a single 'run' of the design")
+  kable(digits = 2, caption = "Summary of a single 'run' of the design") |> 
+  kable_styling(font_size = 18)
 
 ```
 
@@ -989,7 +1002,8 @@ if(run)
 sims_1 <- 
   read_rds("saved/simple_simulations_1")
 
-sims_1 |>  select(sim_ID, estimate, p.value) |> head() |> kable(digits = 2)
+sims_1 |>  select(sim_ID, estimate, p.value) |> head() |> kable(digits = 2) |> 
+  kable_styling(font_size = 20)
 ```
 
 ### Power is mass of the sampling distribution of decisions under the model
@@ -1041,7 +1055,8 @@ if(run)
 read_rds("saved/simple_diagnosis_1") |>
   reshape_diagnosis() |>
   select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
-  kable()
+  kable() |> 
+  kable_styling(font_size = 20)
 
 ```
 
@@ -1064,7 +1079,8 @@ design |>
   read_rds("saved/simple_diagnosis_2") |>
     reshape_diagnosis() |>
     select(b, "Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
-    kable()
+    kable() |> 
+    kable_styling(font_size = 20)
 
   
 ```
@@ -1112,12 +1128,15 @@ A few new elements here:
 N <- 100
 b <- .5
 
-design <- 
-  declare_model(N = N, U = rnorm(N), 
-                potential_outcomes(Y ~ b * Z + U)) + 
-  declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
-  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
-  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust, label = "estimator 1")
+design <-
+  declare_model(N = N, U = rnorm(N),
+                potential_outcomes(Y ~ b * Z + U)) +
+  declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z,
+                    inquiry = "ate",
+                    .method = lm_robust,
+                    label = "estimator 1")
 
 ```
 
@@ -1175,11 +1194,13 @@ M <-
 ### Key extensions to model declaration
 
 You can generate hierarchical data like this:
+
 ```{r}
-M() |> head() |> kable(digits = 2)
+M() |> head() |> kable(digits = 2) |> kable_styling(font_size = 20)
 ```
 
 ### Key extensions to model declaration
+
 You can generate panel data like this:
 
 ```{r}
@@ -1206,8 +1227,9 @@ M <-
 ### Key extensions to model declaration
 
 You can generate panel data like this:
+
 ```{r}
-M() |> head() |> kable(digits = 2)
+M() |> head() |> kable(digits = 2) |> kable_styling(font_size = 20)
 ```
 
 
@@ -1255,8 +1277,7 @@ M2 <-
 ### You can generate multiple columns together
 
 ```{r}
-
-M2() |> head() |> kable()
+M2() |> head() |> kable(digits = 2) |> kable_styling(font_size = 28) 
 ```
 
 ### Cluster structures with cluster correlations
@@ -1307,12 +1328,14 @@ block_ra(blocks = villages, prob_unit = saturation)
 
 Many causal inquiries are simple summaries of potential outcomes:
 
+::: {style="font-size: 20px;"}
 | Inquiry                                                    | Units                                            | Code                                                              |  
 | ---------------------------------------------------------- | ------------------------------------------------ |----------------------------------------------------------------- |
 | Average treatment effect in a finite population (PATE)     | Units in the population                          | `mean(Y_D_1 - Y_D_0)`                                             | 
 | Conditional average treatment effect (CATE) for X = 1      | Units for whom X = 1                             | `mean(Y_D_1[X == 1] - Y_D_0[X == 1])`                             | 
 | Complier average causal effect (CACE)                      | Complier units                                   | `mean(Y_D_1[D_Z_1 > D_Z_0] - Y_D_0[D_Z_1 > D_Z_0])`               | 
 | Causal interactions of $D_1$ and $D_2$                     | Units in the population                          | `mean((Y_D1_1_D2_1 - Y_D1_0_D2_1) - (Y_D1_1_D2_0 - Y_D1_0_D2_0))` | 
+:::
 
 Generating potential outcomes columns gets you far
 
@@ -1342,7 +1365,7 @@ design <-
                 Y = f_Y(X, M, UY)) +
   declare_inquiry(Q1 = mean(f_Y(1, f_M(0, UM), UY) - f_Y(0, f_M(0, UM), UY)))
 
-design |> draw_estimands() |> kable()
+design |> draw_estimands() |> kable() |> kable_styling(font_size = 20)
 ```
 
 
@@ -1365,7 +1388,7 @@ design <-
     Q3 = (lm_robust(Y ~ X)|> tidy())[2,2]
     )
 
-design |> draw_estimands() |> kable()
+design |> draw_estimands() |> kable() |> kable_styling(font_size = 20)
 ```
 
 which one is the ATE?
@@ -1379,15 +1402,19 @@ But you can say what you are interested in directly using `term` and you can als
 
 ```{r terms}
 design <-
-  declare_model(N = 100,
-                X1 = rnorm(N),
-                X2 = rnorm(N),
-                X3 = rnorm(N),
-                Y = X1 - X2 + X3 + rnorm(N)) +
+  declare_model(
+    N = 100,
+    X1 = rnorm(N),
+    X2 = rnorm(N),
+    X3 = rnorm(N),
+    Y = X1 - X2 + X3 + rnorm(N)
+  ) +
   declare_inquiries(ate_2 = -1, ate_3 = 1) +
-  declare_estimator(Y ~ X1 + X2 + X3, term = c("X2", "X3"), inquiry = c("ate_2", "ate_3"))
+  declare_estimator(Y ~ X1 + X2 + X3,
+                    term = c("X2", "X3"),
+                    inquiry = c("ate_2", "ate_3"))
 
-design  |> run_design()  |> kable(digits = 2)
+design  |> run_design()  |> kable(digits = 2) |> kable_styling(font_size = 20)
 ```
 
 ### Answers: terms
@@ -1399,7 +1426,7 @@ lm_robust(Y ~ A*B,
           data = data.frame(A = rep(c("a",  "b"), 3), 
                             B = rep(c("p", "q"), each = 3), 
                             Y = rnorm(6))) |>
-  coef() |> kable()
+  coef() |> kable() |> kable_styling(font_size = 20)
 ```
 
 The names are they appear in the output here is the name of the term that `declare_estimator` will look for.
@@ -1433,7 +1460,10 @@ diagnose_design(design)
 if(run)
   diagnose_design(design) |> write_rds("saved/probit.rds")
 
-read_rds("saved/probit.rds") |> reshape_diagnosis() |> kable()
+read_rds("saved/probit.rds") |> 
+  reshape_diagnosis() |>
+  kable() |> 
+  kable_styling(font_size = 20)
 ```
 
 Why is it so terrible?
@@ -1449,7 +1479,8 @@ Luckily you can use the `margins` package with  `tidy` to create a `.summary` fu
 
 ```{r margins}
 
-tidy_margins <- function(x) broom::tidy(margins::margins(x, data = x$data), conf.int = TRUE)
+tidy_margins <- function(x) 
+  broom::tidy(margins::margins(x, data = x$data), conf.int = TRUE)
 
 design <- design +  
   declare_estimator(Y ~ Z, inquiry = "ate", 
@@ -1465,7 +1496,8 @@ design <- design +
 if(run)
   diagnose_design(design) |> write_rds("saved/probit_2.rds")
 
-read_rds("saved/probit_2.rds") |> reshape_diagnosis() |> kable()
+read_rds("saved/probit_2.rds") |> reshape_diagnosis() |> kable() |> 
+  kable_styling(font_size = 20)
 ```
 
 
