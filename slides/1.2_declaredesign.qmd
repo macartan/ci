@@ -428,7 +428,7 @@ list(dum = simplest_design, dee = simplest_design) |>
   kable_styling(font_size = 20)
 ```
 
-### Advanced Diagnosis:  Diagnosing in groups
+### Advanced Diagnosis:  Diagnosing in groups {.smaller}
 
 
 You can partition the simulations data frame into groups before calculating diagnosands. 
@@ -1097,7 +1097,7 @@ We start with a simple experimental design and then show ways to extend.
 * Variations to *A*  are supported by the `estimatr` package (and others)
 
 
-### Steps: A simple experimental design
+### Steps: A simple experimental design {.smaller}
 
 
 ```{r}
@@ -1369,7 +1369,7 @@ design |> draw_estimands() |> kable() |> kable_styling(font_size = 20)
 ```
 
 
-### Inquiries: Complex counterfactuals
+### Inquiries: Complex counterfactuals {.smaller}
 
 Here is an example of using functions to define effects of continuous treatments.
 
@@ -1394,7 +1394,7 @@ design |> draw_estimands() |> kable() |> kable_styling(font_size = 20)
 which one is the ATE?
 
 
-### Answers: terms
+### Answers: terms {.smaller}
 
 By default `declare_estimates()` assumes you are interested in the *first term after the constant* from the output of an estimation procedure.
 
@@ -1469,7 +1469,7 @@ read_rds("saved/probit.rds") |>
 Why is it so terrible?
 
 
-### Answers: other packages
+### Answers: other packages {.smaller}
 
 Because the probit estimate does not target the ATE directly; you need to do more work to get there. 
 
