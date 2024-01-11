@@ -1431,6 +1431,7 @@ lm_robust(Y ~ A*B,
 
 The names are they appear in the output here is the name of the term that `declare_estimator` will look for.
 
+
 ### Answers: other packages
 
 `DeclareDesign` works natively with `estimatr` but you you can use whatever packages you like. You do have to make sure though that estimatr gets as input a nice tidy dataframe of estimates, and that might require some tidying.

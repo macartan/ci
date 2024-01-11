@@ -18,7 +18,6 @@ header-includes:
 fontsize: 11pt  
 ---
 
-
   
 ```{r, include = FALSE}
 
