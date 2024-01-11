@@ -4,6 +4,9 @@ format:
     embed-resources: true
     theme: serif
     slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
     number-sections: true
 #    number-depth: 2
 title: "Lectures on causal inference and experimental methods"
@@ -16,31 +19,31 @@ bibliography: bib.bib
 
 ## Road Map 
 
-Day 1: Intro
+* Day 1: Intro
 
-* 1.1	Course outline, tools, 
-* 1.2	Introduction to Declare design
+  * 1.1	Course outline, tools, 
+  * 1.2	Introduction to Declare design
 
-Day 2: Causality
+* Day 2: Causality
 
-* 2.1	Fundamental problems and basic solutions
-* 2.2	General inquiries and causal identification
+  * 2.1	Fundamental problems and basic solutions
+  * 2.2	General inquiries and causal identification
 
-Day 3: Estimation and Inference
+* Day 3: Estimation and Inference
 
-* 3.1	Frequentist
-* 3.2	Bayesian 
+  * 3.1	Frequentist
+  * 3.2	Bayesian 
 
-Day 4:
+* Day 4:
 
-* 4.1	Experimental Design
-* 4.2	Design evaluation
+  * 4.1	Experimental Design
+  * 4.2	Design evaluation
 
-Day 5: 
+* Day 5: 
 
-* 5.1	Topics and techniques
-* 5.2	Open science
-
+  * 5.1	Topics and techniques
+  * 5.2	Open science
+  
 
 ```{css}
 ##| echo: false
@@ -58,6 +61,8 @@ Day 5:
 
 source("setup.R")
 
+# remotes::install_github("jhelvy/renderthis")
+# renderthis::to_pdf("ci_2024.html")
 ```
 
 ```{r, child = "1.1_intro.qmd"}

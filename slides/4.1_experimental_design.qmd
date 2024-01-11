@@ -345,7 +345,7 @@ kable(
 		\end{tabular}
 \end{table}
 * Then randomly assign units to rows. Note columns might also be blocking covariates.
-* In R, look at \color{red} \scriptsize {\ttfamily library(survey); hadamard(7)}
+* In R, look at   \scriptsize {\ttfamily library(survey); hadamard(7)}
 
 
 
@@ -368,7 +368,7 @@ kable(
 			8	&	1	&	1	&	1	&	1	&	1	\\
 		\end{tabular}
 \end{table}
-* In R, look at \color{red} \scriptsize {\ttfamily library(survey); hadamard(7)}
+* In R, look at   \scriptsize {\ttfamily library(survey); hadamard(7)}
 
 
 

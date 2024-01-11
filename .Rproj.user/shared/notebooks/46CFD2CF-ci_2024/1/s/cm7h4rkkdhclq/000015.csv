@@ -1,0 +1,20 @@
+"0","renderthis::to_pdf(""ci_2024.html"")
+"
+"2","[36mℹ[39m Rendering ]8;;file://C:/Dropbox/github/ci/slides/ci_2024.html[34mci_2024.html[39m]8;; into ]8;;file://C:/Dropbox/github/ci/slides/ci_2024.pdf[32mci_2024.pdf[39m]8;;"
+"2","Warning:"
+"2"," A runtime exception has occured while executing JavaScript
+  Runtime exception message:
+    ReferenceError: $ is not defined
+    at http://127.0.0.1:3040/ci_2024.html:1224:11
+"
+"2","Warning:"
+"2"," A runtime exception has occured while executing JavaScript
+  Runtime exception message:
+    ReferenceError: $ is not defined
+    at http://127.0.0.1:3040/ci_2024.html?print-pdf:1224:11
+"
+"2","[31m✖[39m Rendering ]8;;file://C:/Dropbox/github/ci/slides/ci_2024.html[34mci_2024.html[39m]8;; into ]8;;file://C:/Dropbox/github/ci/slides/ci_2024.pdf[32mci_2024.pdf[39m]8;; ... failed"
+"2","
+"
+"2","Error in force(expr) : Failed to generate output in 30 seconds (timeout).
+"

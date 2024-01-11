@@ -1,0 +1,1278 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+  ignorenonframetext,
+]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\usetheme[]{AnnArbor}
+\usecolortheme{seahorse}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
+\newcommand\E{\mathbb{E}}
+\newcommand\V{\mathbb{V}}
+\hypersetup{colorlinks=true,linkcolor=red}
+\usepackage{ulem}
+\pdfstringdefDisableCommands{\let\sout\relax}
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Open science},
+  pdfauthor={Macartan Humphreys},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Open science}
+\author{Macartan Humphreys}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, frame hidden, boxrule=0pt, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+
+\hypertarget{experimentation-processes-and-workflows}{%
+\section{Experimentation: Processes and
+Workflows}\label{experimentation-processes-and-workflows}}
+
+\begin{frame}{Experimentation: Processes and Workflows}
+\begin{itemize}
+\tightlist
+\item
+  Scope for experimentation
+\item
+  Ethics of experiments
+\item
+  Open science workflows
+\end{itemize}
+\end{frame}
+
+\hypertarget{when-to-experiment}{%
+\subsection{\texorpdfstring{When to experiment
+\label{L_prospects}}{When to experiment }}\label{when-to-experiment}}
+
+\begin{frame}{Prospects}
+\protect\hypertarget{prospects}{}
+\begin{itemize}
+\tightlist
+\item
+  Whenever someone is uncertain about \emph{something} they are doing
+  (all the time)
+\item
+  Whenever someone hits scarcity constraints
+\item
+  When people have incentives to demonstrate that they are doing the
+  right thing (careful\ldots)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Prospects}
+\protect\hypertarget{prospects-1}{}
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Advice}: If you can, \textbf{start from theory} and find an
+  intervention, rather than the other way around.
+\item
+  \textbf{Advice}: If you can, go for \emph{structure} rather than
+  \emph{gimmicks}
+\item
+  \textbf{Advice}: In attempts to parse, beware of generating unnatural
+  interventions (how should a voter think of a politician that describes
+  his policy towards Korea in detail but does not mention the economy?
+  Is not mentioning the economy sending an unintended message?)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Prospects \& Potential}
+\protect\hypertarget{prospects-potential}{}
+\begin{itemize}
+\tightlist
+\item
+  Randomization of where police are stationed (India)
+\item
+  Randomization of how government tax collectors get paid (do they get a
+  share?) (Pakistan)
+\item
+  Randomization of the voting rules for determining how decisions get
+  made (Afghanistan)
+\item
+  Random assignment of populations to peacekeepers (Liberia)
+\item
+  Random assignment of ex-combatants out of their networks (Indonesia)
+\item
+  Randomization of students to ethnically homogeneous or ethnically
+  diverse schools (anywhere?)
+\end{itemize}
+\end{frame}
+
+\hypertarget{ethics}{%
+\subsection{\texorpdfstring{Ethics
+\label{ethics}}{Ethics }}\label{ethics}}
+
+\begin{frame}{Constraint: Is it ethical to manipulate subjects for
+research purposes?}
+\protect\hypertarget{constraint-is-it-ethical-to-manipulate-subjects-for-research-purposes}{}
+\begin{itemize}
+\item
+  There is no foundationless answer to this question. So let's take some
+  foundations from the Belmont report and seek to ensure:
+
+  \begin{enumerate}
+  \tightlist
+  \item
+    Respect for persons
+  \item
+    Beneficence
+  \item
+    Justice
+  \end{enumerate}
+\item
+  Unfortunately, operationalizing these requires further ethical
+  theories. Let's assume that (1) is operationalized by informed consent
+  (a very liberal idea). We are a bit at sea for (2) and (3) (the
+  Belmont report suggests something like a utilitarian solution).
+\item
+  The major focus on (1) by IRBs might follow from the view that if
+  subjects consent, then they endorse the ethical calculations made for
+  2 and 3 --- \emph{they} think that it is good and fair.
+\item
+  This is a little tricky, though, since the study may not be good or
+  fair because of implications for non-subjects.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Is it ethical to manipulate subjects for research
+purposes?}
+\protect\hypertarget{is-it-ethical-to-manipulate-subjects-for-research-purposes}{}
+\begin{itemize}
+\item
+  The problem is that many (many) field experiments have nothing like
+  informed consent.
+\item
+  For example, whether the government builds a school in your village,
+  whether an ad appears on your favorite radio show, and so on.
+\item
+  Consider three cases:
+
+  \begin{enumerate}
+  \tightlist
+  \item
+    You work with a nonprofit to post (true?) posters about the crimes
+    of politicians on billboards to see effects on \textbf{voters}
+  \item
+    You hire confederates to offer bribes to \textbf{police officers} to
+    see if they are more likely to bend the law for coethnics
+  \item
+    The British government asks you to work on figuring out how the use
+    of water cannons helps stop \textbf{rioters} rioting
+  \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Is it ethical to manipulate subjects for research
+purposes?}
+\protect\hypertarget{is-it-ethical-to-manipulate-subjects-for-research-purposes-1}{}
+\begin{itemize}
+\item
+  Consider three cases:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    You work with a nonprofit to post (true?) posters about the crimes
+    of politicians on billboards to see effects on \textbf{voters}
+  \item
+    You hire confederates to offer bribes to \textbf{police officers} to
+    see if they are more likely to bend the law for coethnics
+  \item
+    The British government asks you to work on figuring out how the use
+    of water cannons helps stop \textbf{rioters} rioting
+  \end{itemize}
+\item
+  In all cases, there is \textbf{no consent} given by subjects.
+\item
+  In 2 and 3, the treatment is \textbf{possibly harmful} for subjects,
+  and the results might also be harmful. But even in case 1, there could
+  be major unintended harmful consequences.
+\item
+  In cases 1 and 3, however, the ``intervention'' is within the sphere
+  of \textbf{normal activities} for the implementer.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Constraint: Is it ethical to manipulate subjects for
+research purposes?}
+\protect\hypertarget{constraint-is-it-ethical-to-manipulate-subjects-for-research-purposes-1}{}
+\begin{itemize}
+\item
+  Sometimes it is possible to use this point of difference to make a
+  ``spheres of ethics'' argument for ``embedded experimentation.''
+\item
+  \textbf{Spheres of Ethics Argument}: Experimental research that
+  involves manipulations that are not normally appropriate for
+  researchers may nevertheless be ethical if:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Researchers and implementers agree on a \textbf{division of
+    responsibility} where implementers take on responsibility for
+    actions
+  \item
+    Implementers have \textbf{legitimacy} to make these decisions within
+    the sphere of the intervention
+  \item
+    Implementers are indeed \textbf{materially independent} of
+    researchers (no swapping hats)
+  \end{itemize}
+\item
+  Difficulty with this argument:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Question begging}: How to determine the legitimacy of the
+    implementer? (Can we rule out Nazi doctors?)
+  \end{itemize}
+\end{itemize}
+
+Otherwise keep focus on consent and desist if this is not possible
+\end{frame}
+
+\hypertarget{transparency-experimentation}{%
+\subsection{\texorpdfstring{Transparency \& Experimentation
+\label{registeration}}{Transparency \& Experimentation }}\label{transparency-experimentation}}
+
+\begin{frame}{Contentious Issues}
+\protect\hypertarget{contentious-issues}{}
+Experimental researchers are deeply engaged in the movement towards more
+transparency social science research.
+
+Contentious issues (mostly):
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Analytic replication.} This should be a no brainer. Set
+  everything up so that replication is easy. Use rmarkdown, or knitr or
+  sweave. Or produce your replication code as a package.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Contentious Issues}
+\protect\hypertarget{contentious-issues-1}{}
+Experimental researchers are deeply engaged in the movement towards more
+transparency social science research.
+
+Contentious issues (mostly):
+
+\begin{itemize}
+\item
+  \textbf{Data.} How soon should you make your data available?
+  \textbf{My view}: as soon as possibe. Along with working papers and
+  before publication. Before it affects policy in any case. Own the
+  ideas not the data.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Hard core: no citation without (analytic) replication. Perhaps.
+    Non-replicable results should not be influencing policy.
+  \end{itemize}
+\item
+  \textbf{Where should you make your data available?} Dataverse is focal
+  for political science. Not personal website (mea culpa)
+\item
+  \textbf{What data should you make available?} Disagreement is over how
+  raw your data should be. \textbf{My view}: as raw as you can but at
+  least post cleaning and pre-manipulation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Contentious Issues}
+\protect\hypertarget{contentious-issues-2}{}
+Experimental researchers are deeply engaged in the movement towards more
+transparency social science research.
+
+Contentious issues (mostly):
+
+\begin{itemize}
+\item
+  \textbf{Should you register?}: Hard to find reasons against. But case
+  strongest in testing phase rather than exploratory phase.
+\item
+  \textbf{Registration}: When should you register? \textbf{My view:}
+  Before treatment assignment. (Not just before analysis, mea culpa)
+\item
+  \textbf{Registration}: Should you deviate from an preanalysis plan if
+  you change your mind about optimal estimation strategies. \textbf{My
+  view:} Yes, but make the case and describe both sets of results.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Contentious Issues}
+\protect\hypertarget{contentious-issues-3}{}
+Experimental researchers are deeply engaged in the movement towards more
+transparency social science research.
+
+Contentious issues (mostly):
+
+\begin{itemize}
+\item
+  \textbf{Registration}: When should you register? \textbf{My view:}
+  Before treatment assignment. (Not just before analysis, mea culpa)
+\item
+  \textbf{Registration}: Should you deviate from an preanalysis plan if
+  you change your mind about optimal estimation strategies. \textbf{My
+  view:} Yes, but make the case and describe both sets of results.
+\end{itemize}
+\end{frame}
+
+\hypertarget{pre-registration-rationales-and-structures}{%
+\subsection{Pre-registration rationales and
+structures}\label{pre-registration-rationales-and-structures}}
+
+\begin{frame}{Two distinct rationales for registration}
+\protect\hypertarget{two-distinct-rationales-for-registration}{}
+\begin{itemize}
+\item
+  File drawer bias (Publication bias)
+\item
+  Analysis bias (Fishing)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{File drawer bias}
+\protect\hypertarget{file-drawer-bias}{}
+-- Say in truth \(X\) affects \(Y\) in 50\% of cases.
+
+-- Researchers conduct multiple excellent studies. But they only write
+up the 50\% that produce ``positive'' results.
+
+-- Even if each individual study is indisputably correct, the account in
+the research record -- that X affects Y in 100\% of cases -- will be
+wrong.
+
+\includegraphics{5.2_process_files/figure-beamer/unnamed-chunk-2-1.pdf}
+\end{frame}
+
+\begin{frame}{File drawer bias}
+\protect\hypertarget{file-drawer-bias-1}{}
+-- Say in truth \(X\) affects \(Y\) in 50\% of cases.
+
+-- Researchers conduct multiple excellent studies. But they only write
+up the 50\% that produce ``positive'' results.
+
+-- Even if each individual study is indisputably correct, the account in
+the research record -- that X affects Y in 100\% of cases -- will be
+wrong.
+
+\includegraphics{5.2_process_files/figure-beamer/unnamed-chunk-3-1.pdf}
+\end{frame}
+
+\begin{frame}{File drawer bias}
+\protect\hypertarget{file-drawer-bias-2}{}
+Exacerbated by:
+
+-- Publication bias -- the positive results get published
+
+-- Citation bias -- the positive results get read and cited
+
+-- Chatter bias -- the positive results gets blogged, tweeted and TEDed.
+\end{frame}
+
+\begin{frame}{Analysis bias (Fishing)}
+\protect\hypertarget{analysis-bias-fishing}{}
+-- Say in truth \(X\) affects \(Y\) in 50\% of cases.
+
+-- But say that researchers enjoy discretion to select measures for
+\(X\) or \(Y\), or enjoy discretion to select statistical models after
+seeing \(X\) and \(Y\) in each case.
+
+-- Then, with enough discretion, 100\% of analyses may report positive
+effects, even if all studies get published.
+
+\includegraphics{5.2_process_files/figure-beamer/unnamed-chunk-4-1.pdf}
+\end{frame}
+
+\begin{frame}{Analysis bias (Fishing)}
+\protect\hypertarget{analysis-bias-fishing-1}{}
+-- Say in truth \(X\) affects \(Y\) in 50\% of cases.
+
+-- But say that researchers enjoy discretion to select measures for
+\(X\) or \(Y\), or enjoy discretion to select statistical models after
+seeing \(X\) and \(Y\) in each case.
+
+-- Then, with enough discretion, 100\% of analyses may report positive
+effects, even if all studies get published.
+
+\includegraphics{5.2_process_files/figure-beamer/unnamed-chunk-5-1.pdf}
+\end{frame}
+
+\begin{frame}{Analysis bias (Fishing)}
+\protect\hypertarget{analysis-bias-fishing-2}{}
+-- Try the exact fishy test
+\href{https://macartan.shinyapps.io/fish/}{An Exact Fishy Test
+(https://macartan.shinyapps.io/fish/)}
+
+-- What's the problem with this test?
+\end{frame}
+
+\begin{frame}{Evidence-Proofing: Illustration}
+\protect\hypertarget{evidence-proofing-illustration}{}
+\begin{itemize}
+\item
+  When your conclusions do not really depend on the data
+\item
+  Eg -- some evidence will always support your proposition -- some
+  interpretation of evidence will always support your proposition
+\item
+  Knowing the mapping from data to inference in advance gives a handle
+  on the false positive rate.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Evidence Proofing: Bayesian Illustration}
+\protect\hypertarget{evidence-proofing-bayesian-illustration}{}
+\begin{itemize}
+\tightlist
+\item
+  Say choice of two pieces of evidence to bring to bear, \(K1\) or
+  \(K2\)
+\end{itemize}
+
+\begin{table}
+
+\caption{Likelihoods}\begin{minipage}[t]{0.50\linewidth}
+\subcaption{\label{tbl-anonymous-1620458-1}}
+
+{\centering 
+
+\caption{If TRUE }\tabularnewline
+
+\centering
+\begin{tabular}{>{}c|c|c|c}
+\hline
+ & \$K\_1\$ = No & \$K\_1\$ = Yes & All\\
+\hline
+\textbf{\$K\_2\$ = No} & 0.9 & 0.05 & 0.95\\
+\hline
+\textbf{\$K\_2\$ = Yes} & 0.05 & 0 & 0.05\\
+\hline
+\textbf{All} & 0.95 & 0.05 & 1\\
+\hline
+\end{tabular}
+
+}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.50\linewidth}
+\subcaption{\label{tbl-anonymous-1620458-2}}
+
+{\centering 
+
+\caption{If FALSE }\tabularnewline
+
+\centering
+\begin{tabular}{>{}c|c|c|c}
+\hline
+ & \$K\_1\$ = No & \$K\_1\$ = Yes & All\\
+\hline
+\textbf{\$K\_2\$ = No} & 0 & 0.05 & 0.05\\
+\hline
+\textbf{\$K\_2\$ = Yes} & 0.05 & 0.9 & 0.95\\
+\hline
+\textbf{All} & 0.05 & 0.95 & 1\\
+\hline
+\end{tabular}
+
+}
+
+\end{minipage}%
+
+\end{table}
+
+\begin{itemize}
+\tightlist
+\item
+  Posterior \textbar{} K1 = Posterior \textbar{} K2 = 95\%
+\item
+  Probability positive claim \textbar{} H is false; evidence randomly
+  selected (p) = 5\%
+\item
+  Probability positive claim \textbar{} H is false; evidence is fished
+  (p) = 10\%
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Evidence Proofing: Bayesian Illustration}
+\protect\hypertarget{evidence-proofing-bayesian-illustration-1}{}
+\begin{itemize}
+\tightlist
+\item
+  Say choice of two pieces of evidence to bring to bear, \(K1\) or
+  \(K2\)
+\end{itemize}
+
+\begin{table}
+
+\caption{Likelihoods}\begin{minipage}[t]{0.50\linewidth}
+\subcaption{\label{tbl-anonymous-7755824-1}}
+
+{\centering 
+
+\caption{If TRUE }\tabularnewline
+
+\centering
+\begin{tabular}{>{}c|c|c|c}
+\hline
+ & \$K\_1\$ = No & \$K\_1\$ = Yes & All\\
+\hline
+\textbf{\$K\_2\$ = No} & 0.9 & 0.05 & 0.95\\
+\hline
+\textbf{\$K\_2\$ = Yes} & 0.05 & 0 & 0.05\\
+\hline
+\textbf{All} & 0.95 & 0.05 & 1\\
+\hline
+\end{tabular}
+
+}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.50\linewidth}
+\subcaption{\label{tbl-anonymous-7755824-2}}
+
+{\centering 
+
+\caption{If FALSE }\tabularnewline
+
+\centering
+\begin{tabular}{>{}c|c|c|c}
+\hline
+ & \$K\_1\$ = No & \$K\_1\$ = Yes & All\\
+\hline
+\textbf{\$K\_2\$ = No} & 0 & 0.05 & 0.05\\
+\hline
+\textbf{\$K\_2\$ = Yes} & 0.05 & 0.9 & 0.95\\
+\hline
+\textbf{All} & 0.05 & 0.95 & 1\\
+\hline
+\end{tabular}
+
+}
+
+\end{minipage}%
+
+\end{table}
+
+\begin{itemize}
+\tightlist
+\item
+  What's the truly correct inference if you KNOW that researcher is a
+  fisher?
+\item
+  Depends: say you thought K1 and K2 were sought in order. Then if K2
+  evidence is presented this means K1 not found. So posterior
+  \textbar K2 only = 50\%.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The scope for fishing}
+\protect\hypertarget{the-scope-for-fishing}{}
+\includegraphics[width=6.98in,height=\textheight]{assets/fishing.png}
+\end{frame}
+
+\begin{frame}{Evidence from political science}
+\protect\hypertarget{evidence-from-political-science}{}
+\includegraphics[width=2.82in,height=\textheight]{assets/hack.png}
+
+Source: Gerber and Malhotra
+\end{frame}
+
+\begin{frame}{More evidence from TESS}
+\protect\hypertarget{more-evidence-from-tess}{}
+\begin{itemize}
+\tightlist
+\item
+  Malhotra tracked 221 TESS studies.
+\item
+  20\% of the null studies were published. 65\% not even written up
+  (file drawer or anticipation of publication bias)
+\item
+  60\% of studies with strong results were published.
+\end{itemize}
+
+Implications are:
+
+\begin{itemize}
+\tightlist
+\item
+  population of results not representative
+\item
+  (subtler) individual published studies are also more likely to be
+  overestimates
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The problem}
+\protect\hypertarget{the-problem}{}
+\begin{itemize}
+\item
+  Summary: we do not know when we can or cannot trust claims made by
+  researchers.
+\item
+  {[}Not a tradition specific claim{]}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Registration as a possible solution}
+\protect\hypertarget{registration-as-a-possible-solution}{}
+Simple idea:
+
+-- It's about communication: -- just say what you are planning on doing
+before you do it -- if you don't have a plan, say that -- If you do
+things differently from what you were planning to do, say that
+
+Bells and whistles
+
+-- To be really useful a registry would have to have some credibility,
+some searchability, and some consistency in fields.
+\end{frame}
+
+\begin{frame}{Registration as a possible solution}
+\protect\hypertarget{registration-as-a-possible-solution-1}{}
+Elements:
+
+\begin{itemize}
+\item
+  Make it a facility
+\item
+  Non-mandatory
+\item
+  Non-binding
+\item
+  But comprehensive
+\item
+  Report whether registered or not
+\item
+  Report changes in plans
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What's the Right Scope:}
+\protect\hypertarget{whats-the-right-scope}{}
+For discussion: but claims of ``tests'' seem like a good start
+\end{frame}
+
+\begin{frame}{Bells and Whistles: Certificaton?}
+\protect\hypertarget{bells-and-whistles-certificaton}{}
+Center for Open Science Badges
+
+\begin{itemize}
+\tightlist
+\item
+  A public date-time stamped registration is in an institutional
+  registration system (e.g., ClinicalTrials.gov, Open Science Framework)
+\item
+  Registration pre-dates realization of the outcomes
+\item
+  Registered design and analysis plan corresponds directly to reported
+  design and analysis
+\item
+  Full disclosure of results following the registered plan
+\end{itemize}
+
+Notations PR (peer review certified), DE (data exist), and TC
+(transparent changes)
+
+\includegraphics[width=0.8in,height=\textheight]{assets/badge.png}
+
+\begin{itemize}
+\tightlist
+\item
+  https://osf.io/tvyxz/wiki/1.\%20View\%20the\%20Badges/
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Bells and Whistles: Certificaton?}
+\protect\hypertarget{bells-and-whistles-certificaton-1}{}
+Center for Open Science Badges
+
+\begin{itemize}
+\tightlist
+\item
+  Requires validating body (eg journal or registry)
+\item
+  Validation on process not on quality
+\item
+  Emphasis on transparency
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Possible Cycle}
+\protect\hypertarget{possible-cycle}{}
+\includegraphics[width=3.18in,height=\textheight]{assets/cycle.png}
+\end{frame}
+
+\begin{frame}{Possible Models}
+\protect\hypertarget{possible-models}{}
+\begin{itemize}
+\tightlist
+\item
+  Journal-led model: let the registry follow
+\end{itemize}
+
+-- Hard form -- Medical sciences for RCTs -- Soft form -- Medical
+sciences for observational studies
+
+\begin{itemize}
+\tightlist
+\item
+  Professional Association led model
+\end{itemize}
+
+-- AEA for RCTs -- APSA?
+
+\begin{itemize}
+\item
+  Funder led model (more mandatory) -- RIDIE, NSF?
+\item
+  Bottom up model? -- Eg established by APSA sections; CQRM, PolMeth,
+  Experiments? No formal journal recognition.
+\end{itemize}
+
+But even the simple idea is not everywhere welcome. There are many
+worries and some myths.
+\end{frame}
+
+\hypertarget{worries-and-myths-around-registration}{%
+\subsection{Worries and Myths around
+registration}\label{worries-and-myths-around-registration}}
+
+\begin{frame}{Myth: Concerns about fishing presuppose researcher
+dishonesty}
+\protect\hypertarget{myth-concerns-about-fishing-presuppose-researcher-dishonesty}{}
+\begin{itemize}
+\item
+  Fishing can happen in very subtle ways, and may seem natural and
+  justifiable.
+\item
+  Example:
+\end{itemize}
+
+-- I am interested in whether more democratic institutions result in
+better educational outcomes. -- I examine the relationship between
+institutions and literacy and between institutions and school
+attendance. -- The attendance measure is significant and the literacy
+one is not. Puzzled, I look more carefully at the literacy measure and
+see various outliers and indications of measurement error. As I think
+more I realize too that literacy is a slow moving variable and may not
+be the best measure anyhow. I move forward and start to analyze the
+attendance measure only, perhaps conducting new tests, albeit with the
+same data.
+\end{frame}
+
+\begin{frame}{Structural challenge}
+\protect\hypertarget{structural-challenge}{}
+Our journal review process is largely organized around advising
+researchers how to adjust analysis in light of findings in the data.
+\end{frame}
+
+\begin{frame}{Myth: Fishing is technique specific}
+\protect\hypertarget{myth-fishing-is-technique-specific}{}
+\begin{itemize}
+\item
+  Frequentists can do it
+\item
+  Bayesians can do it too.
+\item
+  Qualitative researchers can also do it.
+\item
+  You can even do it with descriptive statistics
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Myth: Fishing is estimand specific}
+\protect\hypertarget{myth-fishing-is-estimand-specific}{}
+\begin{itemize}
+\tightlist
+\item
+  You can do it when estimating causal effects
+\item
+  You can do it when studying mechanisms
+\item
+  You can do it when estimating counts
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Myth: Registration only makes sense for experimental
+studies, not for observational studies}
+\protect\hypertarget{myth-registration-only-makes-sense-for-experimental-studies-not-for-observational-studies}{}
+\begin{itemize}
+\item
+  The key distinction is between prospective and retrospective studies.
+\item
+  Not between experimental and observational studies.
+\item
+  A reason (from the medical literature) why registration is especially
+  important for experiments: because you owe it to subjects
+\item
+  A reason why registration is less important for experiments: because
+  it is more likely that the intended analysis is implied by the design
+  in an experimental study. Researcher degrees of freedom may be
+  greatest for observational qualitative analyses.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Worry: Registration will create administrative burdens for
+researchers, reviewers, and journals}
+\protect\hypertarget{worry-registration-will-create-administrative-burdens-for-researchers-reviewers-and-journals}{}
+\begin{itemize}
+\tightlist
+\item
+  Registration will produce some burden but does not require the
+  creation of content that is not needed anyway
+\end{itemize}
+
+-- It does shift preparation of analyses forward -- And it also can
+increase the burden of developing analyses plans even for projects that
+don't work. But that is in part, the point.
+
+\begin{itemize}
+\tightlist
+\item
+  Upside is that ultimate analyses may be much easier.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Worry: Registration will force people to implement
+analyses that they know are wrong}
+\protect\hypertarget{worry-registration-will-force-people-to-implement-analyses-that-they-know-are-wrong}{}
+\begin{itemize}
+\tightlist
+\item
+  Most arguments for registration in social science advocate for
+  non-binding registration, where deviations from designs are possible,
+  though they should be described.
+\item
+  Even if it does not prevent them, a merit of registration is that it
+  makes deviations visible.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Myth: Replication (or other transparency practices)
+obviates the need for registration}
+\protect\hypertarget{myth-replication-or-other-transparency-practices-obviates-the-need-for-registration}{}
+\begin{itemize}
+\tightlist
+\item
+  There are lots of good things to do, including replication.
+\item
+  Many of these do not substitute for each other. (How to interpret a
+  fished replication of a fished analysis?)
+\item
+  And they may likely act as complements
+\item
+  Registration can clarify details of design and analysis and ensure
+  early preparation of material. Indeed material needed for replication
+  may be available even before data collection
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Worry: Registration will put researchers at risk of
+scooping}
+\protect\hypertarget{worry-registration-will-put-researchers-at-risk-of-scooping}{}
+\begin{itemize}
+\tightlist
+\item
+  But existing registries allow people to protect registered designs for
+  some period
+\item
+  Registration may let researchers lay claim to a design
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Worry: Registration will kill creativity}
+\protect\hypertarget{worry-registration-will-kill-creativity}{}
+\begin{itemize}
+\tightlist
+\item
+  This is an empirical question. However, under a nonmandatory system
+  researchers could:
+\item
+  Register a plan for structured exploratory analysis
+\item
+  Decide that exploration is at a sufficiently early stage that no
+  substantive registration is possible and proceed without registration.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implications:}
+\protect\hypertarget{implications}{}
+\begin{itemize}
+\item
+  In neither case would the creation of a registration facility prevent
+  exploration.
+\item
+  What it might do is make it less credible for someone to claim that
+  they have tested a proposition when in fact the proposition was
+  developed using the data used to test it.
+\item
+  Registration communicates when researchers are angage in exploration
+  or not. We love exploration and should be proud of it.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{The challenge of historical data}
+\protect\hypertarget{the-challenge-of-historical-data}{}
+\begin{itemize}
+\item
+  Does registering analyses of historical data make sense?
+\item
+  The problem is not just that researchers might have already seen the
+  testing data; but that they have seen data that is correlated with it.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Historical data: Illustration}
+\protect\hypertarget{historical-data-illustration}{}
+\begin{itemize}
+\item
+  Consider historical proposition H. -- Say we start with a prior of .5
+  that H is true. -- Say that if H is true then we observe K1 with
+  probability 0.8 but if it is false we observe K1 with probability 0.2
+  (``double decisiveness'') -- Similarly if H is true then we observe K2
+  with probability 0.8 but if it is false we observe K2 with probability
+  0.2 (``double decisiveness'' again)
+\item
+  Say we observe K1 (some collection of facts)
+\item
+  We then update our belief in H\ldots{}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Historical data: Illustration}
+\protect\hypertarget{historical-data-illustration-1}{}
+\begin{itemize}
+\item
+  Our updated belief is:
+  \[\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = \frac{.8*.5}{.8*.5+.2*.5}  = 80\%\]
+\item
+  We are now 80\% confident in proposition H.
+\item
+  We decide to look for evidence K2. And we find it!
+\item
+  Our posterior is now:
+  \[\Pr(H|K2) = \Pr(K2|H)\Pr(H)/\Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94\%\]
+\item
+  Or is it?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Historical data: Illustration}
+\protect\hypertarget{historical-data-illustration-2}{}
+\begin{itemize}
+\tightlist
+\item
+  Our updated belief is:
+\end{itemize}
+
+\[\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = .8*.5/(.8*.5+.2*.5)  = 80\%\]
+
+\begin{itemize}
+\item
+  We are now 80\% confident in proposition H.
+\item
+  We decide to look for evidence K2. And we find it!
+\item
+  Our posterior is now:
+  \[Pr(H|K2) = Pr(K2|H)Pr(H)/Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94%
+  \]
+\item
+  Or is it?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Historical data: Illustration}
+\protect\hypertarget{historical-data-illustration-3}{}
+\begin{itemize}
+\item
+  What if there are correlated probabilities?
+\item
+  Then
+\end{itemize}
+
+\[\Pr(H | K1 \& K2) = .76 \times .5/(.76 \times .5 + .16 \times .5) = 83\%\]
+\end{frame}
+
+\begin{frame}{Historical data: Illustration}
+\protect\hypertarget{historical-data-illustration-4}{}
+\begin{itemize}
+\item
+  In a sense the fishing has already happened.
+\item
+  How so?
+\item
+  Say the proposition is FALSE but K1 is still observed
+\item
+  A decision is then made to seek ``new data'' K2
+\item
+  Now K2 will be observed with 80\% probability even though H is false
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Historical data: Illustration}
+\protect\hypertarget{historical-data-illustration-5}{}
+\begin{itemize}
+\item
+  Naïve inference (using a prior of 80\% due to K1): 94\% if K2; 50\% if
+  not K2
+\item
+  Inference if K1 used to decide on search for K2 but prior is ``reset''
+  to .5 80\% if K2; 20\% if not K2
+\item
+  Sophisticated inference: 83\% if K2; 50\% if not K2
+\item
+  This sophisticated inference is unchanged if you take explicit account
+  of the fact that searching for K2 was conditional on K1; either way it
+  is still \(\Pr(H | K1, K2)\).
+\item
+  \emph{It requires assessing the probability of knowing what you know
+  now and finding out what you will find, if the proposition is true or
+  false.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Historical data: Illustration}
+\protect\hypertarget{historical-data-illustration-6}{}
+\begin{itemize}
+\item
+  Naïve inference (using a prior of 80\% due to K1): 94\% if K2; 50\% if
+  not K2
+\item
+  Inference if K1 used to decide on search for K2 but prior is ``reset''
+  to .5 80\% if K2; 20\% if not K2
+\item
+  Sophisticated inference: 83\% if K2; 50\% if not K2
+\item
+  This sophisticated inference is unchanged if you take explicit account
+  of the fact that searching for K2 was conditional on K1; either way it
+  is still Pr(H \textbar{} K1, K2).
+\item
+  \emph{Can such beliefs be elicited?} Perhaps.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Will it make a difference?}
+\protect\hypertarget{will-it-make-a-difference}{}
+\begin{itemize}
+\tightlist
+\item
+  Striking paucity of evidence.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How to?}
+\protect\hypertarget{how-to}{}
+\begin{itemize}
+\tightlist
+\item
+  Let's look at an example
+\item
+  Design declaration idea
+\end{itemize}
+\end{frame}
+
+\hypertarget{reconciliation}{%
+\subsection{Reconciliation}\label{reconciliation}}
+
+\begin{frame}{Reconciliation}
+Incentives and strategies
+\end{frame}
+
+\begin{frame}{Reconciliation}
+\protect\hypertarget{reconciliation-1}{}
+\includegraphics[width=2.45in,height=\textheight]{assets/reconciliation.png}
+\end{frame}
+
+\begin{frame}{Reconciliation}
+\protect\hypertarget{reconciliation-2}{}
+\end{frame}
+
+\hypertarget{replication-files}{%
+\subsection{Replication files}\label{replication-files}}
+
+
+
+\end{document}

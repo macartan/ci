@@ -1,0 +1,1 @@
+"0","lm_robust(Y ~ X + Z) |> tidy() |> kable(digits = 2)"
