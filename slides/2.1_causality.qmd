@@ -656,7 +656,7 @@ What to do?
 
 ## DAGs
 
-## Key insight
+### Key insight
 
 The most powerful results from the study of DAGs are procedures for figuring out when conditioning aids or hinders causal identification.
 
@@ -669,7 +669,7 @@ The most powerful results from the study of DAGs are procedures for figuring out
     * you have to avoid conditioning on it
     * Ouch.
 
-## Key resource
+### Key resource
 
 * Pearl's book *Causality* is the key reference. @pearl2009causality (Though see also older work such as @pearl1985graphoids)
 
@@ -679,7 +679,7 @@ The most powerful results from the study of DAGs are procedures for figuring out
 
 
 
-## Challenge for us
+### Challenge for us
 
 * Say you don't like graphs. Fine.  
 * Consider this causal structure:
@@ -694,7 +694,7 @@ Say $Z$ is temporally prior to $X$; it is correlated with  $Y$ (because of $U_1$
 **Question:**  Would it be useful to "control" for $Z$ when trying to estimate the effect of $X$ on $Y$?
  
  
-## Challenge for us
+### Challenge for us
 
 * Say you don't like graphs. Fine.  
 * Consider this causal structure:
@@ -710,7 +710,9 @@ Say $Z$ is temporally prior to $X$; it is correlated with  $Y$ (because of $U_1$
  
  
 
-## Conditional independence
+## Conditional independence and graph structure
+
+### Conditional independence
 
 Variable sets $A$ and $B$ are conditionally independent, given $C$ if for all $a$, $b$, $c$:
 
@@ -720,7 +722,7 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 
 
 
-## Causal graphs basics 1
+### Conditional distributions 1
 
 * Consider a situation with variables $X_1, X_2, \dots X_n$ 
 * The probability of outcome $x$ can always be written in the form $P(X_1 = x_1)P(X_2 = x_2|X_1=x_1)(X_3 = x_3|X_1=x_1, X_2 = x_2)\dots$. 
@@ -731,7 +733,7 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 * No graphs yet
 
 
-## Causal graphs basics 2
+### Conditional distributions 2
 
 * We want to use causal graphs to represent these relations of conditional independence.
 * Informally, an arrow, $A \rightarrow B$ means that $A$ is a cause of $B$: that is, under some conditions, a change in $A$ produces a change in $B$. 
@@ -740,7 +742,7 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 * These are parents *on the graph*; but we will connect them to Markovian parents in a probability distribution $P$.
 
 
-## Causal graphs basics 2
+### Conditional distributions 3
 
 * A DAG is just a graph in which some or all nodes are connected by *directed* edges (arrows) and there are no cyclical paths along these directed edges.
 * Consider a DAG, $G$, and consider the ancestry relations implied by $G$: the distribution $P$ is *Markov relative to the graph $G$* if every variable is independent of its nondescendants (in $G$) conditional on its parents (in $G$).
@@ -749,7 +751,7 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 * OK now we have a link from probability distributions to graphs. But we have not talked about causality. 
 
 
-## Causal graphs basics 3
+### Conditional distributions 4
 
 We want the graphs to be able to represent the effects of interventions. 
 
@@ -762,7 +764,7 @@ $$\Pr(X_1, X_2,\dots | \hat{x}_j)$$
 
 denotes the distribution of $X$ when a particular node (or set of nodes) is intervened upon and forced to a particular level, $x_j$.
 
-## Causal graphs basics 3
+### Conditional distributions 5
 
 Note, in general:
 $$\Pr(X_1, X_2,\dots | do(X_j = x_j')) \neq \Pr(X_1, X_2,\dots | X_j = x_j')$$
@@ -770,7 +772,7 @@ as an example we might imagine a situation where for men binary $X$ always cause
 
 In that case $\Pr(Y=1 | X = 1) = 1$ but  $\Pr(Y=1 | do(X = 1)) = .5$  
 
-## Causal graphs basics 3
+### Conditional distributions 6
 
 * Let $P_{z}$ denote the resulting distribution on all variables that arises when vector $Z$ is "set" (forced, controlled\dots) to the value  $z$. That is when we have `do(Z=z)`.
 
@@ -783,7 +785,7 @@ In that case $\Pr(Y=1 | X = 1) = 1$ but  $\Pr(Y=1 | do(X = 1)) = .5$
     3. $P_z(x_j|pa_j)=P(x_j|pa_j)$ for all $x_j \not\in  Z$ when $pa_j$ is consistent with $z$
 
 
-## Causal graphs basics 3
+### Conditional distributions 7
 
 * That all means that the probability distribution resulting from  setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
 
@@ -791,8 +793,9 @@ $$P_{\hat{x}_i}=P(x_1,x_2,\dots x_n|\hat{x}_i) = \prod_{-i}P(x_j|pa_j)\mathbb{1}
 
 This means that there is only probability mass on vectors in which $x_i = x_i'$ (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for $x_i$.
 
+## Graphical reading of Conditional Independence
 
-## Conditional Independence and $d$-separation
+### Conditional Independence and $d$-separation
 
 * We now have a well defined sense in which the arrows on a graph represent a causal structure and capture the conditional independence relations implied by the causal structure. 
 
@@ -800,7 +803,7 @@ This means that there is only probability mass on vectors in which $x_i = x_i'$ 
 
 * We can now start reading off from  a graph when there is or is not conditional independence between sets of  variables
 
-## Conditional independence on paths
+### Conditional independence on paths
 
 
 ```{r HJ-F-2-4, echo = FALSE, fig.width = 6, fig.height = 4,  fig.align="center", out.width='70%', fig.cap = "Three elemental relations of conditional independence."}
@@ -822,7 +825,7 @@ plot_grid(plotlist = list(p1,p2,p3),ncol=1)
 ```
 
 
-## Conditional independence 
+### Conditional independence 
 
 $A$ and $B$ are *conditionally independent*, given $C$  if on *every* path between $A$ and $B$:
 
@@ -838,7 +841,7 @@ Notes:
 * $A$, $B$, and $C$ can all be sets
 * Note that a path can involve arrows pointing any direction $\bullet\rightarrow \bullet\rightarrow \bullet\leftarrow \bullet\rightarrow\bullet$
 
-## Test yourself
+### Test yourself
 
 ```{r, echo = FALSE, fig.width = 5, fig.height = 2,  fig.align="center", out.width='.9\\textwidth'}
 hj_ggdag(x = 1:4, y = c(1, 1,1,1), names = c( "A", "B", "C", "D" ),
@@ -856,7 +859,7 @@ Are A and D unconditionally independent:
 * if you condition on B and C?
 
 
-## Back to this example
+### Back to this example
 
     * $Z = f_1(U_1, U_2)$
     * $X = f_2(U_2)$
@@ -869,7 +872,9 @@ Are A and D unconditionally independent:
    * Would you expect to see a correlation between $X$ and $Y$ if you did control for $Z$
    
 
-## From graphs to Causal Models
+## Causal models
+
+### From graphs to Causal Models
 
 A "**causal model**" is:
 
@@ -890,7 +895,7 @@ and
 3: A probability distribution over $\Theta$
 
 
-## From graphs to Causal Models
+### From graphs to Causal Models
 
 ```{r HJ-F-2-1, echo = FALSE, out.width='60%', fig.width = 7, fig.height = 5,  fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables."}
 hj_ggdag(x = c(0, 1, 2, 1, 3, 3, 2, 1, 0, 1),
@@ -924,7 +929,7 @@ Learning about effects *given* a model means learning about $F$ and *also* the d
 For discrete data this can be reduced to a question about learning about the distribution of $\Theta$ only.
 
 
-## Recap: Key features of graphs
+### Recap: Key features of graphs
 
 * Directed 
 * Acyclic
