@@ -18,7 +18,6 @@ header-includes:
 fontsize: 11pt  
 ---
 
-
   
 ```{r, include = FALSE}
 
@@ -423,11 +422,10 @@ Expected reporting given violence in treatment = 100%
 
 It is possible that in truth no one's reporting behavior has changed, what has changed is the propensity of people with different propensities to report to experience violence:
 
-|                       | Reporters  |          | Non  | reporters | % Report              |
-|-----------------------|------------|----------|------|-----------|-----------------------|
-| *Experience Violence* | *No*       | *Yes*    | *No* | *Yes*     |                       |
-| Control               | 25         | 25       | 25   | 25        |$\frac{25}{25+25}=50\%$ |
-| Treatment             | 25         | 25       | 50   | 0         |$\frac{25}{25+0}=100\%$ |
+|           | Reporter    | *No Violence* | *Violence*   | % Report                |
+|-----------|-------------|---------------|--------------|-------------------------|
+| Control   | Yes <br> No | 25 <br> 25    | 25 <br> 25   | $\frac{25}{25+25}=50\%$ |
+| Treatment | Yes <br> No | 25 <br> 50    | 25 <br> 0    | $\frac{25}{25+0}=100\%$ |
 
 
 ### Heterogeneous Effects with Endogeneous Categories
@@ -449,8 +447,8 @@ Question for us:
 
 Setting:	
 	
-		* Quotas for women are randomly placed in a set of constituencies in year 1. All winners in these areas are women; in other areas only some are. 
-		* In year 2 these quotas are then lifted. 
+* Quotas for women are randomly placed in a set of constituencies in year 1. All winners in these areas are women; in other areas only some are. 
+* In year 2 these quotas are then lifted. 
 
 	
 

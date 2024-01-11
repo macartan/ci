@@ -84,7 +84,7 @@ Day 5:
 
 
 
-### Expectations
+### Expectations {.smaller}
 
 * 5 tasks
 * (Required) Work in four "exercise teams": 1 team per session $\times 4$
@@ -98,7 +98,7 @@ A passing paper will illustrate subtle features of a method; a good paper will i
 * Plus general reading and participation. 
 
 
-### Exercise team job
+### Exercise team job {.smaller}
 
 Teams should prepare 15 - 20 minute presentations on set puzzles. Typically the task is to:
 
