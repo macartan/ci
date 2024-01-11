@@ -419,18 +419,21 @@ It is possible that in truth no one's reporting behavior has changed, what has c
 
 ### Heterogeneous Effects with Endogeneous Categories
 	
-	|                   | **Violence(Treatment)**            | **Reporting(Treatment, Violence)**    |
-|-------------------|-------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
-|                   | V(0)                    | V(1)                        | R(0,1)                       | R(1,1)                       | R(0,0)                       | R(1,0)                       |
-|-------------------|-------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
-| Type 1 (reporter) | 1                       | 1                           | 1                           | 1                           | 0                           | 0                           |
-| Type 2 (non reporter)| 1                     | 0                           | 0                           | 0                           | 0                           | 0                           |
+* **Violence(Treatment)**
+* **Reporting(Treatment, Violence)**    
+
+
+|                      | V(0)   | V(1) | R(0,1)| R(1,1)| R(0,0)| R(1,0)|
+|----------------------|--------|------|-------|-------|-------|-------|
+| Type 1 (reporter)    | 1      | 1    | 1     | 1     | 0     | 0     |
+| Type 2 (non reporter)| 1      | 0    | 0     | 0     | 0     | 0     |
+
 
 Expected reporting given violence in control = Pr(Type 1)
 	
 Expected reporting given violence in treatment = 100%
 	
- Question: What is the actual effect of treatment on the propensity to report violence? 
+**Question**: What is the actual effect of treatment on the propensity to report violence? 
 
 
 

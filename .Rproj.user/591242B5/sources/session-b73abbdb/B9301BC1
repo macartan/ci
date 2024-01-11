@@ -3,9 +3,9 @@
     "path": "C:/Dropbox/github/ci/slides/ci_2024.qmd",
     "project_path": "slides/ci_2024.qmd",
     "type": "quarto_markdown",
-    "hash": "0",
+    "hash": "681145545",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1704893564313.0,
     "source_on_save": false,
     "relative_order": 2,
@@ -16,11 +16,11 @@
         "scrollLine": "5"
     },
     "folds": "",
-    "lastKnownWriteTime": 1704969301,
+    "lastKnownWriteTime": 1704970702,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1704969646268,
+    "last_content_update": 1704970702105,
     "read_only": false,
     "read_only_alternatives": []
 }

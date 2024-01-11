@@ -3,7 +3,7 @@
     "path": "C:/Dropbox/github/ci/slides/1.1_intro.qmd",
     "project_path": "slides/1.1_intro.qmd",
     "type": "quarto_markdown",
-    "hash": "3148018296",
+    "hash": "1558367246",
     "contents": "",
     "dirty": false,
     "created": 1704893726655.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "81,0",
-        "scrollLine": "61"
+        "cursorPosition": "53,0",
+        "scrollLine": "39"
     },
     "folds": "",
-    "lastKnownWriteTime": 1704968774,
+    "lastKnownWriteTime": 1704972292,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1704968774687,
+    "last_content_update": 1704972292237,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -19,7 +19,7 @@ bibliography: bib.bib
 
 ## Road Map 
 
-1. Intro | [Course outline, tools](#secoutline) |  [Introduction to Declare design](#secdd)
+1. Intro | [Course outline, tools](#secoutline) |  [`Declare design`](#secdd)
 2. Causality | [Fundamental problems and solutions](#seccausality) | [Inquiries and identification](#secestimands) 
 3. Estimation and Inference |  [Frequentist](#secfisher) | [Bayesian](#secbayes)
 4. Design |  [Experimental Design](#secdesign) |  [Design evaluation](#secdiagnosis)

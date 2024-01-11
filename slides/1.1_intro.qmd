@@ -46,8 +46,9 @@ run <- FALSE
 ### Syllabus 
 
 
-[https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
-
+* [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
+* [student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
+* Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci)
 
 ### The topics
 
