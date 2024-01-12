@@ -54,6 +54,19 @@ The longer sessions will be structured roughly as follows.
 The course addresses advanced topics in causal inference and experimental design. It is a hands on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. Topics likely include sampling and randomization schemes, including multilevel trials, restricted randomization, and patient preference trials; Bayesian approaches to causal inference, exact inference: sharp nulls for complex hypotheses, inverting hypothesis tests, Mediation analysis, Multiple comparisons, Open science workflows.
 
 
+# Expectations
+
+* 5 tasks
+* (Required) Work in four "exercise teams": 1 team (and typically 2 exercises) per session $\times 4$ 
+* (Optional) Prepare a research design or short paper, perhaps building on existing work. Typically this contains: 
+  - a problem statement
+  - a description of a method to address the problem
+  - analytic or simulation based results describing properties of the solution
+  - a discussion of implications for practice. 
+  - A passing paper will illustrate subtle features of a method; a good paper will identify unknown properties of a method; en excellent paper will develop a new method. 
+
+* Plus general reading and participation. 
+
 # Readings
 
 The course is primarily lecture and exercise based. We will not discuss readings in class, though some are relevant for different exercises. I do recommend the readings both for giving background to the lectures and for going beyond the lectures. 

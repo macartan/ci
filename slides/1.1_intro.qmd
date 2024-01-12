@@ -87,7 +87,7 @@ Day 5:
 ### Expectations {.smaller}
 
 * 5 tasks
-* (Required) Work in four "exercise teams": 1 team per session $\times 4$
+* (Required) Work in four "exercise teams": 1 team (and typically 2 exercises) per session $\times 4$ 
 * (Optional) Prepare a research design or short paper, perhaps building on existing work. Typically this contains: 
   - a problem statement
   - a description of a method to address the problem

@@ -332,7 +332,13 @@ diagnosis$diagnosands_df |>
 ```
 ### What is the diagnosis object?
 
-```{r}
+```{r, eval = FALSE}
+diagnosis$bootstrap_replicates |> 
+  head()
+```
+
+
+```{r, echo = FALSE}
 diagnosis$bootstrap_replicates |> 
   head() |> kable(digits = 2) |> kable_styling(font_size = 16)
 ```
@@ -725,7 +731,7 @@ if(run)
   redesign(design, N = c(100, 200, 300), m = c(0, .1, .2)) |> diagnose_design() |> tidy() |> write_rds("saved/redesigns.rds")
 
 read_rds("saved/redesigns.rds") |>
-  select(N, m, diagnosand, estimate, std.error, conf.low, conf.high) |> slice(c(1:2, 8:9, 29:30)) |>           
+  select(N, m, diagnosand, estimate, std.error, conf.low, conf.high) |>  slice(c(1:4, 8:9, 29:30, 59:63)) |>           
   kable(digits = 2) |> 
   kable_styling(font_size = 20)
 ```
