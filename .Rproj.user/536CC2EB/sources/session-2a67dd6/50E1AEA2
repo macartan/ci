@@ -1,26 +1,26 @@
 {
-    "id": "39DA92DD",
-    "path": "C:/Dropbox/github/ci/slides/0_lectures.qmd",
-    "project_path": "slides/0_lectures.qmd",
+    "id": "50E1AEA2",
+    "path": "C:/Dropbox/github/ci/slides/2.2_estimands.qmd",
+    "project_path": "slides/2.2_estimands.qmd",
     "type": "quarto_markdown",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1704920543241.0,
+    "created": 1704920827502.0,
     "source_on_save": false,
-    "relative_order": 5,
+    "relative_order": 7,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "55,0",
-        "scrollLine": "34"
+        "cursorPosition": "228,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1704920577,
+    "lastKnownWriteTime": 1704922637,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1704920577974,
+    "last_content_update": 1704922637510,
     "read_only": false,
     "read_only_alternatives": []
 }

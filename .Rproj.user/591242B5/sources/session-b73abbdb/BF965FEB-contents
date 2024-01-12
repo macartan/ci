@@ -1,0 +1,105 @@
+---
+title: "endline figures"
+format: revealjs
+---
+
+```{r}
+library(tidyverse)
+
+library(knitr)
+
+library(readxl) 
+
+endline_labels <- 
+  read_excel(
+    "../../04-Implementation/05-Endline/01-instrument/KCCA_CHARTER_ENDLINE_updated_ma.xlsx",
+sheet = "choices")
+
+# Get all labels
+labs <- lapply(unique(endline_labels$list_name), function(j)
+  endline_labels |> filter(list_name==j) |> select(lab = `label:English`,
+                                                   val = value))
+names(labs) <- unique(endline_labels$list_name)
+  
+df <- haven::read_dta("../../05-Data/000-Master/02-Data/main_analysis_merged_plus_behav.dta")
+
+```
+
+
+# Reactions to charter not progressing
+
+```{r}
+
+reactions <-
+data.frame(code = 1:8, 
+           reactions = c("Angry", "Hopeful /understanding", "Doesn't seem to care at all about it", "Doesn't seem to take it in", "Not surprised that things didn’t work",  	"Disappointed", "Surprised", "Amused"))
+
+reactions <-
+  reactions |> 
+  mutate(share = 
+df |> select(starts_with("Endline_charter_prompt_")) |> apply(2, mean, na.rm = TRUE))
+
+reactions |> select(-code) |> kable(digits = 2)
+```
+
+# Commited 
+
+Thinking of regular employees in KCCA, how committed are they to serving the people?
+
+```{r}
+label_var <- function(df, v, map)
+  df |> mutate(!!v := factor((!!as.symbol(v)), labs[map][[1]]$val, labs[map][[1]]$lab))
+  
+  
+df <- df |> 
+  label_var("Endline_comm_serving", "commit") |>
+  label_var("Endline_regular_kcca", "likely1") |>
+  label_var("Endline_kcca_involved", "kcca_involved") |>
+  label_var("Endline_kcca_wcomes_qns", "agree1") |>
+  label_var("Endline_fieldstaff_complaints", "agree1")
+
+```
+
+
+```{r}
+table(df$Endline_comm_serving)
+
+```
+
+
+# Corrections
+
+When regular employees in KCCA make serious mistakes, how likely is it that they will be corrected?
+
+```{r}
+table(df$Endline_regular_kcca)
+
+```
+
+# Corruption
+
+In your opinion, how many regular employees in KCCA are involved in corruption?
+
+```{r}
+table(df$Endline_kcca_involved)
+```
+
+# Questioning
+
+Most KCCA field staff welcome questions from citizens
+
+
+```{r}
+table(df$Endline_kcca_wcomes_qns)
+```
+
+
+# Complaints
+
+Most KCCA field staff are open to complaints from citizens
+
+
+
+```{r}
+table(df$Endline_fieldstaff_complaints)
+```

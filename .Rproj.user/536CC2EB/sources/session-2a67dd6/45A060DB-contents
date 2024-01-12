@@ -5,6 +5,26 @@
   publisher={Cambridge University Press}
 }
 
+
+@article{lundberg2021your,
+  title={What is your estimand? Defining the target quantity connects statistical evidence to theory},
+  author={Lundberg, Ian and Johnson, Rebecca and Stewart, Brandon M},
+  journal={American Sociological Review},
+  volume={86},
+  number={3},
+  pages={532--565},
+  year={2021},
+  publisher={SAGE Publications Sage CA: Los Angeles, CA}
+}
+
+@book{hernanwhatif,
+  title={What if?},
+  author={Hern{\'a}n, Miguel A and Robins, James M},
+  url={https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf},
+  year = {forthcoming},
+  publisher = {Boca Raton: Chapman & Hall/CRC.}
+}
+
 @article{lin2012agnostic,
   title={Agnostic notes on regression adjustments to experimental data: Reexamining Freedman's critique},
   author={Lin, Winston},
@@ -277,6 +297,16 @@
   publisher={Palgrave Macmillan}
 }
 
+@article{imai2021use,
+  title={On the use of two-way fixed effects regression models for causal inference with panel data},
+  author={Imai, Kosuke and Kim, In Song},
+  journal={Political Analysis},
+  volume={29},
+  number={3},
+  pages={405--415},
+  year={2021},
+  publisher={Cambridge University Press}
+}
 @article{imai2010general,
   title={A general approach to causal mediation analysis.},
   author={Imai, Kosuke and Keele, Luke and Tingley, Dustin},
@@ -1261,6 +1291,98 @@ numpages = {18},
 doi = {10.1017/S0003055405051762},
 URL = {http://journals.cambridge.org/article_S0003055405051762},
 abstract = { ABSTRACT despite repeated calls for the use of “mixed methods” in comparative analysis, political scientists have few systematic guides for carrying out such work. this paper details a unified approach which joins intensive case-study analysis with statistical analysis. not only are the advantages of each approach combined, but also there is a synergistic value to the nested research design: for example, statistical analyses can guide case selection for in-depth research, provide direction for more focused case studies and comparisons, and be used to provide additional tests of hypotheses generated from small-n research. small-n analyses can be used to assess the plausibility of observed statistical relationships between variables, to generate theoretical insights from outlier and other cases, and to develop better measurement strategies. this integrated strategy improves the prospects of making valid causal inferences in cross-national and other forms of comparative research by drawing on the distinct strengths of two important approaches. }
+}
+
+@article{alvarez2018research,
+  title={Research replication: Practical considerations},
+  author={Alvarez, R Michael and Key, Ellen M and N{\'u}{\~n}ez, Lucas},
+  journal={PS: Political Science \& Politics},
+  volume={51},
+  number={2},
+  pages={422--426},
+  year={2018},
+  publisher={Cambridge University Press}
+}
+
+@article{knox2020administrative,
+  title={Administrative records mask racially biased policing},
+  author={Knox, Dean and Lowe, Will and Mummolo, Jonathan},
+  journal={American Political Science Review},
+  volume={114},
+  number={3},
+  pages={619--637},
+  year={2020},
+  publisher={Cambridge University Press}
+}
+
+@article{humphreys2015reflections,
+  title={Reflections on the ethics of social experimentation},
+  author={Humphreys, Macartan},
+  journal={Journal of Globalization and Development},
+  volume={6},
+  number={1},
+  pages={87--112},
+  year={2015},
+  publisher={De Gruyter}
+}
+
+@article{humphreys2013fishing,
+  title={Fishing, commitment, and communication: A proposal for comprehensive nonbinding research registration},
+  author={Humphreys, Macartan and De la Sierra, Raul Sanchez and Van der Windt, Peter},
+  journal={Political Analysis},
+  volume={21},
+  number={1},
+  pages={1--20},
+  year={2013},
+  publisher={Cambridge University Press}
+}
+
+@article{de2020two,
+  title={Two-way fixed effects estimators with heterogeneous treatment effects},
+  author={De Chaisemartin, Cl{\'e}ment and d’Haultfoeuille, Xavier},
+  journal={American Economic Review},
+  volume={110},
+  number={9},
+  pages={2964--2996},
+  year={2020},
+  publisher={American Economic Association 2014 Broadway, Suite 305, Nashville, TN 37203}
+}
+
+@book{wickham2023r,
+  title={R for data science},
+  author={Wickham, Hadley and {\c{C}}etinkaya-Rundel, Mine and Grolemund, Garrett},
+  year={2023},
+  publisher={" O'Reilly Media, Inc."}
+}
+
+
+@article{keele2015statistics,
+  title={The statistics of causal inference: A view from political methodology},
+  author={Keele, Luke},
+  journal={Political Analysis},
+  volume={23},
+  number={3},
+  pages={313--335},
+  year={2015},
+  publisher={Cambridge University Press}
+}
+
+@article{imai2008misunderstandings,
+  title={Misunderstandings between experimentalists and observationalists about causal inference},
+  author={Imai, Kosuke and King, Gary and Stuart, Elizabeth A},
+  journal={Journal of the Royal Statistical Society Series A: Statistics in Society},
+  volume={171},
+  number={2},
+  pages={481--502},
+  year={2008},
+  publisher={Oxford University Press}
+}
+
+@book{gerber2012field,
+  title={Field experiments: Design, analysis, and interpretation},
+  author={Gerber, Alan S and Green, Donald P},
+  publisher={Norton},
+  year={2012}
 }
 
 @article{Paluck01032010,

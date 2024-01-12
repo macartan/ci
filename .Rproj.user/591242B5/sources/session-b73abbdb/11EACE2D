@@ -3,7 +3,7 @@
     "path": "C:/Dropbox/github/ci/slides/2.1_causality.qmd",
     "project_path": "slides/2.1_causality.qmd",
     "type": "quarto_markdown",
-    "hash": "2715881938",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1704968666520.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "430,0",
-        "scrollLine": "418"
+        "cursorPosition": "934,0",
+        "scrollLine": "935"
     },
     "folds": "",
-    "lastKnownWriteTime": 1704971990,
+    "lastKnownWriteTime": 1704983592,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1704971990442,
+    "last_content_update": 1704983592,
     "read_only": false,
     "read_only_alternatives": []
 }

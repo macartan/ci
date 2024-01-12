@@ -26,9 +26,9 @@ source("setup.R")
 run <- FALSE
 ```
 
-## Getting started
+## Getting started {#secoutline}
 
-### Plan
+### Plan for today
 
 * General aims and structure
 * Expectations
@@ -41,25 +41,26 @@ run <- FALSE
 * Transportable tools for understanding how to evaluate and improve design
 * Applied skills for design and analysis
 * Exposure to open science practices
-
+* Deeper dive into some specific topics (see survey)
 
 ### Syllabus 
 
-
-[https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
-
+* [https://macartan.github.io/ci](https://macartan.github.io/ci) for all resources
+* [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
+* Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci)
+* [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j): Please fill this out today.
 
 ### The topics
 
 Day 1: Intro
 
-* 1.1	Course outline, tools, 
-* 1.2	Introduction to Declare design
+* [1.1	Course outline, tools](#secoutline)
+* [1.2	Introduction to `DeclareDesign`](#secdd)
 
 Day 2: Causality
 
-* 2.1	Fundamental problems and basic solutions
-* 2.2	General inquiries and causal identification
+* [2.1	Fundamental problems and solutions](#seccausality)
+* [2.2	Inquiries and identification](#secestimands) 
 
 
 ### The topics
@@ -67,13 +68,13 @@ Day 2: Causality
 
 Day 3: Estimation and Inference
 
-* 3.1	Frequentist
-* 3.2	Bayesian 
+* [3.1	Frequentist](#secfisher)
+* [3.2	Bayesian](#secbayes)
 
 Day 4:
 
-* [4.1	Experimental Design](#secdesign)
-* [4.2	Design evaluation (incl power)](#secdiagnosis)
+* [4.1	Experimental Design (esp. assignment)](#secdesign)
+* [4.2	Design evaluation (esp. power)](#secdiagnosis)
 
 Day 5: 
 
@@ -83,7 +84,7 @@ Day 5:
 
 
 
-### Expectations
+### Expectations {.smaller}
 
 * 5 tasks
 * (Required) Work in four "exercise teams": 1 team per session $\times 4$
@@ -92,22 +93,22 @@ Day 5:
   - a description of a method to address the problem
   - analytic or simulation based results describing properties of the solution
   - a discussion of implications for practice. 
-A passing paper will illustrate subtle features of a method; a good paper will identify unknow properties of a method; en excellent paper will develop a new method. 
+
+A passing paper will illustrate subtle features of a method; a good paper will identify unknown properties of a method; en excellent paper will develop a new method. 
 
 * Plus general reading and participation. 
 
 
-### Exercise team job
+### Exercise team job {.smaller}
 
 Teams should prepare 15 - 20 minute presentations on set puzzles. Typically the task is to:
 
-* Take a puzzle, theorem, claim
-* Declare and diagnose a design that shows the claim operating (e.g. some estimator produces unbiased estimates under some condition)
+* Take a puzzle
+* Declare and diagnose a design that shows the issue under study (e.g. some estimator produces unbiased estimates under some condition)
 * Modify the design to show behavior when conditions are violated 
 
 * Share a report with the class. Best in self-contained documents for easy third party viewing. e.g. `.html` via `.qmd` or `.Rmd`
-
-See example in `git`.
+* Presentations should be about 10 minutes for a given puzzle.
 
 ### Good coding rules 
 
@@ -122,21 +123,22 @@ See example in `git`.
 * Call all data files once, at the top. Best to call directly from a public archive, when possible.  
 * Use functions and define them at the top: comment them; useful sometimes to illustrate what they do
 * Replicate first, re-analyze second. Use sections.
-* Have subsections named after specific tables, figures or analyses
+* (For replications) Have subsections named after specific tables, figures or analyses
 
 
 ### Aim
 
-Nothing local, everything relative: so please do not include hardcoded paths to your computer
 
-* First best: if someone has access to your `.Rmd`/`.qmd` file they can hit render or compile and the whole thing reproduces first time.
+* First best: If someone has access to your `.Rmd`/`.qmd` file they can hit render or compile and the whole thing reproduces first time.  So:  Nothing local, everything relative: so please do not include hardcoded paths to your computer
 
-*  But: often you need ancillary files for data and code. That's OK but aims should still be that with a self contained folder someone can open a `master.Rmd` file, hit compile and get everything. I usually have an `input` and an `output` subfolder.
+*  But: often you need ancillary files for data and code. That's OK but aims should still be that with a self contained folder someone can open a `main.Rmd` file, hit compile and get everything. I usually have an `input` and an `output` subfolder.
 
 
 ### Collaborative coding / writing
 
 * Do not get in the business of passing attachments around
+* Documents in some cloud: `git`, osf, Dropbox, Drive, Nextcloud
+* General rule: only post non sensitive, non proprietary material
 * Share self contained folders; folders contain a small set of live documents plus an archive. Old versions of documents are in archive. Only one version of the most recent document is in a main folder.
 * Data is self contained folder (`in`) and is never edited directly
 * Update to github frequently
