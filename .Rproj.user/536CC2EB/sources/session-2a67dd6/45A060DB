@@ -3,7 +3,7 @@
     "path": "C:/Dropbox/github/ci/slides/bib.bib",
     "project_path": "slides/bib.bib",
     "type": "text",
-    "hash": "3664043076",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1704922297467.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "1317,9",
-        "scrollLine": "1310"
+        "cursorPosition": "1352,83",
+        "scrollLine": "1342"
     },
     "folds": "",
-    "lastKnownWriteTime": 1705044399,
+    "lastKnownWriteTime": 1705052195,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1705044399714,
+    "last_content_update": 1705052195857,
     "read_only": false,
     "read_only_alternatives": []
 }

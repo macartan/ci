@@ -3,7 +3,7 @@
     "path": "C:/Dropbox/github/ci/syllabus.Rmd",
     "project_path": "syllabus.Rmd",
     "type": "r_markdown",
-    "hash": "3158893794",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1705003229486.0,
@@ -12,16 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "82,40",
-        "scrollLine": "77",
+        "cursorPosition": "8,0",
+        "scrollLine": "0",
         "ignored_words": "lundberg,knox,Raum,www\n"
     },
     "folds": "",
-    "lastKnownWriteTime": 1705045884,
+    "lastKnownWriteTime": 1705052065,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1705045884166,
+    "last_content_update": 1705052065113,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -1352,7 +1352,7 @@ abstract = { ABSTRACT despite repeated calls for the use of “mixed methods” 
   title={R for data science},
   author={Wickham, Hadley and {\c{C}}etinkaya-Rundel, Mine and Grolemund, Garrett},
   year={2023},
-  publisher={" O'Reilly Media, Inc."}
+  publisher={{O'Reilly Media, Inc.}}
 }
 
 
