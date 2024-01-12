@@ -33,7 +33,7 @@ run <- FALSE
 * General aims and structure
 * Expectations
 * Pointers for exercises
-* Quick `declaredesign` intro
+* Quick `DeclareDesign` intro
 
 ### Aims
 
@@ -43,7 +43,7 @@ run <- FALSE
 * Exposure to open science practices
 * Deeper dive into some specific topics (see survey)
 
-### Syllabus 
+### Syllabus and resources
 
 * [https://macartan.github.io/ci](https://macartan.github.io/ci) for all resources
 * [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
@@ -59,8 +59,8 @@ Day 1: Intro
 
 Day 2: Causality
 
-* [2.1	Fundamental problems and basic solutions](#seccausality)
-* [2.2	General inquiries and causal identification](#secestimands) 
+* [2.1	Fundamental problems and solutions](#seccausality)
+* [2.2	Inquiries and identification](#secestimands) 
 
 
 ### The topics
@@ -73,8 +73,8 @@ Day 3: Estimation and Inference
 
 Day 4:
 
-* [4.1	Experimental Design](#secdesign)
-* [4.2	Design evaluation (incl power)](#secdiagnosis)
+* [4.1	Experimental Design (esp. assignment)](#secdesign)
+* [4.2	Design evaluation (esp. power)](#secdiagnosis)
 
 Day 5: 
 

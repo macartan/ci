@@ -33,7 +33,7 @@ run <- FALSE
 * General aims and structure
 * Expectations
 * Pointers for exercises
-* Quick `declaredesign` intro
+* Quick `DeclareDesign` intro
 
 ### Aims
 
@@ -43,7 +43,7 @@ run <- FALSE
 * Exposure to open science practices
 * Deeper dive into some specific topics (see survey)
 
-### Syllabus 
+### Syllabus and resources
 
 * [https://macartan.github.io/ci](https://macartan.github.io/ci) for all resources
 * [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
