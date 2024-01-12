@@ -82,7 +82,10 @@ I point a number of times to bits from this excellent draft text, also open acce
 
 * [@hernanwhatif](https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf)
 
+See also the very useful:
+
 * Cunningham's "[mixed tape](https://mixtape.scunning.com/)" is a great accompanying read to fundamentals and topics:
+* Pearl's [primer](https://ftp.cs.ucla.edu/pub/stat_ser/r350.pdf)
 
 
 Recommended non open access readings include:

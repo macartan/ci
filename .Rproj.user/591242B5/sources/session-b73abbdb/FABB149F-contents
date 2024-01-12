@@ -2,6 +2,7 @@
 title: 'Causal inference and experimental design'
 date: HU | Spring 2024
 author: "Macartan Humphreys"
+bibliography: slides/bib.bib
 output: 
   pdf_document:
       number_sections: true
@@ -13,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Class resources
+
+* All resources: [https://macartan.github.io/ci](https://macartan.github.io/ci)
 
 * This syllabus: [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
 
@@ -26,6 +29,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Times and locations 
 
+Institutsgebäude, Universitätsstraße 3b
+
 Raum: K12B
 
 * Jan 12: 12-14 (short introductory lecture)
@@ -37,7 +42,7 @@ Raum: K12B
 The longer sessions will be structured roughly as follows.
 
 * 12:00 - 13:50: lecture
-* 13:40 - 14:30: team presentations and discussions
+* 13:50 - 14:30: team presentations and discussions
 * 14:30 - 15:15: late lunch break 
 * 15:15 - 17:00: lecture
 * 17:00 - 17:10: break
@@ -49,27 +54,47 @@ The longer sessions will be structured roughly as follows.
 The course addresses advanced topics in causal inference and experimental design. It is a hands on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. Topics likely include sampling and randomization schemes, including multilevel trials, restricted randomization, and patient preference trials; Bayesian approaches to causal inference, exact inference: sharp nulls for complex hypotheses, inverting hypothesis tests, Mediation analysis, Multiple comparisons, Open science workflows.
 
 
+# Expectations
+
+* 5 tasks
+* (Required) Work in four "exercise teams": 1 team (and typically 2 exercises) per session $\times 4$ 
+* (Optional) Prepare a research design or short paper, perhaps building on existing work. Typically this contains: 
+  - a problem statement
+  - a description of a method to address the problem
+  - analytic or simulation based results describing properties of the solution
+  - a discussion of implications for practice. 
+  - A passing paper will illustrate subtle features of a method; a good paper will identify unknown properties of a method; en excellent paper will develop a new method. 
+
+* Plus general reading and participation. 
+
 # Readings
+
+The course is primarily lecture and exercise based. We will not discuss readings in class, though some are relevant for different exercises. I do recommend the readings both for giving background to the lectures and for going beyond the lectures. 
 
 All readings are linked from this document. 
 
-
-I will draw material especially from my two books, both open access:
+I will draw material especially from  two recent books I worked on, both open access:
 
 * [Research Design in the Social Sciences](https://book.declaredesign.org/)
 * [Integrated Inferences](https://macartan.github.io/integrated_inferences/)
 
 I point a number of times to bits from this excellent draft text, also open access: 
 
-* [Hernan/Robins: What if](https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf)
+* [@hernanwhatif](https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf)
+
+See also the very useful:
+
+* Cunningham's "[mixed tape](https://mixtape.scunning.com/)" is a great accompanying read to fundamentals and topics:
+* Pearl's [primer](https://ftp.cs.ucla.edu/pub/stat_ser/r350.pdf)
+
 
 Recommended non open access readings include:
 
-* [Green and Gerber: Field Experiments](https://wwnorton.com/books/9780393979954) with supplementary material available here: [https://isps.yale.edu/FEDAI](https://isps.yale.edu/FEDAI)
+* [@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: [https://isps.yale.edu/FEDAI](https://isps.yale.edu/FEDAI)
 
 # Prerequisites
 
-You should already have background in statistics and fundamentals of causal inference. 
+You should already have background in statistics up to the point with feeling comfortable with regression. 
 
 In addition you should know some `R`. Really, the more you can invest on getting on top of `R` before the class the better.  
 
@@ -92,7 +117,7 @@ pacman::p_load(
 
 ## File Sharing via Git
 
-I encourage you to set up and send me your git user names and we can access all materials on github.
+I encourage you to set up and send me your `git` user names and we can access all materials on github. The git contains slides and exercises but will also have a folder structure where group presentations can be stored.
 
 
 ## Writing with `Rmd` or `qmd`
@@ -106,7 +131,8 @@ The key thing is that you can insert code chunks like this.
 x <- rnorm(1)
 ```
 
-which are run as the document compiles, and can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
+
+Code like this is  run as the document compiles, and results can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
 
 I recommend using `Rstudio` as an editor. More information here: 
 https://quarto.org/docs/get-started/hello/rstudio.html
@@ -117,49 +143,77 @@ https://quarto.org/docs/get-started/hello/rstudio.html
 
 
 
-Day 1: Intro
+## Day 1: Intro
 
-* 1.1	Course outline, tools, 
-* 1.2	Introduction to Declare design
+###	Course outline, tools, 
 
-[DD, ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html)
-[DD, ch 13](https://book.declaredesign.org/declaration-diagnosis-redesign/declaration-in-code.html)
+* [@keele2015statistics](https://hrr.w.uib.no/files/2019/01/Keele_2015_causal.pdf) gives a good high level overview of many key ideas in this course
+
+* See [@wickham2023r](https://r4ds.hadley.nz/) on [Workflow](https://r4ds.hadley.nz/workflow-scripts) and [Quarto](https://r4ds.hadley.nz/quarto)
+
+###	Introduction to Declare design
+
+* [DD, Ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html) introduces ideas at a high level
+* [DD, Ch 13](https://book.declaredesign.org/declaration-diagnosis-redesign/declaration-in-code.html) gives more practical guidance on getting started
 
 
-Day 2: Causality
+## Day 2: Causality
 
-* 2.1	Fundamental problems and basic solutions
-[II ch 2](https://macartan.github.io/integrated_inferences/HJC2.html), 
-[Holland]
-Hernan Robbins Ch 6
+### Fundamental problems and basic solutions
 
-* 2.2	General inquiries and causal identification
-See also: Hernan Robbins  (Section 3.1, 7.2, 8.4, 10.1)
+* [II Ch 2](https://macartan.github.io/integrated_inferences/HJC2.html), goes over both potential outcomes and DAGs
+* [Holland](https://www.jstor.org/stable/2289064) is a beautiful classic reading on the fundamental problem of causal inference
+* @imai2008misunderstandings 
+* [@hernanwhatif](https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf) Ch 6
 
-[II ch 4](https://macartan.github.io/integrated_inferences/HJC4.html)
-* [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
+### 2.2	General inquiries and causal identification
 
-Day 3: Estimation and Inference
 
-* 3.1	Frequentist
+* [II Ch 4](https://macartan.github.io/integrated_inferences/HJC4.html)
+* [DD, Ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
+* See also: [@hernanwhatif](https://www.hsph.harvard.edu/miguel-hernan/wp-content/uploads/sites/1268/2024/01/hernanrobins_WhatIf_2jan24.pdf)  (Section 3.1, 7.2, 8.4, 10.1)
+* @lundberg2021your
 
-@Lin
+## Day 3: Estimation and Inference
 
-* 3.2	Bayesian 
+### Frequentist
 
-* [`rstan` Getting started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started)
-* [II ch 5](https://macartan.github.io/integrated_inferences/HJC5.html)
+* [@freedman2008regression](https://www.stat.berkeley.edu/~census/neyregr.pdf) helps make connections between design based inference and regression 
+* [@lin2012agnostic](https://arxiv.org/pdf/1208.2301.pdf) relieves some worries you might have after reading @freedman2008regression
 
-Day 4:
+### Bayesian 
 
-* 4.1	Experimental Design
-* [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
+* [II ch 5](https://macartan.github.io/integrated_inferences/HJC5.html) gives an introduction to Bayesian ideas
+* `rstan`'s [Getting started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) gets you going on `Stan`; try running the 8 schools model
 
-* 4.2	Design evaluation
-* [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/diagnosing-designs.html)
+## Day 4:
 
-Day 5: 
+### Experimental Design
 
-* 5.1	Topics and techniques
-* 5.2	Open science
+* [DD, Ch 8](https://book.declaredesign.org/declaration-diagnosis-redesign/crafting-data-strategy.html) on data strategies
+
+* [DD, Ch 9](https://book.declaredesign.org/declaration-diagnosis-redesign/choosing-answer-strategy.html) on answer strategies
+
+### Design evaluation
+
+* [DD, Ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/diagnosing-designs.html)
+
+## Day 5: 
+
+### Topics and techniques
+
+Readings here depend in part on our final topic selection but likely readings include:
+
+* [@imai2021use](https://imai.fas.harvard.edu/research/files/FEmatch-twoway.pdf) and  @de2020two on diff in diff
+* [@imai2010general](https://imai.fas.harvard.edu/research/files/BaronKenny.pdf) on mediation
+* @knox2020administrative on patient preference trials
+ 
+### Open science
+
+* DD sections: [Ethics](https://book.declaredesign.org/lifecycle/planning.html#ethics), [PAPs](https://book.declaredesign.org/lifecycle/planning.html#sec-ch21s6), [Populated PAPs](https://book.declaredesign.org/lifecycle/realization.html#sec-ch22s2), [Reconciliation](https://book.declaredesign.org/lifecycle/realization.html#reconciliation) 
+* [@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
+* [@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
+* [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
+
+# References
 

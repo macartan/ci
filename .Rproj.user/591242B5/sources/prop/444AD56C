@@ -1,7 +1,8 @@
 {
     "source_window_id": "",
     "Source": "Source",
-    "cursorPosition": "31,70",
-    "scrollLine": "22",
-    "last_setup_crc32": "b73abbdbcfe62a45"
+    "cursorPosition": "143,9",
+    "scrollLine": "129",
+    "last_setup_crc32": "b73abbdbce70c276",
+    "ignored_words": "endline,estimand,Collider,dataset,missingness,covariate,Covariates,covariates,estimands\n"
 }

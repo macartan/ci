@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 library(tidyverse)
 library(CausalQueries)
-
+library(DeclareDesign)
 ```
 
 Class: [https://macartan.github.io/ci/](https://macartan.github.io/ci/)
@@ -53,6 +53,8 @@ Then:
 * Plot the estimates against $p$ values for different values of $N$; what do you see?
 * Discuss
 
+**Hint**: the  slides contain code for a simple experimental design
+
 :::
 
 
@@ -71,6 +73,16 @@ Now:
 * Declare a design with this hierarchical data structure. Allow for the possibility that treatment effects vary at the school level. Assess the performance of the standard errors when you cluster at each of these levels (and when you do not cluster at all.
 * Examine whether the performance depends on whether you are interested in the population average effects or the sample average effects.
 
+**Hint** For generating hierarchical models use `add_level`
+
+```{r}
+g <- 
+  declare_model(
+    L1 = add_level(N = 10, u = rnorm(N)),
+    L2 = add_level(N = 12, v = rnorm(N)))
+
+g() |> slice(1:3, 13:15) |> kable()
+```
 :::
 
 
@@ -82,12 +94,21 @@ Now:
 
 * That sounds complicated, but actually the sampling distribution of an estimate lives in the simulations data frame so you can look at its standard deviation and assess whether standard errors estimate it well.
 
-*  `Challenge`: Generate a simple experimental design in which there is a correlation (`rho`) between the two potential outcomes (`Y_Z_0` and `Y_Z_1`). (You can use the `fabricatr::correlate` function). 
+*  `Challenge`: Generate a simple experimental design in which there is a correlation (`rho`) between the two potential outcomes (`Y_Z_0` and `Y_Z_1`). 
+
 
 * Show the distribution of the estimates over different values of `rho`
 
 * Assess the performance of the estimates of the standard errors and the coverage as `rho` goes from -1 to 0 to 1. Describe how coverage changes. (Be sure to be clear on what coverage is!)
 
+**Hint** You can use the `fabricatr::correlate` function to generate correlated data.
+
+```{r}
+Y_Z_0 <- rnorm(1000)
+Y_Z_1 <- correlate(rnorm, given = Y_Z_0, rho = .5)
+
+cor(Y_Z_0, Y_Z_1)
+```
 :::
 
 
@@ -105,11 +126,14 @@ Declare a design in which:
 
 Discuss results. Do any of these return the right answer?
 
+**Hint:** You can add three separate `declare_estimator` steps. They should have distinct labels. The trickiest part is to figure out how to extract the estimate in (c) because you will have both a main term and an interaction term for $X$. 
 :::
 
 # Causality: 	Fundamental problems
 
 ## Potential outcomes
+
+*These do not require coding*
 
 ::: {.Q #q-pos1}
 
@@ -117,12 +141,12 @@ Potential outcomes
 
 Consider an outcome $Y$ that can be affected by two variables $X_1$ and $X_2$. All variables are binary. Can you fill in the potential outcomes (rows) for each of the column types?
 
-| X1 is a necessary and sufficient condition for Y | X1 is necessary but not sufficient | X1 is sufficient but not necessary | X1 sometimes causes Y but is neither necessary nor sufficient |
-|--------------------------------------------------|-------------------------------------|-------------------------------------|----------------------------------------------------------------|
-| Y(0,0) =                                          |                                     |                                     |                                                                  |
-| Y(1,0) =                                          |                                     |                                     |                                                                  |
-| Y(0,1) =                                          |                                     |                                     |                                                                  |
-| Y(1,1) =                                          |                                     |                                     |                                                                  |
+|          | X1 is a necessary and sufficient condition for Y | X1 is necessary but not sufficient | X1 is sufficient but not necessary | X1 sometimes causes Y but is neither necessary nor sufficient |
+|-------------------|--------------------------------------------------|-------------------------------------|-------------------------------------|----------------------------------------------------------------|
+| Y(0,0) = |                                          |                                     |                                     |                                                                  |
+| Y(1,0) = |                                         |                                     |                                     |                                                                  |
+| Y(0,1) = |                                          |                                     |                                     |                                                                  |
+| Y(1,1) =  |                                        |                                     |                                     |                                                                  |
 
 :::
 
@@ -131,12 +155,14 @@ Consider an outcome $Y$ that can be affected by two variables $X_1$ and $X_2$. A
 
 Consider an outcome Y that can be affected by two variables X1 and X2 but say that X2 can itself be affected by X1.  Write down possible potential outcomes for Y1 and X2 when: 	X1 causes X2 and Y, but X1 does not cause Y through X2
 
-Y(0,0) =	__
-Y(1,0) =	__
-Y(0,1) =	__
-Y(1,1) =	__
-X2(0) =	__
-X2(1) =	__
+|Potential outcome |  Value (0/1)      |	
+|---------|---------|
+|Y(0,0) = |        |	
+|Y(1,0) =	||
+|Y(0,1) =	||
+|Y(1,1) =	||
+|X2(0) =	||
+| X2(1) =	||
 
 :::
 
@@ -174,12 +200,22 @@ Compare these and discuss.
 
 <!-- See \ref{q-1}. -->
 
+::: {.Q #q-colliderb}
+
+**Collider bias**
+
+* Declare a simple design in which (i)  $X$ and $Y$ both have a positive effect on  (binary) $K$ but $X$ does not cause $Y$ (ii) a researcher conditions on $K==1$ when estimating the effect of $X$ on $Y$
+* Show that this can generate biased results. Can you fine situations where the bias can be either positive or negative?
+
+:::
+
+
 ::: {.Q #q-dagitty}
 
 * Draw a DAG with 5 nodes representing  a situation in which $X$ causes $Y$ though $M$, $C$ affects both $X$ and $M$ and $D$ affects both $M$ and $Y$.
 * Figure out a set of nodes which, when controlled for, allow for the identification of the effect of $X$ on $Y$
 * Represent it in `dagitty` and check your answer
-
+* Bonus: Declare the design and compare the behavior of designs that do and do not control for these nodes.
 :::
 
 
@@ -195,6 +231,10 @@ expand_grid(A=0:1, B = 0:1, C= 0:1)|>
   kable()
 
 ```
+
+Set up a model in `DeclareDesign` that has this distribution. Draw a large dataset from it and check and relations of conditional independence implied by your DAG.
+
+Hint: From slides you will see a DAG is a directed acyclic graph. A DAG should represent relations of conditional independence in the sense that any node $A$ that is separated from another node $B$ given nodes $W$ should be conditionally independent given $W$.  You should be able to read from this table which nodes are conditionally independent from each other given other nodes.
 
 :::
 
@@ -213,6 +253,8 @@ make_model("X -> M -> Y <-> X") |> plot(x_coord = 1:3, y_coord = c(1,1,1))
 * Say that in truth  ATE of  $X$ on $M$ is .9 and that the ATE of  $M$ on $Y$ is .9. Is the implied effect of 0.81 on $X$ on $Y$ identified?   
 * Say that in truth  ATE of  $X$ on $M$ is 1 and that the ATE of  $M$ on $Y$ is 1. Is the implied effect of 1 on $X$ on $Y$ identified?   
 * Discuss 
+
+**Hint**: This question is asking about the front door criterion. Check whether the conditions apply for the front door criterion on hold. Note that an effect is *not* identified if the data pattern it produces is also consistent with a different effect. Is that the case here? Note you can generate and update models of this form with `CausalQueries`.
 
 :::
 
@@ -349,7 +391,7 @@ Can you :
 
 Network Randomization
 
-You have access to a network of all friendship links in a classroom. You want to provide political information to a set of students and see how muc more likely it is that a student that you do not give information to receives the information if a friend is treated compared to the situation in which a friend of a friend is treated.  So you want to be sure that some subjects have friends treated and some have only friends of friends treated. How would you assign treatment? How can you work out your treatment assignment probabilities? 
+You have access to a network of all friendship links in a classroom. You want to provide political information to a set of students and see how much more likely it is that a student that you do not give information to receives the information if a friend is treated compared to the situation in which a friend of a friend is treated.  So you want to be sure that some subjects have friends treated and some have only friends of friends treated. How would you assign treatment? How can you work out your treatment assignment probabilities? 
 
 :::
 
@@ -380,7 +422,7 @@ Equation (4.6) in @gerber2012field suggests that if the sum of two slopes exceed
 
 **Covariates 3**
 
-Compare the performance of the Lin estimator an the doubly robust estimator dicussed in slides
+Compare the performance of the Lin estimator an the doubly robust estimator discussed in slides
 
 :::
 
@@ -417,8 +459,7 @@ So for example if one unit is in treatment that unit has outcome Y=1, and the ot
 1.	Write down the potential outcomes for all possible assignments, including all and none assigned o treatment
 2.	Write down the difference in means calculation for each possible assignment
 3.	Define two estimands of interest.
-4.	Define a randomization scheme that will return an unbiased estimate of each estimand.
-5.	Define a randomization scheme that will return a biased estimate of each estimand.
+4.	Define a randomization scheme and answer strategy  that will return an unbiased estimate of each estimand.
 
 :::
 
@@ -430,7 +471,7 @@ So for example if one unit is in treatment that unit has outcome Y=1, and the ot
 
 Baron Kenny have provided a popular method to implement mediation analysis.
 
-Declare a design with a mediation process and possible violations of sequential ignorability, governened by some parameters `k`.
+Declare a design with a mediation process and possible violations of sequential ignorability, governed by some parameters `k`.
 
 Demonstrate under what conditions  estimates using the Baron-Kenny procedure are misleading.
 
