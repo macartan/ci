@@ -1,0 +1,7 @@
+"0","#| label: fig-indiff"
+"0","#| fig-cap: ""Indifference curves between income and liberal values. Our indifference curves were constructed by laying contour lines over a 7 by 4 matrix, where rows correspond to our constructed index of liberalism and columns are a profile’s income, while matrix values are differences in selection probabilities for a profile with any combination of the two qualities in comparison to the median profile (income = 3, index = 3)."""
+"0","#| fig.height: 4"
+"0","#| fig.width: 6"
+"0",""
+"0",""
+"0","p_indiff_curve"

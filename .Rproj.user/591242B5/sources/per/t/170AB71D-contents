@@ -1,0 +1,781 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+#    number-depth: 2
+title: "Liberalism under threat?"
+author: "Jonah Foong,   Lukas Antoine, Heiko Giebler, Macartan Humphreys, Ramus Ollroge"
+bibliography: ../../5_writeup/bib.bib
+params:
+  run: false
+---
+
+
+
+```{r}
+#| include: false
+
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
+
+library(broom.mixed)
+library(fastDummies)
+library(fixest)
+library(flextable)
+library(ggh4x)
+library(ggpubr)
+library(googledrive)
+library(grf)
+library(grid)
+library(haven)
+library(huxtable)
+library(kableExtra)
+library(knitr)
+library(officer)
+library(plotly)
+library(psych)
+library(readxl)
+library(rstatix)
+library(tidyverse)
+
+submission <- FALSE
+```
+
+
+```{r}
+
+# generate figures from datasets
+
+# read data
+
+df_clean <- 
+  read_rds("../../saved/df_clean.rds")
+
+df_reduced <- 
+  read_rds("../../saved/df_reduced_d.rds")
+
+dimensions <- data.frame(var_name = c(paste0("X", 1:6), "L", "X7"), 
+                         var_label = c('constrained government', 'democratic government', 'free markets', 'low taxes', 'tolerance', 'openness', "liberalism index", 'income'))
+
+# get main and random effects for all vars
+
+df_estimates <- read.csv("../../saved/pref_julia_freq_paper.csv") %>% 
+  rename_at(vars(c(std_error, std_dev, p_value)),
+            function(x) gsub("_", "\\.", x)) %>% 
+  mutate(var = str_replace_all(var, setNames(dimensions$var_label, dimensions$var_name)),
+         var = case_when(
+    model=="2b" & var=="liberalism index" ~ "induced liberalism index",
+    model=="2a" & var=="liberalism index" ~ "simple liberalism index",
+    TRUE ~ var
+  )) %>% 
+  rename(term = var)
+
+df_mod1 <- df_estimates %>% 
+  filter(model==1) %>% 
+  filter(term!="(Intercept)")
+
+df_mod1_fixefs <- df_mod1 %>% 
+  filter(type=="fixefs") %>% 
+  mutate(conf.low = estimate - (1.96*std.error),
+         conf.high = estimate + (1.96*std.error))
+
+df_mod1_ranefs <- df_mod1 %>% 
+  filter(type=="ranefs")
+
+# get main and random effects for lib ind and income
+
+df_mod_libind <- df_estimates %>% 
+  filter(model!=1) %>% 
+  filter(term!="(Intercept)")
+
+df_mod_libind_fixefs <- df_mod_libind %>% 
+  filter(type=="fixefs") %>% 
+  mutate(conf.low = estimate - (1.96*std.error),
+         conf.high = estimate + (1.96*std.error))
+
+df_mod_libind_ranefs <- df_mod_libind %>% 
+  filter(type=="ranefs")
+
+# get estimates for DML
+
+dml_params <- read_rds("../../saved/dml_params.rds")
+
+# get variables
+
+df_vars <- read.csv("../../1_input/data/var_labels_new_all.csv")
+
+# get countries and codes
+
+region_df <- readxl::read_xlsx("../../1_input/data/country_rename.xlsx") %>% 
+  select(country = new, code)
+
+```
+
+```{r}
+#| eval: !expr params$run
+
+# create plot for pooled main effects with income interactions
+
+list_dfs <- list(df_mod1_fixefs, df_mod_libind_fixefs)
+
+p_list <- 
+  lapply(1:length(list_dfs),
+         function(z){
+           
+           df_pooled <- list_dfs[[z]] %>% 
+             separate(term, into = c("first", "second"), sep = "_") %>% 
+             filter(if_any(c("first", "second"),
+                           .fns = function(x) x %in% c(NA, "income"))) %>% 
+             mutate(holder = "",
+                    second = ifelse(is.na(second), "main effects",
+                                    "income interactions") %>% 
+                      factor(levels = c("main effects", "income interactions")),
+                    type = ifelse(z==1, "pooled", "index"))
+           
+           if(z==1){
+             
+             df_pooled <- 
+               df_pooled %>% 
+               mutate(first = factor(first, 
+                                     levels = dimensions$var_label))
+             
+           } else {
+             
+             df_pooled <- 
+               df_pooled %>% 
+               filter(first!="income") %>% 
+               mutate(first = ifelse(model=="2b", "Model 2b: induced liberalism index",
+                                     "Model 2a: simple liberalism index") %>% 
+                        factor())
+             
+           }
+           
+           p_pooled_main <- df_pooled %>% 
+             ggplot() +
+             facet_grid(second~first, switch = "y",
+                        scales = "fixed",
+                        labeller = labeller(first = label_wrap_gen(width = 17), 
+                                            second = label_wrap_gen(width = 17))) +
+             geom_point(aes(x = estimate, y = holder, col = second)) +
+             geom_errorbar(aes(x = estimate, y = holder,
+                               xmin = conf.low,
+                               xmax = conf.high,
+                               col = second),
+                           size = 0.5,
+                           width = 0.2) +
+             geom_vline(xintercept = 0,
+                        col = "red", 
+                        linetype = "dashed") +
+             ggtitle(ifelse(z==1, "Model 1", "Models 2a and 2b")) +
+             ylab("") +
+             theme_bw() +
+             theme(legend.position = "none")
+           
+           if(z==1){
+             p_pooled_main <- 
+               p_pooled_main +
+               theme(axis.text.x = element_text(angle = 90)) +
+             scale_x_continuous(trans = scales::pseudo_log_trans(sigma = 0.01),
+                                breaks = c(-0.05, -0.025, 0, 0.025, 0.05, 0.1, 0.15, 0.25))
+             
+             grob <- ggplotGrob(p_pooled_main)
+             
+             grob$grobs[[which(grob$layout$name == sprintf("panel-2-%s",
+                                                           ifelse(z==1, "7", "2")))]] <- nullGrob()
+             
+             as_ggplot(grob)
+             
+           } else {
+             
+             p_pooled_main <- 
+               p_pooled_main +
+               scale_x_continuous(breaks = seq(0, 0.5, 0.1))
+             
+           }
+           
+         })
+
+p_pooled_main <- ggarrange(plotlist = p_list, nrow = 2) %>% 
+  annotate_figure(top = text_grob("Pooled estimates for main effects and income interactions", 
+               color = "black", face = "bold", size = 14))
+
+p_pooled_main %>% 
+  write_rds("saved/p_pooled_main.rds")
+
+p_list[[1]] %>% 
+  write_rds("saved/p_1.rds")
+
+p_list[[2]] %>% 
+  write_rds("saved/p_2.rds")
+
+```
+
+```{r}
+
+p_pooled_main <- read_rds("saved/p_pooled_main.rds")
+
+```
+
+```{r}
+#| eval: !expr params$run
+
+# plot twoway country level BLUPs
+
+df_all <- lapply(c("normal", "libind"),
+       function(z){
+         
+         if(z=="normal"){
+           
+           ranefs <- df_mod1_ranefs
+           fixefs <- df_mod1_fixefs
+           
+         } else {
+           
+           ranefs <- df_mod_libind_ranefs
+           fixefs <- df_mod_libind_fixefs
+         }
+         
+         fixefs <- fixefs %>% 
+           select(term, fixef = estimate, std.dev, model)
+         
+         ranefs <- ranefs %>% 
+           select(country, term, ranef = estimate, model) %>% 
+           left_join(fixefs) %>% 
+           filter(!grepl("_", term))
+         
+         ranefs <- ranefs %>% 
+           mutate(estimate = ranef + fixef,
+                  term = factor(term, levels = c(dimensions$var_label,
+                                                 "simple liberalism index",
+                                                 "induced liberalism index"))) %>% 
+           select(country, term, estimate, model) %>% 
+           left_join(region_df)
+         
+         left_df <- 
+           ranefs %>% 
+           filter(term!="income") %>% 
+           rename(xlab = term, y = estimate)
+         
+         right_df <- 
+           ranefs %>% 
+           filter(term=="income") %>% 
+           rename(ylab = term, x = estimate)
+         
+         ranefs <- 
+           left_df %>% 
+           left_join(right_df) %>% 
+           mutate(type = z)
+         
+         return(ranefs)
+         
+       }) %>% 
+  bind_rows()
+
+# plot
+
+line_df <- 
+  data.frame(x = seq(0, 0.5, length.out = 100)) %>% 
+  mutate(y = x, negy = -y)
+
+p_twoway_inc <- ggplot() +
+  geom_point(aes(x, y), col = "#98b6e4", 
+             data = df_all, size = 2) +
+  geom_text(aes(x, y, label = code), color = "black", nudge_y = 0.3, size = 2, 
+            data = df_all) + 
+  geom_line(aes(x, y), col = "red", linetype = "dashed", data = line_df) +
+  geom_line(aes(x, negy), col = "red", linetype = "dashed", data = line_df) +
+  facet_manual(~xlab, scales = "fixed",
+               design = matrix(1:8, 4, 2, byrow = TRUE),
+               labeller = labeller(xlab = label_wrap_gen(width = 18), 
+                                   ylab = label_wrap_gen(width = 18)),
+               strip.position = "top") +
+  theme_bw() +
+  geom_vline(xintercept = 0, size = 0.4, col = "black", linetype = "dashed") +
+  geom_hline(yintercept = 0, size = 0.4, col = "black", linetype = "dashed") +
+  scale_y_continuous(trans = scales::pseudo_log_trans(sigma = 0.01),
+                     breaks = c(-0.8, -0.4, -0.2, -0.1, -0.05, -0.025, 0, 0.025, 0.05, 0.1, 0.2, 0.4, 0.8)) +
+  scale_x_continuous(limits = c(0, 0.45)) +
+  ggtitle("Plot of all two way combinations for income") +
+  ylab("Liberal attribute") +
+  xlab(paste0("income\n\nCountries\n\n",
+       paste0(region_df %>% 
+                  mutate(legend = paste(code, "=", country)) %>%
+                  .$legend %>%
+                  paste(collapse = ", ")) %>% 
+           str_wrap(130))) + # in elsevier format have to change \n linebreak to <br>
+  ylab("Liberal attribute") +
+  theme(axis.title.x = ggtext::element_markdown(),
+        legend.position = "bottom")
+
+p_twoway_inc %>% 
+  write_rds("saved/p_twoway_inc.rds")
+
+```
+
+```{r}
+
+p_twoway_inc <- read_rds("saved/p_twoway_inc.rds")
+
+```
+
+
+
+
+```{r}
+#| eval: !expr params$run
+
+# tertiary analysis using only preregistered vars
+
+lm_formula_ter_pref <- "prefer ~ X.7 + L + W.1 + W.2 + W.3 + W.4 + W.5 + L*W.1 + L*W.2 + L*W.3 + L*W.4 + L*W.5 + L*W.2*W.4 + L*W.2*W.5"
+
+ter_vars <- data.frame(var_name = paste0("W.", 1:5),
+                       var_label = c("GDP", "Vdem", "hh income", 
+                                 "political exclusion", "economic exclusion")) %>% 
+  rbind(dimensions %>% 
+          mutate(var_name = gsub("X", "X\\.", var_name)))
+
+# using fixest since it's much quicker
+
+# we run on both aggregated and weighted liberalism index
+
+mod_ter_pref <- lapply(c("aggregated", "weighted"), function(x){
+  
+  if(x=="aggregated"){
+    
+    feols(as.formula(lm_formula_ter_pref),
+          df_reduced,
+          cluster = ~country,
+          weights = ~weight_indiv*weight_country)
+    
+  } else {
+    
+    feols(as.formula(lm_formula_ter_pref),
+          df_reduced %>% 
+            select(-L, L = L_define),
+          cluster = ~country,
+          weights = ~weight_indiv*weight_country)
+  }
+  
+})
+
+# tertiary breakdown
+
+vars <- paste0("X.", 1:6)
+
+all_f <- 
+  lm_formula_ter_pref %>% 
+  str_replace("L", paste(vars, collapse = "+")) %>% 
+  str_remove_all("prefer ~ |\\s") %>% 
+  str_split("\\+") %>% 
+  unlist()
+
+f1 <- 
+  all_f[!grepl("L", all_f)]
+
+f2 <- all_f %>% 
+  setdiff(f1)
+
+f_new <- paste0("prefer~", 
+                paste(f1, collapse="+"), "+", 
+                paste(f2 %>% sapply(function(x) str_replace(x, "L", vars)), collapse = "+"))
+
+mod_ter_pref_all <- feols(as.formula(f_new),
+                      df_reduced,
+                      cluster = ~country,
+                      weights = ~weight_indiv*weight_country)
+
+list_mods <- c(list(mod_ter_pref_all), mod_ter_pref)
+
+tidy_ter_all <- 
+  lapply(1:length(list_mods),
+         function(x){
+           
+           tidy(list_mods[[x]], conf.int = TRUE) %>% 
+             .[-1,] %>% 
+             filter(grepl("\\:", term)) %>% 
+             mutate(term = str_replace_all(term, 
+                                           setNames(ter_vars$var_label, ter_vars$var_name)),
+                    model = case_when(
+                      x==2 ~ "2a",
+                      x==3 ~ "2b",
+                      TRUE ~ "1"
+                    ))
+           
+         }) %>% 
+  bind_rows() %>% 
+  mutate(attr = factor(str_extract(term, 
+                                   paste(dimensions$var_label, collapse="|")),
+                       levels = dimensions$var_label),
+         term = str_remove(term, paste(paste0(dimensions$var_label, ":"), collapse="|"))) %>% 
+  filter(!is.na(attr)) %>% 
+  mutate(term = str_replace_all(term, "\\:", "*\n") %>% 
+           factor(levels = unique(.)),
+         attr = case_when(
+           model=="2a" & attr=="liberalism index" ~ "simple liberalism index",
+           model=="2b" & attr=="liberalism index" ~ "induced liberalism index",
+           TRUE ~ attr
+         ) %>% 
+           factor(levels = c(dimensions$var_label,
+                             "simple liberalism index",
+                             "induced liberalism index")))
+
+write.csv(tidy_ter_all, "../../saved/ter_all_coefs.csv", row.names = FALSE)
+
+p_ter_all <- 
+  tidy_ter_all %>% 
+  ggplot(aes(x = estimate, y = term)) +
+  geom_point(position = position_dodge(0.5)) +
+  facet_grid(~attr, labeller = labeller(attr = label_wrap_gen(width = 18))) +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), 
+                position = position_dodge(0.5), width=0.2) +
+  geom_vline(xintercept = 0, col = "red", linetype = "dashed") +
+  ggtitle("Tertiary analysis") +
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45)) +
+  ylab("") +
+  scale_x_continuous(trans = scales::pseudo_log_trans(sigma = 0.01),
+                     breaks = c(-.05, 0, .05, .15))
+
+p_ter_all %>% 
+  write_rds("saved/p_ter_all.rds")
+
+```
+
+```{r}
+
+p_ter_all <- read_rds("saved/p_ter_all.rds")
+
+```
+
+```{r}
+#| eval: !expr params$run
+
+# generate indifference curves
+
+# generate from data before differencing; split outcome into binary choice instead of rating
+
+df_indiff <-
+  df_clean %>%
+  mutate(pref_option = ifelse(prefer>2, "B", "A")) %>%
+  group_by(part_id, vignette) %>%
+  mutate(prefer = if ("A" %in% pref_option) 1:0 else 0:1) %>% 
+  mutate(X.7 = case_when(
+    X.7==0 ~ 1,
+    X.7==(1/3) ~ 2,
+    X.7==(2/3) ~ 3,
+    X.7==1 ~ 4
+  ),
+  L = L*6)
+
+# use rating instead of binary choice
+
+# df_indiff <- 
+#   df_clean %>% 
+#   group_by(part_id, vignette) %>% 
+#   mutate(prefer = c(5-prefer[2], prefer[2])) %>% 
+#   ungroup()
+
+# normalize to 0-1
+
+# df_indiff <- 
+#   df_indiff %>% 
+#   mutate(prefer = (prefer - min(prefer, na.rm = TRUE))/(max(prefer, na.rm = TRUE) - min(prefer, na.rm = TRUE)))
+
+L_levels <- sort(unique(df_indiff$L))
+inc_levels <- sort(unique(df_indiff$X.7))
+
+# get utility from raw data
+
+conditions <- expand.grid(L = L_levels, inc = inc_levels)
+
+# get utility from raw data
+
+utils <-
+  lapply(1:nrow(conditions), function(x){
+    
+    Lib <- conditions$L[x]
+    inc <- conditions$inc[x]
+    
+    pref <- 
+      df_indiff %>% 
+      filter(L==Lib & X.7==inc) %>% 
+      .$prefer
+    
+    conditions[x,] %>% 
+      mutate(prefer = mean(pref, na.rm = TRUE),
+             n = length(pref))
+  }) %>% 
+  bind_rows()
+
+median_prof <- df_indiff %>% 
+  arrange(L, X.7) %>% 
+  .[round(median(1:nrow(df_indiff))), c("L", "X.7")] %>% 
+  rename(inc = X.7)
+
+m_pref <- left_join(median_prof, utils) %>% 
+  .$prefer
+
+p_indiff_curve <- utils %>% 
+  mutate(prefer = prefer-m_pref) %>% 
+  ggplot() +
+  geom_point(aes(inc, L, col = prefer), alpha = 0) +
+  geom_contour_filled(aes(x = inc, y = L, z = prefer), 
+                      binwidth = 0.015,
+                      show.legend = FALSE) +
+  # geom_text(aes(inc, L, label = round(prefer, 2)), left_join(median_prof, utils) %>% 
+  #             select(-n),
+  #           col = "white", alpha = 0.5, angle = -25) +
+  ggtitle("Indifference curves between income and liberal values",
+          subtitle = "Selection probabilities are differences from that of the median profile") +
+  xlab("Income") +
+  ylab("Liberal index") +
+  theme_minimal() +
+  scale_color_viridis_c(guide = guide_colourbar(title = "Probability \ndifference"),
+                        limits = c(-0.15, 0.15), breaks = seq(-0.15, 0.15, length.out = 7)) +
+  scale_y_continuous(breaks = 0:6)
+
+p_indiff_curve %>% 
+  write_rds("saved/p_indiff_curve.rds")
+
+```
+
+
+```{r}
+
+p_indiff_curve <- read_rds("saved/p_indiff_curve.rds")
+
+```
+
+<!-- cronbach's alpha and correlation plot -->
+
+```{r}
+#| eval: !expr params$run
+
+df_cor <- df_mod1_ranefs %>% 
+  mutate(term = str_replace_all(term, setNames(dimensions$var_name, dimensions$var_label))) %>%
+  filter(!grepl("_", term)) %>% 
+  pivot_wider(id_cols = "country",
+              names_from = "term",
+              values_from = "estimate") %>% 
+  select(-country)
+
+cb_alpha <- df_cor %>%
+  alpha(check.keys = TRUE)
+
+cb_alpha %>% 
+  write_rds("saved/cb_alpha.rds")
+
+cormat <- cor(df_cor)
+
+upper_tri <- cor_test(df_cor %>% select(-X7)) %>% 
+  filter(var1!=var2) %>% 
+  mutate(across(c(var1, var2), 
+                function(x) str_remove(x, "X") %>% as.numeric)) %>% 
+  filter(var1<var2) %>% 
+  mutate(across(c(var1, var2), function(x) paste0("X", x))) %>% 
+  mutate(stars = ifelse(p<.05, "*", ""),
+         stars = ifelse(p<.01, "**", stars),
+         cor2 = paste0(cor, stars)) %>% 
+  mutate(across(c(var1, var2), 
+                function(x) str_replace_all(x, setNames(dimensions$var_label, dimensions$var_name)) %>% factor(levels = dimensions$var_label)))
+
+cor_plot <- upper_tri %>% 
+  ggplot(aes(var2, var1, fill = cor, label = cor2)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", high = "red", 
+                       mid = "white", 
+                       midpoint = 0, limit = c(-1,1), 
+                       space = "Lab", 
+                       name = "Pearson\nCorrelation") +
+  geom_text(col = "black") +
+  theme_minimal() + # minimal theme
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    legend.justification = c(1, 0),
+    legend.position = c(0.5, 0.6),
+    legend.direction = "horizontal") +
+  guides(fill = guide_colorbar(barwidth = 10, barheight = 2,
+                               title.position = "top", title.hjust = 0.5)) +
+  scale_y_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 8)) +
+  ggtitle("Correlation heatmap of liberal attributes")
+
+cor_plot %>% 
+  write_rds("saved/cor_plot.rds")
+
+```
+
+```{r}
+
+cb_alpha <- read_rds("saved/cb_alpha.rds")
+cor_plot <- read_rds("saved/cor_plot.rds")
+
+```
+
+
+```{r}
+
+# helper function to extract estimates
+
+tidy_ter_all <- read.csv("../../saved/ter_all_coefs.csv")
+
+df_mod_ter_all <- tidy_ter_all %>%
+  mutate(term = paste0(attr, "*", term) %>%
+           gsub("\\n", "", .) %>%
+           str_replace_all("\\*", "\\_"))
+
+draw_est <- function(mod = "pri",
+                     var = "income",
+                     est = "estimate",
+                     model_n = "1",
+                     country_name = NULL,
+                     sf = 3){
+  
+  if(mod=="pri"){
+    df <- df_estimates %>% 
+      filter(type=="fixefs" & model==model_n)
+  } else if(mod=="sec"){
+    df <- df_estimates %>% 
+      filter(type=="ranefs" & model==model_n) %>% 
+      filter(country==country_name)
+  } else if(mod=="ter"){
+    df <- df_mod_ter_all
+  }
+  
+  df %>% 
+    filter(term==var) %>%
+    .[[est]] %>%
+    round(sf)
+}
+
+
+```
+
+
+
+# Design
+
+## Conjoint table
+
+```{r}
+
+
+attributes <- str_to_title(dimensions$var_label %>% 
+                             setdiff("liberalism index"))
+
+illiberal <- c("The government is free to make decisions that it thinks are good for society as a whole even if these go against the rights of minority groups.",
+               "Most major policy decisions are controlled by government experts and not by elected representatives.",
+               "The government tries to ensure that the economy is strong by actively controlling major industries.",
+               "Taxes are relatively high so that the government can ensure greater equality in society.",
+               "Homosexual relationships are penalized.",
+               "The government makes sure that immigration is kept to a minimum to protect the nation's culture.",
+               "The income per capita is around (3,500 / 23,000 / 43,000 / 63,000) USD. For comparison: in (COUNTRY), the income per capita is (NATIONAL GDP PER CAPITA IN USD) USD per year.")
+
+liberal <- c("The government is not free to make decisions that it thinks are good for society as a whole if these go against the rights of minority groups.",
+             " Most major policy decisions are controlled by democratically elected representatives not by government experts.",
+             " The government tries to ensure that the economy is strong by putting few controls on major industries.",
+             "Taxes are kept low so that individuals, and not the government, get to decide how best to use their money.",
+             "Homosexual couples have the same rights as heterosexual couples.",
+             "The government encourages talented foreigners to come to work as this enriches the nation's culture.",
+             "")
+ cj_tbl <- data.frame(Attributes = attributes, `Illiberal treatment` = illiberal,
+            `Liberal treatment` = liberal) 
+ 
+ cj_tbl %>% kable(booktabs = TRUE, escape = FALSE,
+         col.names = c("Attributes", "Illiberal treatment", "Liberal treatment")) %>%
+#   kable_styling(full_width = FALSE) %>%
+   kable_styling(font_size = 12) |>
+   column_spec(1, width = '2cm') %>%
+   column_spec(2:3, width = '8cm') %>%
+   row_spec(6, hline_after = TRUE)
+
+```
+
+
+# Main effects
+
+
+
+## Index
+
+```{r}
+#| fig.height: 4
+#| fig.width: 9
+#| fig-env: "figure*"
+#| fig-cap: "Pooled estimates for main effects and income interactions with 95% confidence intervals. The $x$-axes for model 1 are log transformed for readability. "
+
+
+read_rds("saved/p_1.rds")
+
+```
+
+## Subcomponents 
+
+```{r}
+#| fig.height: 4
+#| fig.width: 9
+#| fig-env: "figure*"
+#| fig-cap: "Pooled estimates for main effects and income interactions with 95% confidence intervals. The $x$-axes for model 1 are log transformed for readability. "
+
+
+read_rds("saved/p_2.rds")
+
+```
+
+## Tradeoffs
+
+```{r}
+#| label: fig-indiff
+#| fig-cap: "Indifference curves between income and liberal values. Our indifference curves were constructed by laying contour lines over a 7 by 4 matrix, where rows correspond to our constructed index of liberalism and columns are a profile’s income, while matrix values are differences in selection probabilities for a profile with any combination of the two qualities in comparison to the median profile (income = 3, index = 3)."
+#| fig.height: 4
+#| fig.width: 6
+
+
+p_indiff_curve
+
+
+```
+
+## Heterogeneity 1
+
+```{r}
+#| fig.height: 11.5
+#| fig.width: 10
+#| label: fig-twoway-inc-unscaled
+#| fig-env: "figure*"
+#| fig-cap: "Two-way relationship of random effect estimates between income and select liberal features at country level. The red dashed line corresponds to when slope is equal to 1. Note that to ease presentation and interpretation, we use a log scale on the $y$-axis."
+
+
+p_twoway_inc
+
+
+```
+
+
+
+## Correlates of contestations I
+
+```{r}
+#| fig.height: 6
+#| fig.width: 10
+#| label: fig-ter-all
+#| fig-env: "figure*"
+#| fig-cap: "Effects of conjoint features moderated by individual and national level moderators. Columns represent an individual conjoint feature or liberalism index that is interacted with the rows."
+
+
+p_ter_all
+
+
+```
+

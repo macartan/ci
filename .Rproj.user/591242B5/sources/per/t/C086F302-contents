@@ -1,0 +1,632 @@
+\firstpage[5]{3}
+
+
+Scholars have highlighted multiple challenges to liberal values around the world. Despite a predicted universal convergence toward liberal democracy [@fukuyama_end_1992; @inglehart_modernization_2005; @welzel_freedom_2013], for instance, there are many recent cases of "democratic backsliding," including in Brazil, India, Hungary, Tunisia, and the USA [@papada_democracy_2023]. In 2018, Hungary’s prime minister Viktor Orbán pronounced the era of liberalism over [@santora_secure_2018] while Russia’s president Vladimir Putin declared liberalism obsolete [@barber_vladimir_2019].  According to Reporters without Borders, the number of countries with "difficult" or "very serious" contexts for media freedom has increased from 32 to 40 percent between 2013 and 2023 [@reporters_without_borders_2023_2023]. In its recent report, the V-Dem Institute shows that there are more autocracies than liberal democracies for the first time in more than 20 years [@papada_democracy_2023]. In some accounts these trends are accompanied by a substantial backlash in public opinion against liberal social values [@norris_cultural_2019]. In others, liberalism itself is in crisis [@forrester_crisis_2019].
+
+
+Empirically, however, we know surprisingly little about the extent to which citizens actually value living in liberal societies and how these values vary across contexts.  A wealth of public opinion research focuses on support for democracy in particular [@kotzian_public_2011] or for different types of democratic regimes [@ferrin_pereira_how_2016]. Other work has focused on liberalism as a pole on a one-dimensional scale [@bakker_conservatives_2020; @swigart_working_2020]. While informative, this work does not take account of the fact that liberalism has long been thought of as a multidimensional and contested concept [@dworkin_liberalism_1978; @abbey_is_2005]. As described by @bell_what_2014, liberalism can usefully be thought of as a bundle: the "sum of the arguments that have been classified as liberal, and recognised as such by other self-proclaimed liberals, over time and space." Understanding threats to liberalism requires an understanding of threats to its component parts and the extent to which these threats go together. Doing this calls for a specific empirical identification strategy and data.
+
+
+In this study we contribute to this debate by documenting the distribution of support for liberalism---and components of liberalism---using a survey experimental design across a large, 26 country, sample. The key feature of the experimental design is that it lets us assess the relative weight citizens place on liberal features of a society, both individually and in combination with each other, and assess how these weights compare to weights placed on economic prosperity as a benchmark. Our focus is on choices, not on ideals, as we assess specifically whether institutional features of countries that reflect liberal values affect how individuals evaluate societies. We build on experimental work by others  (e.g., @adsera_estimating_2023, @arceneaux_is_2020, @bernauer_free_2015, @lahav_ideological_2012, @rojon_engaged_2021, @seki_assessing_2023) but extend both the conceptual and geographical reach, allowing for a rich analysis of both the individual and state-level sources of variation in valuations across multiple dimensions.   
+
+
+Drawing on scholarly work on liberalism [@freeden_liberalism_2015; @wall_introduction_2015; @zurn_target_2021], we identify six components commonly---though not universally---associated with liberalism. These include constrained government and democratic government (political sphere), free markets and low taxes (economic sphere), and tolerance and openness (societal sphere). We then translate these abstract components into specific features that might be present in a country and assess how these features affect in which way individuals assess these countries. Of course, different accounts vary in the extent to which they see different dimensions as being constitutive of liberalism. A merit of our approach is that we do not have to commit to a particular definition of liberalism and can instead assess, from data, the extent to which different aspects "go together." Indeed we can, and do, go further by using survey experimental methods to assess how citizens interpret liberalism and then base index  weightings on citizens’ responses.
+
+
+We find on average that respondents put positive weight on liberal features, though there is marked variation across dimensions. While democratic government and lower tax rates are strongly preferred, for example, average support for free market institutions is weak. Our benchmarking indicates that while citizens are willing to trade-in liberal values for a better economic situation, liberal features weigh strongly in evaluations. We also find strong cross-country polarization on certain features and that the weight on different features is moderated by national- and individual-level factors such as wealth and measures of feeling politically excluded. 
+
+
+While we document broad support for liberal values, our study also highlights the limits of liberalism as an analytic concept: threats to liberalism mean substantively different things in different places, and, for this reason, we should not expect common drivers of threats across societies. Indeed we find that features that predict threats to one dimension do not necessarily predict threats to other dimensions. All in all, our study implies that describing people’s preferences toward "liberalism" as a broad, well structured ideal fails to reflect the varied ways in which citizens actually view different liberal values. In this sense we provide an empirical analogue to the theoretical critique given in @bell_what_2014 and countered in @dworkin_liberalism_1978.
+
+
+Our paper is organized as follows. In the next section we describe our data and outline our research design while Section @sec-est describes our estimation strategies and the measures used. Section @sec-results details the results from our analyses which is then followed by a section on robustness checks and exploratory work. We conclude with discussing our findings and presenting their implications.
+
+
+# Data and Research Design {#sec-data}
+
+
+We use data from a comparative public opinion survey, `r ifelse(submission, "XX", "the Public Attitudes towards the Liberal Script (PALS) survey")`, which collected data on 54,000 individuals in 26 countries between December 2021 and July 2022`r ifelse(submission, " [@giebler_public_2023-1]", "")`. The survey is part of a larger, interdisciplinary research network called `r ifelse(submission, "XX", "Contestations of the Liberal Script (SCRIPTS)")`, funded by the `r ifelse(submission, "XX", "German Science Foundation")`. Countries were selected with the aim of maximizing geographical, political, and economic variation subject to practical constraints. The population consisted of permanent residents aged 18 or older living in private households. Data were collected using computer-assisted web-interviews (CAWI) with quota sampling as well as random-probability samples applying computer-assisted personal-interviews (CAPI) depending on the country context.[^1]
+
+
+[^1]:  See Appendix section @sec-survey for an overview of survey countries, sample sizes, modes, and questionnaire languages. See `r ifelse(submission, "XX (2023)", "@giebler_public_2023")` for a detailed description of the survey, its content, and the underlying methodology.
+
+
+Using a pre-registered design, we measure citizens’ preferences using a conjoint experiment in which we presented respondents (twice) with two hypothetical countries profiles that differed across seven features (see Table \ref{tbl-conjoint}).[^2] 
+
+
+Six of the seven features correspond to institutional characteristics of societies that embody liberal values. Each feature has two possible levels that reflect a liberal and an illiberal treatment spanning what are sometimes thought of as the political, economic, and social dimensions of liberalism [@dunn_western_1979; @freeden_liberalism_2015; @wall_introduction_2015; @zurn_target_2021]. In particular, we look at constrained government and democratic government for the political sphere. The constrained government dimension is operationalized by levels describing limitations on the ability of majorities to take actions that threaten minority rights.  The democratic government dimension is operationalized by levels describing functional allocations between experts and elected representatives. The economic sphere focuses on "free markets", operationalized with a focus on government control of major industries, and "low taxes", with an operationalization that pits individual versus government control over the use of resources. These reflect classic conceptions of liberalism from @locke_second_2016 to @hayek_road_1976, though both positions are contested by many liberals, with some even possibly taking opposite positions on which pole is more liberal (see again @dworkin_liberalism_1978). Finally, "tolerance"  and "openness" are operationalized with a focus on the legal status of homosexuality and immigration policy respectively. Here, we emphasize features that reflect the liberal values of individual self-determination and an open society and are topics of live discussion globally. We are conscious that the six dimensions we focus on are themselves complex, and each can be conceptualized at a more abstract or more concrete level. Moreover our operationalizations of these dimensions do not, and cannot, capture the many different aspects of these dimensions. Nevertheless we believe that separating out these six dimensions and assessing empirical support for them individually and in combination is an important advance over much existing work. 
+
+
+The final feature in the conjoint experiment relates to the countries’ economic situation and has four treatment levels. We distinguish different levels of income per capita and also provide the actual income level in the respondent’s country to make the figures easier to evaluate. We use this feature as a benchmark for comparing preferences towards liberal values since we assume universal preferences for economically better off countries.[^3] 
+
+
+Altogether, our design yields $4 \times 2^6 = 256$ possible profiles. For each comparison, subjects were shown a pair of profiles selected at random from the $256 \times 255$ possible distinct pairs. They were then asked to indicate which of the two countries they would prefer to live in, using a four-point scale (1 = I strongly prefer Country A; 2 = I somewhat prefer Country A; 3 = I somewhat prefer Country B; 4 = I strongly prefer Country B). They were then asked to repeat the same process for a different set of country profiles as a second task. For each respondent, we randomized the order in which the seven dimensions were shown but used the same ordering for both tasks.  The same procedure is used in all study countries giving rise, in all, to 107,920 choice tasks (profile comparisons) by 53,960 respondents in 26 countries.
+
+
+Importantly, after the second task, we also ask citizens to indicate which of the two country profiles they think to be more "liberal." Given the conjoint design we are able to use this question to generate weights that reflect how important citizens believe these different dimensions are when assessing if a society is more or less liberal.    
+
+
+Our choice of a conjoint experiment stands in contrast to other comparative survey projects like the World Value Survey or the International Social Survey Programme. Unlike typical survey questions, estimates from a conjoint analysis capture how features are valued as part of a package of features; this allows us to understand the trade-offs respondents make between values when asked to make choices and is well suited to measure multidimensional preferences.  
+
+
+We note that one important criticism of conjoint experiments does not apply to our application. Conjoint experiments are sometimes criticized because the profiles do not reflect the true distribution of profiles in the population [@de_la_cuesta_improving_2022]. This is important for instance  if our interest would be in assessing to what extent is a given dimension important for explaining the selection of countries of migration. But it is not relevant for assessing the weight different liberal values have relative to each other in an individual’s assessments. A second criticism does apply: we are ultimately engaged in measurement of individual preferences as revealed through hypothetical choices and do not capture causal effects of changes in institutional features on actual decisions. 
+
+
+[^2]: Pre-registration materials can be viewed at `r ifelse(submission, "XX", "https://osf.io/btg8d")`. We implement all pre-registered analyses as planned but we also add additional analyses, particularly using the second liberalism index. Differences between the registered design and this paper are detailed in SI appendix @sec-deviations.
+
+
+[^3]: Using 2020 World Bank [@world_bank_world_2023] data , the lowest value represents the GDP per capita in Senegal while the highest level refers to the respective figure in the USA. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+#| child: input/conjoint_table.qmd
+
+
+```
+
+
+```{r}
+#| fig.height: 7
+#| fig.width: 9
+#| label: fig-pooled-main
+#| fig-env: "figure*"
+#| fig-cap: "Pooled estimates for main effects and income interactions with 95% confidence intervals. The $x$-axes for model 1 are log transformed for readability. "
+
+
+p_pooled_main
+
+
+```
+
+
+# Estimation approach and empirical measures {#sec-est}
+
+
+Our key analyses use multilevel regression. In all analyses, we use the four-point outcome measure as presented above and all liberal features are coded as dummy variables. For ease of interpretation, we rescale our income variable to values between 0 and 1. For some analyses, we also use an index of liberalism which we construct in two ways. The first is a simple sum score of the number of liberal treatments in a country profile which we also rescale to values between 0 and 1. For the second, we use a separate question in our conjoint experiment to recover how much weight the average respondent places on each dimension when assessing how liberal a profile is.[^4] We then use a simple sum of these weights to construct a weighted liberalism index. In both cases the index runs from 0 (no liberal treatments included) to 1 (all liberal treatments included).
+
+
+[^4]: We use only a single, pooled set of weights rather than country level weights. `r paste0("The weights are ", paste(text_lib$term[1:5], collapse = ", "), ", and ", text_lib$term[6], ".")` Details of the estimation can be found in the appendix Section @sec-lib-wt.
+
+
+We present our main results graphically and provide detailed results in the appendix.  The analysis is separated into three parts: First, we investigate what weights respondents place on liberal values and whether these weights are moderated by the feature measuring the economic situation. Our primary target of interest here is the Average Marginal Component Effect (AMCE): the marginal effect of moving from an illiberal to liberal treatment for a feature (or from low to high average income), averaged across all possible combinations of other features, on a respondent’s choice [@hainmueller_causal_2014]. To estimate the AMCEs, we use a multilevel linear regression model (Model 1) with all two-way interactions between conjoint features as the explanatory variables and including post-stratification weights, allowing for random effects for each dimension for each country.[^5] We demean all variables before fitting our models, which lets us interpret the point estimates for main effects as the marginal effect when all other features are at the level of the empirical mean. This estimation is repeated with a model including the index of liberalism as the independent variable (Model). Following common practice [@schuessler_power_2020], we do not control for the fact that each respondent completed two tasks in any of the estimation models. 
+
+
+Second, we analyze cross-national heterogeneity. We do this by focusing on random effect estimates for all features taken from both Model 1 and Model 2. All random effect estimates for liberal features are then plotted against the respective estimates for the economic situation. This information is used to infer country heterogeneity in preferences for liberal values and in  the relative importance of liberal values to our economic benchmark.   
+
+
+Finally, we examine heterogeneous effects at the individual and country level using a linear regression (Model 3). We use the index of liberalism as the main independent variable and interact it with a set of pre-identified items from the `r ifelse(submission, "XX", "PALS")` survey as well as secondary country-level data. On the respondent level, we use subjective measures of political and economic exclusion as well as household income.[^6] On the country level, we add GDP (PPP) per capita figures from the World Bank [@world_bank_world_2023] and the V-Dem liberal democracy index [@coppedge_v-dem_2022].[^7] As in Model 1 and 2, all independent variables are demeaned.
+
+
+
+
+
+[^5]: Post-stratification weights are generated based on age, gender, education, region of living, and residential environment.
+
+
+[^6]: The wording of the items can be found in the Appendix.
+
+
+[^7]: We use 2021 figures, which is the year the survey was rolled out.
+
+
+# Results {#sec-results}
+
+
+## Analysis 1: Do citizens prefer liberal societies? {#sec-pri}
+
+
+Figure @fig-pooled-main displays the estimates from Models 1 and 2. The red estimates correspond to the main effects, representing moving from the illiberal to the liberal treatment (and the index of liberalism going from illiberal to fully liberal). The blue estimates represent two-way interactions between the liberal dimension (or index) and the benchmark feature.[^8] 
+
+
+For Model 1, the largest AMCE is that for income, at `r draw_est("pri", "income", "estimate")` ($SE =`r draw_est("pri", "income", "std.error")`$). That respondents place a great amount of weight on the economic situation is unsurprising, though it is also worth noting that our estimate reflects moving from the lowest to highest average income level.[^9] Of the six liberal features, three stand out for particularly strong effects. The strongest is for our tolerance indicator: support for the legal status of homosexuality ($\beta =`r draw_est("pri", "tolerance", "estimate")`, SE = `r draw_est("pri", "tolerance", "std.error")`$). This is followed by low taxes ($\beta = `r draw_est("pri", "low taxes", "estimate")`, SE =`r draw_est("pri", "low taxes", "std.error")`$) and democratic government ($\beta = `r draw_est("pri", "democratic government", "estimate")`, SE = `r draw_est("pri", "democratic government", "std.error")`$). We only find a weak effect for openness ($\beta = `r draw_est("pri", "openness", "estimate")`, SE =`r draw_est("pri", "tolerance", "std.error")`$) relative to other main effects and, notably, very small and imprecise effects for constrained government as well as free markets. Finally, we also find strong effects for both indices of liberalism (lower panel of Figure @fig-pooled-main). Regardless whether we use simple aggregation or weighting to construct the index, more liberal profiles are strongly preferred. Effects for the income benchmark are similar in size across both specifications of the index, with citizens putting greater weight on liberal values when picking the preferred society (see Table @tbl-pri  in the appendix).  
+
+
+The first core finding suggests relatively robust support for liberalism, with four out of six liberal features as well as the indices showing a significant effect and some of these effects being substantial in comparison to the economic benchmark. Liberal values are less under threat globally than one might expect, at least on average. We do not find evidence for negative average weights for any dimension. Nevertheless, we do find support for some dimensions is modest. Most striking, free markets, which in some accounts is a core institution of liberalism, plays no role (on average) when deciding between different country profiles.  
+
+
+[^8]: Model 1 also includes two-way interactions between all six liberal features. However, we only focus on the relationship of liberal features to our benchmark feature.
+
+
+[^9]: From USD 3,500 to USD 63,000, or the difference in average income between Senegal and the US.
+
+
+
+
+
+
+
+
+
+
+
+Regarding interactions with average income levels, we might expect that valuation of liberal features would increase as income increases, consistent with the literature on prerequisites of democracy (e.g., @lipset_social_1959). We find little evidence for this idea. The strongest interactions are with the tolerance ($\beta=`r draw_est("pri", "tolerance_income", "estimate")`, SE=`r draw_est("pri", "tolerance_income", "std.error")`$) and openness ($\beta=`r draw_est("pri", "openness_income", "estimate")`, SE=`r draw_est("pri", "openness_income", "std.error")`$) features. However, neither of these come close to conventional significance thresholds. There is a significant though relatively small interaction of liberalism indices and the income feature, suggesting that the weight on liberal features is increased by about a third in the wealthiest societies relative to the poorest societies.   
+
+
+These results raise the question of whether citizens are willing to *trade off* liberal values for a better economic situation or whether respondents are willing to accept lower income levels if country features more strongly reflect liberal values. Figure @fig-indiff  provides an answer using raw data to show the average selection probability of a profile as a function of the average income feature and the simple liberalism index.[^10] The probabilities are presented relative to the median country profile. The lines can be interpreted as indifference curves and correspond to combinations of features that yield the same selection probability.
+
+
+As expected, we find lower selection probabilities in the bottom left (illiberal profiles with low average income) and the highest values in the top right (very liberal profiles with very high average income). The willingness to tradeoff can be read off from the slope of the indifference curves. If respondents valued only liberal features the lines would be perfectly horizontal; if they valued only income they would be vertical. Curvature in indifference curves would indicate that the willingness to give up on one dimension for a gain on the other depends on one’s situation on the two dimensions.   We see here that the indifference curves are somewhat flat and are consistently linear. This suggests that the average respondent views societal income and liberal values as substitutable qualities. To provide a more substantial interpretation: a poor country profile including four liberal features has about the same selection probability as a rich country profile with no liberal features. By the same token there is no difference in income that would induce an (average) individual to prefer a country with no liberal features to one with all six.
+
+
+[^10]: For easier interpretation, we mirror outcomes from a forced-choice conjoint by transforming our variables from Likert scale into a binary variable. Results do not differ visibly when we use ratings instead of selection probability or when we use the alternative liberalism index.
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+#| label: fig-indiff
+#| fig-cap: "Indifference curves between income and liberal values. Our indifference curves were constructed by laying contour lines over a 7 by 4 matrix, where rows correspond to our constructed index of liberalism and columns are a profile’s income, while matrix values are differences in selection probabilities for a profile with any combination of the two qualities in comparison to the median profile (income = 3, index = 3)."
+#| fig.height: 4
+#| fig.width: 6
+
+
+p_indiff_curve
+
+
+```
+
+
+
+
+
+## Analysis 2: Cross-country heterogeneity {#sec-sec}
+
+
+```{r}
+#| fig.height: 11.5
+#| fig.width: 10
+#| label: fig-twoway-inc-unscaled
+#| fig-env: "figure*"
+#| fig-cap: "Two-way relationship of random effect estimates between income and select liberal features at country level. The red dashed line corresponds to when slope is equal to 1. Note that to ease presentation and interpretation, we use a log scale on the $y$-axis."
+
+
+p_twoway_inc
+
+
+```
+
+
+
+
+
+To characterize how much respondents’ preferences vary between countries, we extract the country-level random effects for each feature from Model 1 and for the index of liberalism from Model 2. Figure @fig-twoway-inc-unscaled shows the liberal features’ estimates plotted against the country-level random effect for the economic situation.[^11] 
+
+
+We start by looking at the variation on the vertical axis of each subplots – these represent the coefficients of the six liberal features as well as the index of liberalism. Points above the upper dotted line or below the lower dotted line correspond to countries where a given feature receives more weight on average, than income.
+
+
+We see that there is substantial variation across countries, but that this variation itself varies considerably across dimensions. The democratic feature is the only feature that exclusively produces positive coefficients. In contrast, our operationalization of the tolerance dimension, capturing the legal status of homosexuality, displays striking variation with both large positive and negative effects. This means that in several countries, people strongly prefer to live in societies in which homosexuality is illegal while others prefer to live in countries where homosexuality is legal. This is the only feature for which weights are typically larger in magnitude (both positive and negative) than the weight on income. With one exception (free markets), we find more positive than negative weights for liberal features. This echoes our finding above that on average citizens tend to prefer liberal over illiberal values. However, this is not the case everywhere or, at least, not to the same degree. 
+
+
+The random coefficients for our index of liberalism highlight this heterogeneity. Despite overall positive weightings, we see small coefficients for some countries and there are five countries (Ghana, India, Indonesia, Tunisia, and Senegal) in which more liberal country profiles are less preferred than less liberal profiles. In all these cases, the overall score is pulled down by the weight on tolerance.  This is also true for our induced index, which places even more weight on tolerance. 
+
+
+We also see from the figure that respondents in different countries weight different features differently even if they appear to put similar weight on the liberalism index. Indeed support for some dimensions is weakly or even negatively correlated with support for others and simple tests, such as Cronbach’s alpha, do not support the proposition that there is an underlying attitude towards liberalism that explains preferences across these different features (see SI appendix @sec-correlation).  To illustrate, citizens in Russia and Peru appear to place similar weights on "liberalism" as operationalised by our simple index.  In Russia this derives from support for low taxes despite opposition to our operationalization of the tolerance dimension (legal status of homosexuality). In Peru there is less support for low taxes but much more positive support for homosexual rights. Moreover income is seen as more important than all of these features in Russia, relative to Peru. Thus when we say that countries value liberal institutions similarly this might not imply any agreement with respect to any particular values.
+
+
+All in all, our aggregate findings above are supported by the more fine-grained analyses focusing on country-specific estimates. However, there are marked differences between countries and across features. The overall support for liberalism masks the fact that different features are valued differently in different countries.  
+
+
+
+
+
+[^11]: Also referred to as Best Linear Unbiased Predictors (BLUPs).
+
+
+
+
+
+## Analysis 3: Correlates of liberal preferences {#sec-ter}
+
+
+Our results so far allow us to recover aggregate- and country-level weights citizens place on liberal values when asked about their preferred society. In our third analysis, we focus on a small set of pre-registered correlates of support for liberal values. At the country level, we examine the moderating effects of economic development (GDP per capita) and a measure of liberal democracy (using V-Dem data). We expect that respondents in countries that are richer or classified as more democratic are likely to put more weight on liberal values. At the individual level, we expect that respondents who feel politically and economically excluded will be more opposed to liberal values if they live in predominantly liberal societies. This stems from a disillusionment logic, whereby people in liberal societies who feel that they do not benefit from liberalism become more resentful towards liberal values. We also expect that one’s personal economic situation, measured using household income correlates with values.
+
+
+For this analysis, we use our index of liberalism and interact it with the different correlates of interest (Model 3), all scaled to have unit standard deviation. Figure @fig-ter-all reports estimates from the regression for all two- and three-way interactions of interest.[^12] 
+
+
+
+
+
+
+
+
+
+
+
+At this aggregate level we find that preferences for liberal values are strongly and positively moderated by a country’s economic development level and its V-Dem score, though this is very imprecisely estimated for the latter. On the individual level, we find strong evidence of disillusionment: being politically excluded in a liberal society is associated with weaker support for liberal institutions  ($\beta =$ `r draw_est("ter", "simple liberalism index_Vdem_political exclusion", "estimate", model_n = "2a")`, $SE =$ `r draw_est("ter", "simple liberalism index_Vdem_political exclusion", "std.error", model_n = "2a")`). The analogous effect for the three-way interaction concerning feeling economically excluded points into the same direction, but is not statistically significant. 
+
+
+
+
+
+```{r}
+#| fig.height: 6
+#| fig.width: 10
+#| label: fig-ter-all
+#| fig-env: "figure*"
+#| fig-cap: "Effects of conjoint features moderated by individual and national level moderators. Columns represent an individual conjoint feature or liberalism index that is interacted with the rows."
+
+
+p_ter_all
+
+
+```
+
+
+
+
+
+Again this aggregate analysis masks substantive variation. In Figure @fig-ter-all we also show results from the same analysis but now for the individual components. The aggregate increased support for liberal institutions in liberal societies in fact derives almost entirely from tolerance as operationalized by the concern with homosexual rights.  Liberalism on other dimensions is not more under threat in less liberal societies and indeed individuals in less liberal countries are *more* likely to prefer lower taxes.  The aggregate relation between political exclusion in liberal societies and  weakened support for liberal values in fact appears not to come from questioning over democratic institutions but rather from between-group contestations: individuals who report feeling excluded politically in liberal societies are likely to put less value on homosexual rights and openness to immigration. We see here also that economic exclusion, which seemed unrelated to average support for the aggregate measure of liberalism, does relate specifically to weakened support for free markets and (more weakly) our operationalization of the openness dimension.[^13] 
+
+
+In short, not only is there considerable heterogeneity concerning the weight citizens assign to different liberal values, but the structure of heterogeneity differs across features.  
+
+
+[^12]: All estimates are presented in the Appendix. Note that not all of the coefficients presented here were part of the pre-registration. While none of the explorative predictions leads to a significant result, we nevertheless decided to present all coefficients for the sake of completeness. 
+
+
+[^13]: In SI appendix (Section @sec-forests) we extend this analysis still further using a machine learning approach to identify which types of respondents place more or less weight on different features.  We find here that for nearly all selected attributes features that predict increased support for one liberal dimension predict reduced support on some other dimension. 
+
+
+
+
+
+## Robustness checks {#sec-robust}
+
+
+We implemented a series of robustness checks for our core analyses. 
+
+
+First we are conscious that our survey was partly conducted online and may be prone to speeding. However, given the randomized nature of our profiles the inclusion of speeders should only introduce noise, leading to attenuation bias in our estimates. We nevertheless follow @greszki_exploring_2015 and rerun analyses omitting two kinds of speeders; overall speeders and speeders for only the conjoint section of the survey. We find no differences in results across both specifications.
+
+
+As additional robustness checks, we replicate our models across two alternative specifications. First, we implement our analysis omiting post-stratification weights, thus targeting sample estimates.  Second, we replicate our multilevel model using a Bayesian framework. In all specifications we find no substantive differences in key findings.
+
+
+Finally, we test the sensitivity of our tertiary analysis to different measures and different combinations of national and individual level moderators. As a measure of liberal democracy, we use Freedom House’s Global Freedom score [@freedom_house_freedom_2023] and other survey questions as proxies for political and economic exclusion.[^14] Results are robust to alternative individual measures, though we find that using the Freedom House score instead of V-Dem index leads to considerably sharper results. Importantly, signs do not change for our interactions of interest.
+
+
+Details of these analyses are found in Section @sec-robust.
+
+
+[^14]: We use survey measures of satisfaction with the political and economic system as alternatives to exclusion measures. We further proxy for economic exclusion using a subjective measure of how strongly people feel they have lost out due to globalization.
+
+
+# Discussion and conclusion {#sec-conclude}
+
+
+Our study investigates global attitudes toward liberal values using data from more than 50,000 respondents in 26 countries. We do so focusing not on abstract support for liberal ideas but by assessing the weight that respondents put on features of societies that reflect liberal values when evaluating those societies. To our knowledge, our study is the first to gauge support for liberalism combining the advantages of an experimental approach – using a conjoint experiment – with classical designs using comparative data from such a large number of countries.  
+
+
+
+
+
+Our headline finding is that there is in fact considerable public support for liberalism, at least on average. Insofar as the future of liberal values rests on the support of citizens, liberal values are less under threat than some academic and public debates might make us believe. This is true both for a simple and an "induced" liberalism index, with the latter reflecting citizen interpretations of liberalism. While our work does not yet have a temporal dimension, the cross sectional outcomes suggest liberalism is far from dead.  
+
+
+
+
+
+Going further, a deeper analysis highlights substantial heterogeneity both across countries and across dimensions of liberalism. Respondents on average exhibit strong preferences for our operationalizations of tolerance, low taxes and democratic government. Positive but weak effects were also found for openness policies. Interestingly, in general, institutions commonly associated with classical liberalism, namely constrained government and limited engagement of government in markets do not receive similar support. 
+
+
+
+
+
+At the same time, we see heterogeneity across contexts. While a democratic political regime and low taxes are preferred in nearly all countries, the legal status of homosexuality is highly valued in some and strongly opposed in other countries. There are also, moreover, systematic correlates of support for liberal institutions.  The weight placed on liberal features rises with economic development. But, following a disillusionment hypothesis, it is lower for respondents reporting feeling politically excluded.
+
+
+Disaggregated analysis thus suggests an additional important implication. While we can focus on liberalism as a collection of features, doing so effectively masks underlying heterogeneity in support for subcomponents.  The large variation in the ascribed weight across dimensions points to analytical gains from moving away from broad, analytically imprecise concepts such as "liberalism."  Some dimensions appear more under threat than others. Citizens show weak support for market economies but appear broadly committed to democratic political procedures. They support low taxes quite broadly but exhibit considerable diversity in their tolerance for homosexuality.  Indeed, we saw that citizens’ preferences can move in varying, even somewhat contradictory directions, and the patterns we see do not support the proposition that there is an underlying attitude towards liberalism that explains the weights put on different dimensions. By the same token, we saw that the correlates of support for liberal institutions differ across dimensions. This suggests that attempts to seek answers for why "liberalism" is under threat may be misguided. Better to focus directly on those features of societies that, while historically associated with liberalism, can vary in the support they receive and the threats they face.             
+
+
+       
+
+
+
+
+
+
+
+
+```{=latex}
+
+
+\begin{onecolumn}
+
+
+```
+
+
+
+
+
+\newpage
+
+
+
+
+
+
+
+
+# Supporting Information Appendix
+
+
+## Description of the survey {#sec-survey}
+
+
+The target population in all 26 countries was permanent residents living in private households aged 18 or older in each country – regardless of their nationality. In 19 countries, the data was collected via computer-assisted web-interviews (CAWI). Respondents were recruited from an online access panel administered by a collaborating survey company. The sample is stratified by gender, age, education, region of living, and place of locality in order to match the distribution of the respective country’s offline population. In those seven countries where online surveys were not feasible (especially due to too low Internet penetration), data was collected via personal interviews (CAPI) based on a stratified probability sample via the random-walk procedure. The survey was conducted in the most-spoken language(s) in each country.  See `r ifelse(submission, "XX (2023)", "@giebler_public_2023")`.
+
+
+## Robustness checks {#sec-append-robust}
+
+
+We rerun our multilevel model across various model specifications as specified in Section @sec-robust and report results in Figure @fig-robust-primary. Speeder 1 (`r round(mean(df_reduced$speeder1)*100, 1)`% of data) refers to omission of speeders in the conjoint portion of experiment, while Speeder 2 (`r round(mean(df_reduced$speeder2)*100, 1)`% of data) refers to omission of speeders across the experiment. Results are largely the same. We also rerun Analysis 3 using other national and individual level indicators as indicated in Section @sec-robust and report these results in Figure @fig-robust-ter. Again we find that results are largely similar.
+
+
+```{r}
+#| fig.height: 8
+#| fig.width: 11
+#| label: fig-robust-primary
+#| fig-cap: "Pooled estimates from robustness checks for comparison"
+
+
+p_robust_primary
+
+
+```
+
+
+```{r}
+#| fig.height: 6
+#| fig.width: 14
+#| label: fig-robust-ter
+#| fig-pos: "H"
+#| fig-cap: "Robustness checks for Analysis 3. As in the paper, all variables apart from the liberalism index are demeaned and rescaled to unit standard deviation."
+
+
+p_ter_robust
+
+
+```
+
+
+
+
+
+## Exploratory analysis of heterogeneous effects {#sec-forests}
+
+
+Our full survey dataset comprises over 200 covariates covering multiple domains and offers a richer source of heterogeneity beyond what we initially hypothesized. To exploit the full dataset, we employ a generic machine learning method by Chernozhukov et al [-@chernozhukov_generic_2018] to generate predictions of the conditional average treatment effect (CATE) for all respondents. We train a simple random forest model across 100 random splits of the data using all possible covariates to predict $S(Z)_{ijk}$, where $S(Z)$ is the CATE for respondent $i$ in treatment $j$ and split $k$.
+
+
+For each split $k$, we divide the sample into $M$ quantiles based on $S(Z)$ and impose the following monotonicity restriction:
+
+
+$$E[S(Z)|G_1]<...<E[S(Z)|G_M]$$
+
+
+We then estimate the mean of $S(Z)$ for each group and take the median values of the estimates and confidence intervals across all splits. If our covariates are good predictors and there is heterogeneity, we should see monotonicity in effect size across all groups. Figure @fig-gates reports the median grouped average treatment effects for all liberal features. 
+
+
+```{r}
+#| fig.height: 3
+#| fig.width: 8
+#| label: fig-gates
+#| fig-cap: "Grouped average treatment effects from random forest models."
+
+
+p_gates 
+
+
+```
+
+
+
+
+
+
+
+
+We see that our monotonicity assumption largely holds and is most salient for the tolerance feature. We can then assess heterogeneity by performing a two sample t-test for all covariates between respondents in group 1 and group M. We report these results in Table @tbl-clan. To reduce clutter, we report only the 20 variables with the highest variable importance averaged across all splits.[^15] Values in bold correspond to variables with P<0.05.
+
+
+```{r}
+#| label: tbl-clan
+#| tbl-cap: "Heterogeneity analysis using generic machine learning. Values correspond to median differences in means between group 1 and group 5 for a given covariate and liberal feature and bold values indicate differences with P<0.05."
+#| results: asis
+
+
+clan_kbl
+
+
+```
+
+
+
+
+
+
+
+
+[^15]: Variable importance is measured using node impurity from our random forest models.
+
+
+\newpage
+
+
+## Correlation matrix {#sec-correlation}
+
+
+Our random effect estimates obtained from @sec-sec also allow us to examine two-way relationships across liberal features at the country level: are countries that support one dimension of liberalism more likely to also support another? Figure @fig-corr visualizes these relationships using a correlation heatmap. Across the board we see positive correlations for most pairwise combinations of our liberal features with the strongest correlations observed between democratic government and tolerance. The exception to this is the free markets feature which is negatively correlated with every other feature aside from democratic government, and this pattern is most salient when compared with constrained government. We also ran a Cronbach’s alpha test using all country level random effects and obtained a value of `r round(cb_alpha$total$raw_alpha, 3)`.
+
+
+
+
+
+```{r}
+#| label: fig-corr
+#| fig-cap: "Correlation plot of country level random effects across features"
+#| fig.height: 3.5
+#| fig.width: 6
+
+
+cor_plot
+
+
+```
+
+
+\newpage
+
+
+## Deviations from pre-analysis plan {#sec-deviations}
+
+
+We summarize deviations from pre-registered analyses here.
+
+
+```{r}
+#| label: tbl-recon-1
+#| tbl-cap: "Summary of pre-registered analyses"
+#| results: asis
+
+
+recon_tbl_1
+
+
+``` 
+
+
+```{r}
+#| label: tbl-recon-2
+#| tbl-cap: "Summary of additions to pre-registered analyses"
+#| results: asis
+
+
+recon_tbl_2
+
+
+``` 
+
+
+\newpage
+
+
+## Liberalism index weights {#sec-lib-wt}
+
+
+Similar to our main analyses in the paper, we run a multilevel model using a separate outcome in which we ask respondents to indicate how liberal a country profile was on a four-point scale (1 = Country A is much more liberal; 2 = Country A is somewhat more liberal; 3 = Country B is much more liberal; 4 = Country B is somewhat more liberal). Table @tbl-index-wt reports pooled estimates from our model. We include the income benchmark in our model but only use estimates for liberal attributes as weights.
+
+
+```{r}
+#| label: tbl-index-wt
+#| tbl-cap: "Pooled effect estimates from multilevel model for definition of liberalism"
+#| results: asis
+
+
+lib_wt_kbl
+
+
+``` 
+
+
+\newpage
+
+
+
+
+
+## Regression tables
+
+
+We output here all regression tables corresponding to figures in the paper.
+
+
+```{r}
+#| label: tbl-pri
+#| tbl-cap: "Pooled effect estimates from multilevel model"
+#| results: asis
+
+
+pri_tbl
+
+
+```
+
+
+\newpage
+
+
+```{r}
+#| label: tbl-sec
+#| tbl-cap: "Random effect estimates from multilevel model"
+#| results: asis
+
+
+sec_tbl
+
+
+```
+
+
+\newpage
+
+
+```{r}
+#| label: tbl-ter-all
+#| tbl-cap: "Tertiary analysis"
+#| results: asis
+
+
+ter_all_tbl
+
+
+```
+
+
+```{=latex}
+
+
+\end{onecolumn}
+
+
+```
+
+
+\newpage
+
+
+
+
+
+
+
+
+**References**
+
+
+
+
+
+

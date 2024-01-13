@@ -1,0 +1,24 @@
+{
+    "id": "114B8F47",
+    "path": "C:/Dropbox/github/ci/slides/assets/helper.R",
+    "project_path": "slides/assets/helper.R",
+    "type": "r_source",
+    "hash": "2668747078",
+    "contents": "",
+    "dirty": false,
+    "created": 1704969721993.0,
+    "source_on_save": false,
+    "relative_order": 17,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1704912559,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1704912559,
+    "read_only": false,
+    "read_only_alternatives": []
+}

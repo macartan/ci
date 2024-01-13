@@ -1,0 +1,1 @@
+{"frames":[{"func":"kable(caption = \"Sample data\")","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error in inherits(x, \"list\") : argument \"x\" is missing, with no default\n"}

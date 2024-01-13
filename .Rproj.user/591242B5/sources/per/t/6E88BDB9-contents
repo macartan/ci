@@ -1,0 +1,417 @@
+---
+title: "Lebanon project design"
+author: Nora Chirikure, Jonah Foong, Macartan Humphreys
+date: "`r Sys.Date()`"
+format:
+  html:
+    embed-resources: true
+    code-fold: true
+    code-summary: "Show the code"
+toc: true
+number-sections: true
+---
+
+```{r setup}
+#| include: false
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(randomizr)
+library(fabricatr)
+library(estimatr)
+library(DeclareDesign)
+library(kableExtra)
+library(truncnorm)
+library(tidyverse)
+library(knitr)
+library(readxl)
+
+run <- FALSE
+```
+
+## Background
+
+With the multifaceted economic and financial crisis in Lebanon come difficulties in the state’s ability to ensure service delivery, particularly in already marginalized localities such as those in the Beqaa, Shouf, and some Mount Lebanon areas. In the absence of state-led initiatives at the level of the central authority, municipalities across different regions in Lebanon often  lead in service-provision. However, these municipalities are resource constrained and their relations with citizens are often characterized by low trust and limited accountability. 
+
+The German government agency GIZ together with Berghof foundation is implementing a series of development projects in 25 municipalities in Lebanon using participatory planning processes. Their hope is that participatory planning and decision-making processes involving representatives of municipalities, civil society and residents will not only ensure better project outcomes but also help diffuse  tensions and increase trust and cohesion with the local governance structure. 
+
+To assess whether participatory planning has this effect, the intervention will randomly select three groups of 5 citizens to take part in decision making committees in each of the 25 municipalities and assess changes in their attitudes and behaviors relative to non selected citizens.  The aim is not to assess overall project performance or the effect of participatory versus non-participatory processes but rather to identify effects of *direct* participation in the context of a participatory process (this contrasts to the more indirect exposures studied in CDR/CDD studies). 
+
+The remainder of this document describes the background theory, the sampling and assignment schemes, measurement strategies, and properties of the experimental design.
+
+## Theory and Hypotheses
+
+The impact assumption and theory of change motivating the project is as follows:
+
+If 1) inhabitants/citizens of a municipality (locality) are engaged in an inclusive manner in the identification of socioeconomic needs, prioritizing and selecting projects/measures together with the municipal administration AND 2) the capacities of local government and inhabitants/citizens are built regarding participatory approaches as well as dialogue, mediation and conflict resolution AND 3) the inhabitants/citizens and municipality are continuously informed about the implementation progress, then vertical social cohesion and trust in the local ability to act is achieved. 
+
+We expect moreover that the extent to which exposure to local government improves assessments of local government depends on the extent to which individuals have a relatively negative view of government *ex ante*. That is we expect positive updating if citizens learn that government is *more* trustowrthy than they believed ex ante. Otherwise the effects could go in opposite direction. 
+
+In all the core hypotheses are:
+
+* Direct participation will have positive effects on trust in local government
+* Effects will be strongest for minorities and for women that are otherwise more likely to be excluded from government  
+* Effects will be moderated by the relative pessimism of beliefs about the trustworthiness of local government
+
+
+## Design
+
+The Berghof Foundation (BF) will organize and facilitate participatory planning and decision-making processes between representatives of municipalities, civil society and citizens in 25 municipalities. In each municipality, 3 working groups (WG) (some municipalities can have 2, others 4, depending on their size) - each comprised of 15 members- will be formed with the aim of discussing the socioeconomic needs of the area, gaps and needed measures or projects to better the situation, and then jointly prioritize and select the needed measures. The 15 WG members will be divided as follows: 10 chosen members from experts, municipality officials and influential community leaders, and 5 members of the local community chosen at random. 
+
+Assignment will be blocked (independently) on gender and minority status within each working group to create representative groups. Crucially, minority status is determined by the modal social cleavage within a municipality (rich or poor, Christian or Muslim, etc) and the distribution of respondent level characteristics which we obtain from our baseline survey. Thus, minority groups may represent different things across municipalities.
+
+
+<!-- Following the recruitment of the 10 chosen WG members but before the participatory meetings start, a baseline survey of inhabitants will be conducted for WG members for the purpose of the Rigorous Impact Evaluation (RIE) to evaluate the baseline level of trust in the local authority’s ability to act. This baseline survey will identify individuals that are willing to participate in community meetings (at least 50). From this pool, 15 adults will be randomly selected (with gender and citizenship balance using block randomisation, and excluding individuals already selected to the WGs) and randomly invited to take part in one of the three committee groups. These additional 5 members will be inducted into the working group before activities with the groups begin. -->
+
+## Survey Data
+
+The data collected at the various stages of the research will be as follows: 
+
+### Baseline data 
+
+*   Willingness to take part in meetings
+*   Baseline levels of attitudinal measures e.g. trust in authorities and other groups
+*   Any variables used for blocking – e.g. demographics
+*   Baseline preferences over priority projects
+    
+### Process data 
+
+*   Records of dates of group meetings
+*   Attendance at meetings
+*   Record of notable events
+
+### Endline Data 
+
+*   Perception of project 
+*   Satisfaction with project decisions 
+*   Endline measures of attitudinal measures e.g. trust in authorities and other groups
+*   Endline behavioral measures
+*   Endline preferences over priority projects
+
+
+
+## Analyses
+
+### Outcomes {#sec-outcomes}
+
+A key aim of the study is not to assess project outcomes but the effect of elite contact and participatory planning on citizens' attitudes and behavior toward local government. Our analysis focuses on three main outcomes. 
+
+1. The first is an index of several survey questions measuring municipal trust, and the other two are behavioral outcomes. Following Kling et al, our index is a simple mean of standardized responses to the following questions:
+
+* To what extent do you agree with the following statements: 
+* I trust that my local government acts in the interests of its citizens.
+* I believe that the resource-distribution by the municipal board is fair.
+* Corruption is widespread in local government.
+
+Responses are measured on a likert scale from strongly agree to strongly disagree.
+
+2. Our first behavioral outcome is a simple variant of the dictator's game. We give each participant a choice between keeping a dollar for herself, or allocating two dollars to a fund that is administered by the municipality. 
+
+3. Our second behavioral measure is based on observed participation in a future community meeting. We inform respondents of an upcoming municipal town hall meeting on a subject unrelated to the intervention and measure if participants actually attend.
+
+Secondary outcomes: [ADD]
+
+
+### Estimation
+
+For our primary analyses we estimate quantities using a simple linear regression of the form
+
+$$Y_{i} = \beta_0 + \beta_1 X_{i}+  \beta_2 gender_{i}+ \beta_3 minority_{i} + \beta_4 X_i * gender_i + \beta_5 X_i * minority_i + \gamma_m + \epsilon_i$$
+
+where $Y$ is our outcome in question for individual $i$, $X$ is a dummy variable for if a respondent was in treatment, which we interact with an individual's gender and minority group status to assess heterogeneneity. We also include fixed effects $\gamma$ for municipality $m$ and cluster standard errors at the level of the working group.
+
+For our analysis of pessimism effects we estimate:
+
+$$Y_{i} = \beta_0 + \beta_1 X_{i}+  \beta_2 prior_{i}+ \beta_3 prior_{m} + \beta_4 X_i * prior_i + \beta_5 X_i * prior_m + \beta_6 X_i * prior_i* prior_m + \gamma_m + \epsilon_i$$
+with clustering at the municipality level. here $prior_i$ and $prior_m$ and the priors regarding corruption at the individual (measured via a direct question) and at the munipality level (measured via a list experiment). We expect $\beta_6$ negative implying that the adverse effect of $prior_m$ on treatment effects will be weaker when individuals themselves have strong beliefs about corruption.
+
+
+## Using the Design
+
+We report various aspects of our design and confirm unbiasedness of estimates using simulated data. We assume effect sizes of 0.2 standard deviations and an ICC of 0.05.
+
+
+### Assumptions and helper functions
+
+```{r}
+
+# assumptions
+
+n <- 100 # sample size per muni
+n_muni <- 25
+m <- 5 # participants per wg
+n_wg <- 3 # number of wgs
+b <- .2 # treatment effect in sds
+n_wg_total <- n_wg*n_muni
+icc <- 0.05
+het_f <- 0.1 # heterogeneous effect for women
+het_m <- 0.1 # heterogeneous effect for minorities
+
+f_prop <- 0.3 # proportion of women in sample
+m_prop <- 0.2 # proportion of minorities in sample
+
+n_div_qns <- 5 # number of qns asking about divisions
+
+wgs <- rep(paste0("wg", 1:n_wg), each = m)
+
+# the assignment function is cumbersome but it mirrors what the actual balloting process might look like
+
+block_assign <- function(data){
+  
+  # probabilities are independent
+  
+  cons <- c(paste("WG", 1:n_wg), "none")
+  
+  lapply(1:n_muni, function(x){
+    
+    # get minority prob
+    
+    df <- data %>% 
+      filter(municipality==x)
+    
+    min_prob <- df %>% 
+      filter(municipality==x) %>% 
+      .$minority %>% 
+      mean()
+    
+    block_m <- df %>% 
+      summarise(female = mean(female),
+                minority = mean(minority)) %>% 
+      apply(2, function(x) round(x*5))
+    
+    # first sample women
+    
+    f_total <- sum(df$female)
+    
+    f_mat <- c(c(rep(0, n_wg), n - f_total),
+               c(rep(block_m["female"], n_wg), f_total - (block_m["female"] * n_wg))
+               ) %>% 
+      matrix(ncol = 4, 
+             byrow = TRUE)
+    
+    
+    df <- df %>% 
+      mutate(WG = block_ra(blocks = female, 
+                           block_m_each = f_mat,
+                           conditions = cons),
+             treated = ifelse(WG=="none", 0, 1))
+    
+    # now sample minority
+    
+    # how many minority do we already have?
+    
+    mins <- df %>% 
+      group_by(WG) %>% 
+      summarise(s = sum(minority)) %>% 
+      filter(WG!="none") %>% 
+      .$s
+    
+    # remainder quota for minority
+    
+    rem_m <- block_m["minority"] - mins
+    rem_m[rem_m < 0] <- 0 # do not sample again if quota met
+    
+    rem_n <- n - sum(df$treated)
+    
+    m_total <- df %>% 
+      filter(treated==0) %>% 
+      .$minority %>% 
+      sum()
+    
+    m_mat <- c(c(rep(0, n_wg), rem_n - m_total),
+               rem_m, m_total - sum(rem_m)) %>% 
+      matrix(ncol = 4, byrow = TRUE)
+    
+    df <- df %>%
+      group_by(treated) %>% 
+      mutate(WG = if(mean(treated)==0){
+        block_ra(blocks = minority,
+                 block_m_each = m_mat,
+                 conditions = cons)
+      } else WG,
+      treated = ifelse(WG=="none", 0, 1))
+    
+    # remainder for the rest
+    
+    rem_all <- df %>% 
+      group_by(WG) %>% 
+      summarise(s = m - sum(treated)) %>% 
+      filter(WG!="none") %>% 
+      .$s
+    
+    rem_vec <- c(
+      sapply(1:n_wg, 
+           function(x) rep(cons[x], rem_all[x])) %>% 
+      unlist(),
+      rep("none", n - sum(rem_all) - sum(df$treated))
+    )
+    
+    df <- df %>% 
+      mutate(WG = if(mean(treated==0)){
+        sample(rem_vec)
+      } else WG,
+      treated = ifelse(WG=="none", 0, 1)) %>% 
+      ungroup()
+    
+  }) %>% 
+    bind_rows()
+}
+
+# function to generate minority group for each municipality
+
+add_division <- function(data){
+  
+  lapply(1:n_muni, function(z){
+    
+    # which is the major source of division
+    # probs should look different in each municipality
+    
+    probs <- runif(n_div_qns)
+    probs <- probs/sum(probs)
+    
+    m_division <- sample(1:n_div_qns, n, 
+                         replace = TRUE, 
+                         prob = probs) %>% 
+      table() %>% 
+      which.max()
+    
+    # are you in majority or minority
+    
+    is_div_min <- sapply(runif(n_div_qns, 0.2, 0.8), # bounded to prevent having too few minorities
+                        function(x) rbinom(n, 1, prob = x)) %>% 
+      .[,m_division]
+    
+    # flip so 1 = minority
+    
+    prop <- mean(is_div_min)
+    
+    if(prop>0.5) is_div_min <- 1-is_div_min else is_div_min <- is_div_min
+    
+    data %>% 
+      filter(municipality==z) %>% 
+      mutate(minority = is_div_min)
+    
+  }) %>% 
+    bind_rows()
+}
+
+demean_vars <- function(data){
+  data %>% 
+    mutate(across(c(female, minority), function(x) x-mean(x)))
+}
+
+```
+
+### Design and data
+
+
+```{r}
+
+design <- 
+  declare_model(
+    municipality = add_level(N = n_muni),
+    subjects = add_level(N = n,
+                         female = simple_ra(N, prob = f_prop))) + 
+  declare_model(municipality = as.numeric(municipality)) +
+  declare_model(handler = add_division) +
+  declare_model(handler = block_assign) +
+  declare_model(cluster = paste(municipality, WG)) +
+  declare_measurement(shock = draw_normal_icc(clusters = cluster, ICC = icc)) +
+  declare_measurement(handler = demean_vars) +
+  declare_measurement(Y = b*treated + het_f*female*treated + het_m*minority*treated + shock) +
+  declare_inquiry(ATE = b,
+                  het_female = het_f,
+                  het_minority = het_m) +
+  declare_estimator(Y ~ treated*female + treated*minority|municipality,
+                    term = c("treated", 
+                             "treated:female",
+                             "treated:minority"),
+                    #weights = ~ipw,
+                    inquiry = c("ATE", "het_female", "het_minority"),
+                    cluster = ~ cluster, 
+                    .method = fixest::feols,
+                    .summary = function(x) broom::tidy(x, conf.int = TRUE))
+
+```
+
+```{r}
+
+df <- draw_data(design)
+
+head(df) |> kable(caption = "Sample data")
+
+```
+
+What does our assignment yield?
+
+```{r}
+
+table(df$treated, df$municipality) |> kable(caption = "Sample assignment")
+
+```
+
+### Diagnosis
+
+
+```{r}
+
+if(run) 
+design |>
+  diagnose_design(sims = 500) |>
+  write_rds("saved/diagnoses.rds")
+
+```
+
+```{r}
+
+diagnosis <- read_rds("saved/diagnoses.rds")
+
+diagnosis %>%
+  reshape_diagnosis() %>% 
+  kable()
+
+```
+
+## Survey questions
+
+(Survey questions below are read in from our survey instrument, `Draft_Combined_instruments.xlsx`.)
+
+```{r}
+#| results: asis
+
+qns <- read_xlsx("../1_design/instruments/Draft_Combined_instruments.xlsx") %>% 
+  filter(!is.na(Question_Number))
+
+qns <- qns %>% 
+  mutate(is_header = ifelse(is.na(`Response Options`) & is.na(Question), TRUE, FALSE)) %>%
+  mutate(Question_Number = ifelse(is_header,
+                                  str_replace(Question_Number,
+                                             "\\s{2,}", " "),
+                                  Question_Number),
+         Question = paste0(Question, "\n\n"),
+         `Response Options` = str_replace_all(`Response Options`,
+                                          "\\r", "\n"))
+
+for (i in 1:nrow(qns)){
+  
+  qns_r <- qns[i,]
+  
+  is_header <- qns_r$is_header
+  
+  qns_r <- qns_r %>% 
+    select(!c(Comment, is_header))
+  
+  if(is_header){
+    q <- qns_r$Question_Number %>%
+      sprintf("**%s**", .) %>% 
+      paste0("\n\n")
+  } else {
+    q <- qns_r %>% 
+      apply(1, paste, collapse = "\n") %>% 
+      paste0("\n\n") %>% 
+      str_replace("NA", "")
+  }
+  
+  cat(q)
+}
+
+```

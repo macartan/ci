@@ -1,0 +1,10 @@
+"0","library(DeclareDesign)
+"
+"2","Warning: package ‘DeclareDesign’ was built under R version 4.2.3"
+"2","Loading required package: randomizr
+"
+"2","Warning: package ‘randomizr’ was built under R version 4.2.3"
+"2","Loading required package: fabricatr
+"
+"0","library(knitr)"
+"2","Warning: package ‘knitr’ was built under R version 4.2.3"
