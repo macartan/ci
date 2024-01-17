@@ -339,7 +339,7 @@ Consider the following potential outcomes table:
 
 **Questions for us:** What are the unit level treatment effects? What is the average treatment effect?
 
-### Exercise your potential outcomes 2
+### Exercise your potential outcomes 2  {.smaller}
 
 Consider the following potential outcomes table:
 
@@ -412,7 +412,7 @@ This problem can arise as easily in seemingly simple field experiments. Example:
 -   we wanted to see whether voters punished poorly performing politicians
 -   what's the problem?
 
-### Heterogeneous Effects with Endogeneous Categories
+### Heterogeneous Effects with Endogeneous Categories  {.smaller}
 
 Question for us:
 
@@ -721,7 +721,7 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 -   In this case we can write: $P(x) = \prod_j(x_j | pa_j)$
 -   No graphs yet
 
-### Conditional distributions 2 ## Causal graphs basics 1 
+### Conditional distributions 2{.smaller}
 
 -   We want to use causal graphs to represent these relations of conditional independence.
 -   Informally, an arrow, $A \rightarrow B$ means that $A$ is a cause of $B$: that is, under some conditions, a change in $A$ produces a change in $B$.
@@ -729,14 +729,14 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 -   We say that arrows point from *parents* to *children*, and by extension from *ancestors* to *descendants*.
 -   These are parents *on the graph*; but we will connect them to Markovian parents in a probability distribution $P$.
 
-### Conditional distributions 3 ## Causal graphs basics 1 
+### Conditional distributions 3{.smaller}
 
 -   A DAG is just a graph in which some or all nodes are connected by *directed* edges (arrows) and there are no cyclical paths along these directed edges.
 -   Consider a DAG, $G$, and consider the ancestry relations implied by $G$: the distribution $P$ is *Markov relative to the graph* $G$ if every variable is independent of its nondescendants (in $G$) conditional on its parents (in $G$).
     -   This is the **Markov condition**: conditional on its parents, a variable is independent of its non-descendants.
 -   OK now we have a link from probability distributions to graphs. But we have not talked about causality.
 
-### Conditional distributions 4 ## Causal graphs basics 1 
+### Conditional distributions 4 {.smaller}
 
 We want the graphs to be able to represent the effects of interventions.
 
@@ -748,13 +748,13 @@ $$\Pr(X_1, X_2,\dots | \hat{x}_j)$$
 
 denotes the distribution of $X$ when a particular node (or set of nodes) is intervened upon and forced to a particular level, $x_j$.
 
-### Conditional distributions 5
+### Conditional distributions 5  {.smaller}
 
 Note, in general: $$\Pr(X_1, X_2,\dots | do(X_j = x_j')) \neq \Pr(X_1, X_2,\dots | X_j = x_j')$$ as an example we might imagine a situation where for men binary $X$ always causes $Y=1$ and for women $Y=1$ regardless of $X$. We imagine that $X=1$ for men only.
 
 In that case $\Pr(Y=1 | X = 1) = 1$ but $\Pr(Y=1 | do(X = 1)) = .5$
 
-### Conditional distributions 6 ## Causal graphs basics 1 
+### Conditional distributions 6 {.smaller}
 
 -   Let $P_{z}$ denote the resulting distribution on all variables that arises when vector $Z$ is "set" (forced, controlled...) to the value $z$. That is when we have `do(Z=z)`.
 
@@ -766,7 +766,7 @@ In that case $\Pr(Y=1 | X = 1) = 1$ but $\Pr(Y=1 | do(X = 1)) = .5$
     2.  $P_z(x_i)=1$ for all $x_i$ consistent with $z$
     3.  $P_z(x_j|pa_j)=P(x_j|pa_j)$ for all $x_j \not\in Z$ when $pa_j$ is consistent with $z$
 
-### Conditional distributions 7 ## Causal graphs basics 1 
+### Conditional distributions 7 {.smaller}
 
 -   That all means that the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
 
@@ -839,7 +839,7 @@ Are A and D unconditionally independent:
 -   if you condition on C?
 -   if you condition on B and C?
 
-### Back to this example {.smaller
+### Back to this example {.smaller}
 
 ```         
 * $Z = f_1(U_1, U_2)$
@@ -854,7 +854,7 @@ Are A and D unconditionally independent:
 
 ## Causal models
 
-### From graphs to Causal Models {.smaller
+### From graphs to Causal Models {.smaller}
 
 A "**causal model**" is:
 
@@ -911,7 +911,7 @@ For discrete data this can be reduced to a question about learning about the dis
 -   These graphs represent Nonparametric structural equation models NPSEMs
 -   But you cannot read off the size or direction of effects from a DAG
 
-### Recap: Ten things you need to know about causal inference {.smaller
+### Recap: Ten things you need to know about causal inference {.smaller}
 
 1.  A causal claim is a statement about what didn't happen.
 2.  There is a fundamental problem of causal inference.
