@@ -1,0 +1,131 @@
+---
+title: "Exercise 2.1"
+format: html
+editor: visual
+---
+
+**False positives and s**
+
+-   Sometimes people worry that with larger samples you are more likely to get a false positive. Is that true?
+
+The concern is related to the concept of Type I error in hypothesis testing. A Type I error occurs when a true null hypothesis is incorrectly rejected. The significance level (often denoted by α) is the probability of making a Type I error.
+
+In traditional hypothesis testing, as sample size increases, the statistical power of the test also increases. Statistical power is the probability of correctly rejecting a false null hypothesis (i.e., avoiding a Type II error). However, an increase in sample size does not directly affect the Type I error rate, which is typically set by the chosen significance level.
+
+If you maintain the same significance level and only increase the sample size, you do not increase the probability of a Type I error. In fact, larger sample sizes generally provide more reliable and precise estimates of population parameters.
+
+However, it's important to note that the risk of misinterpreting results can arise from conducting multiple tests or analyses on the same data (multiple comparisons). In such cases, the likelihood of observing at least one statistically significant result by chance increases with the number of tests performed. Researchers often use correction methods (like Bonferroni correction) to control the overall Type I error rate when conducting multiple tests.
+
+In summary, while larger sample sizes do not inherently increase the Type I error rate, researchers should be cautious about conducting multiple tests without appropriate correction methods to avoid spurious findings.
+
+-   Assess by generating a simple experimental design from scratch in which we can vary the `N` and *in which there is no true effect* of some treatment.
+
+#Install simmer if not done already
+
+install.packages("simmer")
+
+#load the simmer-package
+
+library(simmer)
+
+#function to simulate the experiment
+
+simulate_experiment \<- function(N) { \# create the simulation environment env \<- simmer()
+
+\# add the participants
+
+env %\>% add_resource("participants", capacity = N)
+
+\# add the activity
+
+env %\>% add_process( trajectory() %\>% seize("participants", amount = N) %\>% release("participants", amount = N) )
+
+\# start the simulation
+
+env %\>% run()
+
+return(env) }
+
+\# group size (N) for the experiment
+
+group_sizes \<- c(10, 20, 30)
+
+\# run the experimant for different group sizes
+
+for (N in group_sizes) { simulation \<- simulate_experiment(N)
+
+-   Plot the distribution of values from the `simulations_df`. What shape is it and why?
+
+install.packages("ggplot2")
+
+library(ggplot2)
+
+#Create a histogram of the values
+
+`ggplot(simulations_df, aes(x = values)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of Values", x = "Values", y = "Frequency")`
+
+-   Plot the power as  increases, using the `diagnosands_df`
+
+Installieren Sie ggplot2, falls es noch nicht installiert ist
+
+install.packages("ggplot2")
+
+Laden Sie das ggplot2-Paket
+
+library(ggplot2)
+
+Annahme: simulations_df enthält eine Spalte namens "values"
+
+Passen Sie dies an Ihre tatsächlichen Daten an
+
+Erstellen Sie ein Histogramm der Werte
+
+ggplot(simulations_df, aes(x = values)) + geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) + labs(title = "Verteilung der Werte", x = "Werte", y = "Häufigkeit")
+
+Set a seed for reproducibility
+
+set.seed(123)
+
+Number of observations (rows) in the simulated data frame
+
+num_observations \<- 1000
+
+Simulate a variable named "values" with a normal distribution
+
+simulations_df \<- data.frame( values = rnorm(num_observations, mean = 10, sd = 2) )
+
+Display the first few rows of the simulated data frame
+
+head(simulations_df)
+
+-\> the bell-shaped curve suggests a normal distribution.
+
+-   Plot the estimates against values for different values of ; what do you see?
+
+To plot the estimates against values for different values of a parameter (let's call it param), you need to have another column in your simulations_df representing the estimates corresponding to each value.
+
+Here's a general example using the ggplot2 package:RCopy code# Example: Adding an "estimates" column to simulations_df simulations_df\$estimates \<- rnorm(nrow(simulations_df), mean = simulations_df\$values \* param, sd = 2)
+
+# Plotting estimates against values for different values of param
+
+ggplot(simulations_df, aes(x = values, y = estimates, color = factor(param))) + geom_point() + labs(title = "Estimates vs Values for Different Values of param", x = "Values", y = "Estimates", color = "param")
+
+In this example:
+
+I added a column named estimates to simulations_df using random values generated from a normal distribution. Adjust the formula based on the relationship you want to simulate between values, param, and estimates.
+
+The ggplot code creates a scatter plot (geom_point()) where the x-axis represents the "values," the y-axis represents the "estimates," and the color represents the different values of the parameter param.
+
+Adjust the rnorm function and the relationship between values, param, and estimates according to your specific simulation or data.
+
+Interpreting the plot depends on the relationship you modeled. You'll be able to observe how the estimates vary with different values of the parameter param in the context of the simulated data.
+
+-   Discuss
+
+**Hint**: the slides contain code for a simple experimental design
+
+**3.1 Potential outcomes**
+
+declaration_5.1 \<- declare_model( N = 1000, U = [rnorm](https://rdrr.io/r/stats/Normal.html)(N), X = [rbinom](https://rdrr.io/r/stats/Binomial.html)(N, 1, prob = [pnorm](https://rdrr.io/r/stats/Normal.html)(U)), Y = [rbinom](https://rdrr.io/r/stats/Binomial.html)(N, 1, prob = [pnorm](https://rdrr.io/r/stats/Normal.html)(U + X)) ) + declare_inquiry(Ybar = [mean](https://rdrr.io/r/base/mean.html)(Y\[X == 1\])) + declare_sampling(S = simple_rs(N, prob = 0.1)) + declare_estimator(Y \~ 1, .method = lm_robust, subset = X == 1, inquiry = "Ybar")
