@@ -2,7 +2,7 @@
     "sortOrder": [
         {
             "columnIndex": 2,
-            "ascending": false
+            "ascending": true
         }
     ],
     "path": "C:/Dropbox/github/ci/slides"
