@@ -44,7 +44,7 @@ source("setup.R")
           2. control over the treatment itself -- this is at the heart of many lab experiments
     ```
 
--   Main focus today is on 1 and on the question: \textit{how does control over assignment to treatment allow you to make reasonable statements about causal effects?}
+-   Main focus today is on 1 and on the question: *how does control over assignment to treatment allow you to make reasonable statements about causal effects?*
 
 ### Experiments
 
@@ -53,8 +53,6 @@ knitr::include_graphics("figs/labfield.jpg")
 ```
 
 ### Basic randomization {#schemes}
-
-[Top](#ideas)
 
 -   Basic randomization is very simple. For example, say you want to assign 5 of 10 units to treatment. Here is simple code:
 
@@ -99,9 +97,9 @@ knitr::include_graphics("figs/dictionary.png")
 
 ### Did the randomization ''work''?
 
-[People often wonder: did randomization work? \* Common practice is to implement a set of $t$-tests to see if there is balance \* This makes no sense.]{style="font-size: 80%;"}
+[People often wonder: did randomization work? Common practice is to implement a set of $t$-tests to see if there is balance. This makes no sense.]{style="font-size: 80%;"}
 
-[If you doubt whether it was **implemented** properly do an $F$ test \* If you worry about **variance** specify controls in advance as a function of relation with outcomes (more on this later) \* If you worry about **conditional bias** then look at substantive differences between groups, not $t$--tests]{style="font-size: 80%;"}
+[If you doubt whether it was **implemented** properly do an $F$ test. If you worry about **variance** specify controls in advance as a function of relation with outcomes (more on this later). If you worry about **conditional bias** then look at substantive differences between groups, not $t$--tests]{style="font-size: 80%;"}
 
 ## Cluster Randomization
 
@@ -120,13 +118,13 @@ knitr::include_graphics("figs/dictionary.png")
 
 -   However: perfectly possible to assign *some* treatments at cluster level and then *other* treatments at the individual level
 
-[-   **Principle:** (unless you are worried about spillovers) generally make clusters as small as possible]{style="font-size: 80%;"}
+[- **Principle:** (unless you are worried about spillovers) generally make clusters as small as possible]{style="font-size: 80%;"}
 
-[-   **Principle:** Surprisingly, variability in cluster size makes analysis harder. (See analysis section)]{style="font-size: 80%;"}
+[- **Principle:** Surprisingly, variability in cluster size makes analysis harder. (See analysis section)]{style="font-size: 80%;"}
 
-[-   **Be clear** about whether you believe effects are operating at the cluster level or at the individual level. This matters for power calculations.]{style="font-size: 80%;"}
+[- **Be clear** about whether you believe effects are operating at the cluster level or at the individual level. This matters for power calculations.]{style="font-size: 80%;"}
 
-[-   **Be clear** about whether spillover effects operate only within clusters or also across them. If within only you might be able to interpret treatment as the effect of being in a treated cluster...]{style="font-size: 80%;"}
+[- **Be clear** about whether spillover effects operate only within clusters or also across them. If within only you might be able to interpret treatment as the effect of being in a treated cluster...]{style="font-size: 80%;"}
 
 ### Cluster Randomization: Block by cluster size
 
@@ -134,18 +132,14 @@ knitr::include_graphics("figs/dictionary.png")
 
 **Here's the intuition.**Say there are two clusters each with homogeneous treatment effects:
 
-```{=tex}
-\begin{table}
-\begin{tabular}{cccc}
-Cluster & Size  & Y0 &  Y1 \\ \hline
-1   &  1000000  &  0    &  1 \\
-2   &  1    &  0    &  0
-\end{tabular} 
-\end{table}
-```
-Then: \* What is the true average treatment effect? \* What do you expect to estimate from cluster random assignment?
+| Cluster | Size    | Y0  | Y1  |
+|---------|---------|-----|-----|
+| 1       | 1000000 | 0   | 1   |
+| 2       | 1       | 0   | 0   |
 
-The solution is to block by cluster size. For more see: [http://gking.harvard.edu/files/cluster.pdf](http://gking.harvard.edu/files/cluster.pdf)
+Then: **\* What is the true average treatment effect?\*** What do you expect to estimate from cluster random assignment?
+
+The solution is to block by cluster size. For more see: <http://gking.harvard.edu/files/cluster.pdf>
 
 ## Blocked assignments and other restricted randomizations {#blocked}
 
@@ -159,19 +153,15 @@ There are more or less **efficient** ways to randomize.
 
 Consider a case with four units and two strata. There are 6 possible assignments of 2 units to treatment:
 
-```{=tex}
-\begin{table} \scriptsize
-    \centering
-        \begin{tabular}{cccc|cccccc} 
-        ID  &   X   &   Y(0)    &   Y(1)    &   R1  &   R2  &   R3  &   R4  &   R5  &   R6  \\ \hline
-        1   &   1   &   0   &   1   &   1   &   1   &   1   &   0   &   0   &   0   \\
-        2   &   1   &   0   &   1   &   1   &   0   &   0   &   1   &   1   &   0   \\ \hline
-        3   &   2   &   1   &   2   &   0   &   1   &   0   &   1   &   0   &   1   \\
-        4   &   2   &   1   &   2   &   0   &   0   &   1   &   0   &   1   &   1   \\ \hline \hline
-        $\widehat{\tau}$:   &       &       &       &   0   &   1   &   1   &   1   &   1   &   2   \\
-        \end{tabular}
-\end{table}
-```
+| ID                | X   | Y(0) | Y(1) | R1  | R2  | R3  | R4  | R5  | R6  |
+|-------------------|-----|------|------|-----|-----|-----|-----|-----|-----|
+| 1                 | 1   | 0    | 1    | 1   | 1   | 1   | 0   | 0   | 0   |
+| 2                 | 1   | 0    | 1    | 1   | 0   | 0   | 1   | 1   | 0   |
+| 3                 | 2   | 1    | 2    | 0   | 1   | 0   | 1   | 0   | 1   |
+| 4                 | 2   | 1    | 2    | 0   | 0   | 1   | 0   | 1   | 1   |
+| --                | --  | --   | --   | --  | --  | --  | --  | --  | --  |
+| $\widehat{\tau}$: |     |      |      | 0   | 1   | 1   | 1   | 1   | 2   |
+
 Even with a constant treatment effect and everything uniform within blocks, there is variance in the estimation of $\widehat{\tau}$. This can be eliminated by excluding R1 and R6.
 
 ### Blocking
@@ -189,14 +179,9 @@ kable(
 
 ### Of blocks and clusters
 
-```{=tex}
-\begin{figure}
-\centering
-\includegraphics[width=0.6\linewidth]{figs/bf}
-\label{fig:bf}
-\end{figure}
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("figs/bf.png")
 ```
-
 
 ### Blocking
 
@@ -213,7 +198,7 @@ kable(
 -   You just have to be sure that you understand the random process that was used and that you can use it in the analysis stage
 -   But here be dragons
     -   The more complex your design, the more complex your analysis.
-    -   General injunction [http://www.ncbi.nlm.nih.gov/pubmed/15580598](Senn 2004) \`\`as ye randomize so shall ye analyze'')
+    -   General injunction [http://www.ncbi.nlm.nih.gov/pubmed/15580598](Senn%202004) \`\`as ye randomize so shall ye analyze'')
     -   In general you should make sure that a given randomization procedure coupled with a given estimation procedure will produce an unbiased estimate. `DeclareDesign` can help with this.
 
 ## Factorial Designs
@@ -228,42 +213,21 @@ kable(
 -   Often when you set up an experiment you want to look at more than one treatment.
 -   Should you do this or not? How should you use your power?
 
-```{=tex}
-\begin{table} 
-\tiny
-\begin{minipage}[b]{0.2\linewidth}\centering
-    \begin{tabular}{c|cc}
-    \footnotesize
-        &               $T2=0$ & $T2=1$ \\ \hline 
-    T1 = 0  &   $50\%$ & $0\%$ \\
-    T1 = 1  &   $50\%$ &  $0\%$ \\
-    \end{tabular}
-\end{minipage}
-\bigskip
-\hspace{0.1cm}
+|        | $T2=0$ | $T2=1$ |
+|--------|--------|--------|
+| T1 = 0 | $50\%$ | $0\%$  |
+| T1 = 1 | $50\%$ | $0\%$  |
 
-\begin{minipage}[b]{0.2\linewidth}\centering
-    \begin{tabular}{c|cc}
-    \tiny
-    &               $T2=0$ & $T2=1$ \\ \hline
-    T1 = 0  &   $25\%$ & $25\%$ \\
-    T1 = 1  &   $25\%$ &  $25\%$ \\
-    \end{tabular}
-\end{minipage}
-\bigskip
-\hspace{0.1cm}
+|        | $T2=0$ | $T2=1$ |
+|--------|--------|--------|
+| T1 = 0 | $25\%$ | $25\%$ |
+| T1 = 1 | $25\%$ | $25\%$ |
 
-\begin{minipage}[b]{0.2\linewidth}
-    \centering
-    \begin{tabular}{c|cc}
-    \tiny
-    &               $T2 = 0$ & $T2 = 1$ \\ \hline
-    T1 = 0  &   $33.3\%$ & $33.3\%$ \\
-    T1 = 1  &   $33.3\%$ &  $0\%$ \\
-    \end{tabular}
-    \end{minipage}
-\end{table}
-```
+|        | $T2=0$   | $T2=1$   |
+|--------|----------|----------|
+| T1 = 0 | $33.3\%$ | $33.3\%$ |
+| T1 = 1 | $33.3\%$ | $0\%$    |
+
 ### Factorial Designs
 
 -   Surprisingly adding multiple treatments does not eat into your power (unless you are decomposing a complex treatment -- then it can. Why?)
@@ -277,49 +241,37 @@ kable(
 
 -   In such cases people use **fractional factorial designs**, like the one below (5 treatments but only 8 units!)
 
-    ```{=tex}
-    \begin{table}[htbp]\scriptsize
-      \centering
-          \begin{tabular}{cccccc}\scriptsize
-              Variation   &   T1  &   T2  &   T3  &   T4  &   T5  \\ \hline
-              1   &   0   &   0   &   0   &   1   &   1   \\
-              2   &   0   &   0   &   1   &   0   &   0   \\
-              3   &   0   &   1   &   0   &   0   &   1   \\
-              4   &   0   &   1   &   1   &   1   &   0   \\
-              5   &   1   &   0   &   0   &   1   &   0   \\
-              6   &   1   &   0   &   1   &   0   &   1   \\
-              7   &   1   &   1   &   0   &   0   &   0   \\
-              8   &   1   &   1   &   1   &   1   &   1   \\
-          \end{tabular}
-    \end{table}
-    ```
+| Variation | T1  | T2  | T3  | T4  | T5  |
+|-----------|-----|-----|-----|-----|-----|
+| 1         | 0   | 0   | 0   | 1   | 1   |
+| 2         | 0   | 0   | 1   | 0   | 0   |
+| 3         | 0   | 1   | 0   | 0   | 1   |
+| 4         | 0   | 1   | 1   | 1   | 0   |
+| 5         | 1   | 0   | 0   | 1   | 0   |
+| 6         | 1   | 0   | 1   | 0   | 1   |
+| 7         | 1   | 1   | 0   | 0   | 0   |
+| 8         | 1   | 1   | 1   | 1   | 1   |
 
 -   Then randomly assign units to rows. Note columns might also be blocking covariates.
 
--   In R, look at \scriptsize {\ttfamily library(survey); hadamard(7)}
+-   In R, look at `library(survey)`
 
 ### Factorial Designs: In practice
 
 -   But be careful: you have to be comfortable with possibly not having any simple counterfactual unit for any unit (invoke sparsity-of-effects principle).
 
-    ```{=tex}
-    \begin{table}[htbp]\scriptsize
-     \centering
-         \begin{tabular}{cccccc}\scriptsize
-             Unit    &   T1  &   T2  &   T3  &   T4  &   T5  \\ \hline
-             1   &   0   &   0   &   0   &   1   &   1   \\
-             2   &   0   &   0   &   1   &   0   &   0   \\
-             3   &   0   &   1   &   0   &   0   &   1   \\
-             4   &   0   &   1   &   1   &   1   &   0   \\
-             5   &   1   &   0   &   0   &   1   &   0   \\
-             6   &   1   &   0   &   1   &   0   &   1   \\
-             7   &   1   &   1   &   0   &   0   &   0   \\
-             8   &   1   &   1   &   1   &   1   &   1   \\
-         \end{tabular}
-    \end{table}
-    ```
+| Unit | T1  | T2  | T3  | T4  | T5  |
+|------|-----|-----|-----|-----|-----|
+| 1    | 0   | 0   | 0   | 1   | 1   |
+| 2    | 0   | 0   | 1   | 0   | 0   |
+| 3    | 0   | 1   | 0   | 0   | 1   |
+| 4    | 0   | 1   | 1   | 1   | 0   |
+| 5    | 1   | 0   | 0   | 1   | 0   |
+| 6    | 1   | 0   | 1   | 0   | 1   |
+| 7    | 1   | 1   | 0   | 0   | 0   |
+| 8    | 1   | 1   | 1   | 1   | 1   |
 
--   In R, look at \scriptsize {\ttfamily library(survey); hadamard(7)}
+-   In R, look at `library(survey)`
 
 ## External Validity: Can randomization strategies help?
 
@@ -327,7 +279,7 @@ kable(
 
 Anything to be done on randomization to address external validity concerns?
 
--   **Note 1**: There is little or nothing about field experiments that makes the external validity problem greater for these than for other \`\`sample based'' research
+-   **Note 1**: There is little or nothing about field experiments that makes the external validity problem greater for these than for other ''sample based'' research
 -   **Note 2**: Studies that use up the available universe (cross national studies) actually have a distinct external validity problem
 -   Two ways to think about external validity issues:
     1.  Are things likely to operate in other units like they operate in these units? (even with the same intervention)
@@ -342,7 +294,7 @@ Anything to be done on randomization to address external validity concerns?
     -   Exploit internal variation: block on features that make the case unusal and assess importance of these (eg is unit poor? assess how effects differ in poor and wealthy components)
 -   2 is harder and requires a sharp identification of context free primitives, if there are such things.
 
-## Assignments with \`DeclareDesign\`\`
+## Assignments with \`\`DeclareDesign\`\`
 
 ### A design: Multilevel data
 
@@ -368,7 +320,7 @@ design <-
 
 ```
 
-### Sample data \label{simpleAass}
+### Sample data {#simpleAass}
 
 Here are the first couple of rows and columns of the resulting data frame.
 
@@ -386,7 +338,7 @@ kable(t(as.matrix(table(my_data$Z))),
       col.names = c("control", "treatment"))
 ```
 
-### Complete Random Assignment using the built in function \label{completeAss}
+### Complete Random Assignment using the built in function {#completeAss}
 
 ```{r, echo = TRUE}
 assignment_complete <-   declare_assignment(Z = complete_ra(N))  
@@ -439,7 +391,7 @@ tile_design <- function(design)
 tile_design(design_complete)
 ```
 
-### Block Random Assignment \label{blockedAss}
+### Block Random Assignment {#blockedAss}
 
 -   The treatment and control group will **in expectation** contain the same share of students in different classrooms.
 -   But as we saw this does necessarily hold in **realization**

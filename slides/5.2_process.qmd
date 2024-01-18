@@ -36,7 +36,7 @@ source("setup.R")
 * Open science workflows
 
 
-## When to experiment \label{L_prospects}
+## When to experiment {#L_prospects}
 
 ### Prospects 
 
@@ -62,7 +62,7 @@ source("setup.R")
 * Randomization of students to ethnically homogeneous or ethnically diverse schools (anywhere?)
 
 
-## Ethics \label{ethics}
+## Ethics {#ethics}
 
 ### Constraint: Is it ethical to manipulate subjects for research purposes?
 
@@ -117,7 +117,7 @@ source("setup.R")
 
 Otherwise keep focus on consent and desist if this is not possible
 
-## Transparency & Experimentation \label{registeration}
+## Transparency & Experimentation {#registeration}
 
 ### Contentious Issues
 
@@ -407,7 +407,7 @@ Notations PR (peer review certified), DE (data exist), and TC (transparent chang
 knitr::include_graphics("assets/badge.png")
 ```
 
-* 	https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/
+[https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/](https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/)
 
 ### Bells and Whistles: Certificaton?
 
@@ -575,7 +575,9 @@ $$\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = .8*.5/(.8*.5+.2*.5)  = 80\%$$
 
 *	We decide to look for evidence K2. And we find it! 
 *	Our posterior is now:
+
 $$Pr(H|K2) = Pr(K2|H)Pr(H)/Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94%$$
+
 *	Or is it?
 
 
