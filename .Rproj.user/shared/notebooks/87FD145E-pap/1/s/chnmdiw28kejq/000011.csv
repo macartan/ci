@@ -1,6 +1,0 @@
-"0",""
-"0","df <- draw_data(design)"
-"0",""
-"0","head(df) | kable(caption = ""Sample data"")"
-"2","Error in inherits(x, ""list"") : argument ""x"" is missing, with no default
-"

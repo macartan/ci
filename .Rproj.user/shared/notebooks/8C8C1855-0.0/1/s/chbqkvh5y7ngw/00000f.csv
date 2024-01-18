@@ -1,8 +1,0 @@
-"0","design_2 <- "
-"0","  declare_model(N = 4, "
-"0","                b = rnorm(N),"
-"0","                potential_outcomes(Y ~ b*X, conditions = list(X = 0:1))) +"
-"0","  declare_assignment(X = complete_ra(N)) +"
-"0","  declare_measurement(Y = reveal_outcomes(Y ~ X))"
-"0",""
-"0","draw_data(design_2) |> kable()"

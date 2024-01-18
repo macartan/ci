@@ -1,7 +1,0 @@
-"0","sampling_design <- "
-"0","  "
-"0","  declare_model(N = 500, Y = rnorm(N, sd = 1)) +"
-"0","  declare_inquiry(Q = mean(Y)) +"
-"0","  declare_sampling(S = complete_rs(N = N, n = 100)) + "
-"0","  declare_estimator(Y ~ 1)"
-"0",""

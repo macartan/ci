@@ -1,8 +1,0 @@
-"0","#| fig.height: 11.5"
-"0","#| fig.width: 10"
-"0","#| label: fig-twoway-inc-unscaled"
-"0","#| fig-env: ""figure*"""
-"0","#| fig-cap: ""Two-way relationship of random effect estimates between income and select liberal features at country level. The red dashed line corresponds to when slope is equal to 1. Note that to ease presentation and interpretation, we use a log scale on the $y$-axis."""
-"0",""
-"0",""
-"0","p_twoway_inc"
