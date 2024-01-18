@@ -68,12 +68,27 @@ Plot the estimates against values for different values of ; what do you see?
 
 Assuming you have a data frame named estimates_df with columns "values," "estimates," and possibly other relevant columns:
 #################
-# Plot estimates against values for different values of 
-# Assuming estimates_df has columns "values," "estimates," and possibly other relevant columns
+# Example of generating estimates_df
+set.seed(123)
+
+# Assuming you have values and estimates calculated
+values <- rnorm(100)
+N <- c(50, 100, 200)
+estimates <- replicate(length(N), rnorm(100))
+
+# Creating estimates_df
+estimates_df <- data.frame(
+  values = values,
+  estimates = c(estimates),
+  N = rep(N, each = length(values))
+)
+
+# Plot estimates against values for different values of N
 ggplot(estimates_df, aes(x = values, y = estimates, color = factor(N))) +
   geom_point() +
   labs(title = "Estimates vs. Values for Different N", x = "Values", y = "Estimates", color = "Sample Size (N)") +
   theme_minimal()
+
 ################
 
 Discussion
