@@ -1,0 +1,263 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    code-fold: show
+    code-summary: "Show the code"
+    scrollable: true
+    echo: true
+title: "Exercise 2.2"
+author: "Eduard, Felix, Linus & Noah"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+
+```{r setup, echo=FALSE}
+# install and load packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  DeclareDesign,
+  tidyverse,
+  here,
+  kableExtra
+  )
+
+# declare file location
+here::i_am("2.2.qmd")
+```
+
+
+# Puzzle
+
+**Clustering** 
+
+* Say that you have a set of 20 schools randomly sampled from a superpopulation of schools. There are 5 classrooms in each school and 5 students in each class room.
+* Say you assign a treatment at the classroom level. Should you cluster your standard errors at the level of the school or at the level of the classroom?
+
+# Strategy
+
+* Declare a design with this hierarchical data structure. Allow for the possibility that treatment effects vary at the school level. Assess the performance of the standard errors when you cluster at each of these levels (and when you do not cluster at all.
+* Examine whether the performance depends on whether you are interested in the population average effects or the sample average effects.
+
+**Hint** For generating hierarchical models use `add_level`. Also: be sure to have a reasonable large top level shock in order to see differences arising from clustering at the school level. You could also try heterogeneous effects by school.
+
+
+## Design
+
+### Model
+
+```{r}
+cluster_model <- 
+  declare_model(
+    school = 
+      add_level(
+        N = 3156,
+        school_shock = rnorm(N, mean = 0, sd = 10)
+      ),
+    class =
+      add_level(
+        N = 5
+      ),
+    student = 
+      add_level(
+        N = 5,
+        student_shock = draw_normal_icc(
+          mean = 0,
+          clusters = class,
+          ICC = 0.2
+        ),
+        potential_outcomes(Y ~ 0.3 * Z + school_shock + student_shock)
+      )
+  ) 
+```
+
+
+### Inquiry I (Population)
+
+```{r}
+cluster_inquiry_pop <- 
+  declare_inquiry(
+    PATE = mean(Y_Z_1 - Y_Z_0)
+  )
+```
+
+
+### Data strategy
+
+```{r}
+cluster_sampling <-
+  declare_sampling(
+    S_schools = 
+      cluster_rs(
+        clusters = school, 
+        n = 20
+        ), 
+    filter = S_schools == 1
+  )
+
+cluster_assignment <- 
+  declare_assignment(
+    Z = cluster_ra(clusters = class)
+  )
+
+cluster_measurement <- 
+  declare_measurement(
+    Y = reveal_outcomes(Y ~ Z)
+  )
+```
+
+
+### Inquiry II (Sample)
+
+```{r}
+cluster_inquiry_sample <- 
+  declare_inquiry(
+    SATE = mean(Y)
+  )
+```
+
+
+### Answer stratety
+
+```{r}
+cluster_answer_none <- 
+  declare_estimator(
+    Y ~ Z,
+    inquiry = c("SATE", "PATE"),
+    label = "none"
+  )
+
+cluster_answer_class <-
+  declare_estimator(
+    Y ~ Z,
+    clusters = class,
+    inquiry = c("SATE", "PATE"),
+    label = "class"
+  )
+
+cluster_answer_school <- 
+  declare_estimator(
+    Y ~ Z,
+    clusters = school,
+    inquiry = c("SATE", "PATE"),
+    label = "school"
+  )
+```
+
+
+### Design
+
+```{r}
+cluster_design <- 
+  cluster_model +
+  cluster_inquiry_pop +
+  cluster_sampling +
+  cluster_assignment +
+  cluster_measurement +
+  cluster_inquiry_sample + 
+  cluster_answer_none +
+  cluster_answer_class +
+  cluster_answer_school
+```
+
+
+### Run
+
+```{r}
+#| code-fold: true
+cluster_design |> 
+  run_design() |> 
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
+```
+
+
+## Diagnosis
+
+```{r}
+#| code-fold: true
+cluster_diagnosands <- 
+  declare_diagnosands(
+    mean_estimand = mean(estimand),
+    mean_estimate = mean(estimate),
+    bias = mean(estimate - estimand),
+    mean_se = mean(std.error),
+    rmse = sqrt(mean((estimate - estimand) ^ 2)),
+    power = mean(p.value <= 0.05),
+    coverage = mean(estimand <= conf.high & estimand >= conf.low)
+  )
+```
+
+
+### Diagnosands
+
+```{r}
+#| code-fold: true
+cluster_diagnose <- 
+  cluster_design |> 
+  diagnose_designs(
+    sims = 1000,
+    diagnosands = cluster_diagnosands
+  )
+```
+
+```{r}
+#| code-fold: true
+cluster_diagnose |> 
+  reshape_diagnosis() |> 
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
+```
+
+
+### Distribution of simulated standard errors
+
+```{r}
+#| code-fold: true
+cluster_diagnose |>
+  get_simulations() |> 
+  filter(inquiry == "PATE") |> 
+  ggplot() +
+  geom_histogram(aes(std.error)) +
+  labs(
+    y = "Count",
+    x = "Standard error"
+  ) +
+  theme_bw() +
+  facet_wrap(~estimator)
+```
+
+
+### Population vs. sample inquiry
+
+```{r}
+#| code-fold: true
+cluster_diagnose |> 
+  tidy() |> 
+  ggplot(
+    aes(
+      x = estimate,
+      y = diagnosand,
+      color = inquiry,
+      shape = inquiry
+      )
+    ) + 
+  geom_point() + 
+  geom_errorbarh(
+    aes(
+      xmax = conf.high, 
+      xmin = conf.low,
+      height = .2
+      )
+    ) +
+  theme_bw() +
+  facet_wrap(~estimator)
+
+```
+
