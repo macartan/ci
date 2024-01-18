@@ -8,7 +8,6 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
-#    number-depth: 2
 title: "Lectures on causal inference and experimental methods"
 author: "Macartan Humphreys"
 bibliography: bib.bib
