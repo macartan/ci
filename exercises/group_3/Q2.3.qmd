@@ -1,0 +1,123 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Exercise 2.3"
+author: "Team 3"
+---
+
+```{r, include=FALSE}
+library(DeclareDesign)
+library(knitr)
+library(latex2exp)
+library(tidyverse)
+```
+# Puzzle
+
+The exercise was:
+
+> Generate a simple design with potential outcomes and display the potential outcomes in a table
+
+### Setting up the model
+
+```{r, echo = TRUE}
+beta <-1      # Treatment effect of 1
+N <- 100      # N = 100
+my_rho <- .5  # Rho of .5 (will be changed later)
+
+design <- 
+  # Model
+  declare_model(
+    N = N, 
+    Y_Z_0 = rnorm(N),
+    Y_Z_1 = beta + correlate(rnorm, given = Y_Z_0, rho = my_rho)
+  ) + 
+  # Inquiry
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  # Data strategy
+  declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  # Answer strategy
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+```
+
+
+### Creating a simulations data set
+
+```{r, echo = TRUE}
+df_simulations <- 
+  design |> 
+  redesign(my_rho = seq(-1, 1, .1)) |> 
+  simulate_design()
+```
+
+And plot distributions for different values of rho (see next slide for output):
+
+```{r, eval = FALSE, echo = T}
+df_simulations |> 
+  
+  ggplot(aes(x = estimate)) +
+  geom_histogram() +
+  facet_wrap(~factor(my_rho)) +
+  ggtitle("Estimates for beta")
+```
+
+
+### Distribution of estimates in simulations
+
+```{r, echo = F}
+df_simulations |> 
+  
+  ggplot(aes(x = estimate)) +
+  geom_histogram() +
+  facet_wrap(~factor(my_rho)) +
+  ggtitle("Estimates for beta")
+```
+
+### Distribution of SD of estimates in simulations
+
+```{r}
+ggplot(df_simulations, aes(x = factor(my_rho), y = std.error)) +
+  geom_boxplot() +
+  geom_hline(yintercept = 0)
+```
+
+
+### Run diagnosis for all models
+
+```{r, echo = TRUE}
+diagnoses <-  
+  design |> 
+  redesign(my_rho = seq(-1, 1, .1)) |> 
+  diagnose_designs()
+```
+
+
+### SD estimate for different rhos {.smaller}
+
+```{r, echo = TRUE}
+diagnoses |> 
+  tidy() |> 
+  filter(diagnosand == "sd_estimate") |> 
+  select(design, my_rho, sd_estimate = estimate)
+```
+
+### Coverage for different rhos {.smaller}
+
+```{r, echo = TRUE}
+diagnoses |> 
+  tidy() |> 
+  filter(diagnosand == "coverage") |> 
+  select(design, my_rho, coverage = estimate)
+```
+
+
+### Definitions
+
+- Coverage = the proportion of instances where the interval surrounds the true value as assessed by long-run frequency
+- Confidence interval = random interval which contains the parameter being estimated x% of the time"
