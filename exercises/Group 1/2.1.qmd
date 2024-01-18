@@ -18,13 +18,15 @@ If you maintain the same significance level and only increase the sample size, y
 Assess by generating a simple experimental design from scratch in which we can vary the N and in which there is no true effect of some treatment. 
 ##################
 
-# Set a seed for reproducibility set.seed(123) 
+# Set a seed for reproducibility 
+set.seed(123)
+
 # Function to simulate data with no treatment effect 
-generate_data <- function(N) { control_group <- rnorm(N, mean = 0, sd = 1) data <- data.frame( Group = rep("Control", N), Values = control_group ) return(data) } 
-# Vary the sample size (N) 
-sample_sizes <- c(50, 100, 200) 
-# Generate data for different sample sizes 
-simulations_df <- data.frame() for (N in sample_sizes) { data <- generate_data(N) simulations_df <- rbind(simulations_df, data) } 
+generate_data <- function(N) { 
+  control_group <- rnorm(N, mean = 0, sd = 1) 
+  data <- data.frame(Group = rep("Control", N), Values = control_group) 
+  return(data) 
+}
 
 ##################
 -> In this example, generate_data simulates a control group with no treatment effect, and data is generated for different sample sizes (N). The resulting simulations_df data frame contains the simulated data.
@@ -33,8 +35,12 @@ simulations_df <- data.frame() for (N in sample_sizes) { data <- generate_data(N
 Then: 
 Plot the distribution of values from the simulations_df. What shape is it and why? 
 ##################
-# Plot histogram of values 
-library(ggplot2) ggplot(simulations_df, aes(x = Values)) + geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) + labs(title = "Distribution of Values", x = "Values", y = "Frequency") 
+# Plot histogram of values
+library(ggplot2)
+
+ggplot(simulations_df, aes(x = Values)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of Values", x = "Values", y = "Frequency")
 ##################
 
 Plot the power as increases, using the diagnosands_df 
@@ -56,8 +62,8 @@ ggplot(estimates_df, aes(x = values, y = estimates, color = factor(N))) + geom_p
 
 Discussion
 1.	Distribution of Values:
-o	Observe the shape of the histogram. Since we simulated data with no treatment effect and sampled from a normal distribution, you would expect a symmetric bell-shaped distribution.
+Since we simulated data with no treatment effect and sampled from a normal distribution, you would expect a symmetric bell-shaped distribution.
 2.	Power vs. Sample Size:
-o	Examine the line plot of power against sample size. Power is often expected to increase as the sample size increases, showing the ability to detect true effects.
+Power is often expected to increase as the sample size increases, showing the ability to detect true effects.
 3.	Estimates vs. Values for Different N:
-o	Look at the scatter plot of estimates against values for different sample sizes. Depending on the nature of your simulation, you might observe how the estimates vary with different sample sizes.
+Depending on the nature of the simulation, the observation of the estimates vary with different sample sizes.
