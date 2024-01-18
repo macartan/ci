@@ -1,2 +1,0 @@
-"0","m2 <- make_model(""M1 -> Y <- M2; X <- Z -> M1"")"
-"0","plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2, X=1, Y=1), nodecol = c(1,2,1,1,1))"

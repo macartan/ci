@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -3317,10 +3317,10 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </ul>
 <p>Now:</p>
 <ul>
-<li>Declare a design with this hierarchical data structure. Allow for the possibility that treatment effects vary at the school level. Assess the performance of the standard errors when you cluster at each of these levels (and when you do not cluster at all.</li>
+<li>Declare a design with this hierarchical data structure. Allow for the possibility that treatment effects vary at the school level. Assess the performance of the standard errors when you cluster at each of these levels (and when you do not cluster at all).</li>
 <li>Examine whether the performance depends on whether you are interested in the population average effects or the sample average effects.</li>
 </ul>
-<p><strong>Hint</strong> For generating hierarchical models use <code>add_level</code></p>
+<p><strong>Hint</strong> For generating hierarchical models use <code>add_level</code>. Also: be sure to have a reasonable large top level shock in order to see differences arising from clustering at the school level. You could also try heterogeneous effects by school.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">declare_model</span>(</span>
@@ -3341,39 +3341,39 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.2612534</td>
+<td style="text-align: right;">0.0944578</td>
 <td style="text-align: left;">001</td>
-<td style="text-align: right;">0.9854163</td>
+<td style="text-align: right;">-0.7834383</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.2612534</td>
+<td style="text-align: right;">0.0944578</td>
 <td style="text-align: left;">002</td>
-<td style="text-align: right;">-0.2349420</td>
+<td style="text-align: right;">1.2041157</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.2612534</td>
+<td style="text-align: right;">0.0944578</td>
 <td style="text-align: left;">003</td>
-<td style="text-align: right;">-0.8054886</td>
+<td style="text-align: right;">-0.2913711</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.1283106</td>
+<td style="text-align: right;">-0.1480933</td>
 <td style="text-align: left;">013</td>
-<td style="text-align: right;">-2.3856101</td>
+<td style="text-align: right;">0.8560911</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.1283106</td>
+<td style="text-align: right;">-0.1480933</td>
 <td style="text-align: left;">014</td>
-<td style="text-align: right;">-1.2336343</td>
+<td style="text-align: right;">0.6529889</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.1283106</td>
+<td style="text-align: right;">-0.1480933</td>
 <td style="text-align: left;">015</td>
-<td style="text-align: right;">-0.8203068</td>
+<td style="text-align: right;">-0.5302465</td>
 </tr>
 </tbody>
 </table>
@@ -3391,14 +3391,14 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <li><p>Show the distribution of the estimates over different values of <code>rho</code></p></li>
 <li><p>Assess the performance of the estimates of the standard errors and the coverage as <code>rho</code> goes from -1 to 0 to 1. Describe how coverage changes. (Be sure to be clear on what coverage is!)</p></li>
 </ul>
-<p><strong>Hint</strong> You can use the <code>fabricatr::correlate</code> function to generate correlated data.</p>
+<p><strong>Hint</strong> You can use the <code>fabricatr::correlate</code> function to generate correlated data. Also, to redesign over a range of values, assign a value to <code>rho</code> before you declare the design, and then you do <code>design |&gt; redesign(rho = c(-1, 0, 1))</code>, or use whatever range you like.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Y_Z_0 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Y_Z_1 <span class="ot">&lt;-</span> <span class="fu">correlate</span>(rnorm, <span class="at">given =</span> Y_Z_0, <span class="at">rho =</span> .<span class="dv">5</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(Y_Z_0, Y_Z_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4952117</code></pre>
+<pre><code>[1] 0.5321794</code></pre>
 </div>
 </div>
 </div></details>
@@ -3541,21 +3541,22 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </section>
 <section id="inquiries-and-identification" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Inquiries and identification</h1>
+<p>These next questions use some concepts we have not introduced yet. Don’t worry if your answers are incomplete but do share your thought processes around these.</p>
 <!-- See \ref{q-1}. -->
 <div id="q-colliderb" class="Q">
-<details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.1</strong></summary><div>
-<p><strong>Collider bias</strong></p>
+<p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.1</strong></summary><div><strong>Collider bias</strong><p></p>
 <ul>
 <li>Declare a simple design in which (i) <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> both have a positive effect on (binary) <span class="math inline">\(K\)</span> but <span class="math inline">\(X\)</span> does not cause <span class="math inline">\(Y\)</span> (ii) a researcher conditions on <span class="math inline">\(K==1\)</span> when estimating the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></li>
-<li>Show that this can generate biased results. Can you fine situations where the bias can be either positive or negative?</li>
+<li>Show that this can generate biased results. Can you find situations where the bias can be either positive or negative?</li>
 </ul>
+<p><strong>Hint</strong>: The direction of collider bias is related to the ways that <span class="math inline">\(K\)</span> and <span class="math inline">\(Y\)</span> interact to produce <span class="math inline">\(X\)</span>. Also: by “conditioning on <span class="math inline">\(K=1\)</span>” we mean: does the analysis using only cases for which <span class="math inline">\(K=1\)</span>.</p>
 </div></details>
 </div>
 <div id="q-dagitty" class="Q">
 <details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 4.2</strong></summary><div>
 <ul>
 <li>Draw a DAG with 5 nodes representing a situation in which <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> though <span class="math inline">\(M\)</span>, <span class="math inline">\(C\)</span> affects both <span class="math inline">\(X\)</span> and <span class="math inline">\(M\)</span> and <span class="math inline">\(D\)</span> affects both <span class="math inline">\(M\)</span> and <span class="math inline">\(Y\)</span>.</li>
-<li>Figure out a set of nodes which, when controlled for, allow for the identification of the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></li>
+<li>Think through what set of nodes which, when controlled for, would allow for the identification of the effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>.</li>
 <li>Represent it in <code>dagitty</code> and check your answer</li>
 <li>Bonus: Declare the design and compare the behavior of designs that do and do not control for these nodes.</li>
 </ul>
@@ -3628,7 +3629,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </div>
 </div>
 <p>Set up a model in <code>DeclareDesign</code> that has this distribution. Draw a large dataset from it and check if relations of conditional independence implied by your DAG.</p>
-<p>Hint: From slides you will see a DAG is a directed acyclic graph. A DAG should represent relations of conditional independence in the sense that any node <span class="math inline">\(A\)</span> that is separated from another node <span class="math inline">\(B\)</span> given nodes <span class="math inline">\(W\)</span> should be conditionally independent given <span class="math inline">\(W\)</span>. You should be able to read from this table which nodes are conditionally independent from each other given other nodes.</p>
+<p>Hint:This is relatively tricky. From slides you will see a DAG is a directed acyclic graph. A DAG should represent relations of conditional independence in the sense that any node <span class="math inline">\(A\)</span> that is separated from another node <span class="math inline">\(B\)</span> given nodes <span class="math inline">\(W\)</span> should be conditionally independent given <span class="math inline">\(W\)</span>. You should be able to read from this table which nodes are conditionally independent from each other given other nodes. You should be able to check consistency between the probability distribution and an underlying model by calculating quantities such as <span class="math inline">\(\Pr(x, m,y) = \Pr(x)\times\Pr(m|x)\times\Pr(y|m,x)\)</span>.</p>
 </div></details>
 </div>
 <div id="q-dag2" class="Q">
@@ -3645,7 +3646,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </li>
 <li>Discuss</li>
 </ul>
-<p><strong>Hint</strong>: This question is asking about the front door criterion. Check whether the conditions apply for the front door criterion on hold. Note that an effect is <em>not</em> identified if the data pattern it produces is also consistent with a different effect. Is that the case here? Note you can generate and update models of this form with <code>CausalQueries</code>.</p>
+<p><strong>Hint</strong>: This question is asking about the front door criterion. Check whether the conditions apply for the front door criterion to hold. Note that an effect is <em>not</em> identified if the data pattern it produces is also consistent with a different effect. Is that the case here? The second part of this is more important than the first part. Note you can generate and update models of this form with <code>CausalQueries</code>.</p>
 </div></details>
 </div>
 </section>
@@ -3729,7 +3730,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <div id="q-missing" class="Q">
 <p></p><details class="Q fbx-simplebox fbx-default" open><summary><strong>Q 5.4</strong></summary><div>Missing data on controls<p></p>
 <p>Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it?</p>
-<p>Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to <code>b</code>, and so to treatment effects. Say <code>X</code> is missing with probability <code>p</code>.</p>
+<p>Declare a design for an experiment in which a binary covariate <code>X</code> is related to potential outcomes, according to <code>b</code>, and so to treatment effects. Say <code>X</code> is missing with probability <code>p</code>.</p>
 <p>Compare answer strategies in which you:</p>
 <ol type="a">
 <li>do not control for <span class="math inline">\(X\)</span></li>

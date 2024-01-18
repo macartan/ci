@@ -1,6 +1,0 @@
-"0","U1 <- rnorm(10000);  U2 <- rnorm(10000)"
-"0","Z  <- U1+U2"
-"0","X  <- U2 + rnorm(10000)/2"
-"0","Y  <- U1*2 + X"
-"0",""
-"0","lm_robust(Y ~ X) |> tidy() |> kable(digits = 2)"
