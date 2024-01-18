@@ -30,9 +30,7 @@ generate_data <- function(N) {
 
 # Example of data frame creation
 diagnosands_df <- data.frame(
-  N = c(50, 100, 200),
-  power = c(0.8, 0.9, 0.95)
-)
+  N = c(50, 100, 200)
 
 # Generate simulated data for different sample sizes (N)
 sample_sizes <- c(50, 100, 200)  # Choose your desired sample sizes
