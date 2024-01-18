@@ -20,29 +20,26 @@ header-includes:
 fontsize: 11pt  
 ---
 
-
 ```{r, include = FALSE}
 
 source("setup.R")
 
 ```
 
-
-
 # Frequentist Analysis {#secfisher}
 
-## Basic Analysis \label{nools}
+## Basic Analysis {#nools}
 
-* Simple estimates from experimental data
-* Weighting, blocking
-* Doubly robust estimation
-* Design based variance estimates
-* Design based $p$ values
-* Reporting
+-   Simple estimates from experimental data
+-   Weighting, blocking
+-   Doubly robust estimation
+-   Design based variance estimates
+-   Design based $p$ values
+-   Reporting
 
-### ATE: DIM 
+### ATE: DIM
 
-Unbiased estimates of the (sample) average treatment effect can be estimated (\textbf{whether or not there imbalance on covariates}) using:
+Unbiased estimates of the (sample) average treatment effect can be estimated (**whether or not there imbalance on covariates**) using:
 
 $$
 \widehat{ATE} = \frac{1}{n_T}\sum_TY_i - \frac{1}{n_C}\sum_CY_i,
@@ -76,18 +73,16 @@ estimatr::lm_robust(Y ~ Z, data = df) |>
 
 See @freedman2008regression on why regression is fine here
 
-### ATE: Blocks 
-
+### ATE: Blocks
 
 Say now different strata or blocks $\mathcal{S}$ had different *assignment probabilities*. Then you could estimate:
 
-\begin{equation} \widehat{ATE} = \sum_{S\in \mathcal{S}}\frac{n_{S}}{n} \left(\frac{1}{n_{S1}}\sum_{S\cap T}y_i - \frac{1}{n_{S0}}\sum_{S\cap C}y_i \right) \end{equation}
-
-
-Note: you cannot just ignore the blocks because assignment is no longer independent of potential outcomes: you might be sampling units with different potential outcomes with different probabilities.
+$$
+\widehat{ATE} = \sum_{S\in \mathcal{S}}\frac{n_{S}}{n}
+\left(\frac{1}{n_{S1}}\sum_{S\cap T}y_i - \frac{1}{n_{S0}}\sum_{S\cap C}y_i \right)
+$$ Note: you cannot just ignore the blocks because assignment is no longer independent of potential outcomes: you might be sampling units with different potential outcomes with different probabilities.
 
 However, the formula above works fine because selecting is random *conditional* on blocks.
-
 
 ## ATE: Blocks in practice
 
@@ -109,10 +104,10 @@ estimatr::difference_in_means(Y ~ Z, data = df) |>
   tidy() |> kable(digits = 2)
 ```
 
-
 ## ATE: Blocks in practice
 
 Averaging over effects in blocks
+
 ```{r}
 # by hand
 estimates <- 
@@ -130,13 +125,11 @@ estimatr::difference_in_means(Y ~ Z, blocks = X, data = df) |>
   tidy() |> kable(digits = 2)
 ```
 
-
 ### ATE with IPW
 
 This also corresponds to the difference in the weighted average of treatment outcomes (with weights given by the inverse of the probability that each unit is assigned to treatment) and control outcomes (with weights given by the inverse of the probability that each unit is assigned to control).
 
-* The average difference in means estimator is the same as what you would get if you weighted inversely by shares of units in different conditions inside blocks. 
-
+-   The average difference in means estimator is the same as what you would get if you weighted inversely by shares of units in different conditions inside blocks.
 
 ### ATE with IPW in practice
 
@@ -153,31 +146,29 @@ df |>
 estimatr::difference_in_means(Y ~ Z, weights = ip, data = df) |>
   tidy() |> kable(digits = 2)
 ```
+
 ### ATE with IPW
 
-* But **inverse propensity weighting** is a more general principle, which can be used even if you do not have blocks. 
+-   But **inverse propensity weighting** is a more general principle, which can be used even if you do not have blocks.
 
-* The intuition for it comes straight from **sampling weights** --- you weight up in order to recover an unbiased estiamte of the potential outcomes for all units, whether or not they are assigned to treatment.
+-   The intuition for it comes straight from **sampling weights** --- you weight up in order to recover an unbiased estiamte of the potential outcomes for all units, whether or not they are assigned to treatment.
 
-* With sampling weights however you can include units even if their weight was 1. *Why can you not include these units when doing inverse propensity weighting?*
+-   With sampling weights however you can include units even if their weight was 1. *Why can you not include these units when doing inverse propensity weighting?*
 
-
-### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer\label{Fixer}
+### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer {#Fixer}
 
 Say you made a mess and used a randomization that was correlated with some variable, $X$. For example:
 
-- The randomization is done in a way that introduces a correlation between Treatment Assignment and Potential Outcomes
-- Then possibly, even though there is no true causal effect, we naively estimate a large one --- enormous bias
-- However since we know the assignment procedure we can **fully** correct for the bias
-- In the next example, we do this using "**inverse propensity score weighting**." This is exactly analogous to standard survey weighting --- since we selected different units for treatment with different probabilities, we weight them differently to recover the average outcome among treated units (same for control).
-
-
+-   The randomization is done in a way that introduces a correlation between Treatment Assignment and Potential Outcomes
+-   Then possibly, even though there is no true causal effect, we naively estimate a large one --- enormous bias
+-   However since we know the assignment procedure we can **fully** correct for the bias
+-   In the next example, we do this using "**inverse propensity score weighting**." This is exactly analogous to standard survey weighting --- since we selected different units for treatment with different probabilities, we weight them differently to recover the average outcome among treated units (same for control).
 
 ### Basic randomization: Fixer
 
 Code to generate bad assignment but proper propensity weights:
 
-```{r} 
+```{r}
 
 # design <- 
 #   declare_model(N = 200,
@@ -200,10 +191,9 @@ weightd <- sapply(1:ncol(P),function(i) {  # IPW estimates
               weighted.mean(Y[!P[,i]], pw[,i][!P[,i]])}) 
 ```
 
-
 ### Basic randomization: Fixer
 
-```{r, echo = FALSE} 
+```{r, echo = FALSE}
 par(mfrow=c(2,2));  
    plot(X, p, main="Propensities correlated with some covariate"); 
    plot(X[P[,1]], pw[,1][P[,1]],  
@@ -213,7 +203,6 @@ par(mfrow=c(2,2));
    hist(weightd, main="Distribution of estimates from weighted analysis")
 ```
 
-
 ### IPW with one unit!
 
 This example is surprising but it helps you see the logic of why inverse weighting gets unbiased estimates (and why that might not guarantee a reasonable answer)
@@ -222,76 +211,65 @@ Imagine there is one unit with potential outcomes $Y(1) = 2, Y(0) = 1$. So the u
 
 You toss a coin.
 
-* If you assign to treatment you estimate: $\hat\tau = \frac{2}{0.5} = 4$
-* If you assign to control you estimate: $\hat\tau = -\frac{1}{0.5} = -2$
+-   If you assign to treatment you estimate: $\hat\tau = \frac{2}{0.5} = 4$
+-   If you assign to control you estimate: $\hat\tau = -\frac{1}{0.5} = -2$
 
-SO your expected estimate is:
-$$0.5 \times 4 - 0.5 \times (-2) = 1$$
+SO your expected estimate is: $$0.5 \times 4 - 0.5 \times (-2) = 1$$
 
-Great on average but always lousy 
-
-
-
+Great on average but always lousy
 
 ## Example
 
+### Covariate Adjustment
 
+Consider for example this data.
 
-### Covariate Adjustment\label{CA}
-
-Consider for example this data. 
-\bigskip
-	
-
-- You randomly pair offerers and receivers in a dictator game (in which offerers decide how much of $1 to give to receivers).
-- Your population comes from two groups (80\% Baganda and 20\% Banyankole) *so in randomly assigning partners you are randomly determining whether a partner is a coethnic or not*.
-- **You find that in non-coethnic pairings 35\% is offered, in coethnic pairings 48\% is offered.**
+-   You randomly pair offerers and receivers in a dictator game (in which offerers decide how much of \$1 to give to receivers).
+-   Your population comes from two groups (80% Baganda and 20% Banyankole) *so in randomly assigning partners you are randomly determining whether a partner is a coethnic or not*.
+-   **You find that in non-coethnic pairings 35% is offered, in coethnic pairings 48% is offered.**
 
 Should you believe it?
 
-
 ### Covariate Adjustment
 
-- Population: randomly matched Baganda (80% of pop) and Banyankole (20% of pop)
-- You find: in non-coethnic pairings 35% is offered, in coethnic pairings 48% is offered.
-- But a closer look at the data reveals \dots
+-   Population: randomly matched Baganda (80% of pop) and Banyankole (20% of pop)
+-   You find: in non-coethnic pairings 35% is offered, in coethnic pairings 48% is offered.
+-   But a closer look at the data reveals...
 
-\begin{table}[h!]    \footnotesize
-	\begin{tabular}{cc|cc}	\footnotesize
-&	&		To: Baganda	&To: Banyankole \\ \hline
-Offers by	&Baganda	&64\%	& 16\% \\
-	&Banyankole	&16\%	&4\% \\
-	\end{tabular}
-	\caption{\small Number of Games}
-\end{table}
+::: {#fig-games}
+|           |            | To: Baganda | To: Banyankole |
+|-----------|------------|-------------|----------------|
+| Offers by | Baganda    | 64%         | 16%            |
+|           | Banyankole | 16%         | 4%             |
 
-\begin{table}[h!]    \footnotesize
-	\begin{tabular}{cc|cc} \footnotesize
-&	&		To: Baganda	&To: Banyankole \\ \hline
-Offers by	&Baganda	&50	& 50 \\
-	&Banyankole	&20	&20 \\
-	\end{tabular}
-	\caption{\small  Average Offers}
-\end{table}
-\footnotesize So that's a problem
+Number of Games
+:::
 
+::: {#fig-offers}
+|           |            | To: Baganda | To: Banyankole |
+|-----------|------------|-------------|----------------|
+| Offers by | Baganda    | 50          | 50             |
+|           | Banyankole | 20          | 20             |
 
+Average Offers
+:::
 
+So that's a problem
 
 ### Covariate Adjustment
 
 Control?
 
-- With such data you might be tempted to 'control' for the covariate (here: ethnic group), using regression.
-- But, perhaps surprisingly, it turns out that regression with covariates does not estimate average treatment effects.
-- It does estimate an average of treatment effects, but specifically a minimum variance estimator, not necessarily an estimator of your estimand.
+-   With such data you might be tempted to 'control' for the covariate (here: ethnic group), using regression.
+-   But, perhaps surprisingly, it turns out that regression with covariates does not estimate average treatment effects.
+-   It does estimate an average of treatment effects, but specifically a minimum variance estimator, not necessarily an estimator of your estimand.
 
 ### Covariate Adjustment
 
 Compare:
 
-*  $\hat{\tau}_{ATE} =\sum_{x} \frac{w_x}{\sum_{j}w_{j}}\hat{\tau}_x$
-*  $\hat{\tau}_{OLS} =\sum_{x} \frac{w_xp_x(1-p_x)}{\sum_{j}w_j{p_j(1-p_j)}}\hat{\tau}_x$
+-   $\hat{\tau}_{ATE} =\sum_{x} \frac{w_x}{\sum_{j}w_{j}}\hat{\tau}_x$
+-   $\hat{\tau}_{OLS} =\sum_{x} \frac{w_xp_x(1-p_x)}{\sum_{j}w_j{p_j(1-p_j)}}\hat{\tau}_x$
 
 Instead you can use formula above for $\hat{\tau}_{ATE}$ to estimate ATE
 
@@ -299,14 +277,13 @@ alternatively...
 
 ### Covariate adjustment via saturated regression
 
-Alternatively you can  use a regression that includes both the treatment and the treatment *interacted* with the covariates.
+Alternatively you can use a regression that includes both the treatment and the treatment *interacted* with the covariates.
 
 In practice this is best done by *demeaning* the covariates; doing this lets you read off the average effect from the main term. Key resource: @lin2012agnostic
 
 ### Covariate adjustment via saturated regression
 
 Returning to prior example:
-
 
 ```{r}
 df <- fabricatr::fabricate(
@@ -323,25 +300,24 @@ lm_lin(Y ~ Z, ~ X, data = df) |>
 
 ```
 
-
 ### Demeaning and saturating
 
 Demeaning interactions
 
-* Say you have a factorial design with treatments X1 and X2 (or obervational data with two covariates)
-* You analyse with a model that has main terms and interaction terms
-* Interpreting coefficients can be confusing, but sometimes demeaning can help. What does demeaning do?
+-   Say you have a factorial design with treatments X1 and X2 (or obervational data with two covariates)
+-   You analyse with a model that has main terms and interaction terms
+-   Interpreting coefficients can be confusing, but sometimes demeaning can help. What does demeaning do?
 
 Let's:
 
-* Declare a factorial design in which Y is generated according to 
+-   Declare a factorial design in which Y is generated according to
 
 `f_Y <- function(X1, X2, u) .1 + .2*X1 + .3*X2 + u*X1*X2`
 
 where u is distributed $U[0,1]$.
 
-* Specify estimands carefully
-* Run analyses in which we do and do not demean the treatments; compare and explain results
+-   Specify estimands carefully
+-   Run analyses in which we do and do not demean the treatments; compare and explain results
 
 ### Demeaning interactions
 
@@ -375,11 +351,9 @@ design <-
                     label = "demeaned")
 ```
 
-
 ### Demeaning interactions: Solution
 
 `f_Y <- function(X1, X2, u) .1 + .2*X1 + .3*X2 + u*X1*X2`
-
 
 ```{r, echo = FALSE}
 if(run)
@@ -397,24 +371,21 @@ It's all good. But you need to match the estimator to the inquiry: demean for av
 
 If you have different groups with different assignment propensities you can do any or all of these:
 
-1. Blocked differences in means
-2. Inverse propensity weighting 
-3. Saturated regression (Lin)
+1.  Blocked differences in means
+2.  Inverse propensity weighting
+3.  Saturated regression (Lin)
 
 We will compare the performances of these different approaches later.
 
 You cannot (reliably):
 
-1. Ignore the groups
-2. Include them in a regression (without interactions)
+1.  Ignore the groups
+2.  Include them in a regression (without interactions)
 
+### Covariate Adjustment {#CA}
 
-### Covariate Adjustment\label{CA}
-
-- Even though randomization ensures no bias, you may sometimes **want** to "**control**" for covariates in order to improve efficiency (see the discussion of blocking above).
-- Or you may **have** to take account of the fact that the assignment to treatment is correlated with a covariate. 
-
-
+-   Even though randomization ensures no bias, you may sometimes **want** to "**control**" for covariates in order to improve efficiency (see the discussion of blocking above).
+-   Or you may **have** to take account of the fact that the assignment to treatment is correlated with a covariate.
 
 ### Conditional Bias and Precision Gains from Controls
 
@@ -428,7 +399,9 @@ knitr::include_graphics("figs/n.png")
 
 Introducing controls can create complications
 
-As argued by Freedman (summary from @lin2012agnostic), we can get:  "worsened asymptotic precision, invalid measures of precision, and small-sample bias"^[though note that the precision concern does not hold when treatment and control groups are equally sized]
+As argued by Freedman (summary from @lin2012agnostic), we can get: "worsened asymptotic precision, invalid measures of precision, and small-sample bias"[^1]
+
+[^1]: though note that the precision concern does not hold when treatment and control groups are equally sized
 
 These adverse effects are essentially removed with an interacted model
 
@@ -436,13 +409,11 @@ See discussions in @imbens2015causal (7.6, 7.7) and especialy Theorem 7.2 for th
 
 ### Conditional Bias and Precision Gains from Controls
 
-Note also including controls when treatment is correlated with covariates can induce "conditional bias." Doing this will change your estimates so be sure not to fish! 
-
+Note also including controls when treatment is correlated with covariates can induce "conditional bias." Doing this will change your estimates so be sure not to fish!
 
 ```{r, echo = FALSE, fig.cap = "Advantages of controlling for vars that are correlated with outcomes"}
 knitr::include_graphics("figs/cb.jpg")
 ```
-
 
 There are more or less sophisticated ways of doing this....
 
@@ -452,35 +423,36 @@ There are more or less sophisticated ways of doing this....
 
 Doubly robust estimation combines:
 
-1. A model for how the covariates predict the potential outcomes
-2. A model for how the covariates predict assignment propensities 
+1.  A model for how the covariates predict the potential outcomes
+2.  A model for how the covariates predict assignment propensities
 
 Using both together to estimate potential outcomes using propensity weighting lets you do well even if either model is wrong.
 
 Each part can be done using nonparameteric methods resulting in an overall semi-parametric procedure.
 
-* $\pi(Z)  = \Pr(Z=1|X)$:  Estimate $\hat\pi$
-* $Y_z  = \mathbb{E}[Y|Z=z, X]$:  Estimate $\hat{Y}_z$
-* Estimate of causal effect: $\frac{1}{n}\sum_{i=1}^n\left(\left(\frac{Z_i}{\hat{\pi}_i}(Y_i - \hat{Y}_{i1}\right) - \left(\frac{1-Z_i}{1-\hat{\pi}_i}(Y_i - \hat{Y}_{i0}\right) + \left(\hat{Y}_{i1} - \hat{Y}_{i0}\right) \right)$
+-   $\pi(Z) = \Pr(Z=1|X)$: Estimate $\hat\pi$
+-   $Y_z = \mathbb{E}[Y|Z=z, X]$: Estimate $\hat{Y}_z$
+-   Estimate of causal effect: $\frac{1}{n}\sum_{i=1}^n\left(\left(\frac{Z_i}{\hat{\pi}_i}(Y_i - \hat{Y}_{i1}\right) - \left(\frac{1-Z_i}{1-\hat{\pi}_i}(Y_i - \hat{Y}_{i0}\right) + \left(\hat{Y}_{i1} - \hat{Y}_{i0}\right) \right)$
 
 ### Doubly robust estimation
 
-* Estimate of causal effect: $\frac{1}{n}\sum_{i=1}^n\left(\left(\frac{Z_i}{\hat{\pi}_i}(Y_i - \hat{Y}_{i1}\right) - \left(\frac{1-Z_i}{1-\hat{\pi}_i}(Y_i - \hat{Y}_{i0}\right) + \left(\hat{Y}_{i1} - \hat{Y}_{i0}\right) \right)$
+-   Estimate of causal effect: $\frac{1}{n}\sum_{i=1}^n\left(\left(\frac{Z_i}{\hat{\pi}_i}(Y_i - \hat{Y}_{i1}\right) - \left(\frac{1-Z_i}{1-\hat{\pi}_i}(Y_i - \hat{Y}_{i0}\right) + \left(\hat{Y}_{i1} - \hat{Y}_{i0}\right) \right)$
 
-* Note that if $\hat{Y}_{iz}$ are correct then the first parts drop out and we we get the right answer.
-* So if you can impute the potential outcomes, you are good (though hardly surprising)
+-   Note that if $\hat{Y}_{iz}$ are correct then the first parts drop out and we we get the right answer.
+
+-   So if you can impute the potential outcomes, you are good (though hardly surprising)
 
 ### Doubly robust estimation
 
-* More subtly say the $\hat{pi}$s are correct, but your imputations are wrong; then we again have an unbiased estimator. 
+-   More subtly say the $\hat{pi}$s are correct, but your imputations are wrong; then we again have an unbiased estimator.
 
-To see this imagine with probability $\pi$ we assign unit 1 to treatment and 2 to control (otherwise 1 to control and 2 to treatment). 
+To see this imagine with probability $\pi$ we assign unit 1 to treatment and 2 to control (otherwise 1 to control and 2 to treatment).
 
 Then our *expected* estimate is:
 
-$\frac12\pi\left(\left(\frac{1}{\pi}(Y_{11} - \hat{Y}_{11}\right) - \left(\frac{1}{\pi}(Y_{20} - \hat{Y}_{20}\right)  \right) + (1-\pi)\left(\left(\frac{1}{1-\pi}(Y_{21} - \hat{Y}_{21}\right) - \left(\frac{1}{1-\pi}(Y_{10} - \hat{Y}_{10}\right)  \right) + \left(\hat{Y}_{11} - \hat{Y}_{20}\right) + \left(\hat{Y}_{21} - \hat{Y}_{10}\right)$
+$\frac12\pi\left(\left(\frac{1}{\pi}(Y_{11} - \hat{Y}_{11}\right) - \left(\frac{1}{\pi}(Y_{20} - \hat{Y}_{20}\right) \right) + (1-\pi)\left(\left(\frac{1}{1-\pi}(Y_{21} - \hat{Y}_{21}\right) - \left(\frac{1}{1-\pi}(Y_{10} - \hat{Y}_{10}\right) \right) + \left(\hat{Y}_{11} - \hat{Y}_{20}\right) + \left(\hat{Y}_{21} - \hat{Y}_{10}\right)$
 
-$\frac12\left(Y_{11} - Y_{10} + Y_{21}- Y_{20} +\pi\left(\left(\frac{1}{\pi}( - \hat{Y}_{11}\right) - \left(\frac{1}{\pi}( - \hat{Y}_{20}\right) \right) + (1-\pi)\left(\left(\frac{1}{1-\pi}( - \hat{Y}_{21}\right) - \left(\frac{1}{1-\pi}(- \hat{Y}_{10}\right)  \right)\right) + \left(\hat{Y}_{11} - \hat{Y}_{20}\right) + \left(\hat{Y}_{21} - \hat{Y}_{10}\right)$
+$\frac12\left(Y_{11} - Y_{10} + Y_{21}- Y_{20} +\pi\left(\left(\frac{1}{\pi}( - \hat{Y}_{11}\right) - \left(\frac{1}{\pi}( - \hat{Y}_{20}\right) \right) + (1-\pi)\left(\left(\frac{1}{1-\pi}( - \hat{Y}_{21}\right) - \left(\frac{1}{1-\pi}(- \hat{Y}_{10}\right) \right)\right) + \left(\hat{Y}_{11} - \hat{Y}_{20}\right) + \left(\hat{Y}_{21} - \hat{Y}_{10}\right)$
 
 $\frac12\left(Y_{11} - Y_{10} + Y_{21}- Y_{20}\right)$
 
@@ -508,7 +480,6 @@ df <- fabricatr::fabricate(
 )
 ```
 
-
 ### Simple approaches
 
 Naive regression produces biased estimates, even with controls. Lin regression gets the right result however.
@@ -527,8 +498,7 @@ lm_lin(Y ~ Z,  ~ class + race, data = df)$coefficients[["Z"]]
 
 ### Doubly robust estimation
 
-`drtmle` is an R package that uses doubly robust estimation to compute "marginal means of an outcome under fixed levels of a treatment." 
-
+`drtmle` is an R package that uses doubly robust estimation to compute "marginal means of an outcome under fixed levels of a treatment."
 
 ```{r}
 library(SuperLearner)
@@ -557,58 +527,49 @@ wald_test(drtmle_fit, contrast = c(-1,1))
 
 ```
 
-Resource: https://muse.jhu.edu/article/883477
-
+Resource: <https://muse.jhu.edu/article/883477>
 
 ## Assessing performance
 
 **Challenge**: Use `DeclareDesign` to compare performance of `drtmle` and `lm_lin`
 
-
-## Randomization Inference \label{ri}
-
-### Calculate a $p$ value in your head
-
-*   Illustrating $p$ values via "randomization inference"
-
-*   Say you randomized assignment to treatment and your data looked like this.
-
-
-| Unit         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
-|--------------|---|---|---|---|---|---|---|---|---|----|
-| Treatment    | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0  |
-| Health score | 4 | 2 | 3 | 1 | 2 | 3 | 4 | 8 | 7 | 6  |
-
-Then:
-
-* Does the treatment improve your health?
-* What's the $p$ value for the  null that treatment had no effect on anybody?
-
-
-
-
+## Randomization Inference {#ri}
 
 ### Calculate a $p$ value in your head
 
-*   Illustrating $p$ values via "randomization inference"
-*   Say you randomized assignment to treatment and your data looked like this.
+-   Illustrating $p$ values via "randomization inference"
 
+-   Say you randomized assignment to treatment and your data looked like this.
 
-| Unit         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
-|--------------|---|---|---|---|---|---|---|---|---|----|
-| Treatment    | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0  |
-| Health score | 4 | 2 | 3 | 1 | 2 | 3 | 4 | 8 | 7 | 6  |
+| Unit         | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|--------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| Treatment    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   | 0   | 0   |
+| Health score | 4   | 2   | 3   | 1   | 2   | 3   | 4   | 8   | 7   | 6   |
 
 Then:
 
-* Does the treatment improve your health?
-* What's the $p$ value for the  null that treatment had no effect on anybody?
+-   Does the treatment improve your health?
+-   What's the $p$ value for the null that treatment had no effect on anybody?
 
+### Calculate a $p$ value in your head
 
+-   Illustrating $p$ values via "randomization inference"
+-   Say you randomized assignment to treatment and your data looked like this.
+
+| Unit         | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|--------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| Treatment    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   | 0   |
+| Health score | 4   | 2   | 3   | 1   | 2   | 3   | 4   | 8   | 7   | 6   |
+
+Then:
+
+-   Does the treatment improve your health?
+-   What's the $p$ value for the null that treatment had no effect on anybody?
 
 ### Randomization Inference: Some code
-* In principle it is very easy. 
-* These few lines generate data, produce the regression estimate and then an RI estimate of $p$:
+
+-   In principle it is very easy.
+-   These few lines generate data, produce the regression estimate and then an RI estimate of $p$:
 
 ```{r}
 # data
@@ -624,215 +585,219 @@ ts <- replicate(1000, df |> mutate(X = sample(X)) |> t())
 mean(ts >= t(df))   # One sided p value
 ```
 
-
 ### Randomization Inference
+
 In practice it is a good idea to create a $P$ matrix when you do your randomization (although note: if the null is about one treatment, then you are interested only in the randomization of that treatment, not the joint randomization of all)
 
+### Randomization Inference
 
+-   Say you had a silly randomization procedure and forgot to take account of it in your estimates.
 
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("figs/pw2.png")
+```
 
+-   You estimate .15. *Does the treatment improve your health?*
 
-
+-   $p=$?
 
 ### Randomization Inference
 
-* Say you had a silly randomization procedure and forgot to take account of it in your estimates.
-		\begin{figure}[htbp]
-			\centering
-				\includegraphics[width=.9\textwidth]{figs/pw2.png}
-			\label{fig:pweight}
-		\end{figure}
-* You estimate .15. \textsl{Does the treatment improve your health?}
-* $p=$?
-
-
-
-
-### Randomization Inference
-* Randomization procedures are sometimes funky in lab experiments
-* Using randomization inference would force a focus on the true assignment of individuals to treatments
-* Fake (but believable) example follows	
-
+-   Randomization procedures are sometimes funky in lab experiments
+-   Using randomization inference would force a focus on the true assignment of individuals to treatments
+-   Fake (but believable) example follows
 
 ### Randomization Inference
 
-\begin{table}
-  \centering
-  \caption{Optimal assignment to treatment given constraints due to facilities}
-    \begin{tabular}{rrcccc}
-          &       & Capacity & T1    & T2    & T3 \\ \hline
-    Session & Thursday & 40    & 10    & 30    & 0 \\
-          & Friday & 40    & 10    & 0     & 30 \\
-          & Saturday & 10    & 10    & 0     & 0 \\ \hline
-          &       & 90    & 30    & 30    & 30 \\ \hline
-    \end{tabular}
-\end{table}
+::: {fig-optimalassigment}
+|         |          | Capacity | T1  | T2  | T3  |
+|---------|----------|----------|-----|-----|-----|
+| Session | Thursday | 40       | 10  | 30  | 0   |
+|         | Friday   | 40       | 10  | 0   | 30  |
+|         | Saturday | 10       | 10  | 0   | 0   |
 
-\begin{table}[htbp] \small
-  \centering
-  \caption{Constraints due to subjects}
-    \begin{tabular}{ccc}
-    Subject Type & N     & Available \\ \hline
-    A     & 30    & Thurs, Fri \\
-    B     & 30    & Thurs, Sat \\
-    C     & 30    & Fri, Sat \\ \hline
-    \end{tabular}
-\end{table}
+Optimal assignment to treatment given constraints due to facilities
+:::
 
+::: {fig-constraints}
+| Subject type | N   | Available  |
+|--------------|-----|------------|
+| A            | 3   | Thurs, Fri |
+| B            | 30  | Thurs, Sat |
+| C            | 30  | Fri, Sat   |
 
-### Randomization Inference
-\small If you think hard about assignment you might come up with an allocation like this. 
-
-\begin{table}
-  \centering
-  \caption{Assignment of people to days}
-    \begin{tabular}{ccc|ccc}
-          &       &       &       & Allocation &  \\
-    Subject Type & N     & Available & Thurs & Fri   & Sat \\ \hline
-    A     & 30    & Thurs, Fri & 15    & 15    &  \\
-    B     & 30    & Thurs, Sat & 25    &       & 5 \\
-    C     & 30    & Fri, Sat &       & 25    & 5 \\
-    \end{tabular}
-\end{table}
-
-
-\footnotesize  That allocation balances as much as possible. Given the allocation you might randomly assign individuals to different days as well as randomly assigning them to treatments within days. If you then figure out assignment propensities, this is what you would get:
-
-\begin{table}
-  \centering
-    \begin{tabular}{cccccc}
-          &       &       & \multicolumn{3}{c}{Assignment Probabilities}  \\ \hline
-    Subject Type & N     & Available & T1    & T2    & T3 \\ \hline
-    A     & 30    & Thurs, Fri & 0.25  & 0.375 & 0.375 \\
-    B     & 30    & Thurs, Sat & 0.375 & 0.625 & 0 \\
-    C     & 30    & Fri, Sat & 0.375 &       & 0.625 \\ \hline
-    \end{tabular}
-  \label{tab:addlabel}
-\end{table}
-
+Constraints due to subjects
+:::
 
 ### Randomization Inference
 
-\footnotesize Even under the assumption that the day of measurement does not matter, these assignment probabilities have big implications for analysis. 
-\begin{table}\footnotesize
-    \begin{tabular}{ccc|ccc}
-          &       &       & \multicolumn{3}{|c}{Assignment Probabilities} \\
-    Subject Type & N     & Available & T1    & T2    & T3 \\ \hline
-    A     & 30    & Thurs, Fri & 0.25  & 0.375 & 0.375 \\
-    B     & 30    & Thurs, Sat & 0.375 & 0.625 & 0 \\
-    C     & 30    & Fri, Sat & 0.375 &       & 0.625 \\
-    \end{tabular}
-  \label{tab:addlabel}%
-\end{table}
+[If you think hard about assignment you might come up with an allocation like this.]{style="font-size:  80%;"}
 
-* Only the type $A$ subjects could have received any of the three treatments. 
-* There are no two treatments for which it is possible to compare outcomes for subpopulations $B$ and $C$
-* A comparison of $T1$ versus $T2$ can only be made for population $A \cup B$ 
-* However subpopulation $A$ is assigned to $A$ (versus $B$) with probability 4/5; while population $B$ is assigned with probability 3/8
+```{r, warning=FALSE, echo=FALSE,fig.align='center', fig.cap="Assignment of people to days"}
+df <- data.frame(
+  Subject_Type = c("A", "B", "C"),
+  N = c(30, 30, 30),
+  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
+  Thurs = c(15, 25, NA),
+  Fri = c(15, NA, 25),
+  Sat = c(NA, 5, 5)
+)
 
+# Custom labels
+custom_labels <- c("Subject type", "N", "Available", "Thurs", "Fri", "Sat")
 
+# Rename columns before applying column_spec
+colnames(df) <- custom_labels
 
-* **Implications for design**: need to uncluster treatment delivery
-* **Implications for analysis**: need to take account of propensities
+kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c(" " = 3, "Allocations" = 3))
+```
 
+[That allocation balances as much as possible. Given the allocation you might randomly assign individuals to different days as well as randomly assigning them to treatments within days. If you then figure out assignment propensities, this is what you would get:]{style="font-size: 80%;"}
 
- \textbf{Idea}: Wacky assignments happen but if you know the propensities you can do the analysis.
+```{r, warning=FALSE, echo=FALSE,fig.align='center'}
+df <- data.frame(
+  Subject_Type = c("A", "B", "C"),
+  N = c(30, 30, 30),
+  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
+  T1 = c(0.25, 0.375, 0.375),
+  T2 = c(0.375, 0.625, NA),  # Use NA for missing value
+  T3 = c(0.375, 0, 0.625)
+)
 
+# Custom labels
+custom_labels <- c("Subject type", "N", "Available", "T1", "T2", "T3")
 
+# Rename columns before applying column_spec
+colnames(df) <- custom_labels
 
-
+kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c(" " = 3, "Assignment Probabilities" = 3))
+```
 
 ### Randomization Inference
-* Randomization inference can get quite a bit more complicated when you want to test a null other than the sharp null of no effect.
-* Say you wanted to test the null that the effect is 2 for all units. How do you do it?
-* Say you wanted to test the null that an *interaction effect* is zero. How do you do it?
-* In both cases by filling in a potential outcomes schedule given the hypothesis in question and then generating a test statistic
 
-\begin{table}
-\centering
-\begin{tabular}{cccccccc}
+[Even under the assumption that the day of measurement does not matter, these assignment probabilities have big implications for analysis.]{style="font-size: 80%;"}
 
-\multicolumn{ 2}{c}{Observed} &            & \multicolumn{ 2}{c}{Under null that } &            & \multicolumn{ 2}{c}{Under null that } \\
+```{r,warning=FALSE, echo=FALSE, fig.align='center'}
+df <- data.frame(
+  Subject_Type = c("A", "B", "C"),
+  N = c(30, 30, 30),
+  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
+  T1 = c(0.25, 0.375, 0.375),
+  T2 = c(0.375, 0.625, NA),  # Use NA for missing value
+  T3 = c(0.375, 0, 0.625)
+)
 
-           &            &            & \multicolumn{ 2}{c}{effect is 0} &            & \multicolumn{ 2}{c}{effect is 2} \\  \hline
+# Custom labels
+custom_labels <- c("Subject type", "N", "Available", "T1", "T2", "T3")
 
-      Y(0) &       Y(1) &            &       Y(0) &       Y(1) &            &       Y(0) &       Y(1) \\
+# Rename columns before applying column_spec
+colnames(df) <- custom_labels
 
-         1 &          ? &            &          1 &          1 &            &          1 &          3 \\
+kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c(" " = 3, "Assignment Probabilities" = 3))
+```
 
-         2 &          ? &            &          2 &          2 &            &          2 &          4 \\
+-   Only the type $A$ subjects could have received any of the three treatments.
 
-         ? &          4 &            &          4 &          4 &            &          2 &          4 \\
+-   There are no two treatments for which it is possible to compare outcomes for subpopulations $B$ and $C$
 
-         ? &          3 &            &          3 &          3 &            &          1 &          3 \\
+-   A comparison of $T1$ versus $T2$ can only be made for population $A \cup B$
 
-\end{tabular}  
-\end{table}
+-   However subpopulation $A$ is assigned to $A$ (versus $B$) with probability 4/5; while population $B$ is assigned with probability 3/8
 
+-   **Implications for design**: need to uncluster treatment delivery
+
+-   **Implications for analysis**: need to take account of propensities
+
+**Idea**: Wacky assignments happen but if you know the propensities you can do the analysis.
+
+### Randomization Inference
+
+-   Randomization inference can get quite a bit more complicated when you want to test a null other than the sharp null of no effect.
+-   Say you wanted to test the null that the effect is 2 for all units. How do you do it?
+-   Say you wanted to test the null that an *interaction effect* is zero. How do you do it?
+-   In both cases by filling in a potential outcomes schedule given the hypothesis in question and then generating a test statistic
+
+```{r,warning=FALSE, fig.align='center'}
+
+data <- data.frame(
+  Observed_Y0 = c(1, 2, NA, NA),
+  Observed_Y1 = c(NA, NA, 4, 3),
+  UnderNull_0_Y0 = c(1, 2, 4, 3),
+  UnderNull_0_Y1 = c(1, 2, 4, 3),
+  UnderNull_2_Y0 = c(1, 2, 2, 1),
+  UnderNull_2_Y1 = c(3, 4, 4, 3)
+)
+
+# Custom labels
+custom_labels <- c("Y(0)", "Y(1)", "Y(0)", "Y(1)", "Y(0)", "Y(1)")
+
+# Rename columns before applying column_spec
+data_renamed <- data
+colnames(data_renamed) <- custom_labels
+
+kable(data_renamed, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c("Observed" = 2, "Under null that\n effect is 0" = 2, "Under null that\n effect is 2" = 2))
+
+
+```
 
 ## Design Based Estimation of Variance
 
 ### Var(ATE)
 
-* Recall that the treatment effect is gotten by taking a sample of outcomes under treatment and comparing them to a sample of outcomes under control
-* Say that there is no "error"
-* Why would this procedure produce uncertainty? 
-
-
-### Var(ATE)
-
-* Why would this procedure produce uncertainty? 
-* The uncertainty comes from being uncertain about the average outcome under control from observations of the control units, and from being uncertain about the average outcome under treatment from obervation of the treated units
-* In other words, it comes from the variance in the treatment outcomes and variance in the control outcomes (and not, for example, from variance in the treatment effect)
-
+-   Recall that the treatment effect is gotten by taking a sample of outcomes under treatment and comparing them to a sample of outcomes under control
+-   Say that there is no "error"
+-   Why would this procedure produce uncertainty?
 
 ### Var(ATE)
 
-\scriptsize You can also estimate variance straight from the data. From \href{http://www.stat.berkeley.edu/~census/neyregcm.pdf}{Freedman Prop 1} (using combinatorics!) we have:
+-   Why would this procedure produce uncertainty?
+-   The uncertainty comes from being uncertain about the average outcome under control from observations of the control units, and from being uncertain about the average outcome under treatment from obervation of the treated units
+-   In other words, it comes from the variance in the treatment outcomes and variance in the control outcomes (and not, for example, from variance in the treatment effect)
 
-\begin{eqnarray*} 
-V(\widehat{ATE})  &=  &\frac{1}{n-1}\left[\frac{n_C}{n_T}V(Y(1)) +  \frac{n_T}{n_C}V(Y(0))\right] + 2C\left(Y(1),Y(0)\right)  \nonumber \\
-\end{eqnarray*}
+### Var(ATE)
+
+You can also estimate variance straight from the data. From [Freedman Prop 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
+
+$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V(Y(1)) + \frac{n_T}{n_C}V(Y(0))\right] + 2C\left(Y(1),Y(0)\right)$
+
 Usefully rewritten as:
-\begin{eqnarray*} 
-V(\widehat{ATE})  &=  &\frac{n}{n-1}\left[\frac{V(Y(1))}{n_T} +  \frac{V(Y(0))}{n_C}\right] - \frac{1}{n-1}\left[V(Y(1)) + V(Y(0)) - 2C\left(Y(1),Y(0)\right)\right]  \nonumber 
-\end{eqnarray*}
 
-\dots where $V$ denotes variance and $C$ covariance
+$V(\widehat{ATE}) = \frac{n}{n-1}\left[\frac{V(Y(1))}{n_T} + \frac{V(Y(0))}{n_C}\right] - \frac{1}{n-1}\left[V(Y(1)) + V(Y(0)) - 2C\left(Y(1),Y(0)\right)\right]$
+
+... where $V$ denotes variance and $C$ covariance
 
 ### Var(ATE)
-
 
 Note:
 
-* We can use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
-* But $C(Y(1),Y(0))$ cannot be estimated from data.
-* The **Neyman estimator** ignores the second part (and so is conservative).
-* Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
-
-
-
-
+-   We can use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
+-   But $C(Y(1),Y(0))$ cannot be estimated from data.
+-   The **Neyman estimator** ignores the second part (and so is conservative).
+-   Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
 
 ### ATE and Var(ATE)}
 
 For the case with blocking, the conservative estimator is:
 
-\begin{equation*} V(\widehat{ATE})   = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \left({\frac{s^2_{S1}}{n_{S1}}} + {\frac{s^2_{S0}}{n_{S0}}} \right)}  \end{equation*}
-
-
-
+$V(\widehat{ATE}) = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \left({\frac{s^2_{S1}}{n_{S1}}} + {\frac{s^2_{S0}}{n_{S0}}} \right)}$
 
 ### Illustration of Neyman Conservative Estimator
 
-An illustration of \textit{how} conservative the conservative estimator of variance really is (numbers in plot are correlations between $Y(1)$ and $Y(0)$. 
+An illustration of *how* conservative the conservative estimator of variance really is (numbers in plot are correlations between $Y(1)$ and $Y(0)$.
 
-We confirm that: 
+We confirm that:
 
-1. the estimator is conservative 
-2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment %, and 
-3. with $\tau$ and $V(Y(0))$ fixed. high positive correlations are associated with highest variance. 
-    
+1.  the estimator is conservative
+2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment %, and
+3.  with $\tau$ and $V(Y(0))$ fixed. high positive correlations are associated with highest variance.
 
 ```{r, echo = FALSE}
 n    <- 100; Y0 <- scale(1:n); e <- 2*abs(Y0)     
@@ -860,62 +825,49 @@ VN1 <- sapply(s, function(i) neyman(5000, i, cons=0)) # True variance; Formula c
 VN2 <- sapply(s, function(i) neyman(5000, i, cons=1)) # Neyman conservative estimate
 ```
 
-
 ### Illustration of Neyman Conservative Estimator
 
-```{r, echo = FALSE} 
+```{r, echo = FALSE}
 plot(V, VN1, xlim=c(0, max(VN1, VN2,V)), ylim=c(0, max(V, VN1, VN2)), 
 main="Neyman estimator for  Y(1) and Y(0) correlations, ATE=1, Var(Y(0)=1, Var(Y(1) free" ,
 ylab="Conservative Neyman Estimator", xlab="True Variance", col="grey")
 lines(V, VN2, col="red"); text(V, VN2, round(cors,2), offset=TRUE); abline(0,1)
 ```
 
-
-
-
 ### Illustration of Neyman Conservative Estimator
 
-
 | $\tau$ | $\rho$ | $\sigma^2_{Y(1)}$ | $\Delta$ | $\sigma^2_{\tau}$ | $\widehat{\sigma}^2_{\tau}$ | $\widehat{\sigma}^2_{\tau(\text{Neyman})}$ |
-|--------|--------|---------------------|----------|-------------------|-----------------------------|----------------------------------------------|
-| 1.00   | -1.00  | 1.00                | -0.04    | 0.00              | -0.00                       | 0.04                                         |
-| 1.00   | -0.67  | 1.00                | -0.03    | 0.01              | 0.01                        | 0.04                                         |
-| 1.00   | -0.33  | 1.00                | -0.03    | 0.01              | 0.01                        | 0.04                                         |
-| 1.00   | 0.00   | 1.00                | -0.02    | 0.02              | 0.02                        | 0.04                                         |
-| 1.00   | 0.33   | 1.00                | -0.01    | 0.03              | 0.03                        | 0.04                                         |
-| 1.00   | 0.67   | 1.00                | -0.01    | 0.03              | 0.03                        | 0.04                                         |
-| 1.00   | 1.00   | 1.00                | 0.00     | 0.04              | 0.04                        | 0.04                                         |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| 1.00   | -1.00  | 1.00              | -0.04    | 0.00              | -0.00                       | 0.04                                       |
+| 1.00   | -0.67  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
+| 1.00   | -0.33  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
+| 1.00   | 0.00   | 1.00              | -0.02    | 0.02              | 0.02                        | 0.04                                       |
+| 1.00   | 0.33   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
+| 1.00   | 0.67   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
+| 1.00   | 1.00   | 1.00              | 0.00     | 0.04              | 0.04                        | 0.04                                       |
 
-
-
-Here $\rho$ is the unobserved correlation between $Y(1)$ and $Y(0)$; and $\Delta$ is the final term in the sample variance equation that we cannot estimate. 
-
-
+Here $\rho$ is the unobserved correlation between $Y(1)$ and $Y(0)$; and $\Delta$ is the final term in the sample variance equation that we cannot estimate.
 
 ### Tighter Bounds On Variance Estimate
 
-The conservative variance comes from the fact that you do not know the covariance between $Y(1)$ and $Y(0)$. 
+The conservative variance comes from the fact that you do not know the covariance between $Y(1)$ and $Y(0)$.
 
-* But as \href{http://arxiv.org/pdf/1405.6555.pdf}{Aronow, Green, and Lee (2014)}  point out, you \textit{do} know something. 
-* Intuitively, if you know that the variance of $Y(1)$ is 0, then the covariance also has to be zero. 
-* This basic insight opens a way of calculating bounds on the variance of the sample average treatment effect. 
-	
-
-
+-   But as [Aronow, Green, and Lee (2014)](http://arxiv.org/pdf/1405.6555.pdf) point out, you *do* know something.
+-   Intuitively, if you know that the variance of $Y(1)$ is 0, then the covariance also has to be zero.
+-   This basic insight opens a way of calculating bounds on the variance of the sample average treatment effect.
 
 ### Tighter Bounds On Variance Estimate
-	
+
 Example:
 
-- Take a million-observation dataset, with treatment randomly assigned
-- Assume $Y(0)=0$ for everyone and $Y(1)$ distributed normally with mean 0 and standard deviation of 1000.
-- Note here the covariance of $Y(1)$ and $Y(0)$ is 0.
-- Note the true variance of the estimated sample average treatment effect should be (approx) $\frac{Var(Y(1))}{\sqrt{1000000}} + \frac{Var(Y(0))}{\sqrt{1000000}} = 1$.
-- But using the Neyman estimator (or OLS!) we estimate (approx) $\frac{Var(Y(1))}{\sqrt{1000000/2}} + \frac{Var(Y(0))}{\sqrt{1000000/2}} = \sqrt{2}$.
-- But we can recover the truth knowing the covariance between $Y(1)$ and $Y(0)$ is 0.
+-   Take a million-observation dataset, with treatment randomly assigned
+-   Assume $Y(0)=0$ for everyone and $Y(1)$ distributed normally with mean 0 and standard deviation of 1000.
+-   Note here the covariance of $Y(1)$ and $Y(0)$ is 0.
+-   Note the true variance of the estimated sample average treatment effect should be (approx) $\frac{Var(Y(1))}{\sqrt{1000000}} + \frac{Var(Y(0))}{\sqrt{1000000}} = 1$.
+-   But using the Neyman estimator (or OLS!) we estimate (approx) $\frac{Var(Y(1))}{\sqrt{1000000/2}} + \frac{Var(Y(0))}{\sqrt{1000000/2}} = \sqrt{2}$.
+-   But we can recover the truth knowing the covariance between $Y(1)$ and $Y(0)$ is 0.
 
-
-### Tighter Bounds On Variance Estimate: Code 
+### Tighter Bounds On Variance Estimate: Code
 
 ```{r}
 sharp_var <- function(yt,yc,N=length(c(yt,yc)),upper=TRUE){
@@ -948,41 +900,24 @@ sharp <- round(c(sharp_var(Y[X==1], Y[X==0], upper = FALSE),
 sharp
 ```
 
-
-
 ## Principle: Keep the reporting close to the design
 
 ### Design based analysis
 
-*  Report the analysis that is implied by the design. 
+-   Report the analysis that is implied by the design.
 
-\begin{table}
-\small \centering
-\begin{tabular}{cc|ccc|c}\small
+|              |              | T2                  |                     |                     |                                 |
+|------------|------------|------------|------------|------------|------------|
+|              |              | N                   | Y                   | All                 | Diff                            |
+| ------------ | ------------ | ------------        | ------------        | ------------        | ------------                    |
+| T1           | N            | $\overline{y}_{00}$ | $\overline{y}_{01}$ | $\overline{y}_{0x}$ | $d_2|T1=0$                      |
+|              |              | (sd)                | (sd)                | (sd)                | (sd)                            |
+|              | Y            | $\overline{y}_{10}$ | $\overline{y}_{10}$ | $\overline{y}_{1x}$ | $d_2|T1=1$                      |
+|              |              | (sd)                | (sd)                | (sd)                | (sd)                            |
+|              | All          | $\overline{y}_{x0}$ | $\overline{y}_{x1}$ | $y$                 | $d_2$                           |
+|              |              | (sd)                | (sd)                | (sd)                | (sd)                            |
+| ------------ | ------------ | ------------        | ------------        | ------------        | ------------                    |
+|              | Diff         | $d_1|T2=0$          | $d_1|T2=1$          | $d_1$               | [$d_1d_2$]{style="color:green"} |
+|              |              | (sd)                | (sd)                | (sd)                | (sd)                            |
 
-           &            &         T2 &            &            &            \\
-
-           &            &          N &          Y &        All &       Diff \\ \hline
-
-        T1 &          N &      $\overline{y}_{00}$ &      $\overline{y}_{01}$ &     $\overline{y}_{0x}$ &    $d_2|T1=0$ \\
-
-           &            &       (sd) &       (sd) &       (sd) &       (sd) \\
-
-           &          Y &      $\overline{y}_{10}$ &      $\overline{y}_{10}$ &         $\overline{y}_{1x}$ &    $d_2|T1=1$ \\
-
-           &            &       (sd) &       (sd) &       (sd) &       (sd) \\
-
-           &        All &     $\overline{y}_{x0}$ &     $\overline{y}_{x1}$ &          $y$ &    $d_2$ \\
-
-           &            &       (sd) &       (sd) &       (sd) &       (sd) \\ \hline
-
-           &       Diff &    $d_1|T2=0$ &    $d_1|T2=1$ &    $d_1$ &    \color{green} $d_1d_2$ \\
-
-           &            &       (sd) &       (sd) &       (sd) &       (sd) \\
-
-\end{tabular}  
-\end{table}
-	
-This is instantly recognizable from the design and returns all the benefits of the factorial design including all main effects, conditional causal effects, interactions and summary outcomes. It is much clearer and more informative than a regression table. 
-	
-
+This is instantly recognizable from the design and returns all the benefits of the factorial design including all main effects, conditional causal effects, interactions and summary outcomes. It is much clearer and more informative than a regression table.

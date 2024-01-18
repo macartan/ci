@@ -1,0 +1,94 @@
+---
+title: "Gr4_Week1"
+
+Authors:
+  - Nader
+  - Philipp
+  - Yoanna
+  - Robert
+  - Daniel
+---
+
+# 2.4
+
+Declare a design in which:
+
+- The assignment of a treatment **X** depends in part on another binary variable **W**. Specifically:
+  - Pr(X = 1 | W = 0) = 0.2
+  - Pr(X = 1 | W = 1) = 0.5
+- The outcome **Y** depends on both **X** and **W**. Specifically, Y = X * W + u, where **u** is a random shock.
+
+---
+
+- Diagnose the design with three approaches to estimating the effect of **X** on **Y**:
+  1. **Ignoring W**: Estimate the effect of **X** on **Y** without considering **W**.
+  2. **Adding W as a Linear Control**: Include **W** as a linear control in the estimation.
+  3. **Interaction between W and X**: Include both **W** and an interaction term between **W** and **X** in the estimation.
+
+Hint: You can add three separate declare_estimator steps. They should have distinct labels. The trickiest part is to figure out how to extract the estimate in (c) because you will have both a main term and an interaction term for **X**.
+
+Discuss the results. Do any of these approaches return the correct answer?
+
+
+
+```{r loading libraries}
+library(StanHeaders)
+library(rstan)
+library(dagitty)
+library(DeclareDesign)
+library(CausalQueries)
+library(ri2)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(quarto)
+#library(palmerpenguins)
+
+```
+
+## Hint: add three separate declare_estimator steps with different labels
+
+```{r Ex.1 version_YY, echo = TRUE}
+
+design_1 <- 
+  declare_model(
+    N = 100,
+    W = rbinom(N, size = 1, prob = 0.5),
+    X = rbinom(N, size = 1, prob = ifelse(W == 0, 0.2, 0.5)),
+    U = rnorm(N),
+    potential_outcomes(Y ~ X * W + U, conditions = list(X = 0:1))) +
+  declare_assignment(X = complete_ra(N)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ X)) +
+  declare_inquiry(ate = mean(Y_X_1 - Y_X_0)) +
+  declare_estimator(Y ~ X, inquiry = "ate", label = "simple design") +
+  declare_estimator(Y ~ X + W, inquiry = "ate", label = "control for W") +
+  declare_estimator(Y ~ X * W + W, inquiry = "ate", label = "interaction with W")
+
+
+diagnosis1 <- design_1 |>
+  diagnose_design()
+
+diagnosis1$diagnosands_df
+
+```
+
+
+## 3.4 
+
+A set of units have outcome Yi1 at baseline.
+At endline they have potential outcomes Yi2(0) and Yi2(1).
+
+1. Write down the estimand for the average effect of treatment on endline outcomes
+2. Write down the estimand for the average effect of treatment on the change from baseline to endline for all units.
+
+Compare these and discuss.
+
+# 1. The estimand for the average effect of treatment on endline outcomes
+
+# 2. The estimand for the average effect of treatment on the change from baseline to endline for all units
+
+
+## 4.4
+
+
+

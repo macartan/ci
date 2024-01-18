@@ -21,24 +21,22 @@ fontsize: 11pt
 bibliography: bib.bib
 ---
 
-
 ```{r, include = FALSE}
 
 source("setup.R")
 
 ```
 
-
 # Inquiries {#secestimands}
 
 ## Estimands and inquiries
 
-* Your inquiry is your question and the estimand is the true (generally unknown) answer to the inquiry
-* The estimand is the thing you want to estimate
-* If you are estimating something you should be able to say what your estimand is
-* You are responsible for your estimand. Your estimator will not tell you what your estimand is
-* Just because you can calculate something does not mean that you have an estimand
-* You can test a hypothesis without having an estimand
+-   Your inquiry is your question and the estimand is the true (generally unknown) answer to the inquiry
+-   The estimand is the thing you want to estimate
+-   If you are estimating something you should be able to say what your estimand is
+-   You are responsible for your estimand. Your estimator will not tell you what your estimand is
+-   Just because you can calculate something does not mean that you have an estimand
+-   You can test a hypothesis without having an estimand
 
 Read: [II ch 4](https://macartan.github.io/integrated_inferences/HJC4.html), [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
 
@@ -46,37 +44,30 @@ Read: [II ch 4](https://macartan.github.io/integrated_inferences/HJC4.html), [DD
 
 Say that units are randomly assigned to treatment in different strata (maybe just one); with fixed, though possibly different, shares assigned in each stratum. Then the key estimands and estimators are:
 
-
-
-| Estimand                                   | Estimator                                               |
-|--------------------------------------------|---------------------------------------------------------|
-| $\tau_{ATE} \equiv \mathbb{E}[\tau_i]$      | $\widehat{\tau}_{ATE} = \sum\nolimits_{x} \frac{w_x}{\sum\nolimits_{j}w_{j}}\widehat{\tau}_x$                |
-| $\tau_{ATT} \equiv \mathbb{E}[\tau_i | Z_i = 1]$ | $\widehat{\tau}_{ATT} = \sum\nolimits_{x} \frac{p_xw_x}{\sum\nolimits_{j}p_jw_j}\widehat{\tau}_x$            |
-| $\tau_{ATC} \equiv \mathbb{E}[\tau_i | Z_i = 0]$ | $\widehat{\tau}_{ATC} = \sum\nolimits_{x} \frac{(1-p_x)w_x}{\sum\nolimits_{j}(1-p_j)w_j}\widehat{\tau}_x$    |
+| Estimand                                         | Estimator                                                                                                 |
+|--------------------------------|----------------------------------------|
+| $\tau_{ATE} \equiv \mathbb{E}[\tau_i]$           | $\widehat{\tau}_{ATE} = \sum\nolimits_{x} \frac{w_x}{\sum\nolimits_{j}w_{j}}\widehat{\tau}_x$             |
+| $\tau_{ATT} \equiv \mathbb{E}[\tau_i | Z_i = 1]$ | $\widehat{\tau}_{ATT} = \sum\nolimits_{x} \frac{p_xw_x}{\sum\nolimits_{j}p_jw_j}\widehat{\tau}_x$         |
+| $\tau_{ATC} \equiv \mathbb{E}[\tau_i | Z_i = 0]$ | $\widehat{\tau}_{ATC} = \sum\nolimits_{x} \frac{(1-p_x)w_x}{\sum\nolimits_{j}(1-p_j)w_j}\widehat{\tau}_x$ |
 
 where $x$ indexes strata, $p_x$ is the share of units in each stratum that is treated, and $w_x$ is the size of a stratum.
 
 Here:
 
-* ATE is Average Treatment Effect (all units)
-* ATT is Average Treatment Effect on the Treated
-* ATC is Average Treatment Effect on the Controls
-	
-
-
+-   ATE is Average Treatment Effect (all units)
+-   ATT is Average Treatment Effect on the Treated
+-   ATC is Average Treatment Effect on the Controls
 
 ### Estimands: ATE, ATT, ATC, S-, P-, C-
 
 In addition, each of these can be targets of interest:
- 
-* for the **population**, in which case we refer to PATE, PATT, PATC and $\widehat{PATE}, \widehat{PATT},  \widehat{PATC}$
-* for a **sample**, in which case we refer to SATE, SATT, SATC, and $\widehat{SATE}, \widehat{SATT},  \widehat{SATC}$
 
-And for different subgroups, 
- 
-* given some value on a covariate, in which case we refer to CATE (conditional average treatment effect)
+-   for the **population**, in which case we refer to PATE, PATT, PATC and $\widehat{PATE}, \widehat{PATT}, \widehat{PATC}$
+-   for a **sample**, in which case we refer to SATE, SATT, SATC, and $\widehat{SATE}, \widehat{SATT}, \widehat{SATC}$
 
+And for different subgroups,
 
+-   given some value on a covariate, in which case we refer to CATE (conditional average treatment effect)
 
 ### Broader classes of estimands: LATE/CATE
 
@@ -84,25 +75,24 @@ The CATEs are **conditional** average treatment effects, for example the effect 
 
 However we might also imagine conditioning on unobservable or counterfactual features.
 
-* The LATE (or CACE: complier average causal  effect) asks about the effect of a treatment ($X$) on an outcome ($Y$) *for people that are responsive to an encouragement* ($Z$)
+-   The LATE (or CACE: complier average causal effect) asks about the effect of a treatment ($X$) on an outcome ($Y$) *for people that are responsive to an encouragement* ($Z$)
 
-$$LATE =  \frac{1}{|C|}\sum_{j\in C}(Y_j(X=1) - Y_j(X=0))$$
-$$C:=\{j:X_j(Z=1) > X_j(Z=0) \}$$
+$$LATE =  \frac{1}{|C|}\sum_{j\in C}(Y_j(X=1) - Y_j(X=0))$$ $$C:=\{j:X_j(Z=1) > X_j(Z=0) \}$$
 
-We will return to these in the study of instrumental variables. 
+We will return to these in the study of instrumental variables.
 
 ### Quantile estimands
 
 Other ways to condition on potential outcomes:
 
-* A *quantile* treatment effect: You might be interested in the difference between the median $Y(1)$ and the median $Y(0)$  (@imbens2015causal 20.3.1) 
-* or even be interested in the median $Y(1) - Y(0)$. Similarly for other quantiles.
- 
+-   A *quantile* treatment effect: You might be interested in the difference between the median $Y(1)$ and the median $Y(0)$ (@imbens2015causal 20.3.1)
+-   or even be interested in the median $Y(1) - Y(0)$. Similarly for other quantiles.
+
 ### Model estimands
 
 Many inquiries are averages of individual effects, even if the groups are not known, but they do not have to be:
 
-* The RDD estimand is a statement about what effects *would be* at a threshold; it can be defined under a model even if no actual individuals are at the threshold. We imagine average potential outcomes as a function of treatment $Z$ and running variable $X$, $f(z, x)$ and  define: $$\tau_{RDD} := f(1, x^*) - f(0, x^*)$$
+-   The RDD estimand is a statement about what effects *would be* at a threshold; it can be defined under a model even if no actual individuals are at the threshold. We imagine average potential outcomes as a function of treatment $Z$ and running variable $X$, $f(z, x)$ and define: $$\tau_{RDD} := f(1, x^*) - f(0, x^*)$$
 
 ### Distribution estimands
 
@@ -110,54 +100,54 @@ Many inquiries are averages of individual effects, even if the groups are not kn
 
 But they do not have to be:
 
-* Inquiries might relate to distributional quantities such as:
+-   Inquiries might relate to distributional quantities such as:
 
-  * The effect of treatment on the variance in outcomes: $var(Y(1)) - var(Y(0))$
-  * The variance of treatment effects: $var(Y(1) - Y(0))$
-  * Other inequality measures (e.g. Ginis; (@imbens2015causal 20.3.2)) 
+    -   The effect of treatment on the variance in outcomes: $var(Y(1)) - var(Y(0))$
+    -   The variance of treatment effects: $var(Y(1) - Y(0))$
+    -   Other inequality measures (e.g. Ginis; (@imbens2015causal 20.3.2))
 
-You might even be interested in $\min(Y_i(1) - Y_i(0))$.  
+You might even be interested in $\min(Y_i(1) - Y_i(0))$.
 
 ### Spillover estimands
 
 There are lots of interesting "spillover" estimands.
 
-Imagine there are three individuals and each person's outcomes depends on the assignments of all others. For instance $Y_1(Z_1, Z_2, Z_3$, or more generally,  $Y_i(Z_i, Z_{i+1 (\text{mod }3)}, Z_{i+2 (\text{mod }3)})$.
+Imagine there are three individuals and each person's outcomes depends on the assignments of all others. For instance $Y_1(Z_1, Z_2, Z_3$, or more generally, $Y_i(Z_i, Z_{i+1 (\text{mod }3)}, Z_{i+2 (\text{mod }3)})$.
 
 Then three estimands might be:
 
-* $\frac13\left(\sum_{i}{Y_i(1,0,0) - Y_i(0,0,0)}\right)$
-* $\frac13\left(\sum_{i}{Y_i(1,1,1) - Y_i(0,0,0)}\right)$
-* $\frac13\left(\sum_{i}{Y_i(0,1,1) - Y_i(0,0,0)}\right)$
+-   $\frac13\left(\sum_{i}{Y_i(1,0,0) - Y_i(0,0,0)}\right)$
+-   $\frac13\left(\sum_{i}{Y_i(1,1,1) - Y_i(0,0,0)}\right)$
+-   $\frac13\left(\sum_{i}{Y_i(0,1,1) - Y_i(0,0,0)}\right)$
 
 Interpret these. What others might be of interest?
 
-### Differnces in CATEs and interaction estimands
+### Differences in CATEs and interaction estimands
 
 A difference in CATEs is a well defined estimand that might involve interventions on one node only:
 
-* $\mathbb{E}_{\{W=1}\}[Y(X=1) - Y(X=0)] - \mathbb{E}_{\{W=0\}}[Y(X=1) - Y(X=0)]$
+-   $\mathbb{E}_{\{W=1}\}[Y(X=1) - Y(X=0)] - \mathbb{E}_{\{W=0\}}[Y(X=1) - Y(X=0)]$
 
 It captures differences in effects.
 
-An *interaction* is an effect on an effect:  
+An *interaction* is an effect on an effect:
 
-* $\mathbb{E}[Y(X=1, W=1) - Y(X=0, W=1)] - \mathbb{E}[Y(X=1, W=0) - Y(X=0, W=0)]$
+-   $\mathbb{E}[Y(X=1, W=1) - Y(X=0, W=1)] - \mathbb{E}[Y(X=1, W=0) - Y(X=0, W=0)]$
 
-Note in the  latter the expectation is taken over the whole population.
+Note in the latter the expectation is taken over the whole population.
 
 ### Mediation estimands and complex counterfactuals
 
 Say $X$ can affect $Y$ directly, or indirectly through $M$. then we can write potential outcomes as:
 
-* $Y(X=x, M=m)$
-* $M(X=x)$
+-   $Y(X=x, M=m)$
+-   $M(X=x)$
 
 We can then imagine inquiries of the form:
 
-* $Y(X=1, M=M(X=1)) - Y(X=0, M=M(X=0))$
-* $Y(X=1, M=1) - Y(X=0, M=1)$
-* $Y(X=1, M=M(X=1)) - Y(X=1, M=M(X=0))$
+-   $Y(X=1, M=M(X=1)) - Y(X=0, M=M(X=0))$
+-   $Y(X=1, M=1) - Y(X=0, M=1)$
+-   $Y(X=1, M=M(X=1)) - Y(X=1, M=M(X=0))$
 
 Interpret these. What others might be of interest?
 
@@ -165,15 +155,14 @@ Interpret these. What others might be of interest?
 
 Again we might imagine that these are defined with respect to some group:
 
-
-* $A = \{i|Y_i(1, M(X=1)) > Y_i(0, M(X=0))\}$
-* $\frac{1}{|A|} \sum_{i\in A}(Y(1, 1) > Y(0, 1))$
+-   $A = \{i|Y_i(1, M(X=1)) > Y_i(0, M(X=0))\}$
+-   $\frac{1}{|A|} \sum_{i\in A}(Y(1, 1) > Y(0, 1))$
 
 here, among those for whom $X$ has a positive effect on $Y$, for what share would there be a positive effect if $M$ were fixed at 1.
 
 ### Causes of effects and effects of causes
 
-In qualitative research  a particularly common inquiry is "did $X=1$ cause $Y=1$?
+In qualitative research a particularly common inquiry is "did $X=1$ cause $Y=1$?
 
 This is often given as a probability, the "probability of causation" (though at the case level we might better think of this probabiliy as an estimate rather than an estimand):
 
@@ -183,17 +172,14 @@ $$\Pr(Y_i(0) = 0 | Y_i(1) = 1, X = 1)$$
 
 Intuition: What's the probability $X=1$ caused $Y=1$ in an $X=1, Y=1$ case drawn from a large population with the following experimental distribution:
 
-
 |     | Y=0  | Y=1  | All |
 |-----|------|------|-----|
-| X=0 | 1    |    0 | 1   |
+| X=0 | 1    | 0    | 1   |
 | X=1 | 0.25 | 0.75 | 1   |
-
 
 ### Causes of effects and effects of causes
 
 Intuition: What's the probability $X=1$ caused $Y=1$ in an $X=1, Y=1$ case drawn from a large population with the following experimental distribution:
-
 
 |     | Y=0  | Y=1  | All |
 |-----|------|------|-----|
@@ -206,30 +192,26 @@ Other inquiries focus on distinguishing between causes.
 
 For the Billy Suzy problem [@hall2004two], @halpern2016actual focuses on "actual causation" as a way to distinguish between Suzy and Billy:
 
-> Imagine Suzy and Billy, simultaneously throwing stones at a bottle. Both are excellent shots and hit whatever they aim at. Suzy's stone hits first, knocks over the bottle, and  the bottle breaks. However, Billy's stone *would* have hit had Suzy's not hit, and again the bottle would have broken. Did Suzy's throw cause the bottle to break? Did Billy's?
+> Imagine Suzy and Billy, simultaneously throwing stones at a bottle. Both are excellent shots and hit whatever they aim at. Suzy's stone hits first, knocks over the bottle, and the bottle breaks. However, Billy's stone *would* have hit had Suzy's not hit, and again the bottle would have broken. Did Suzy's throw cause the bottle to break? Did Billy's?
 
 ### Actual causation
 
-Actual Causation: 
+Actual Causation:
 
-1. $X=x$ and $Y=y$ both happened;
-2. there is some set of variables, $\mathcal W$, such that if they were fixed at the levels that they *actually took* on in the case, and if $X$ were to be changed, then $Y$ would change (where $\mathcal W$ can also be an empty set);
-3. no strict subset of $X$ satisfies 1 and 2 (there is no redundant part of the condition, $X=x$).
-
+1.  $X=x$ and $Y=y$ both happened;
+2.  there is some set of variables, $\mathcal W$, such that if they were fixed at the levels that they *actually took* on in the case, and if $X$ were to be changed, then $Y$ would change (where $\mathcal W$ can also be an empty set);
+3.  no strict subset of $X$ satisfies 1 and 2 (there is no redundant part of the condition, $X=x$).
 
 ### Actual causation
 
-* Suzy: Condition 2 is met if Suzy's throw made a difference, counterfactually speaking---with the important caveat that, in determining this, we are permitted to condition on Billy' stone not hitting the bottle.
-* Billy: Condition 2 is not met.
+-   Suzy: Condition 2 is met if Suzy's throw made a difference, counterfactually speaking---with the important caveat that, in determining this, we are permitted to condition on Billy' stone not hitting the bottle.
+-   Billy: Condition 2 is not met.
 
-An inquiry: for what share in a population is a possible cause  an actual cause?
-
+An inquiry: for what share in a population is a possible cause an actual cause?
 
 ## Pearl's ladder
 
-
 ## Inquiries as statements about principal strata
-
 
 ## Identification
 
@@ -239,10 +221,7 @@ An inquiry: for what share in a population is a possible cause  an actual cause?
 
 Informally a quantity is "identified" if it can be "recovered" once you have enough data.
 
-Say for example average wage is $x$ in some very large population. If I gather lots and lots of data on the wages of individuals and take the average then then my estimate will ultimately let be figure out $x$. If $x$ is $1$ then by estimate will end up centered on $1. If it is $2 it will end up centered on $2. 
-
-**Essentially**: Each underlying value produces a unique data distribution. When you see that distribution you recover the parameter.    
-
+Say for example average wage is $x$ in some very large population. If I gather lots and lots of data on the wages of individuals and take the average then then my estimate will ultimately let be figure out $x$. If $x$ is $1$ then by estimate will end up centered on \$1. If it is \$2 it will end up centered on \$2.
 
 ### Identification (Definition)
 
@@ -252,17 +231,15 @@ Say for example average wage is $x$ in some very large population. If I gather l
 
 Based on Defn 3.2.3 in Pearl.
 
+**Essentially**: Each underlying value produces a unique data distribution. When you see that distribution you recover the parameter.
+
 ### Identification (Example without identification)
 
 Informally a quantity is "identified" if it can be "recovered" once you have enough data.
 
-* Say for example average wage is $x^m$ for men and $x^w$ for women (in some very large population). 
-* If I gather lots and lots of data on the wages of (male and female) couples, e.g. $x^c_i = x^m_i + x^w_i$ then, although this will be informative, it will never be sufficient to recover  $x^m$ for men and $x^w$. 
-* I can recover $x^c$, but there are too many combinations of possible values of $x^m$ and $x^w$ consistent with the observed data.
-
-
-
-
+-   Say for example average wage is $x^m$ for men and $x^w$ for women (in some very large population).
+-   If I gather lots and lots of data on the wages of (male and female) couples, e.g. $x^c_i = x^m_i + x^w_i$ then, although this will be informative, it will never be sufficient to recover $x^m$ for men and $x^w$.
+-   I can recover $x^c$, but there are too many combinations of possible values of $x^m$ and $x^w$ consistent with the observed data.
 
 ### Identification : Goal
 
@@ -274,19 +251,19 @@ where $\hat{x}$ is interpreted as $X$ set to $x$ by "external" control. Equivale
 
 If this quantity is **identifiable** then we can recover it with infinite data.
 
-If it is not identifiable, then, even in the best case, we are not guaranteed to get  the right answer.
+If it is not identifiable, then, even in the best case, we are not guaranteed to get the right answer.
 
 Are there general rules for determining whether this quantitiy can be identified? Yes.
 
 ### Identification : Goal
 
-Note first, identifying 
+Note first, identifying
 
 $$\Pr(Y|x)$$
 
-is easy. 
+is easy.
 
-But we are not interested in identifying the distribution of $Y$ given observed values of $x$, but rather, the distribution of $Y$ if $X$ is *set* to $x$. 
+But we are not interested in identifying the distribution of $Y$ given observed values of $x$, but rather, the distribution of $Y$ if $X$ is *set* to $x$.
 
 ## Levels and effects
 
@@ -304,13 +281,13 @@ It's the difference between seeing and doing.
 
 ### When to condition? What to condition on?
 
-The key idea is that you want to find a set of variables such that when you condition on these you get what you would get if you used a `do` operation. 
+The key idea is that you want to find a set of variables such that when you condition on these you get what you would get if you used a `do` operation.
 
 Intuition:
 
-* You could imagine creating a  "mutilated" graph by removing all the arrows leading *out* of *X*
-* Then select a set of variables, $Z$,  such that $X$ and $Y$ are d-separated by $Z$ on the the mutilated graph
-* When you condition on these you are making sure that any covariation between $X$ and $Y$ is covariation that is due to the effects of $X$
+-   You could imagine creating a "mutilated" graph by removing all the arrows leading *out* of *X*
+-   Then select a set of variables, $Z$, such that $X$ and $Y$ are d-separated by $Z$ on the the mutilated graph
+-   When you condition on these you are making sure that any covariation between $X$ and $Y$ is covariation that is due to the effects of $X$
 
 ### Illustration
 
@@ -325,7 +302,6 @@ plot(m1, x_coord = c(1, 2, 3, 3, 4), y_coord = c(1.5, 1, 2, 1, 1))
 m2 <- make_model("M1 -> Y <- M2; X <- Z -> M1")
 plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2, X=1, Y=1))
 ```
-
 
 ### Illustration: Block backdoor path
 
@@ -343,68 +319,57 @@ plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2
 
 ### Identification
 
-* Three results ("Graphical Identification Criteria")
-     * Backdoor criterion
-     * Adjustment criterion
-     * Frontdoor criterion
-  
-* There are more
-
-
+-   Three results ("Graphical Identification Criteria")
+    -   Backdoor criterion
+    -   Adjustment criterion
+    -   Frontdoor criterion
+-   There are more
 
 ### Backdoor Criterion: (Pearl 1995)
 
-The **backdoor criterion** is satisfied by $Z$  (relative to $X$, $Y$) if:
+The **backdoor criterion** is satisfied by $Z$ (relative to $X$, $Y$) if:
 
-1. No node in $Z$ is a descendant of $X$
-2. $Z$ blocks every **backdoor** path from $X$  to $Y$ (i.e.  every path that contains an arrow into $X$)
+1.  No node in $Z$ is a descendant of $X$
+2.  $Z$ blocks every **backdoor** path from $X$ to $Y$ (i.e. every path that contains an arrow into $X$)
 
+In that case you can identify the effect of $X$ on $Y$ by conditioning on $Z$:
 
-In that case you can identify the  effect of $X$ on $Y$ by conditioning on $Z$:
-
-$$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$
-(This is eqn 3.19 in Pearl (2000))
+$$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$ (This is eqn 3.19 in Pearl (2000))
 
 ### Backdoor Criterion: (Pearl 1995)
 
-
 $$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$
 
-* Note notion of a linear control of anything like that; idea really is like blocking: think lots of discrete data and no missing patterns
-* Note this is a formula for a (possibly counterfactual) *level*; a counterfactual difference would be given in the obvious way by: 
+-   Note notion of a linear control of anything like that; idea really is like blocking: think lots of discrete data and no missing patterns
+-   Note this is a formula for a (possibly counterfactual) *level*; a counterfactual difference would be given in the obvious way by:
 
 $$P(Y=y | \hat{x}) - P(Y=y | \hat{x}') = \sum_z P(Y=y| X = x, Z=z)P(z) - \sum_z P(Y=y| X = x', Z=z)P(z)$$
 
-
 ### Backdoor Proof
 
-Following Pearl (2009), Chapter 11. Let $T$ denote the set of parents of $X$: $T := pa(X)$, with (possibly vector valued) realizations $t$. 
+Following Pearl (2009), Chapter 11. Let $T$ denote the set of parents of $X$: $T := pa(X)$, with (possibly vector valued) realizations $t$.
 
 If the backdoor criterion is satisfied, we have:
 
-1. $Y$ is independent of  $T$,  given $X$ and observed data, $Z$ (since $Z$ blocks backdoor paths)
-2. $X$ is independent of $Z$ given $T$. (Since $Z$ includes only nondescendents)
+1.  $Y$ is independent of $T$, given $X$ and observed data, $Z$ (since $Z$ blocks backdoor paths)
+2.  $X$ is independent of $Z$ given $T$. (Since $Z$ includes only nondescendents)
 
-
-* From the DAG we have: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|\hat{x}, t)$$
+-   From the DAG we have: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|\hat{x}, t)$$
 
 ### Backdoor Proof
 
+-   But we do not observe $T$, rather we observe $Z$. OK, but we can write: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|\hat{x}, t, z)p(z|\hat{x}, pa(X))$$
 
-* But we do not observe $T$, rather we observe $Z$. OK, but we can write: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|\hat{x}, t, z)p(z|\hat{x}, pa(X))$$
+-   Then using the two conditions above:
 
-*  Then using the two conditions above:
-    1. replace $p(y|\hat{x}, pa(X), z)$ with $p(y, \hat{x}, z)$ 
-    2. replace $p(z|\hat{x}, pa(X))$ with $p(z|\hat{x})$
-    
+    1.  replace $p(y|\hat{x}, pa(X), z)$ with $p(y, \hat{x}, z)$
+    2.  replace $p(z|\hat{x}, pa(X))$ with $p(z|\hat{x})$
 
-This gives:  $$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X)) $$
+This gives: $$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X)) $$
 
-### Now Clean up: 
+### Now Clean up:
 
-$$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X))$$
-$$\leftrightarrow$$
-$$p(y|\hat{x}) =  \sum_z p(y|\hat{x}, z)\sum_{pa(X)} p(pa(X))p(z|pa(X)) = \sum_z p(y|\hat{x})p(z)$$
+$$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X))$$ $$\leftrightarrow$$ $$p(y|\hat{x}) =  \sum_z p(y|\hat{x}, z)\sum_{pa(X)} p(pa(X))p(z|pa(X)) = \sum_z p(y|\hat{x})p(z)$$
 
 ### Adjustment criterion
 
@@ -412,11 +377,14 @@ See @shpitser2012validity
 
 The adjustment criterion is satisfied by $Z$ (relative to $X$, $Y$) if:
 
-1. no element of $Z$ is a descendant (in the mutilated graph^[remove arrows pointing into $X$]) of any variable $W\not\in X$  which lies on a proper causal path from $X$ to $Y$^[A *proper* causal pathway nodes in $X$ to nodes in $Y$ only intersects $X$ at the endpoint] 
-2. $Z$ blocks all **noncausal paths** from $X$ to $Y$ 
+1.  no element of $Z$ is a descendant (in the mutilated graph[^1]) of any variable $W\not\in X$ which lies on a proper causal path from $X$ to $Y$[^2]
+2.  $Z$ blocks all **noncausal paths** from $X$ to $Y$
 
+[^1]: remove arrows pointing into $X$
 
-###  These are different. Simple illustration.
+[^2]: A *proper* causal pathway nodes in $X$ to nodes in $Y$ only intersects $X$ at the endpoint
+
+### These are different. Simple illustration.
 
 Here $Z$ satisfies the adjustment criterion but not the backdoor criterion:
 
@@ -432,21 +400,19 @@ hj_ggdag(x = c(0,1,1),
 
 ```
 
-
 $Z$ is descendant of $X$ but it does not a descendant of a node on a path from $X$ to $Y$. No harm adjusting for $Z$ here, but not necessary either.
 
 <!-- No solution here: -->
 
 <!-- $$U \rightarrow X \rightarrow Z \rightarrow Y, U \rightarrow Y$$ -->
-<!-- Note here there is a non-causal but also not backdoor path from $X$ to $Z$ ($Z\rightarrow Y \leftarrow U \rightarrow X$). As @shpitser2012validity note "while all back-door paths are non-causal, not all -->
-<!-- non-causal paths are back-door" -->
 
+<!-- Note here there is a non-causal but also not backdoor path from $X$ to $Z$ ($Z\rightarrow Y \leftarrow U \rightarrow X$). As @shpitser2012validity note "while all back-door paths are non-causal, not all -->
+
+<!-- non-causal paths are back-door" -->
 
 ### Frontdoor criterion
 
-
 ### In code: Dagitty
-
 
 There is a package for this
 
@@ -465,7 +431,7 @@ There is then a simple command to check whether two sets are d-separated by a th
 ```{r, comment = NA}
 dseparated(g, "X", "Y", "M")
 dseparated(g, "X", "Y", c("Z","M"))
-```       
+```
 
 ### Dagitty: Find adjustment sets
 
@@ -474,9 +440,6 @@ And a simple command to identify the adjustments needed to identify the effect o
 ```{r, comment = NA}
 adjustmentSets(g, exposure = "X", outcome = "Y")
 ```
-
-
-
 
 ### Important Examples : Confounding
 
@@ -495,7 +458,6 @@ hj_ggdag(x = c(-1, 0, -1, 1, 3),
 
 ```
 
-
 ### Confounding
 
 Example where $Z$ is correlated with $X$ and $Y$ but it is *not* a confounder
@@ -513,13 +475,9 @@ hj_ggdag(x = c(-1, 0, -1, 1, 3),
 
 ```
 
+### Important Examples : Collider
 
-
-### Important Examples :  Collider 
-
-But controlling can also cause problems. In fact conditioning on a temporally pre-treatment variable could cause problems. Who'd have thunk?  Here is an example from Pearl (2005):
-
-
+But controlling can also cause problems. In fact conditioning on a temporally pre-treatment variable could cause problems. Who'd have thunk? Here is an example from Pearl (2005):
 
 ```{r, echo = FALSE, fig.width = 5, fig.height = 3,  fig.align="center", out.width='.9\\textwidth'}
 par(mar=c(1,1,1,1))
@@ -535,8 +493,10 @@ hj_ggdag(x = c(-1, 0, -1, 1, 3),
 ```
 
 ### Illustration of identification failure from conditioning on a collider
-
+:::{.smaller} 
 ```{r}
+#| results: asis
+
 U1 <- rnorm(10000);  U2 <- rnorm(10000)
 Z  <- U1+U2
 X  <- U2 + rnorm(10000)/2
@@ -545,7 +505,7 @@ Y  <- U1*2 + X
 lm_robust(Y ~ X) |> tidy() |> kable(digits = 2)
 lm_robust(Y ~ X + Z) |> tidy() |> kable(digits = 2)
 ```
-
+:::
 
 ### Let's look at that in dagitty
 
@@ -556,15 +516,13 @@ isAdjustmentSet(g, "Z", exposure = "x", outcome = "y")
 isAdjustmentSet(g, NULL, exposure = "x", outcome = "y")
 ```
 
-
-
 Which means, no need to condition on anything.
 
-
 <!-- g2 <- backDoorGraph(g) -->
-<!-- dseparated(g2, "x", "y") -->
-<!-- dseparated(g2, "x", "y", "Z") -->
 
+<!-- dseparated(g2, "x", "y") -->
+
+<!-- dseparated(g2, "x", "y", "Z") -->
 
 ### Collider & Confounder
 
@@ -600,6 +558,3 @@ which means you have to adjust on an unobservable. Here we double check that inc
 isAdjustmentSet(g, "Z", exposure = "x", outcome = "y")
 isAdjustmentSet(g, NULL, exposure = "x", outcome = "y")
 ```
-
-
-

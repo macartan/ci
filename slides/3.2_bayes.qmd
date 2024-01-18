@@ -20,7 +20,6 @@ header-includes:
 fontsize: 11pt  
 ---
 
-  
 ```{r, include = FALSE}
 
 source("setup.R")
@@ -31,65 +30,64 @@ run <- FALSE
 
 # Bayesian approaches {#secbayes}
 
-## Bayes Basics 
+## Bayes Basics
 
 ### Bayes Rule
 
-* Bayesian methods are just sets of procedures to figure out how to update beliefs in light of new information. 
+-   Bayesian methods are just sets of procedures to figure out how to update beliefs in light of new information.
 
-* We begin with a prior belief about the probability that a hypothesis is true. 
-* New data then allow us to form a posterior belief about the probability of the hypothesis. 
+-   We begin with a prior belief about the probability that a hypothesis is true.
 
-Bayesian inference takes into account: 
+-   New data then allow us to form a posterior belief about the probability of the hypothesis.
 
-* the consistency of the evidence with a hypothesis
-* the uniqueness of the evidence to that hypothesis
-* background knowledge about the problem. 
+Bayesian inference takes into account:
+
+-   the consistency of the evidence with a hypothesis
+-   the uniqueness of the evidence to that hypothesis
+-   background knowledge about the problem.
 
 ### Illustration 1
 
-I draw a card from a deck and ask *What are the chances it is a  Jack of Spades?*
+I draw a card from a deck and ask *What are the chances it is a Jack of Spades?*
 
-* Just 1 in 52. 
+-   Just 1 in 52.
 
-Now I tell you that the card is indeed a spade. What would you guess?  
+Now I tell you that the card is indeed a spade. What would you guess?
 
-* 1 in 13
+-   1 in 13
 
-What if  told you it was a heart? 
+What if told you it was a heart?
 
-* No chance it is the Jack of Spades
+-   No chance it is the Jack of Spades
 
 What if I said it was a face card and a spade.
 
-* 1 in 3. 
+-   1 in 3.
 
 ### Illustration 1
 
-These answers are applications of Bayes' rule.  
+These answers are applications of Bayes' rule.
 
-In each case the answer is derived by assessing what is possible, given the new information, and then assessing how likely the outcome of interest among the states that are  possible. In all the cases you calculate:
+In each case the answer is derived by assessing what is possible, given the new information, and then assessing how likely the outcome of interest among the states that are possible. In all the cases you calculate:
 
 $$\text{Prob Jack of Spades | Info} = \frac{\text{Is Jack of Spades Consistent w/ Info?}}{\text{How many cards are consistent w/ Info?}} $$
-
 
 ### Illustration 2 **Interpreting Your Test Results**
 
 You take a test to see whether you suffer from a disease that affects 1 in 100 people. The test is good in the following sense:
 
-* if you have the disease, then with a 99% probability it will say you have the disease 
-* if you do not have it, then with a 99% probability, it will say that you do not have it
+-   if you have the disease, then with a 99% probability it will say you have the disease
+-   if you do not have it, then with a 99% probability, it will say that you do not have it
 
 The test result says that you have the disease. What are the chances you have it?
 
-
 ### Illustration 2 **Interpreting Your Test Results**
 
-* It is *not*  99%. 99% is the  probability of the result given the disease, but we want the  probability of the disease given the result. 
+-   It is *not* 99%. 99% is the probability of the result given the disease, but we want the probability of the disease given the result.
 
-* The right answer is 50%, which you can think of as the share of people that have the disease among all those that test positive. For example 
+-   The right answer is 50%, which you can think of as the share of people that have the disease among all those that test positive. For example
 
-* e.g. if there were 10,000 people, then 100 would have the disease and 99 of these would test positive. But 9,900 would not have the disease and 99 of these would test positive. So the people with the disease that test positive are half of the total number testing positive.
+-   e.g. if there were 10,000 people, then 100 would have the disease and 99 of these would test positive. But 9,900 would not have the disease and 99 of these would test positive. So the people with the disease that test positive are half of the total number testing positive.
 
 ### Illustration 2. An illustration
 
@@ -113,53 +111,45 @@ The test result says that you have the disease. What are the chances you have it
   	box()
 ```
 
-
 What's the probability of being a circle given you are black?
 
-### Illustration 2. More formally. 
+### Illustration 2. More formally.
 
 As an equation this might be written:
 
 $$\text{Prob You have the Disease | Pos} = \frac{\text{How many have the disease and test pos?}}{\text{How many people test pos?}}$$
 
-
 ### Two Child Problem
 
-Consider last an old puzzle found described @gardner1961second.  
+Consider last an old puzzle found described @gardner1961second.
 
-* Mr Smith has two children, $A$ and $B$. 
-* At least one of them is a boy. 
-* What are the chances they are both boys?
+-   Mr Smith has two children, $A$ and $B$.
+-   At least one of them is a boy.
+-   What are the chances they are both boys?
 
+To be explicit about the puzzle, we will assume that the information that one child is a boy is given as a truthful answer to the question "*is at least one of the children a boy?*"
 
-To be explicit about the puzzle, we will assume that the information that one child is a boy is given as a truthful  answer to the question "*is at least one of the children a boy?*" 
-
-Assuming also that there is a 50% probability that a given child is a boy. 
+Assuming also that there is a 50% probability that a given child is a boy.
 
 ### Two Child Problem
-
 
 As an equation:
 
-
 $$\text{Prob both boys | Not both girls} = \frac{\text{Prob both boys}}{\text{Prob not both girls}} = \frac{\text{1 in 4}}{\text{3 in 4}}$$
 
-
 ### Bayes Rule
 
-Formally, all of these equations are applications of Bayes' rule which is a simple and powerful formula for deriving updated beliefs from new data. 
+Formally, all of these equations are applications of Bayes' rule which is a simple and powerful formula for deriving updated beliefs from new data.
 
 The formula is given as:
-\begin{eqnarray}
-\Pr(H|\mathcal{D})&=&\frac{\Pr(\mathcal{D}|H)\Pr(H)}{\Pr(\mathcal{D})}\\
-                  &=&\frac{\Pr(\mathcal{D}|H)\Pr(H)}{\sum_{H'}\Pr(\mathcal{D}|H')\Pr(H'))}
-\end{eqnarray}
 
-
+$$\Pr(H|\mathcal{D})=\frac{\Pr(\mathcal{D}|H)\Pr(H)}{\Pr(\mathcal{D})}\\
+                  =\frac{\Pr(\mathcal{D}|H)\Pr(H)}{\sum_{H'}\Pr(\mathcal{D}|H')\Pr(H'))}$$
+                
 
 ### Bayes Rule
 
-Formally, all of these equations are applications of Bayes' rule which is a simple and powerful formula for deriving updated beliefs from new data. 
+Formally, all of these equations are applications of Bayes' rule which is a simple and powerful formula for deriving updated beliefs from new data.
 
 For continuous distributions and parameter vector $\theta$:
 
@@ -167,29 +157,29 @@ $$p(\theta|\mathcal{D})=\frac{p(\mathcal{D}|\theta)p(\theta)}{\int_{\theta'}p(\m
 
 ### Useful Distributions: Beta and Dirichlet Distributions
 
-* Bayes rule requires the ability to express a prior distribution but it does not require that the prior have any particular properties other than being probability distributions. 
-* Sometimes however it can be useful to make use of "off the shelf" distributions. 
+-   Bayes rule requires the ability to express a prior distribution but it does not require that the prior have any particular properties other than being probability distributions.
+-   Sometimes however it can be useful to make use of "off the shelf" distributions.
 
-Consider **the share of people in a population that voted**. This is a quantity between 0 and 1. 
+Consider **the share of people in a population that voted**. This is a quantity between 0 and 1.
 
-* Two people might may both believe that the turnout was around 50\% but differ in how certain they are about this claim. 
-* One might claim to have no information and to believe any turnout rate between 0 and 100% is equally likely; another might be completely confident that the number if 50%.
+-   Two people might may both believe that the turnout was around 50% but differ in how certain they are about this claim.
+-   One might claim to have no information and to believe any turnout rate between 0 and 100% is equally likely; another might be completely confident that the number if 50%.
 
 Here the parameter of interest is a *share*. The **Beta** and **Dirichlet** distributions are particularly useful for representing beliefs on shares.
 
-### Beta 
+### Beta
 
-* The Beta distribution is a distribution over the $[0,1]$ that is governed by two parameters, $\alpha$ and $\beta$. 
-* In the case in which both $\alpha$ and $\beta$ are 1, the distribution is uniform -- all values are seen as equally likely. 
-* As $\alpha$ rises large outcomes are seen as more likely 
-* As $\beta$ rises, lower outcomes are seen as more likely. 
-* If both rise proportionately the expected outcome does not change but the distribution becomes tighter. 
+-   The Beta distribution is a distribution over the $[0,1]$ that is governed by two parameters, $\alpha$ and $\beta$.
+-   In the case in which both $\alpha$ and $\beta$ are 1, the distribution is uniform -- all values are seen as equally likely.
+-   As $\alpha$ rises large outcomes are seen as more likely
+-   As $\beta$ rises, lower outcomes are seen as more likely.
+-   If both rise proportionately the expected outcome does not change but the distribution becomes tighter.
 
 An attractive feature is that if one has a prior Beta($\alpha$, $\beta$) over the probability of some event, and then one observes a positive case, the Bayesian posterior distribution is also a Beta with with parameters $\alpha+1, \beta$. Thus if people start with uniform priors and build up knowledge on seeing outcomes, their posterior beliefs should be Beta.
 
-### Beta 
+### Beta
 
-Here is  a set of such distributions. 
+Here is a set of such distributions.
 
 ```{r Betas, echo = FALSE, fig.cap="\\label{betas} Beta distributions"}
 par(mfrow = c(2,3))
@@ -204,21 +194,17 @@ plot(x, dbeta(x, 20, 10), type = "l", main = expression(paste("Beta distribution
 
 ```
 
-
 ### Dirichlet distributions.
 
-The Dirichlet distributions  are generalizations of the Beta to the situation in which there are beliefs not just over a proportion, or a probability, but over collections of probabilities. 
+The Dirichlet distributions are generalizations of the Beta to the situation in which there are beliefs not just over a proportion, or a probability, but over collections of probabilities.
 
-* If four outcomes are possible and each is likely to occur with probability $p_k$, $k=1,2,3,4$ then beliefs are distributions over a three dimensional unit simplex. 
-* The distribution has as many parameters as there are outcomes and these are traditionally recorded in a vector, $\alpha$. 
-* As with the Beta distribution, an uninformative prior (Jeffrey's prior) has $\alpha$ parameters of  $(.5,.5,.5, \dots)$ and a uniform ("flat") distribution has $\alpha = (1,1,1,,\dots)$.
+-   If four outcomes are possible and each is likely to occur with probability $p_k$, $k=1,2,3,4$ then beliefs are distributions over a three dimensional unit simplex.
 
-* The Dirichlet updates in a simple way. If you have a Dirichlet prior with parameter $\alpha = (\alpha_1, \alpha_2, \dots)$ and you observe outcome $1$, for example, then then posterior distribution is also Dirichlet with parameter vector $\alpha' = (\alpha_1+1, \alpha_2,\dots)$. 
+-   The distribution has as many parameters as there are outcomes and these are traditionally recorded in a vector, $\alpha$.
 
+-   As with the Beta distribution, an uninformative prior (Jeffrey's prior) has $\alpha$ parameters of $(.5,.5,.5, \dots)$ and a uniform ("flat") distribution has $\alpha = (1,1,1,,\dots)$.
 
-
-
-
+-   The Dirichlet updates in a simple way. If you have a Dirichlet prior with parameter $\alpha = (\alpha_1, \alpha_2, \dots)$ and you observe outcome $1$, for example, then then posterior distribution is also Dirichlet with parameter vector $\alpha' = (\alpha_1+1, \alpha_2,\dots)$.
 
 ## Stan
 
@@ -226,19 +212,18 @@ The Dirichlet distributions  are generalizations of the Beta to the situation in
 
 In this short lecture we:
 
-* fire up stan
-* implement a simple linear model and talk through the main model blocks
-* implement a simple hierarchical model
-* describe a behavioral game and set up a model to recover some parameters of interest, given the game
-
+-   fire up stan
+-   implement a simple linear model and talk through the main model blocks
+-   implement a simple hierarchical model
+-   describe a behavioral game and set up a model to recover some parameters of interest, given the game
 
 ### Getting set up
 
-The good news: There is lots of help online. Start with: https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
+The good news: There is lots of help online. Start with: [https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started)
 
-We will jump straight into things and  work through a session.
+We will jump straight into things and work through a session.
 
-1. Install the stan package and fire up. Useful to set options so that multiple cores are being used:
+1.  Install the stan package and fire up. Useful to set options so that multiple cores are being used:
 
 ```{r, warning = FALSE, echo = TRUE, message=FALSE}
 library(rstan)
@@ -246,24 +231,23 @@ rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 ```
 
+### One variable model: Simple example
 
-### One variable model:  Simple example
-
-2. Now lets consider the simplest one var linear model.
-   * We will need model code
-   * And data
-
-### A simple model: Code
-
-To implement a stan model you should write the code in a text editor and save it as a text file. You can also write it directly in your script. You can then bring the file into R or call the file directly. 
-
-* There are many examples of stan models here: 
-    * https://github.com/stan-dev/example-models/tree/master/ARM/Ch.4
-    * https://github.com/stan-dev/example-models/wiki
+2.  Now lets consider the simplest one var linear model.
+    -   We will need model code
+    -   And data
 
 ### A simple model: Code
 
-I saved a simple model called `one_var.stan` locally. Here it is: 
+To implement a stan model you should write the code in a text editor and save it as a text file. You can also write it directly in your script. You can then bring the file into R or call the file directly.
+
+-   There are many examples of stan models here:
+    -   [https://github.com/stan-dev/example-models/tree/master/ARM/Ch.4](https://github.com/stan-dev/example-models/tree/master/ARM/Ch.4)
+    -   [https://github.com/stan-dev/example-models/wiki](https://github.com/stan-dev/example-models/wiki)
+
+### A simple model: Code
+
+I saved a simple model called `one_var.stan` locally. Here it is:
 
 ```{r, warning = FALSE, echo = TRUE, message=FALSE, comment = NA}
 
@@ -275,14 +259,14 @@ readLines("assets/one_var.stan", warn = FALSE) |>
 
 The key features here are (read from bottom up!):
 
-* $Y$ is assumed to be normally distributed with mean `a + bX` and standard deviation `sigma`.
-* There are then three parameters: `a`, `b`, `sigma`. 
-* There are no priors placed on these but sigma is constrained to be positive. Without priors improper flat priors are assumed.
-* Stan expects a data set that contains three things: a scalar, `N` and `X1, `Y` data
+-   $Y$ is assumed to be normally distributed with mean `a + bX` and standard deviation `sigma`.
+-   There are then three parameters: `a`, `b`, `sigma`.
+-   There are no priors placed on these but sigma is constrained to be positive. Without priors improper flat priors are assumed.
+-   Stan expects a data set that contains three things: a scalar, `N` and `X1,`Y\` data
 
 ### Simple model: Data
 
-We feed data to the model in the form of a list. The idea of a list is that the data can include all sorts of objects, not just a single dataset. 
+We feed data to the model in the form of a list. The idea of a list is that the data can include all sorts of objects, not just a single dataset.
 
 ```{r, echo = TRUE}
 X = rnorm(20)
@@ -313,6 +297,7 @@ M <-   read_rds("saved/one_var.rds")
 ```
 
 When you run the model you get a lot of useful output on the estimation and the posterior distribution. Here though are the key results:
+
 ```{r, echo = FALSE}
 kable(round(summary(M)[[1]],3)[1:3, c(1,3,10)])
 ```
@@ -342,45 +327,47 @@ summary((my_posterior$a + my_posterior$b)/my_posterior$a) |> tidy() |>
 
 ### Building up
 
-Let's go back to the code. 
+Let's go back to the code.
 
 There we had three key blocks: `data`, `parameters`, and `model`
 
 More generally the blocks you can specify are:
 
-* `data` (define the vars that will be coming in from the data list)
-* `transformed data` (can be used for preprocessing)
-* `parameters` (required: defines the parameters to be estimated)
-* `transformed parameters` (transformations of parameters useful for computational reasons and sometimes for clarity)
-* `model` (give priors and likelihood)
-* `generated quantities` (can be used for post processing)
+-   `data` (define the vars that will be coming in from the data list)
+-   `transformed data` (can be used for preprocessing)
+-   `parameters` (required: defines the parameters to be estimated)
+-   `transformed parameters` (transformations of parameters useful for computational reasons and sometimes for clarity)
+-   `model` (give priors and likelihood)
+-   `generated quantities` (can be used for post processing)
 
 ### Parameters block
 
 The parameters block declared the set of parameters that we wanted to estimate. In the simple model these were `a`, `b`, and `sigma`. Note in the declaration we also:
 
-* said what kind of parameters they (vectors, matrices, simplices etc)
-* gave possible constraints
+-   said what kind of parameters they (vectors, matrices, simplices etc)
+-   gave possible constraints
 
 ### Parameters block
 
 Instead of defining:
+
 ```{r, eval= FALSE}
 real a;
 real b;
 ```
 
 We could have defined
+
 ```{r, eval= FALSE}
 vector[2] coefs;
 ```
 
+and then referenced `coef[1]` and `coef[2]` in the model block.
 
-and then referenced `coef[1]` and `coef[2]` in the model block.  
- 
 ### Parameters block
 
-Or  we could also have imposed the constraint that the slope coefficient is positive by defining:
+Or we could also have imposed the constraint that the slope coefficient is positive by defining:
+
 ```{r, eval= FALSE, echo = TRUE}
 real a;
 real<lower = 0> b;
@@ -392,7 +379,7 @@ In the model block we give the likelihood
 
 But we can also give the priors (if we want to). If priors are not provided, flat (possibly improper) priors are assumed
 
-In our case for example we could have provided something like 
+In our case for example we could have provided something like
 
 ```{r, eval= FALSE, echo = TRUE}
 model {
@@ -432,7 +419,6 @@ model {
 M2 <- stan(model_code = new_model, data = some_data)
 ```
 
-
 ```{r, warning = FALSE, echo = TRUE, comment = NA, results='hide', echo = FALSE}
 if(run)
   stan(model_code = new_model, data = some_data) |>
@@ -451,7 +437,7 @@ Note that we get a much lower estimate for `b` with the same data.
 
 Now imagine a setting in which there are 10 villages, each with 10 respondents. Half in each village are assigned to treatment $X=1$, and half to control $X=0$.
 
-Say that there is possible a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each draw from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level  distribution centered on the village specific average outcome.
+Say that there is possible a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each draw from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
 
 This all implies a multilevel structure.
 
@@ -492,7 +478,7 @@ model {
 '
 ```
 
-Here is a slightly more general version:  https://github.com/stan-dev/example-models/blob/master/ARM/Ch.17/17.1_radon_vary_inter_slope.stan
+Here is a slightly more general version: [https://github.com/stan-dev/example-models/blob/master/ARM/Ch.17/17.1_radon_vary_inter_slope.stan](https://github.com/stan-dev/example-models/blob/master/ARM/Ch.17/17.1_radon_vary_inter_slope.stan)
 
 ### Multilevel model: Data
 
@@ -511,6 +497,7 @@ ml_data <- list(
 ```
 
 ### Multilevel Results
+
 ```{r, warning = FALSE, echo = TRUE, comment = NA, results='hide', eval = FALSE}
 M_ml <- stan(model_code = ml_model, data = ml_data)
 ```
@@ -524,7 +511,6 @@ M_ml  <-  read_rds("saved/ml_model.rds")
 
 ```
 
-
 ```{r, echo = FALSE}
 kable(round(summary(M_ml)[[1]][c(24:25, 1:3),c(1,3,10)],2))
 ```
@@ -533,26 +519,23 @@ kable(round(summary(M_ml)[[1]][c(24:25, 1:3),c(1,3,10)],2))
 
 Say that a set of people in a population are playing sequential prisoner's dilemmas.
 
-In such games selfish behavior might suggest defections by everyone everywhere. But of course people often cooperate. Why might this be? 
+In such games selfish behavior might suggest defections by everyone everywhere. But of course people often cooperate. Why might this be?
 
-* One possible reason is that some people are irrational, in the sense that they simply choose to cooperate, ignoring the payoffs. 
-* Another possibility is that rational people think that others are irrational, in the sense that they think that others will reciprocate when they observe cooperative action   
+-   One possible reason is that some people are irrational, in the sense that they simply choose to cooperate, ignoring the payoffs.
+-   Another possibility is that rational people think that others are irrational, in the sense that they think that others will reciprocate when they observe cooperative action
 
 ### Model
 
 We will capture some of this intuition with a behavioral type model in which
 
-* each player has a "rationality" propensity of $r_i$ -- this is the probability with which they choose to do the rational thing, rather than the generous thing 
-* $r_i \sim U[0, \theta]$ for  $\theta > .5$. 
-* A player with rationality propensity of $r_i$ believes  $r_j \sim [0, r_i]$. So everyone  assumes that they are the most rational people in the room...
-* The game is such that:
-      * second mover: a second mover  with rationality propensity $r_i$ will  cooperate with probability $1-r_i$ if the first mover cooperated; otherwise they  defect 
-      * first mover: a first mover with $r_i$ will  cooperate nonstrategically with probability $(1-r_i)$; however with probability $r_i$ they will also cooperate *strategically* if they think that the second mover has $r_j<.25$. 
-
+-   each player has a "rationality" propensity of $r_i$ -- this is the probability with which they choose to do the rational thing, rather than the generous thing
+-   $r_i \sim U[0, \theta]$ for $\theta > .5$.
+-   A player with rationality propensity of $r_i$ believes $r_j \sim [0, r_i]$. So everyone assumes that they are the most rational people in the room...
+-   The game is such that: \* second mover: a second mover with rationality propensity $r_i$ will cooperate with probability $1-r_i$ if the first mover cooperated; otherwise they defect \* first mover: a first mover with $r_i$ will cooperate nonstrategically with probability $(1-r_i)$; however with probability $r_i$ they will also cooperate *strategically* if they think that the second mover has $r_j<.25$.
 
 ### Expectations from model
 
-In all, this means that a player with  propensity $r_i>.5$ will cooperate with probability $1-r_i$; a player with  propensity $r_i<.5$ will cooperate with probability $1$.
+In all, this means that a player with propensity $r_i>.5$ will cooperate with probability $1-r_i$; a player with propensity $r_i<.5$ will cooperate with probability $1$.
 
 Interestingly the not-very-rational people sometimes cooperate strategically but the really rational people never cooperate strategically because they think it won't work.
 
@@ -560,38 +543,32 @@ Interestingly the not-very-rational people sometimes cooperate strategically but
 
 What then are the probabilities of each of the possible outcomes?
 
-* There will be cooperation by *both* players  with probability 
-$(\int_0^{.5} p(r_i) dr_i  + \int_{.5}^1 p(r_i)(1-r_i) dr_i)\int_0^1p(r_i)(1-r_i)dr_i$
-* There will be cooperation by player 1 only  with probability 
-$(\int_0^{.5} p(r_i) dr_i  + \int_{.5}^1 p(r_i)(1-r_i) dr_i)(\int_0^1p(r_i)(r_i)dr_i)$
-* There will be cooperation by neither with probability: 
-$1-\int_0^{.5} p(r_i) dr_i  - \int_{.5}^1 p(r_i)(1-r_i) dr_i$
+-   There will be cooperation by *both* players with probability $(\int_0^{.5} p(r_i) dr_i + \int_{.5}^1 p(r_i)(1-r_i) dr_i)\int_0^1p(r_i)(1-r_i)dr_i$
+-   There will be cooperation by player 1 only with probability $(\int_0^{.5} p(r_i) dr_i + \int_{.5}^1 p(r_i)(1-r_i) dr_i)(\int_0^1p(r_i)(r_i)dr_i)$
+-   There will be cooperation by neither with probability: $1-\int_0^{.5} p(r_i) dr_i - \int_{.5}^1 p(r_i)(1-r_i) dr_i$
 
 where $p$ is the density function on $r_i$ given $\theta$
 
 ### Event probabilities
+
 Given the assumption on $p$
 
-* There will be cooperation by *both* players  with probability 
-$(1+.25/\theta  -.5\theta)(1-.5\theta)$
-* There will be cooperation by player 1 only  with probability 
-$(1+.25/\theta  -.5\theta)(.5\theta)$
-* There will be cooperation by neither player  with probability 
-$(.5\theta-.25/\theta)$
-
+-   There will be cooperation by *both* players with probability $(1+.25/\theta -.5\theta)(1-.5\theta)$
+-   There will be cooperation by player 1 only with probability $(1+.25/\theta -.5\theta)(.5\theta)$
+-   There will be cooperation by neither player with probability $(.5\theta-.25/\theta)$
 
 ### Data
 
-* We have data on the actions of the first movers and the second movers and are interested in the distribution of the $p_i$s.
+-   We have data on the actions of the first movers and the second movers and are interested in the distribution of the $p_i$s.
 
-* Lets collapse that data into a simple list of the number of each type of game outcome:
+-   Lets collapse that data into a simple list of the number of each type of game outcome:
 
-* And say we start off with a uniform prior of $\theta$. 
+-   And say we start off with a uniform prior of $\theta$.
 
-* What should we conclude about $\theta$?
-
+-   What should we conclude about $\theta$?
 
 ### Model
+
 Here's a model:
 
 ```{r, mysize=TRUE, size='\\tiny'}
@@ -658,15 +635,12 @@ M4 <- read_rds("saved/M4.rds")
 hist(extract(M4)$theta, xlab = "Posterior on theta", main = "")
 ```
 
-
 ### Posterior on a quantity of interest
 
 What is the probability of observing *strategic* first round cooperation?
 
-A player with rationality $r_i$ will cooperate strategically with probability $r_i$ if $r_i<.5$ and 0 otherwise. 
-Thus we are interested in $\int_0^{.5}r_i/\theta dr_i = .125/\theta$
+A player with rationality $r_i$ will cooperate strategically with probability $r_i$ if $r_i<.5$ and 0 otherwise. Thus we are interested in $\int_0^{.5}r_i/\theta dr_i = .125/\theta$
 
 ```{r, warning = FALSE, echo = FALSE, comment = NA, fig.align="center", fig.asp=1, out.width="50%"}
 hist(.125/extract(M4)$theta, xlab = "Posterior on .125/theta", main = "", xlim = c(0,1))
 ```
-
