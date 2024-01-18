@@ -52,6 +52,8 @@ ggplot(simulations_df, aes(x = Values)) +
   labs(title = "Distribution of Values", x = "Values", y = "Frequency")
 
 ##################
+shape is a bell/normal distribution
+##################
 
 Plot the power as increases, using the diagnosands_df 
 
@@ -94,7 +96,13 @@ ggplot(estimates_df, aes(x = values, y = estimates, color = factor(N))) +
 Discussion
 1.	Distribution of Values:
 Since we simulated data with no treatment effect and sampled from a normal distribution, you would expect a symmetric bell-shaped distribution.
+
 2.	Power vs. Sample Size:
 Power is often expected to increase as the sample size increases, showing the ability to detect true effects.
+sample size 50 = 0.80
+sample size 100 = 0.85
+sample size 150 = 0.90
+sample size 200 = 0.95
+
 3.	Estimates vs. Values for Different N:
 Depending on the nature of the simulation, the observation of the estimates vary with different sample sizes.
