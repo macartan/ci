@@ -13,7 +13,7 @@ filters:
 custom-numbered-blocks:
   groups: 
     exgrp: 
-      collapse: false
+      collapse: true
       boxstyle: foldbox.simple  
   classes:
     Q:
@@ -101,7 +101,6 @@ g() |> slice(1:3, 13:15) |> kable()
 
 * Assess the performance of the estimates of the standard errors and the coverage as `rho` goes from -1 to 0 to 1. Describe how coverage changes. (Be sure to be clear on what coverage is!)
 
-**Hint** You can use the `fabricatr::correlate` function to generate correlated data. Also, to redesign over a range of values, assign a value to `rho` before you declare the design, and then you do  `design |> redesign(rho = c(-1, 0, 1))`, or use whatever  range you like.
 
 ```{r}
 Y_Z_0 <- rnorm(1000)
@@ -209,7 +208,7 @@ These next questions use some concepts we have not introduced yet. Don't worry i
 * Declare a simple design in which (i)  $X$ and $Y$ both have a positive effect on  (binary) $K$ but $X$ does not cause $Y$ (ii) a researcher conditions on $K==1$ when estimating the effect of $X$ on $Y$
 * Show that this can generate biased results. Can you find situations where the bias can be either positive or negative?
 
-**Hint**:  The direction of collider bias is related to the ways that $K$ and $Y$ interact to produce $X$. Also: by "conditioning on $K=1$" we mean: does the analysis using only cases for which $K=1$.
+**Hint**:  The direction of collider bias is related to the ways that $K$ and $Y$ interact to produce $X$. Also: by "conditioning on $K=1$" we mean: using only cases for which $K=1$.
 
 
 :::
