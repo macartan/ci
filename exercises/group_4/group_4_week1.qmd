@@ -69,16 +69,16 @@ declaration <-
     N = 1000, # Arbitrary population of 1000
     U = rnorm(N), # Assuming error term is random
     W = rbinom(N, 1, 0.5), +
-    potential_outcomes(Y ~ Z * W + U)) + # Potential Outcomes as defined in task
-  declare_inquiry(ATE = (mean(Y_Z_1 - Y_Z_0))) + 
-  declare_assignment(Z = rbinom(N, 1, prob = ifelse(W == 1, 0.5, 0.2))) + # Assignment conditional on W 
-  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+    potential_outcomes(Y ~ X * W + U, conditions = list(X = 0:1))) + # Potential Outcomes as defined in task
+  declare_inquiry(ATE = (mean(Y_X_1 - Y_X_0))) + 
+  declare_assignment(X = rbinom(N, 1, prob = ifelse(W == 1, 0.5, 0.2))) + # Assignment conditional on W 
+  declare_measurement(Y = reveal_outcomes(Y ~ X)) +
   declare_estimator(
-    Y ~ Z, term = "Z", inquiry = "ATE", label = "a) Ignore W") +  # Ignoring W
+    Y ~ X, term = "X", inquiry = "ATE", label = "a) Ignore W") +  # Ignoring W
   declare_estimator(
-    Y ~ Z + W, term = "Z", inquiry = "ATE",label = "b) Control for W") + # Controlling for W
+    Y ~ X + W, term = "X", inquiry = "ATE",label = "b) Control for W") + # Controlling for W
   declare_estimator(
-    Y ~ Z + Z * W + W, term = "Z", inquiry = "ATE",label = "c) Interaction") # Interaction
+    Y ~ X + X * W + W, term = "X", inquiry = "ATE",label = "c) Interaction") # Interaction
 
 
 ### MODEL DIAGNOSIS

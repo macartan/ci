@@ -144,11 +144,79 @@ make_model("X -> M -> Y <-> X") |> plot(x_coord = 1:3, y_coord = c(1,1,1))
 **Hint**: This question is asking about the front door criterion. Check whether the conditions apply for the front door criterion on hold. Note that an effect is *not* identified if the data pattern it produces is also consistent with a different effect. Is that the case here? Note you can generate and update models of this form with `CausalQueries`.
 :::
 
-### Solution
 
-```{r}
+## Using `CausalQueries` 1 {.smaller}
 
+```{r echo=TRUE}
+model <- make_model("X -> M -> Y <-> X")
+model <- set_priors(model, distribution = "jeffreys")
+data_1 <- fabricate(N = 6500, 
+                  X = rep(0:1, N/2), 
+                  M = rbinom(N, 1, 0.05 + .9*X), 
+                  Y = rbinom(N, 1, 0.05 + .9*M))
+
+model_1 <- model %>%
+  update_model(data_1, refresh = 0)
+
+query_model(
+    model = model_1, 
+    using = c("priors", "posteriors"),
+    query = "Y[X=1] - Y[X=0]",
+    )  %>%
+  kable(digits = 2) %>%
+  kableExtra::kable_styling(font_size = 18)
 ```
 
 
+## Using `CausalQueries` 2 {.smaller}
+
+```{r echo=TRUE}
+data_2 <- fabricate(N = 6500, 
+                  X = rep(0:1, N/2), 
+                  M = X, 
+                  Y = M)
+
+model_2 <- model %>%
+  update_model(data_2, refresh = 0)
+
+query_model(
+    model = model_2, 
+    using = c("priors", "posteriors"),
+    query = "Y[X=1] - Y[X=0]",
+    )  %>%
+  kable(digits = 2) %>%
+  kableExtra::kable_styling(font_size = 18)
+```
+
+## Dependency of N
+
+```{r eval=FALSE}
+results <- data.frame(N = numeric(), Posterior_Mean = numeric())
+
+set.seed(1234)
+for (N in seq(500, 6500, by = 500)) {
+  data <- fabricate(N = N, 
+                    X = rep(0:1, N/2), 
+                    M = rbinom(N, 1, 0.05 + .9*X), 
+                    Y = rbinom(N, 1, 0.05 + .9*M))
+
+  updated_model <- model %>% update_model(data, refresh = 0)
+  query_result <- query_model(
+      model = updated_model, 
+      using = c("priors", "posteriors"),
+      query = "Y[X=1] - Y[X=0]"
+  )
+  posterior_mean <- query_result %>% 
+    filter(using == "posteriors") %>% 
+    pull(mean)
+
+  results <- rbind(results, data.frame(N, Posterior_Mean = posterior_mean))
+}
+```
+
+```{r eval=FALSE}
+ggplot(results, aes(x = N, y = Posterior_Mean)) +
+  geom_point() +
+  theme_minimal()
+```
 

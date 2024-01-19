@@ -1,24 +1,200 @@
 ---
-title: "Week 1 - Group 4"
-format: revealjs
-editor: visual
+title: "Group 4 - Week 1"
+date: "19 January, 2024"
+author:
+  - name: Philipp Heyna
+    email: "<a href='mailto:philipp.heyna@hu-berlin.de'><span>&#64;</span>philipp.heyna</a>"
+  - name: Nader Hotait
+    email: "<a href='mailto:nader.hotait@hu-berlin.de'><span>&#64;</span>nader.hotait</a>"
+  - name: Daniel Kuhlen
+    email: "<a href='mailto:kuhlenda@hu-berlin.de'><span>&#64;</span>kuhlenda</a>"
+  - name: Robert Stelzle
+    email: "<a href='mailto:robert.martin.stelzle@student.hu-berlin.de'><span>&#64;</span>robert.martin.stelzle</a>"
+  - name: Yoanna Yankova
+    email: "<a href='mailto:yankovay@hu-berlin.de'><span>&#64;</span>yankovay</a>"
+format:
+  revealjs: 
+    theme: white
+    logo: hu_siegel-kombi_rgb.png
+    css: logo.css
+    mbed-resources: true
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: false
+    scrollable: true
 ---
 
-## Quarto
+```{r packages, echo=FALSE}
+# packages
+pacman::p_load(tidyverse,
+               DeclareDesign,
+               CausalQueries,
+               knitr,
+               kableExtra)
+```
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+## Q 2.4 (Confounded) {.smaller}
 
-## Bullets
+Declare a design in which:
 
-When you click the **Render** button a document will be generated that includes:
+* The assignment of a  treatment $X$ depends in part on upon some other, binary, variable $W$: in particular  $\Pr(X=1|W=0) = .2$ and $\Pr(X=1|W=1) = .5$)
+* The outcome $Y$ depends on both $X$ and $W$: in particular $Y = X*W + u$ where $u$ is a random shock.
+* Diagnose a design with three approaches to estimating the effect of $X$ on $Y$: (a) ignoring $W$ (b) adding $W$ as a linear control (c) including both $W$  and an interaction between $W$ and $X$. 
 
--   Content authored with markdown
--   Output from executable code
+Discuss results. Do any of these return the right answer?
 
-## Code
+**Hint:** You can add three separate `declare_estimator` steps. They should have distinct labels. The trickiest part is to figure out how to extract the estimate in (c) because you will have both a main term and an interaction term for $X$.
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Model Declaration
 
-```{r}
-1 + 1
+```{r model_declaration_1, echo=TRUE}
+#| code-line-numbers: "|3-6|7|8-10|11-16"
+set.seed(123)
+declaration <- 
+  declare_model(
+    N = 100, 
+    U = rnorm(N),
+    W = rbinom(N, 1, 0.5), +
+    potential_outcomes(Y ~ X * W + U, conditions = list(X = 0:1))) +
+  declare_inquiry(ATE = (mean(Y_X_1 - Y_X_0))) + 
+  declare_assignment(X = rbinom(N, 1, prob = ifelse(W == 1, 0.5, 0.2))) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ X)) +
+  declare_estimator(
+    Y ~ X, term = "X", inquiry = "ATE", label = "a) Ignore W") +
+  declare_estimator(
+    Y ~ X + W, term = "X", inquiry = "ATE",label = "b) Control for W") +
+  declare_estimator(
+    Y ~ X + X * W + W, term = "X", inquiry = "ATE",label = "c) Interaction")
+```
+
+## Model Diagnosis
+
+```{r echo=TRUE}
+model_diagnosis <-
+  diagnose_design(declaration,
+                  sims = 500,
+                  bootstrap_sims = 100)
+
+reshape_diagnosis(model_diagnosis) %>%
+  kable() %>%
+  kableExtra::kable_styling(font_size = 18)
+```
+
+## Discussion {.smaller}
+
+The role of $W$ is defined as a confounder since it serves as a parent variable influencing both the treatment assignment $X$ and the treatment outcome $Y$. Failing to adjust for this confounder in the model can lead to biased estimations. Such a bias is conventionally referred to as "common cause confounding bias" or, in other words, a violation of the backdoor criterion. Therefore, it is crucial to incorporate $W$ into the model. Utilizing simulations through `DeclareDesign`, we gain insights into this specific phenomenon. From the simulation results, it is evident that the model which accounts for $W$ (*"Control for W"*) produces mean estimates that are considerably closer and less biased compared to the estimand than the model that neglects $W$ (*"Ignore W"*). Furthermore, both the SD and RMSE metrics suggest that the estimates from the model accounting for the confounder are less erroneous compared to those from the model that disregards it.
+
+
+## Q 3.4
+
++ A set of units have outcome $Y^1_i$ at baseline.
++ At endline they have potential outcomes $Y^2_i(0)$ and  $Y^2_i(1)$
+
+1. Write down the estimand for the average effect of treatment on endline outcomes
+2. Write down the estimand for the average effect of treatment on the change from baseline to endline for all units
+
+Compare these and discuss.
+
+## Discussion{.smaller}
+
+Assuming:
+
+1. $\text{ATE}_{\text{endline}} = \frac{1}{N} \sum_{i=1}^{N} \left( Y^2_i(1) - Y^2_i(0) \right)$
+2. $\text{ATE}_{\text{change}} = \frac{1}{N} \sum_{i=1}^{N} \left( \left( Y^2_i(1) - Y^1_i \right) - \left( Y^2_i(0) - Y^1_i \right) \right)$
+
+.   .   .   
+
+One can conclude that $\text{ATE}_{\text{endline}}$ approximates an estimator, which informs us about the average size of the treatment effect on a binary outcome. However, $\text{ATE}_{\text{change}}$ provides insight into the treatment effect as a comparison between conditions before and after treatment, indicating the effectiveness of the treatment relative to not being treated. Hence, the first scenario informs us about the strength of the treatment given the prevalence of positive outcomes, while the second scenario reveals the effectiveness of the treatment by considering the initial conditions of the treated units.
+
+.   .   .   
+
+Assuming that $ATE = ATT$ and considering  $Y^{t=1}_i$ and $Y^{t=2}_i$ in this scenario, one could describe $\text{ATE}_{\text{endline}}$ as a between-estimator of treated units, and $\text{ATE}_{\text{change}}$ as an in-between estimation of treated units before and after treatment, effectively combining between- and within-unit estimations.
+
+## Q 4.4 {.smaller}
+Imagine a model that looks like this:
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 10}
+make_model("X -> M -> Y <-> X") |> plot(x_coord = 1:3, y_coord = c(1,1,1))
+```
+
+* Say that in truth  ATE of  $X$ on $M$ is .9 and that the ATE of  $M$ on $Y$ is .9. Is the implied effect of 0.81 on $X$ on $Y$ identified?   
+* Say that in truth  ATE of  $X$ on $M$ is 1 and that the ATE of  $M$ on $Y$ is 1. Is the implied effect of 1 on $X$ on $Y$ identified?   
+* Discuss
+
+**Hint**: This question is asking about the front door criterion. Check whether the conditions apply for the front door criterion on hold. Note that an effect is *not* identified if the data pattern it produces is also consistent with a different effect. Is that the case here? Note you can generate and update models of this form with `CausalQueries`.
+
+
+## Discussion 
+Three conditions have to be met for the front door criterion to hold:
+
++ $M$ completely mediates the effect of $X$ on Y, i.e., all causal paths from $X$ to $Y$ go through $M$
++ There us no unblocked backdoor path from $X$ to $M$
++ All backdoor paths from $M$ to $Y$ are blocked by $X$
+
+## Scenario 1{.smaller}
+**Direct causal path between both X and Y**
+
+```{r fig.height = 3, fig.width = 10}
+make_model("X -> M -> Y <-> X") %>%
+  plot(x_coord = 1:3, y_coord = c(1,1,1))
+```
+
+The second and third assumption seem to hold for the model; there is only one path from X to M and the backdoor path from M to Y is blocked by X (thus controlled for). However, there is a second direct pathway from X to Y, meaning that the first condition is violated. 
+
+With correlations of 0.9 between both X and M and M and Y, I would therefore argue that the causal effect cannot be identified. With perfect deterministic relationships between the variables (correlation = 1), though, I think that there cannot be a backdoor path between X and Y as there is no more variance that is not explained via the pathway through M.
+
+
+## Scenario 2{.smaller}
+**Confounder causing both X and Y**
+
+```{r fig.height = 3, fig.width = 10}
+make_model("X -> M -> Y <- C -> X") %>%
+  plot(x_coord = c(2,1,2,3), y_coord = c(2,1,1,1))
+```
+
+Here, the front door criterion holds: The first condition is fulfilled because there is no causal path from X to Y other than the one through M.
+
+## Using `CausalQueries` 1 {.smaller}
+
+```{r echo=TRUE}
+model <- make_model("X -> M -> Y <-> X")
+model <- set_priors(model, distribution = "jeffreys")
+data_1 <- fabricate(N = 6500, 
+                  X = rep(0:1, N/2), 
+                  M = rbinom(N, 1, 0.05 + .9*X), 
+                  Y = rbinom(N, 1, 0.05 + .9*M))
+
+model_1 <- model %>%
+  update_model(data_1, refresh = 0)
+
+query_model(
+    model = model_1, 
+    using = c("priors", "posteriors"),
+    query = "Y[X=1] - Y[X=0]",
+    )  %>%
+  kable(digits = 2) %>%
+  kableExtra::kable_styling(font_size = 18)
+```
+
+
+## Using `CausalQueries` 2 {.smaller}
+
+```{r echo=TRUE}
+data_2 <- fabricate(N = 6500, 
+                  X = rep(0:1, N/2), 
+                  M = X, 
+                  Y = M)
+
+model_2 <- model %>%
+  update_model(data_2, refresh = 0)
+
+query_model(
+    model = model_2, 
+    using = c("priors", "posteriors"),
+    query = "Y[X=1] - Y[X=0]",
+    )  %>%
+  kable(digits = 2) %>%
+  kableExtra::kable_styling(font_size = 18)
 ```
