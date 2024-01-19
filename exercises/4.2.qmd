@@ -1,0 +1,149 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    code-fold: show
+    code-summary: "Show the code"
+    scrollable: true
+    echo: true
+title: "Exercise 4.2"
+author: "Eduard, Felix, Linus & Noah"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+
+```{r setup, echo=FALSE}
+# install and load packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  DeclareDesign,
+  dagitty,
+  tidyverse,
+  here,
+  kableExtra
+  )
+
+# declare file location
+here::i_am("4.2.qmd")
+```
+
+
+# Puzzle
+
+* Draw a DAG with 5 nodes representing  a situation in which $X$ causes $Y$ though $M$, $C$ affects both $X$ and $M$ and $D$ affects both $M$ and $Y$.
+* Think through what  set of nodes which, when controlled for, would allow for the identification of the effect of $X$ on $Y$. 
+* Represent it in `dagitty` and check your answer
+* Bonus: Declare the design and compare the behavior of designs that do and do not control for these nodes.
+
+# Solution
+
+## Define causal paths between variables
+
+```{r}
+dag <- dagitty("dag { X -> M -> Y C -> X C -> M D -> M }")
+```
+
+
+## DAG
+
+```{r}
+plot(dag)
+```
+
+
+## Find adjustment set
+
+```{r}
+adjustment_set <- adjustmentSets(dag, exposure = "X", outcome = "Y")
+adjustment_set
+```
+
+
+## DeclareDesign
+
+```{r}
+#| eval: false
+#| include: false
+design_4_2 <- 
+  declare_model(
+    N = 1000,
+    U = rnorm(N),
+    C = rbinom(N, 1, prob = 0.3),
+    D = rbinom(N, 1, prob = 0.7),
+    M = rbinom(N, 1, prob = 0.1 + 0.2 * C + 0.4 * D),
+    X = rbinom(N, 1, prob = 0.25 + 0.5 * C),
+    Y_X_0 = 0.2 * X * M + D + U,
+    Y_X_1 = Y_X_0 + 0.5
+  ) +
+  declare_inquiry(ATE = mean(Y_X_1 - Y_X_0)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ X)) +
+  declare_estimator(
+    Y ~ X,
+    label = "naive"
+  ) +
+  declare_estimator(
+    Y ~ X + C,
+    label = "control"
+  )
+```
+
+
+```{r}
+design_4_2 <- 
+  declare_model(
+    N = 1000,
+    U = rnorm(N),
+    C = rnorm(N),
+    D = rnorm(N),
+    M = rbinom(N, 1, prob = pnorm(C+D)),
+    X = rbinom(N, 1, prob = pnorm(C)),
+    Y_X_0 = X * M + D + U,
+    Y_X_1 = Y_X_0 + 0.5
+  ) +
+  declare_inquiry(ATE = mean(Y_X_1 - Y_X_0)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ X)) +
+  declare_estimator(
+    Y ~ X,
+    label = "naive"
+  ) +
+  declare_estimator(
+    Y ~ X + C,
+    label = "right control"
+  ) +
+  declare_estimator(
+    Y ~ X + D,
+    label = "wrong control"
+  )
+```
+
+
+```{r}
+#| eval: false
+#| include: false
+design_4_2 |> draw_data()
+```
+
+## Run design
+
+```{r}
+design_4_2 |> 
+  run_design() |> 
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
+```
+
+## Diagnose design
+
+```{r}
+design_4_2 |> 
+  diagnose_designs() |> 
+  reshape_diagnosis() |> 
+  kable(digits = 2) |> 
+  kable_styling(font_size = 20)
+```
