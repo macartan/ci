@@ -8,7 +8,7 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
-title: "Exercise 2.3"
+title: "Exercise 3.3"
 author: "Team 3"
 ---
 
