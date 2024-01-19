@@ -1,0 +1,15 @@
+---
+title: "Naders Course Notes"
+output: html_notebook
+---
+
+```{r}
+pacman::p_load(tidyverse,
+               DeclareDesign,
+               CausalQueries,
+               fabricatr
+)
+```
+
+
+
