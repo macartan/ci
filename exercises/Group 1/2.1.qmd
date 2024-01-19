@@ -1,10 +1,10 @@
 ---
 title: "Exercise 2.1"
 format: html
-editor: felix
+author: felix
 ---
 
-**False positives and Ns**
+**False positives and Ns**
 
 Sometimes people worry that with larger samples you are more likely to get a false positive. Is that true?
 

@@ -58,7 +58,11 @@ cluster_model <-
     school = 
       add_level(
         N = 3156,
-        school_shock = rnorm(N, mean = 0, sd = 10)
+        school_shock = rnorm(
+          N,
+          mean = 0,
+          sd = 10
+        )
       ),
     class =
       add_level(
@@ -70,7 +74,7 @@ cluster_model <-
         student_shock = draw_normal_icc(
           mean = 0,
           clusters = class,
-          ICC = 0.2
+          ICC = 0.4
         ),
         potential_outcomes(Y ~ 0.3 * Z + school_shock + student_shock)
       )
@@ -123,7 +127,7 @@ cluster_inquiry_sample <-
 ```
 
 
-### Answer stratety
+### Answer strategy
 
 ```{r}
 cluster_answer_none <- 

@@ -231,7 +231,7 @@ read_rds("saved/2.4.rds") |> reshape_diagnosis() |> select(Estimator, 'Mean Esti
 
 The estimate from the naive model is wildly off because it effectively weights the strata with W=1 (where there is an effect of 1) according to its variance in treatment assignment (.5*.5) and the W=0 strata according to its variance (.2 * .8), giving an expected estimate of .25/(.25 + .16) = .61.
 
-The '"saturated" regression deals with this, but to get the average estimate you have to average the estimate in the W=0 and in teh W=1 condition.  There are different ways to do this but here we do it by demeaning W, then the coefficient on the "main" term actually captures the average.
+The '"saturated" regression deals with this, but to get the average estimate you have to average the estimate in the W=0 and in the W=1 condition.  There are different ways to do this but here we do it by demeaning W, then the coefficient on the "main" term actually captures the average.
 
 # 3.1 on potential outcomes
 
@@ -241,7 +241,7 @@ Consider an outcome $Y$ that can be affected by two variables $X_1$ and $X_2$. A
 |-------------------|--------------------------------------------------|-------------------------------------|-------------------------------------|----------------------------------------------------------------|
 | Y(0,0) = |        0                           |   0         |     0     |      0    |
 | Y(1,0) = |        1                           |   0         |     1     |      1    |
-| Y(0,1) = |        0                           |   0         |     1     |      0    |
+| Y(0,1) = |        0                           |   0         |     1     |      1    |
 | Y(1,1) = |        1                           |   1         |     1     |      0    |
 
 
@@ -518,12 +518,14 @@ The first example satisfies the "front door criterion" which we cover in week 2.
 
 The second  example is interesting because it seems to also satisfy the "front door criterion" but now all data events  do not have positive probability. For example, we would never see $X=1, M=0, Y=1$
 
-In fact the date we do see, with X, M and Y all perfectly correlated are consistent with different possible data generating processes, for instance:
+## 4.4 Front door criterion
+
+In fact the data we do see, with X, M and Y all perfectly correlated are consistent with different possible data generating processes, for instance:
 
 * Unobserved $U$ causes both $X$ and $Y$ with 100% effect
 * $X$ causes $M$ with 100% effect
-* $M$ has no imnpact on $Y$
+* $M$ has no impact on $Y$
 
-Because this is consitent with the data the alternative model with $X$ cauing $M$ and $M$ causing $Y$ is not identified
+Because this is consistent with the data the alternative model with $X$ causing $M$ and $M$ causing $Y$ is not identified
 
 
