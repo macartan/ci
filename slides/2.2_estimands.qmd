@@ -118,7 +118,7 @@ Interpret these. What others might be of interest?
 
 A difference in CATEs is a well defined estimand that might involve interventions on one node only:
 
--   $\mathbb{E}_{\{W=1}\}[Y(X=1) - Y(X=0)] - \mathbb{E}_{\{W=0\}}[Y(X=1) - Y(X=0)]$
+-   $\mathbb{E}_{\{W=1\}}[Y(X=1) - Y(X=0)] - \mathbb{E}_{\{W=0\}}[Y(X=1) - Y(X=0)]$
 
 It captures differences in effects.
 
@@ -150,7 +150,7 @@ Again we might imagine that these are defined with respect to some group:
 -   $A = \{i|Y_i(1, M(X=1)) > Y_i(0, M(X=0))\}$
 -   $\frac{1}{|A|} \sum_{i\in A}(Y(1, 1) > Y(0, 1))$
 
-here, among those for whom $X$ has a positive effect on $Y$, for what share would there be a positive effect if $M$ were fixed at 1.
+here, *among those for whom* $X$ has a positive effect on $Y$, for what share would there be a positive effect if $M$ were fixed at 1?
 
 ### Causes of effects and effects of causes
 
@@ -387,23 +387,42 @@ If the backdoor criterion is satisfied, we have:
 1.  $Y$ is independent of $T$, given $X$ and observed data, $Z$ (since $Z$ blocks backdoor paths)
 2.  $X$ is independent of $Z$ given $T$. (Since $Z$ includes only nondescendents)
 
--   From the DAG we have: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|\hat{x}, t)$$
+-  The intervention level relates to the observational level as follows: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)$$
+-  Think of this as *fully accounting for the (possibly unobserved) causes of $X$, $T$*
 
 ### Backdoor Proof {.smaller}
 
--   But we do not observe $T$, rather we observe $Z$. OK, but we can write: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|\hat{x}, t, z)p(z|\hat{x}, t)$$
+-   But of course we do not observe $T$, rather we observe $Z$. So we now need to write everything in terms of $Z$ rather than $T$.
+
+We bring $Z$ into the picture by writing: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|x, t, z)p(z|x, t)$$
 
 -   Then using the two conditions above:
 
-    1.  replace $p(y|\hat{x}, t, z)$ with $p(y | \hat{x}, z)$
-    2.  replace $p(z|\hat{x}, t)$ with $p(z|t)$
+    1.  replace $p(y|x, t, z)$ with $p(y | x, z)$
+    2.  replace $p(z|x, t)$ with $p(z|t)$
 
-This gives: $$p(y|\hat{x}) = \sum_{t \in T} p(t) \sum_z p(y|\hat{x}, z)p(z|t) $$
+This gives: $$p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t) $$
 
 
-So, cleaning up: 
+So, cleaning up, we can get rid of $T$: 
 
-$$p(y|\hat{x}) =  \sum_z p(y|\hat{x}, z)\sum_{t\in T} p(z|t)p(t) = \sum_z p(y|\hat x, z)p(z)= \sum_z p(y|x, z)p(z)$$
+$$p(y|\hat{x}) =  \sum_z p(y|x, z)\sum_{t\in T} p(z|t)p(t) = \sum_z p(y| x, z)p(z)$$
+
+
+### Backdoor proof figure {.smaller}
+
+For intuition: 
+
+```{r, echo = FALSE, fig.height = 4, fig.width = 10}
+
+make_model(" Y <- Z <- T -> X -> Y ") |> plot(x_coord = c(1, 2, 2, 3), y_coord = c(1, 1, 2, 1))
+
+```
+
+We would be happy if we could condition on the parent $T$, but $T$ is not observed. However we can use $Z$ instead making use of the fact that:
+
+1.  $p(y|x, t, z) = p(y | x, z)$ (since $Z$ blocks)
+2.  $p(z|x, t) = p(z|t)$ (since $Z$ is upstream and blocked by parents, $T$)
 
 ### Adjustment criterion {.smaller}
 
@@ -435,7 +454,7 @@ hj_ggdag(x = c(0,1,1),
 
 ```
 
-$Z$ is descendant of $X$ but it does not a descendant of a node on a path from $X$ to $Y$. No harm adjusting for $Z$ here, but not necessary either.
+$Z$ is descendant of $X$ but it is not a descendant of a node on a path from $X$ to $Y$. No harm adjusting for $Z$ here, but not necessary either.
 
 <!-- No solution here: -->
 
@@ -445,26 +464,42 @@ $Z$ is descendant of $X$ but it does not a descendant of a node on a path from $
 
 <!-- non-causal paths are back-door" -->
 
-### Frontdoor criterion (Pearl)
+### Frontdoor criterion (Pearl) {.smaller}
 
 Consider this DAG:
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.height = 4, fig.width = 10}
 make_model( "Y <-U -> X-> M -> Y") |> plot(x_coord = c(2, 1, 2, 3), y_coord = c(2,1,1,1))
 ```
+
 * The relationship between $X$ and $Y$ is confounded by $U$. 
 * However the $X\rightarrow Y$ effect is the product of the $X\rightarrow M$ effect and the $M\rightarrow Y$ effect
 
 Why?
 
-### Frontdoor criterion {.smaller}
+### Identification through the front foor {.smaller}
+
+
+If:
+
+* $M$ (possibly a set) blocks all *directed* paths from $X$ to $Y$
+* there is no backdoor path $X$ to $M$
+* $X$ blocks all backdoor paths from $M$ to $Y$
+and
+* all ($m,z$) combinations arise with positive probability
+
+Then $\Pr(y| \hat x)$ is identifiable and given by:
+
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_{x'}\left(\Pr(y|m,x')\Pr(x')\right)$$
+
+### Frontdoor criterion (Proof) {.smaller}
 
 We want to get $\Pr(y | \hat x)$
 
 From the graph the joint distribution of variables is:
 
 $$\Pr(x,m,y,u)  = \Pr(u)\Pr(x|u)\Pr(m|x)\Pr(y|m,u)$$
-If we intervened on $X$ we would have:
+If we intervened on $X$ we would have ($\Pr(X = x |u)=1$):
 
 $$\Pr(m,y,u | \hat x)  = \Pr(u)\Pr(m|x)\Pr(y|m,u)$$
 If we sum up over $u$ and $m$ we get:
@@ -472,7 +507,7 @@ If we sum up over $u$ and $m$ we get:
 $$\Pr(m,y| \hat x)  = \Pr(m|x)\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$$
 $$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$$
 
-The first part is fine; the second part however involves $u$ which is unobserved. So we need to get the $u$ out of $sum_u\left(\Pr(y|m,u)\Pr(u)\right)$.
+The first part is fine; the second part however involves $u$ which is unobserved. So we need to get the $u$ out of $\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$.
 
 ### Frontdoor criterion {.smaller}
 

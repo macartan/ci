@@ -45,7 +45,8 @@ The problem in 2 is that you need to know what would have happened if things wer
  
 
 -   For each unit, we assume that there are two **post-treatment** outcomes: $Y_i(1)$ and $Y_i(0)$.
--   For example, $Y(1)$ is the outcome that *would* obtain *if* the unit received the treatment.
+    -   $Y(1)$ is the outcome that *would* obtain *if* the unit received the treatment.
+    -   $Y(0)$ is the outcome that *would* obtain *if* it did not.
 -   The **causal effect** of Treatment (relative to Control) is: $\tau_i = Y_i(1) - Y_i(0)$
 -   Note:
     -   The causal effect is defined at the *individual level*.
@@ -90,11 +91,10 @@ CONNECTEDNESS Say $A$ causes $B$ --- does that mean that there is a spatiotempor
 
 ### Causal claims: Contribution or attribution?
 
-The counterfactual model is all about contribution, not attribution, except in a very conditional sense.
+The counterfactual model is about contribution and attribution in a very specific sense.
 
--   Focus is on non-rival contributions
--   Not: what caused $Y$ but what is the effect of $X$?
--   At most it provides a conditional account
+-   Focus is on *non-rival* contributions
+-   Focus is on *conditional* attribution. Not: what caused $Y$: but what is the effect of $X$?
 
 ### Causal claims: Contribution or attribution?
 
@@ -109,11 +109,6 @@ What caused $Y$? Which cause was most important?
  
 The counterfactual model is about attribution in a very conditional sense.
 
--   Focus is on non-rival contributions
-
--   Not: what caused $Y$ but what is the effect of $X$?
-
--   At most it provides a conditional account
 
 -   This is problem for research programs that define "explanation" in terms of figuring out the things that cause $Y$
 
@@ -132,7 +127,7 @@ The counterfactual model is about attribution in a very conditional sense.
 -   Some seemingly causal claims not admissible.
 -   To get the definition off the ground, manipulation must be imaginable (whether practical or not)
 -   This renders thinking about effects of race and gender difficult
--   What does it mean to say that Aunt Pat voted for Brexit because she is old?
+  -   What does it mean to say that Aunt Pat voted for Brexit because she is old?
 
 ### Causal claims: No causation without manipulation
 
@@ -140,6 +135,12 @@ The counterfactual model is about attribution in a very conditional sense.
 -   To get the definition off the ground, manipulation must be imaginable (whether practical or not)
 -   This renders thinking about effects of race and gender difficult
 -   **Compare**: What does it mean to say that Southern counties voted for Brexit because they have many old people?
+
+### Causal claims: No causation without manipulation
+
+More uncomfortably:
+
+What does it mean to say that the tides are caused by the moon? What exactly do we have to imagine...
 
 ### Causal claims: Causal claims are everywhere
 
@@ -445,11 +446,11 @@ In such cases you can:
 -   Say potential outcomes looked like this (2 pairs of 2 units):
 
 | Pair   | I   | I   | II  | II  |         |
-|--------|-----|-----|-----|-----|---------|
+|--------|:----|:---:|:---:|:---:|:-------:|
 | Unit   | 1   | 2   | 3   | 4   | Average |
 | Y(0)   | 0   | 0   | 0   | 0   |         |
 | Y(1)   | -3  | 1   | 1   | 1   |         |
-| $\tau$ | -3  | 1   | 1   | 1   |         |
+| $\tau$ | -3  | 1   | 1   | 1   |  0      |
 
 ### Missing data {.smaller}
 
@@ -459,7 +460,7 @@ In such cases you can:
 -   No missing data when the normal cases happens to be selected
 
 | Pair         | I   | I   | II  | II  |         |
-|--------------|-----|-----|-----|-----|---------|
+|--------|:----|:---:|:---:|:---:|:-------:|
 | Unit         | 1   | 2   | 3   | 4   | Average |
 | Y(0)         | 0   |     | 0   |     | 0       |
 | Y(1)         |     | 1   |     | 1   | 1       |
@@ -473,7 +474,7 @@ In such cases you can:
 -  But missing data when the vulnerable cases happens to be selected
 
 | Pair         | I      | I     | II  | II  |         |
-|--------------|--------|-------|-----|-----|---------|
+|--------|:----|:---:|:---:|:---:|:-------:|
 | Unit         | 1      | 2     | 3   | 4   | Average |
 | Y(0)         |        | \[0\] | 0   |     | 0       |
 | Y(1)         | \[-3\] |       |     | 1   | 1       |
@@ -506,7 +507,7 @@ data <- data.frame(
 )
 
 # Custom labels
-custom_labels <- c("Treatment", "% invested (average)", "...when 10% invested", "...when 50% invested")
+custom_labels <- c("Visibility Treatment", "% invested (average)", "...when 10% invested", "...when 50% invested")
 
 # Rename columns before applying column_spec
 colnames(data) <- custom_labels
@@ -599,9 +600,11 @@ kable(data,
 
 **False Conclusion**: When not protected, responders condition behavior *strongly* on offers (because offerers can select on type accurately)
 
+**In fact**: The nice types invest more because they are nice. The responders return more to the nice types because they are nice.
+
 ### Multistage games
 
-Unfortunately you only see a sample of the potential outcomes, and that looks like this:
+Unfortunately you only see a (noisier!) sample of the potential outcomes, and that looks like this:
 
 ```{r}
 #| label: tbl-test-6
@@ -635,6 +638,7 @@ kable(data,
 
 **False Conclusion**: When protected, responders condition behavior **less strongly** on offers (because offerers can select on type less accurately)
 
+
 ### Multistage games {.smaller}
 
 What to do?
@@ -643,7 +647,7 @@ What to do?
 
 1.  Analysis *could* focus on the effect of treatment on respondent behavior, directly.
     -   This would get the correct answer but to a different question (*Does information affect the share of contributions returned by subjects on average?*)
-2.  **Strategy method** can sometimes help address the problem, **but** that is also (a) changing the question and (b) putting demands on respondent imagination and honesty
+2.  **Strategy method** can sometimes help address the problem, **but** note that that is  (a) changing the question and (b) putting demands on respondent imagination and honesty
 3.  First mover action could be **directly manipulated**, but unless deception is used that is also changing the question
 4.  First movers could be **selected** because they act in predictable ways (bordering on deception?)
 
@@ -765,7 +769,7 @@ make_model("A -> B -> C") |> plot()
 
 ```
 
-If $P(a,b,c)$ is Markov relative to this this graph then: $C$ should be independent of $A$ given $B$
+If $P(a,b,c)$ is Markov relative to this graph then: $C$ is independent of $A$ given $B$
 
 And instead of 
 
@@ -811,7 +815,7 @@ In that case $\Pr(Y=1 | X = 1) = 1$ but $\Pr(Y=1 | do(X = 1)) = .5$
 
 ### Conditional distributions given `do` operations {.smaller}
 
-A DAG is "*causal Bayesian network*" or "*Causal DAG" if (and only if) the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
+A DAG is "*causal Bayesian network*" or "*Causal DAG*" if (and only if) the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
 
 $$P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i')\prod_{-i}P(x_j|pa_j)$$
 
@@ -930,7 +934,17 @@ A "**causal model**" is:
 
 ### From graphs to Causal Models
 
-```{r HJ-F-2-1, echo = FALSE, out.width='60%', fig.width = 7, fig.height = 5,  fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables."}
+```{r HJ-F-2-1, echo = FALSE, out.width='60%', fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables."}
+
+knitr::include_graphics("assets/theta_dag.png")
+
+```
+
+
+```{r HJ-F-2-1x, echo = FALSE, out.width='60%', fig.width = 7, fig.height = 5,  fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables.", eval = FALSE, include = FALSE}
+
+## FLAG-- stopped working
+
 hj_ggdag(x = c(0, 1, 2, 1, 3, 3, 2, 1, 0, 1),
        y = c(2, 2, 2, 0, 2, 3, 3, 3, 3, -1),
        names = c(
