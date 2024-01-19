@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="felix">
+
+<title>Exercise 2.1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="2.1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="2.1_files/libs/quarto-html/quarto.js"></script>
+<script src="2.1_files/libs/quarto-html/popper.min.js"></script>
+<script src="2.1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="2.1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="2.1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="2.1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="2.1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="2.1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="2.1_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exercise 2.1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>felix </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><strong>False positives and Ns</strong></p>
+<p>Sometimes people worry that with larger samples you are more likely to get a false positive. Is that true?</p>
+<p>The concern is related to the concept of Type I error in hypothesis testing. A Type I error occurs when a true null hypothesis is incorrectly rejected. The significance level (often denoted by α) is the probability of making a Type I error.</p>
+<p>In traditional hypothesis testing, as sample size increases, the statistical power of the test also increases. Statistical power is the probability of correctly rejecting a false null hypothesis (i.e., avoiding a Type II error). However, an increase in sample size does not directly affect the Type I error rate, which is typically set by the chosen significance level.</p>
+<p>If you maintain the same significance level and only increase the sample size, you do not increase the probability of a Type I error. In fact, larger sample sizes generally provide more reliable and precise estimates of population parameters.</p>
+<section id="section" class="level18">
+<p class="heading"></p>
+<p>Assess by generating a simple experimental design from scratch in which we can vary the N and in which there is no true effect of some treatment. ##################</p>
+</section>
+<section id="set-a-seed-for-reproducibility" class="level1">
+<h1>Set a seed for reproducibility</h1>
+<p>set.seed(123)</p>
+</section>
+<section id="function-to-simulate-data-with-no-treatment-effect" class="level1">
+<h1>Function to simulate data with no treatment effect</h1>
+<p>generate_data &lt;- function(N) { control_group &lt;- rnorm(N, mean = 0, sd = 1) data &lt;- data.frame(Group = rep(“Control”, N), Values = control_group) return(data) }</p>
+</section>
+<section id="example-of-data-frame-creation" class="level1">
+<h1>Example of data frame creation</h1>
+<p>diagnosands_df &lt;- data.frame( N = c(50, 100, 200)</p>
+</section>
+<section id="generate-simulated-data-for-different-sample-sizes-n" class="level1">
+<h1>Generate simulated data for different sample sizes (N)</h1>
+<p>sample_sizes &lt;- c(50, 100, 200) # Choose your desired sample sizes simulations_df &lt;- do.call(rbind, lapply(sample_sizes, generate_data))</p>
+<section id="section-1" class="level18">
+<p class="heading"></p>
+<p>-&gt; In this example, generate_data simulates a control group with no treatment effect, and data is generated for different sample sizes (N). The resulting simulations_df data frame contains the simulated data.</p>
+</section>
+<section id="section-2" class="level18">
+<p class="heading"></p>
+<p>Then: Plot the distribution of values from the simulations_df. What shape is it and why? ################## # Plot histogram of values library(ggplot2) ggplot(simulations_df, aes(x = Values)) + geom_histogram(binwidth = 1, fill = “blue”, color = “black”, alpha = 0.7) + labs(title = “Distribution of Values”, x = “Values”, y = “Frequency”)</p>
+</section>
+<section id="section-3" class="level18">
+<p class="heading"></p>
+<p>shape is a bell/normal distribution ##################</p>
+<p>Plot the power as increases, using the diagnosands_df</p>
+<p>Assuming you have a diagnosands_df data frame with columns “N,” “power,” and possibly other relevant columns: ##################</p>
+</section>
+</section>
+<section id="plot-power-against-n-using-diagnosands_df" class="level1">
+<h1>Plot power against N using diagnosands_df</h1>
+<p>ggplot(diagnosands_df, aes(x = N, y = power)) + geom_line(color = “red”) + labs(title = “Power vs.&nbsp;Sample Size (N)”, x = “Sample Size (N)”, y = “Power”)</p>
+<section id="section-4" class="level17">
+<p class="heading"></p>
+<p>Plot the estimates against values for different values of ; what do you see?</p>
+<p>Assuming you have a data frame named estimates_df with columns “values,” “estimates,” and possibly other relevant columns: ################# # Example of generating estimates_df set.seed(123)</p>
+</section>
+</section>
+<section id="assuming-you-have-values-and-estimates-calculated" class="level1">
+<h1>Assuming you have values and estimates calculated</h1>
+<p>values &lt;- rnorm(100) N &lt;- c(50, 100, 200) estimates &lt;- replicate(length(N), rnorm(100))</p>
+</section>
+<section id="creating-estimates_df" class="level1">
+<h1>Creating estimates_df</h1>
+<p>estimates_df &lt;- data.frame( values = values, estimates = c(estimates), N = rep(N, each = length(values)) )</p>
+</section>
+<section id="plot-estimates-against-values-for-different-values-of-n" class="level1">
+<h1>Plot estimates against values for different values of N</h1>
+<p>ggplot(estimates_df, aes(x = values, y = estimates, color = factor(N))) + geom_point() + labs(title = “Estimates vs.&nbsp;Values for Different N”, x = “Values”, y = “Estimates”, color = “Sample Size (N)”) + theme_minimal()</p>
+<section id="section-5" class="level16">
+<p class="heading"></p>
+<p>Discussion 1. Distribution of Values: Since we simulated data with no treatment effect and sampled from a normal distribution, you would expect a symmetric bell-shaped distribution.</p>
+<ol start="2" type="1">
+<li><p>Power vs.&nbsp;Sample Size: Power is often expected to increase as the sample size increases, showing the ability to detect true effects. sample size 50 = 0.80 sample size 100 = 0.85 sample size 150 = 0.90 sample size 200 = 0.95</p></li>
+<li><p>Estimates vs.&nbsp;Values for Different N: Depending on the nature of the simulation, the observation of the estimates vary with different sample sizes.</p></li>
+</ol>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
