@@ -13,7 +13,6 @@ author: "Macartan Humphreys"
 bibliography: bib.bib
 ---
 
-
 ```{r, include = FALSE}
 
 source("setup.R")
@@ -39,7 +38,6 @@ Read: [II ch 4](https://macartan.github.io/integrated_inferences/HJC4.html), [DD
 -   ATT is Average Treatment Effect on the Treated
 -   ATC is Average Treatment Effect on the Controls
 
-
 ### Estimands: ATE, ATT, ATC, S-, P- {.smaller}
 
 Say that units are randomly assigned to treatment in different strata (maybe just one); with fixed, though possibly different, shares assigned in each stratum. Then the key estimands and estimators are:
@@ -51,7 +49,6 @@ Say that units are randomly assigned to treatment in different strata (maybe jus
 | $\tau_{ATC} \equiv \mathbb{E}[\tau_i | Z_i = 0]$ | $\widehat{\tau}_{ATC} = \sum\nolimits_{x} \frac{(1-p_x)w_x}{\sum\nolimits_{j}(1-p_j)w_j}\widehat{\tau}_x$ |
 
 where $x$ indexes strata, $p_x$ is the share of units in each stratum that is treated, and $w_x$ is the size of a stratum.
-
 
 ### Estimands: ATE, ATT, ATC, S-, P-, C-
 
@@ -206,24 +203,23 @@ An inquiry: for what share in a population is a possible cause an actual cause?
 
 ## Pearl's ladder
 
-
 Pearl (e.g. @pearl2018book) describes three types of inquiry:
 
-
-| Level | Activity | Inquiry |
-| Association |"Seeing"| If I see $X=1$  should I expect $Y=1$? |
-| Intervention |"Doing"| If I set $X$ to $1$  should I expect $Y=1$? |
-| Counterfactual |"Imagining" | If $X$ were $0$ instead of 1, would $Y$ then be $0$ instead of $1$? |
-
+| Level  | Activity  | Inquiry  |
+|-----------|-----------|----------------------|
+| Association |"Seeing" | If I see $X=1$ should I expect $Y=1$? |
+| Intervention |"Doing" | If I set $X$ to $1$ should I expect $Y=1$? |
+| Counterfactual |"Imagining"  | If $X$ were $0$ instead of 1, would $Y$ then be $0$ instead of $1$? 
 
 ## Pearl's ladder
 
 We can understand these as asking different types of questions about a causal model
 
-| Level | Activity | Inquiry |
+| Level  | Activity  | Inquiry  |
+|-----------|-----------|----------------------|
 | Association |"Seeing"| $\Pr(Y=1|X=1)$ |
 | Intervention |"Doing"| $\mathbb{E}[\mathbb{I}(Y(1)=1)]$|
-| Counterfactual |"Imagining" | $\Pr(Y(1)=1 \&  Y(0)=0)$ |
+| Counterfactual |"Imagining" | $\Pr(Y(1)=1 \& Y(0)=0)$ |
 
 The third is qualitatively different because it requires information about two mutually incompatible conditions for units. This is not (generally ) recoverable directly from knowledge of $\Pr(Y(1)=1)$ and $\Pr(Y(0)=0)$.
 
@@ -233,8 +229,19 @@ Given a causal model over nodes with discrete ranges, inquiries can generally be
 
 We already saw two instances of this:
 
-* The probability that $X$ has a positive effect on $Y$ in an $X \rightarrow Y$ model is $\lambda^Y_{01}$ (last lecture)
-* The share of "compliers" in an IV model  $Z \rightarrow X \rightarrow Y \leftrightarrow X$ is $\lambda^X_{01}$
+-   The probability that $X$ has a positive effect on $Y$ in an $X \rightarrow Y$ model is $\lambda^Y_{01}$ (last lecture)
+-   The share of "compliers" in an IV model $Z \rightarrow X \rightarrow Y \leftrightarrow X$ is $\lambda^X_{01}$
+
+## Pause
+
+Take a short break!
+
+```{r, echo  = FALSE}
+
+knitr::include_graphics("assets/coffee.png")
+
+```
+
 
 ## Identification
 
@@ -244,20 +251,20 @@ We already saw two instances of this:
 
 Informally a quantity is "identified" if it can be "recovered" once you have enough data.
 
-Say for example average wage is $x$ in some very large population. If I gather lots and lots of data on the wages of individuals and take the average then then my estimate will ultimately let be figure out $x$. 
+Say for example average wage is $x$ in some very large population. If I gather lots and lots of data on the wages of individuals and take the average then then my estimate will ultimately let be figure out $x$.
 
-* If $x$ is $1 then my estimate will end up centered on $1. 
-* If it is $2 it will end up centered on $2.
+-   If $x$ is \$1 then my estimate will end up centered on \$1.
+-   If it is \$2 it will end up centered on \$2.
 
 ### Identification (Definition)
 
-* **Identifiability** Let $Q(M)$ be a query defined over a class of models $\mathcal M$, then $Q$ is identifiable if $P(M_1) = P(M_2) \rightarrow Q(M_1) = Q(M_1)$.
+-   **Identifiability** Let $Q(M)$ be a query defined over a class of models $\mathcal M$, then $Q$ is identifiable if $P(M_1) = P(M_2) \rightarrow Q(M_1) = Q(M_1)$.
 
-*  **Identifiability with constrained data** Let $Q(M)$ be a query defined over a class of models $\mathcal M$, then $Q$ is identifiable from features $F(M)$ if $F(M_1) = F(M_2) \rightarrow Q(M_1) = Q(M_1)$.
+-   **Identifiability with constrained data** Let $Q(M)$ be a query defined over a class of models $\mathcal M$, then $Q$ is identifiable from features $F(M)$ if $F(M_1) = F(M_2) \rightarrow Q(M_1) = Q(M_1)$.
 
 Based on Defn 3.2.3 in Pearl.
 
-* **Essentially**: Each underlying value produces a unique data distribution. When you see that distribution you recover the parameter.
+-   **Essentially**: Each underlying value produces a unique data distribution. When you see that distribution you recover the parameter.
 
 ### Identification (Example without identification) {.smaller}
 
@@ -275,9 +282,9 @@ $$\Pr(Y|\hat{x})$$
 
 where $\hat{x}$ is interpreted as $X$ set to $x$ by "external" control. Equivalently: $do(X=x)$ or sometimes $X \leftarrow x$.
 
-* If this quantity is **identifiable** then we can recover it with infinite data.
+-   If this quantity is **identifiable** then we can recover it with infinite data.
 
-* If it is not identifiable, then, even in the best case, we are not guaranteed to get the right answer.
+-   If it is not identifiable, then, even in the best case, we are not guaranteed to get the right answer.
 
 *Are there general rules for determining whether this quantity can be identified?* Yes.
 
@@ -289,7 +296,7 @@ $$\Pr(Y|x)$$
 
 is easy.
 
-But we are not interested in identifying the distribution of $Y$ given observed values of $x$, but rather, the distribution of $Y$ if $X$ is *set* to $x$.
+But we are not always interested in identifying the distribution of $Y$ given *observed* values of $x$, but rather, the distribution of $Y$ if $X$ is *set* to $x$.
 
 ## Levels and effects
 
@@ -351,7 +358,7 @@ plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2
     -   Frontdoor criterion
 -   There are more
 
-### Backdoor Criterion: (Pearl 1995)
+### Backdoor Criterion: (Pearl 1995) {.smaller}
 
 The **backdoor criterion** is satisfied by $Z$ (relative to $X$, $Y$) if:
 
@@ -366,14 +373,14 @@ $$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$ (This is eqn 3.19 in Pearl 
 
 $$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$
 
--   Note notion of a linear control of anything like that; idea really is like blocking: think lots of discrete data and no missing patterns
+-   No notion of a linear control or anything like that; idea really is like blocking: think lots of discrete data and no missing patterns
 -   Note this is a formula for a (possibly counterfactual) *level*; a counterfactual difference would be given in the obvious way by:
 
 $$P(Y=y | \hat{x}) - P(Y=y | \hat{x}')$$
 
 ### Backdoor Proof {.smaller}
 
-Following Pearl (2009), Chapter 11. Let $T$ denote the set of parents of $X$: $T := pa(X)$, with (possibly vector valued) realizations $t$.
+Following Pearl (2009), Chapter 11. Let $T$ denote the set of parents of $X$: $T := pa(X)$, with (possibly vector valued) realizations $t$. These might not all be observed.
 
 If the backdoor criterion is satisfied, we have:
 
@@ -382,20 +389,21 @@ If the backdoor criterion is satisfied, we have:
 
 -   From the DAG we have: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|\hat{x}, t)$$
 
-### Backdoor Proof  {.smaller}
+### Backdoor Proof {.smaller}
 
--   But we do not observe $T$, rather we observe $Z$. OK, but we can write: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|\hat{x}, t, z)p(z|\hat{x}, pa(X))$$
+-   But we do not observe $T$, rather we observe $Z$. OK, but we can write: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|\hat{x}, t, z)p(z|\hat{x}, t)$$
 
 -   Then using the two conditions above:
 
-    1.  replace $p(y|\hat{x}, pa(X), z)$ with $p(y, \hat{x}, z)$
-    2.  replace $p(z|\hat{x}, pa(X))$ with $p(z|\hat{x})$
+    1.  replace $p(y|\hat{x}, t, z)$ with $p(y | \hat{x}, z)$
+    2.  replace $p(z|\hat{x}, t)$ with $p(z|t)$
 
-This gives: $$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X)) $$
+This gives: $$p(y|\hat{x}) = \sum_{t \in T} p(t) \sum_z p(y|\hat{x}, z)p(z|t) $$
 
-### Now Clean up:  
 
-$$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X))$$ $$\leftrightarrow$$ $$p(y|\hat{x}) =  \sum_z p(y|\hat{x}, z)\sum_{pa(X)} p(pa(X))p(z|pa(X)) = \sum_z p(y|\hat{x})p(z)$$
+So, cleaning up: 
+
+$$p(y|\hat{x}) =  \sum_z p(y|\hat{x}, z)\sum_{t\in T} p(z|t)p(t) = \sum_z p(y|\hat x, z)p(z)= \sum_z p(y|x, z)p(z)$$
 
 ### Adjustment criterion {.smaller}
 
@@ -408,8 +416,8 @@ The adjustment criterion is satisfied by $Z$ (relative to $X$, $Y$) if:
 
 Note:
 
-* mutilated graph: remove arrows pointing into $X$
-* proper pathway: A *proper* causal pathway from $X$ to $Y$ only intersects $X$ at the endpoint
+-   mutilated graph: remove arrows pointing into $X$
+-   proper pathway: A *proper* causal pathway from $X$ to $Y$ only intersects $X$ at the endpoint
 
 ### These are different. Simple illustration.
 
@@ -420,9 +428,9 @@ par(mar=c(1,1,1,1))
 hj_ggdag(x = c(0,1,1),
        y = c(1,0,2),
        names = c( "X", "Z",  "Y" ),
-       arcs = cbind( c(1, 1),
-                     c(2, 3)),
+       arcs = cbind( c(1, 1), c(2, 3)),
        title = "Controlling for Z is OK",
+       labelparse = FALSE,
        padding = .4, contraction = .15) 
 
 ```
@@ -437,17 +445,106 @@ $Z$ is descendant of $X$ but it does not a descendant of a node on a path from $
 
 <!-- non-causal paths are back-door" -->
 
-### Frontdoor criterion
+### Frontdoor criterion (Pearl)
 
-### In code: Dagitty
+Consider this DAG:
 
-There is a package for this
+```{r, echo = FALSE}
+make_model( "Y <-U -> X-> M -> Y") |> plot(x_coord = c(2, 1, 2, 3), y_coord = c(2,1,1,1))
+```
+* The relationship between $X$ and $Y$ is confounded by $U$. 
+* However the $X\rightarrow Y$ effect is the product of the $X\rightarrow M$ effect and the $M\rightarrow Y$ effect
+
+Why?
+
+### Frontdoor criterion {.smaller}
+
+We want to get $\Pr(y | \hat x)$
+
+From the graph the joint distribution of variables is:
+
+$$\Pr(x,m,y,u)  = \Pr(u)\Pr(x|u)\Pr(m|x)\Pr(y|m,u)$$
+If we intervened on $X$ we would have:
+
+$$\Pr(m,y,u | \hat x)  = \Pr(u)\Pr(m|x)\Pr(y|m,u)$$
+If we sum up over $u$ and $m$ we get:
+
+$$\Pr(m,y| \hat x)  = \Pr(m|x)\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$$
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$$
+
+The first part is fine; the second part however involves $u$ which is unobserved. So we need to get the $u$ out of $sum_u\left(\Pr(y|m,u)\Pr(u)\right)$.
+
+### Frontdoor criterion {.smaller}
+
+Now, from the graph:
+
+1. $M$ is d-separated from $U$ by $X$:
+
+$$\Pr(u|m, x) = \Pr(u|x)$$
+2. $X$ is d-separated from $Y$ by $M$, $U$
+
+$$\Pr(y|x, m, u) = \Pr(y|m,u)$$
+That's enough to get $u$ out of $\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$
+
+### Frontdoor criterion {.smaller}
+
+
+$$\sum_u\left(\Pr(y|m,u)\Pr(u)\right) = \sum_x\sum_u\left(\Pr(y|m,u)\Pr(u|x)\Pr(x)\right)$$
+
+Using the 2 equalities we got from the graph:
+
+$$\sum_u\left(\Pr(y|m,u)\Pr(u)\right) = \sum_x\sum_u\left(\Pr(y|x,m,u)\Pr(u|x,m)\Pr(x)\right)$$
+
+So:
+
+$$\sum_u\left(\Pr(y|m,u)\Pr(u)\right) = \sum_x\left(\Pr(y|m,x)\Pr(x)\right)$$
+
+Intuitively: $X$ blocks the back door between $Z$ and $Y$ just as well as $U$ does
+
+### Frontdoor criterion {.smaller}
+
+Substituting we are left with:
+
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_{x'}\left(\Pr(y|m,x')\Pr(x')\right)$$
+
+(The $'$ is to distinguish the $x$ in the summation from the value of $x$ of interest)
+
+It's interesting that $x$ remains in the right hand side in the calculation of the $m \rightarrow y$ effect, but this is because $x$ blocks a backdoor from $m$ to $y$
+
+### Front foor {.smaller}
+
+Bringing all this together into a claim we have:
+
+
+If:
+
+* $M$ (possibly a set) blocks all *directed* paths from $X$ to $Y$
+* there is no backdoor path $X$ to $M$
+* $X$ blocks all backdoor paths from $M$ to $Y$
+and
+* all ($m,z$) combinations arise with positive probability
+
+Then $\Pr(y| \hat x)$ is identifiable and given by:
+
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_{x'}\left(\Pr(y|m,x')\Pr(x')\right)$$
+
+### Front foor
+
+* This is a very elegant and surprising result
+* There are not many obvious applications of it however
+* The conditions would be violated for example if unobserved third things caused both $M$ and $Y$
+
+## In code: Dagitty
+
+There is a package [@dagitty] for figuring out what to condition on.
 
 ```{r}
 library(dagitty)
 ```
 
-Then define a dag using dagitty syntax:
+### In code: Dagitty
+
+Define a dag using dagitty syntax:
 
 ```{r}
 g <- dagitty("dag{X -> M -> Y ; Z -> X ; Z -> R -> Y}")
@@ -476,11 +573,11 @@ Example where $Z$ is correlated with $X$ and $Y$ and is a confounder
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( " ",
-         "Z", " ", "X", "Y" ),
+       names = c( " ", "Z", " ", "X", "Y" ), 
        arcs = cbind( c(2, 2, 4),
                      c(4, 5, 5)),
        title = "Controlling for Z can remove bias",
+       labelparse = FALSE,
        padding = .4, contraction = .15) 
 
 ```
@@ -493,12 +590,13 @@ Example where $Z$ is correlated with $X$ and $Y$ but it is *not* a confounder
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( expression(paste(U[2])),
-         "Z", expression(paste(U[1])), "X", "Y" ),
+       names = c("U2",
+         "Z", "U1", "X", "Y" ),
        arcs = cbind( c(1, 3, 1, 3, 4),
                      c(2, 2, 4, 5, 5)),
        title = "Unbiased without controlling for Z",
-       padding = .4, contraction = .15) 
+       padding = .4, contraction = .15,
+       labelparse = FALSE) 
 
 ```
 
@@ -510,18 +608,18 @@ But controlling can also cause problems. In fact conditioning on a temporally pr
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( expression(paste(U[2])),
-         "Z", expression(paste(U[1])), "X", "Y" ),
+       names = c("U2", "Z", "U1", "X", "Y" ),
        arcs = cbind( c(1, 3, 1, 3, 4),
                      c(2, 2, 4, 5, 5)),
        title = "Controlling for Z can induce bias",
-       padding = .4, contraction = .15) 
+       padding = .4, contraction = .15,
+       labelparse = FALSE) 
 
 ```
 
 ### Illustration of identification failure from conditioning on a collider {.smaller}
 
-:::{.smaller} 
+::: smaller
 ```{r}
 #| results: asis
 
@@ -556,16 +654,16 @@ Which means, no need to condition on anything.
 
 A bind: from Pearl 1995.
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 3,  fig.align="center", out.width='.9\\textwidth'}
+```{r, echo = FALSE, fig.width = 8, fig.height = 6,  fig.align="center", out.width='.9\\textwidth'}
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( expression(paste(U[2])),
-         "Z", expression(paste(U[1])), "X", "Y" ),
+       names = c("U2",
+         "Z", "U1", "X", "Y" ),
        arcs = cbind( c(1, 3, 1, 3, 4, 2),
                      c(2, 2, 4, 5, 5, 4)),
        title = "Z is a confound but controlling for it can induce bias",
-       padding = .4, contraction = .15) 
+       padding = .4, contraction = .15, labelparse = FALSE) 
 
 ```
 
@@ -587,6 +685,6 @@ isAdjustmentSet(g, "Z", exposure = "x", outcome = "y")
 isAdjustmentSet(g, NULL, exposure = "x", outcome = "y")
 ```
 
-###  Collider & Confounder
+### Collider & Confounder
 
 So we cannot *identify* the effect here. But can we still learn about it?
