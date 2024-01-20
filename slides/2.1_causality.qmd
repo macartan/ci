@@ -753,7 +753,7 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 -   We say that arrows point from *parents* to *children*, and by extension from *ancestors* to *descendants*.
 -   These are parents *on the graph*; but we will connect them to Markovian parents in a probability distribution $P$.
 
-### Conditional distributions 3{.smaller}
+### Conditional distributions: Markov condition {.smaller}
 
 -   A DAG is just a graph in which some or all nodes are connected by *directed* edges (arrows) and there are no cyclical paths along these directed edges.
 -   Consider a DAG, $G$, and consider the ancestry relations implied by $G$: the distribution $P$ is *Markov relative to the graph* $G$ if every variable is independent of its nondescendants (in $G$) conditional on its parents (in $G$).
@@ -999,12 +999,14 @@ For instance the simplest model consistent with $X \rightarrow Y$:
 
 What is the probability that $X$ has a positive causal effect on $Y$? 
 
-This is equivalent to:
+* This is equivalent to: $\Pr(\theta^Y =\theta^Y_{01}) = \lambda^Y_{01}$
 
-$\Pr(\theta^Y =\theta^Y_{01}) = \lambda^Y_{01}$
+* So we want to learn about the distributions of the exogeneous nodes
 
-So we want to learn about the distributions of the exogeneous nodes
+### Recap: 
 
+* DAGs
+* Causality
 
 ### Recap: Key features of graphs
 
