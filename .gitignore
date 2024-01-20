@@ -2,7 +2,4 @@
 .Rhistory
 .RData
 .Ruserdata
-<<<<<<< Updated upstream
-.DS_Store
-=======
->>>>>>> Stashed changes
+.Rproj.user/shared/notebooks/paths
