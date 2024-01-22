@@ -349,7 +349,7 @@ Assess performance (RMSE) over a range of values for `p` and `b`. How do you thi
 
 **Clues from causal processes**
 
-* Set up a model in which $X \rightarrow Y$ ($X$ as if $Y$) and there is a true effect of 0.56.
+* Set up a model in which $X \rightarrow Y$ ($X$ as if random) and there is a true effect of 0.56.
 * Update using large data generated according to some distribution over causal types
 * Calculate a  posterior on the share of  $X=1, Y=1$ cases for which $Y=1$ is due to $X=1$
 * Say you know that the effect of $X$ on $Y$ passes through $M$ and so you have model $X \rightarrow M \rightarrow Y$ and effects of 0.8 at the first stage and .7 at the second stage.
