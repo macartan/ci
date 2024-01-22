@@ -21,13 +21,7 @@ custom-numbered-blocks:
 ---
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(knitr)
-library(tidyverse)
-library(CausalQueries)
-library(DeclareDesign)
-```
+
 
 Class: [https://macartan.github.io/ci/](https://macartan.github.io/ci/)
 
@@ -75,7 +69,10 @@ Now:
 
 **Hint** For generating hierarchical models use `add_level`. Also: be sure to have a reasonable large top level shock in order to see differences arising from clustering at the school level. You could also try heterogeneous effects by school.
 
-```{r}
+
+::: {.cell}
+
+```{.r .cell-code}
 g <- 
   declare_model(
     L1 = add_level(N = 10, u = rnorm(N)),
@@ -83,6 +80,19 @@ g <-
 
 g() |> slice(1:3, 13:15) |> kable()
 ```
+
+::: {.cell-output-display}
+|L1 |          u|L2  |          v|
+|:--|----------:|:---|----------:|
+|01 |  0.2513670|001 | -1.4278389|
+|01 |  0.2513670|002 |  0.4639547|
+|01 |  0.2513670|003 | -0.1085985|
+|02 | -0.5548259|013 | -2.2624227|
+|02 | -0.5548259|014 |  0.3602279|
+|02 | -0.5548259|015 | -0.0747471|
+:::
+:::
+
 :::
 
 
@@ -102,12 +112,23 @@ g() |> slice(1:3, 13:15) |> kable()
 * Assess the performance of the estimates of the standard errors and the coverage as `rho` goes from -1 to 0 to 1. Describe how coverage changes. (Be sure to be clear on what coverage is!)
 
 
-```{r}
+
+::: {.cell}
+
+```{.r .cell-code}
 Y_Z_0 <- rnorm(1000)
 Y_Z_1 <- correlate(rnorm, given = Y_Z_0, rho = .5)
 
 cor(Y_Z_0, Y_Z_1)
 ```
+
+::: {.cell-output .cell-output-stdout}
+```
+[1] 0.5338571
+```
+:::
+:::
+
 :::
 
 
@@ -229,12 +250,22 @@ These next questions use some concepts we have not introduced yet. Don't worry i
 
 Make a DAG that is consistent with this distribution
 
-```{r, echo = FALSE}
-expand_grid(A=0:1, B = 0:1, C= 0:1)|> 
-  mutate(p = c(.64, .16, .16, .04,  .16, .24, .24, .36)/2) |>
-  kable()
 
-```
+::: {.cell}
+::: {.cell-output-display}
+|  A|  B|  C|    p|
+|--:|--:|--:|----:|
+|  0|  0|  0| 0.32|
+|  0|  0|  1| 0.08|
+|  0|  1|  0| 0.08|
+|  0|  1|  1| 0.02|
+|  1|  0|  0| 0.08|
+|  1|  0|  1| 0.12|
+|  1|  1|  0| 0.12|
+|  1|  1|  1| 0.18|
+:::
+:::
+
 
 Set up a model in `DeclareDesign` that has this distribution. Draw a large dataset from it and check if relations of conditional independence implied by your DAG.
 
@@ -250,9 +281,13 @@ Hint:This is relatively tricky.  From slides you will see a DAG is a directed ac
 
 Imagine a model that looks like this:
 
-```{r, echo = FALSE, fig.height = 3, fig.width = 10}
-make_model("X -> M -> Y <-> X") |> plot(x_coord = 1:3, y_coord = c(1,1,1))
-```
+
+::: {.cell}
+::: {.cell-output-display}
+![](exercises_files/figure-html/unnamed-chunk-4-1.png){width=960}
+:::
+:::
+
 
 * Say that in truth  ATE of  $X$ on $M$ is .9 and that the ATE of  $M$ on $Y$ is .9. Is the implied effect of 0.81 on $X$ on $Y$ identified?   
 * Say that in truth  ATE of  $X$ on $M$ is 1 and that the ATE of  $M$ on $Y$ is 1. Is the implied effect of 1 on $X$ on $Y$ identified?   
@@ -367,9 +402,18 @@ Bonus: Say instead of a single mediator $M$ you had a chain: $M_1, M_2, \dots$. 
 
 Consider the Napkin model: `W->Z->X->Y; W <-> X; W <-> Y`
 
-```{r, fig.height = 3, fig.width = 6}
+
+::: {.cell}
+
+```{.r .cell-code}
 make_model("W->Z->X->Y; W <-> X; W <-> Y") |> plot(x_coord = 1:4, y_coord = c(1,1,1,1))
 ```
+
+::: {.cell-output-display}
+![](exercises_files/figure-html/unnamed-chunk-5-1.png){width=576}
+:::
+:::
+
 
 Consider some true parameter vector and generate data from this vector, varying the amount of data from 10 to 100 to 1000 observations. Assume in particular that there is confounding: e.g. that the probability $X=1, Y=1$ depends on $W$.
 
@@ -379,11 +423,16 @@ Can you use a formula to calculate an  effect directly?
 
 Hint:  You can generate a "target" model, generate data from that,  and calculate from that a target query.
 
-```{r, eval = FALSE}
+
+::: {.cell}
+
+```{.r .cell-code}
 target_model <- make_model("W->Z->X->Y; W <-> X; W <-> Y") |>  
   set_parameters(param_name = "Y.11_W.1", parameters = .9) |> 
   set_parameters(param_name = "X.11_W.1", parameters = .9)
 ```
+:::
+
 
 Note: this is hard because  the `W <-> Y` confounding implies an `X <-> Y` confounding. There is no scope for front door adjustment. If you control for $W$ you open a path from $X$ to $Y$ (since $W$ is a collider) and, more subtly, conditioning on $Z$ also partly opens a collider path. See this discussion: https://twitter.com/analisereal/status/1273099716956430340
 
@@ -591,3 +640,4 @@ Say you sampled subject A with probability .6 and subject B with probability .4.
 :::
 
 # References
+

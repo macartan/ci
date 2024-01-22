@@ -3342,39 +3342,39 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.2803895</td>
+<td style="text-align: right;">0.2513670</td>
 <td style="text-align: left;">001</td>
-<td style="text-align: right;">0.1374800</td>
+<td style="text-align: right;">-1.4278389</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.2803895</td>
+<td style="text-align: right;">0.2513670</td>
 <td style="text-align: left;">002</td>
-<td style="text-align: right;">-0.0321927</td>
+<td style="text-align: right;">0.4639547</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.2803895</td>
+<td style="text-align: right;">0.2513670</td>
 <td style="text-align: left;">003</td>
-<td style="text-align: right;">1.0786151</td>
+<td style="text-align: right;">-0.1085985</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.9780033</td>
+<td style="text-align: right;">-0.5548259</td>
 <td style="text-align: left;">013</td>
-<td style="text-align: right;">-0.9661950</td>
+<td style="text-align: right;">-2.2624227</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.9780033</td>
+<td style="text-align: right;">-0.5548259</td>
 <td style="text-align: left;">014</td>
-<td style="text-align: right;">0.7864382</td>
+<td style="text-align: right;">0.3602279</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.9780033</td>
+<td style="text-align: right;">-0.5548259</td>
 <td style="text-align: left;">015</td>
-<td style="text-align: right;">-0.4231975</td>
+<td style="text-align: right;">-0.0747471</td>
 </tr>
 </tbody>
 </table>
@@ -3398,7 +3398,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(Y_Z_0, Y_Z_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4894009</code></pre>
+<pre><code>[1] 0.5338571</code></pre>
 </div>
 </div>
 </div></details>
@@ -3752,8 +3752,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <section id="bayesian" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Bayesian</h1>
 <div id="q-POC" class="Q">
-<details class="Q fbx-simplebox fbx-default"><summary><strong>Q 6.1</strong></summary><div>
-<p><strong>Clues from causal processes</strong></p>
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 6.1</strong></summary><div><strong>Clues from causal processes</strong><p></p>
 <ul>
 <li>Set up a model in which <span class="math inline">\(X \rightarrow Y\)</span> (<span class="math inline">\(X\)</span> as if <span class="math inline">\(Y\)</span>) and there is a true effect of 0.56.</li>
 <li>Update using large data generated according to some distribution over causal types</li>
@@ -3762,20 +3761,28 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <li>Update using large data generated according to some distribution over causal types</li>
 <li>Calculate a posterior on the share of <span class="math inline">\(X=1, Y=1\)</span> cases for which <span class="math inline">\(Y=1\)</span> is due to <span class="math inline">\(X=1\)</span> (a) when you know that <span class="math inline">\(M=1\)</span> and (b) when you know that <span class="math inline">\(M=0\)</span></li>
 </ul>
+<p>Bonus: Say instead of a single mediator <span class="math inline">\(M\)</span> you had a chain: <span class="math inline">\(M_1, M_2, \dots\)</span>. Does lengthening the chain sufficiently allow you to identify causal effects?</p>
 </div></details>
 </div>
 <div id="q-napkin" class="Q">
 <p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 6.2</strong></summary><div><strong>Napkin identification</strong><p></p>
 <p>Consider the Napkin model: <code>W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_model</span>(<span class="st">&quot;W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">plot</span>(<span class="at">x_coord =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">y_coord =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="data:image/png;base64,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" class="img-fluid" width="576"></p>
+</div>
+</div>
 <p>Consider some true parameter vector and generate data from this vector, varying the amount of data from 10 to 100 to 1000 observations. Assume in particular that there is confounding: e.g. that the probability <span class="math inline">\(X=1, Y=1\)</span> depends on <span class="math inline">\(W\)</span>.</p>
 <p>In each case calculate the posterior distribution on the average effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. Assess whether the quantity appears to be identified.</p>
+<p>Can you use a formula to calculate an effect directly?</p>
 <p>Hint: You can generate a “target” model, generate data from that, and calculate from that a target query.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>target_model <span class="ot">&lt;-</span> <span class="fu">make_model</span>(<span class="st">&quot;W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y&quot;</span>) <span class="sc">|&gt;</span>  </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_parameters</span>(<span class="at">param_name =</span> <span class="st">&quot;Y.11_W.1&quot;</span>, <span class="at">parameters =</span> .<span class="dv">9</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_parameters</span>(<span class="at">param_name =</span> <span class="st">&quot;X.11_W.1&quot;</span>, <span class="at">parameters =</span> .<span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>target_model <span class="ot">&lt;-</span> <span class="fu">make_model</span>(<span class="st">&quot;W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y&quot;</span>) <span class="sc">|&gt;</span>  </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_parameters</span>(<span class="at">param_name =</span> <span class="st">&quot;Y.11_W.1&quot;</span>, <span class="at">parameters =</span> .<span class="dv">9</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_parameters</span>(<span class="at">param_name =</span> <span class="st">&quot;X.11_W.1&quot;</span>, <span class="at">parameters =</span> .<span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Note: this is hard because the <span class="math inline">\(W &lt;-&gt; Y\)</span> confounding implies an <span class="math inline">\(X &lt;-&gt; Y\)</span> confounding. There is no scope for front door adjustment. If you control for <span class="math inline">\(W\)</span> you open a path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> (since <span class="math inline">\(W\)</span> is a collider) and, more subtly, conditioning on <span class="math inline">\(Z\)</span> also partly opens a collider path. See this discussion: https://twitter.com/analisereal/status/1273099716956430340</p>
+<p>Note: this is hard because the <code>W &lt;-&gt; Y</code> confounding implies an <code>X &lt;-&gt; Y</code> confounding. There is no scope for front door adjustment. If you control for <span class="math inline">\(W\)</span> you open a path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> (since <span class="math inline">\(W\)</span> is a collider) and, more subtly, conditioning on <span class="math inline">\(Z\)</span> also partly opens a collider path. See this discussion: https://twitter.com/analisereal/status/1273099716956430340</p>
 </div></details>
 </div>
 <div id="q-Priors" class="Q">
