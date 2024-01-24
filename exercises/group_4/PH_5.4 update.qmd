@@ -1,0 +1,178 @@
+---
+title: "PH_5.4"
+format: html
+editor: visual
+---
+
+# Packages
+
+```{r include=FALSE}
+p_needed <- c(
+  "knitr",
+  "tidyverse",
+  "CausalQueries",
+  "DeclareDesign",
+  "ggdag",
+  "ggplot2",
+  "dagitty",
+  "mice" # insert missings
+)
+
+# check if packages are installed and if not, install them
+lapply(p_needed[!(p_needed %in% rownames(installed.packages()))], install.packages)
+
+# prepare packages for use with library
+lapply(p_needed, library, character.only = TRUE)
+```
+
+```{r}
+set.seed(84756)
+```
+
+# 5.4
+
+Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it? Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to b, and so to treatment effects. Say X is missing with probability p.
+
+Compare answer strategies in which you:
+
+- do not control for 
+- do control for but drop whenever is missing and
+- Treat as a block in your analysis design with three values (0, 1, and missing).
+
+## Attempt 1
+
+```{r}
+p <- 0.5
+
+# With complete X, X missing completely at random, and X dropped
+design_1 <- 
+  declare_model(
+    b = 0.5,
+    N = 100,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mcar = ifelse(is.na(X) == FALSE, # New version of X with missings (missing completely at random)
+                   sample(x = c(0, 1, NA), size = N, prob = c((1-p)/2, (1-p)/2, p), replace = TRUE)),
+    U = rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b*X + U, conditions = list(Z = c(0, 1)))
+    ) +
+  declare_assignment(Z = complete_ra(N),
+                     Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z + b*X + U, inquiry = "ate", label = "X") +
+  declare_estimator(Y ~ Z + U, inquiry = "ate", label = "Without X") +
+  declare_estimator(Y ~ Z + b*X_mcar + U, inquiry = "ate", label = "X MCAR")
+
+design_1_vary_b <- redesign(design_1, b = c(0.1, 0.5, 0.9))
+design_1_vary_N <- redesign(design_2, N = c(100, 500, 1000))
+
+# With Blocks for X
+design_2 <-
+  declare_model(
+    b = 0.5,
+    N = 100,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mcar = ifelse(is.na(X) == FALSE, # New version of X with missings (missing completely at random)
+                   sample(x = c(0, 1, NA), size = N, prob = c((1-p)/2, (1-p)/2, p), replace = TRUE)),
+    Blocks = case_when(X_mcar == 1 ~ "one",
+                       X_mcar == 0 ~ "zero",
+                       is.na(X_mcar) == TRUE ~ "missing"),
+    U = rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b*X + U, conditions = list(Z = c(0, 1)))
+    ) +
+  declare_assignment(Z = block_ra(blocks = Blocks),
+                     Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z + factor(Blocks) + U, inquiry = "ate", label = "X MCAR Blocks") # including fixed effects for blocks by inserting Blocks as a factor
+
+design_2_vary_b <- redesign(design_1, b = c(0.1, 0.5, 0.9))
+design_2_vary_N <- redesign(design_2, N = c(100, 500, 1000))
+```
+
+```{r}
+#| warning: false
+
+data_1 <- draw_data(design_1)
+data_2 <- draw_data(design_2)
+
+head(data_1)
+
+design_1 %>% 
+  run_design() %>%
+  kable()
+
+design_2 %>% 
+  run_design() %>%
+  kable()
+
+design_1_vary_b %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+
+design_1_vary_N %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+
+design_2_vary_b %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+
+design_2_vary_N %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+```
+
+## Attempt 2
+
+```{r}
+p <- 0.5
+
+design_1 <- declare_model(
+  N = 100,
+  b = 1,
+  X = rbinom(N, size = 1, prob = 0.5),
+  X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                   sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
+                   sample(x = c(0, NA), size = N, prob = c(1-p, p), replace = TRUE)),
+  U = X + rnorm(N, mean = 0, sd = 1),
+  potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  ) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = complete_ra(N)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, covariates = ~X, .method = lm_lin, inquiry = "ATE", label = "X Complete") +
+  declare_estimator(Y ~ Z, inquiry = "ATE", label = "X Drop") +
+  declare_estimator(Y ~ Z, covariates = ~X_mi, .method = lm_lin, inquiry = "ATE", label = "X Incomplete")
+
+design_2 <- declare_model(
+  N = 100,
+  b = 1,
+  X = rbinom(N, size = 1, prob = 0.5),
+  X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                   sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
+                   sample(x = c(0, NA), size = N, prob = c(1-p, p), replace = TRUE)),
+  Blocks = case_when(X_mi == 1 ~ "one",
+                       X_mi == 0 ~ "zero",
+                       is.na(X_mi) == TRUE ~ "missing"),
+  U = X + rnorm(N, mean = 0, sd = 1),
+  potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  ) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = block_ra(blocks = Blocks),
+                     Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, covariates = ~X_mi, .method = lm_lin, label = "X Blocks") # including fixed effects for blocks by inserting Blocks as a factor
+
+data <- draw_data(design)
+
+design_1 %>% 
+  run_design() %>%
+  kable()
+
+design_1 %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+
+design_2 %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+```
+
