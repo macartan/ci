@@ -96,10 +96,11 @@ Show that this can generate biased results. Can you find situations where the bi
 M1 <- 
   declare_model(
     N = 1000, 
-    X = rnorm(N),
-    Y = rnorm(N),
-    K = X + Y + rbinom(N, 1, prob = 0.5)) +
-  declare_inquiry(ATE = mean(Y_X_1[K == 1] - Y_X_0[K == 1])) +
+    X = rbinom(N, 1, prob = 0.5),
+    Y = rbinom(N, 1, prob = 0.5),
+    K = X * Y,
+    potential_outcomes(Y ~  0.3 * Z + 0.2 * X + 0.1 * Z * X)) +
+  declare_inquiry(ATE = mean(Y_Z_1[K == 1] - Y_Z_0[K == 1])) +
   declare_sampling(S = simple_rs(N, prob = 0.2), 
                    filter = S == 1) +
   declare_estimator(
@@ -111,40 +112,16 @@ M1 <-
     label = "OLS"
   )
 
+M1$model()
+
 sim_data <- draw_data(M1)
 estimates <- draw_estimates(M1)
 
 diagnose_design(M1)
 
-estimates <- conduct(M1, sims = 1000)
+simulations_df <- diagnose_design(M1, sims = 100)
+simulations_df
 
-summary(estimates)
-```
-
-```{r}
-M1 <- 
-  declare_model(
-    N = 1000, 
-    X = rnorm(N),
-    Y = rnorm(N),
-    K = rbinom(N, 1, prob = plogis(0.5 + 0.5 * X))
-  ) +
-  declare_assignment(assign = complete_ra(N = 1000)) +
-  declare_measurement(Y = reveal_outcomes(Y), K = reveal_outcomes(K)) +
-  declare_estimator(
-    formula = Y ~ X,
-    model = lm_robust,
-    subset = K == 1,
-    label = "ATE_conditioned_on_K_1"
-  ) +
-  declare_inquiry(ATE = mean(Y[X > 0 & K == 1]) - mean(Y[X <= 0 & K == 1])) +
-  declare_sampling(S = complete_rs(N = 1000, n = 500))
-
-sim_data <- simulate_design(M1)
-
-estimates <- conduct(M1, sims = 1000)
-
-summary(estimates)
 ```
 
 Q.5.1. Consider the following data. Treatment is assigned in two blocks. One third of block 1 got treatment (randomly); one third of block two got treatment (randomly). The data are as below:
