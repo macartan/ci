@@ -1,7 +1,21 @@
 ---
-title: "Group1_week2_exercises"
-format: html
-editor: visual
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+title: "Exercises"
+author: "Group 1"
+params:
+  run: FALSE
+execute: 
+  echo: true
+  warning: false
+  error: false
+  cache: false
 ---
 
 ```{r setup, include=FALSE}
@@ -11,9 +25,7 @@ table_5_1 <- html_nodes(read_html("https://macartan.github.io/ci/exercises.html#
                     "table") 
 ```
 
-### 2.1 Declare Design
-
-### False positives and s
+### 2.1 False positives and s
 
 \*   You are not more likely to get a false positive with larger samples. When there is a true effect of some effect power, which is the probability of rejecting the null hypothesis when it is, in fact false, increases, when we have larger samples. If there is no true effect, power is unchanged even as our sample gets larger.
 
@@ -24,7 +36,7 @@ b <-0
 N <- 100
 
 simplest_design <- 
-  declare_model(N = N, U = rnorm(N), potential_outcomes(Y ~ b * Z + U)) + declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_model(N = N, U = rnorm(N), potential_outcomes(Y ~ b * Z + U)) +   declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
   declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
   declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
 
@@ -189,9 +201,8 @@ simulations_df
     plot_ate
     ```
 
-```{=html}
 <!-- -->
-```
+
 -   How do these compare to a simple difference in means between treatment and control?
 
 -   Use `DeclareDesign` to compare the answers you get if you use (1) OLS and controlled for block (2) IPW and (3) the Lin estimator
