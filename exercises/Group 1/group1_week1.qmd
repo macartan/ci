@@ -96,11 +96,10 @@ Show that this can generate biased results. Can you find situations where the bi
 M1 <- 
   declare_model(
     N = 1000, 
-    X = rbinom(N, 1, prob = 0.5),
-    Y = rbinom(N, 1, prob = 0.5),
-    K = X * Y,
-    potential_outcomes(Y ~  0.3 * Z + 0.2 * X + 0.1 * Z * X)) +
-  declare_inquiry(ATE = mean(Y_Z_1[K == 1] - Y_Z_0[K == 1])) +
+    X = rnorm(N),
+    Y = rnorm(N),
+    K = rbinom(N, 1, prob = pnorm(X + Y))) +
+  declare_inquiry(Ybar = mean(Y[X==1])) +
   declare_sampling(S = simple_rs(N, prob = 0.2), 
                    filter = S == 1) +
   declare_estimator(
@@ -109,7 +108,8 @@ M1 <-
     .summary = tidy,
     term = "X",
     inquiry = "ATE",
-    label = "OLS"
+    label = "OLS",
+    subset = K == 1
   )
 
 M1$model()
@@ -124,7 +124,7 @@ simulations_df
 
 ```
 
-Q.5.1. Consider the following data. Treatment is assigned in two blocks. One third of block 1 got treatment (randomly); one third of block two got treatment (randomly). The data are as below:
+### Q.5.1. Consider the following data. Treatment is assigned in two blocks. One  third of block 1 got treatment (randomly); one third of block two got  treatment (randomly). The data are as below:
 
 | Block | Z   | Y   |
 |-------|-----|-----|
