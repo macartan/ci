@@ -156,7 +156,7 @@ Say you made a mess and used a randomization that was correlated with some varia
 -   Then possibly, even though there is no true causal effect, we naively estimate a large one --- enormous bias
 -   However since we know the assignment procedure we can **fully** correct for the bias
 
-### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer {#Fixer}
+### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer 
 
 -   In the next example, we do this using "**inverse propensity score weighting**." This is exactly analogous to standard survey weighting --- since we selected different units for treatment with different probabilities, we weight them differently to recover the average outcome among treated units (same for control).
 
@@ -824,24 +824,57 @@ kable(data_renamed, format = "html", table.attr = "class='table'", row.names = F
 -   The uncertainty comes from being uncertain about the average outcome under control from observations of the control units, and from being uncertain about the average outcome under treatment from obervation of the treated units
 -   In other words, it comes from the variance in the treatment outcomes and variance in the control outcomes (and not, for example, from variance in the treatment effect)
 
-### Var(ATE)
+### Var(ATE) {.smaller}
 
-You can also estimate variance straight from the data. From [Freedman Prop 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
+* You can also estimate variance straight from the data. 
 
-$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V(Y(1)) + \frac{n_T}{n_C}V(Y(0))\right] + 2C\left(Y(1),Y(0)\right)$
+* Let's step back and ask: what *is* the variance of the sampling distribution given the assignment process and assuming well defined potential outcomes?
 
-Usefully rewritten as:
+* Recall in general $Var(x) = \frac{1}n\sum_i(x_i - \overline{x})^2$. here the $x_i$s are the treatment effect estimates we might get under different random assignments, the $n$ is number of different assignments (assumed here all equally likely, but otherwise we can weight) and $\overline{x}$ is the truth.
 
-$V(\widehat{ATE}) = \frac{n}{n-1}\left[\frac{V(Y(1))}{n_T} + \frac{V(Y(0))}{n_C}\right] - \frac{1}{n-1}\left[V(Y(1)) + V(Y(0)) - 2C\left(Y(1),Y(0)\right)\right]$
+* For intuition imagine we have just two units $A$, $B$, with potential outcomes $A_1$, $A_0$, $B_1$, $B_0$.
 
-... where $V$ denotes variance and $C$ covariance
+* When there are two units with outcomes $x_1, x_2$, the variance simplifies like this:
+
+$$Var(x) = \frac{1}2\left(x_1 - \frac{x_1 + x_2}{2}\right)^2 + \frac{1}2\left(x_2 - \frac{x_1 + x_2}{2}\right)^2 = \left(\frac{x_1 - x_2}{2}\right)^2$$
+
+### Var(ATE)  {.smaller}
+
+In the two unit case the two possible treatment estimates are: $\hat{\tau}_1=A_1 - B_0$ and $\hat{\tau}_2=B_1 - A_0$, depending on what gets put into treatment. So the variance is:
+
+$$Var(\hat{\tau}) = \left(\frac{\hat{\tau}_1 - \hat{\tau}_2}{2}\right)^2 = \left(\frac{A_1 - B_0 - B_1 - A_0}{2}\right)^2 =\left(\frac{(A_1 - B_1) - (A_0 - B_0)}{2}\right)^2 $$
+which we can re-write as:
+
+$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ (A_1 - B_1)(A_0-B_0)$$
+The first two terms correspond to the variance of $Y(1)$ and the variance of $Y(0)$. The last term is a bit pesky though, it corresponds to twice the *covariance* of $Y(1)$ and $Y(0)$. 
+
+### Var(ATE): Generalizing {.smaller}
+
+From [Freedman Prop 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
+
+$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V_1 + \frac{n_T}{n_C}V_0\right] + 2C_{01}$
+
+... where $V_0, V_1$ denote variances and $C_{01}$ covariance
+
+This is usefully rewritten as:
+
+
+
+$$
+\begin{split}
+  V(\widehat{ATE}) & = \frac{1}{n-1}\left[\frac{n - n_T}{n_T}V_1 + \frac{n - n_C}{n_C}V_0\right] + 2C_{01} \\
+    & = \frac{n}{n-1}\left[\frac{V_1}{n_T} + \frac{V_0}{n_C}\right] - \frac{1}{n-1}\left[V_1 + V_0 - 2C_{01}\right]
+\end{split}
+$$
+
+where the final term is positive
 
 ### Var(ATE)
 
 Note:
 
 -   We can use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
--   But $C(Y(1),Y(0))$ cannot be estimated from data.
+-   But $C_{01}$ cannot be estimated from data.
 -   The **Neyman estimator** ignores the second part (and so is conservative).
 -   Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
 
