@@ -121,33 +121,68 @@ Show that this can generate biased results. Can you find situations where the bi
 ```{r}
 M1 <- 
   declare_model(
-    N = 1000, 
+    N = 10000, 
     X = rnorm(N),
     Y = rnorm(N),
     K = rbinom(N, 1, prob = pnorm(X + Y))) +
-  declare_inquiry(Ybar = mean(Y[X==1])) +
-  declare_sampling(S = simple_rs(N, prob = 0.2), 
-                   filter = S == 1) +
+  declare_inquiry(ATE = 0) +
   declare_estimator(
     Y ~ X,
     .method = lm_robust,
-    .summary = tidy,
-    term = "X",
-    inquiry = "ATE",
-    label = "OLS",
+    label = "conditioning",
     subset = K == 1
   )
 
 M1$model()
 
 sim_data <- draw_data(M1)
+head(sim_data)
+with(sim_data,cor(X,Y))
+with(sim_data %>% filter(K==1),cor(X,Y))
+sim_data %>%dim()
+
+#Plot X and Y and color by K 
+sim_data %>% ggplot(aes(X,Y, color= K)) + geom_point()
+
 estimates <- draw_estimates(M1)
 
-diagnose_design(M1)
+diag <- diagnose_design(M1)
+diag
+simulations_df1 <- diagnose_design(M1, sims = 100)
+simulations_df1
 
-simulations_df <- diagnose_design(M1, sims = 100)
-simulations_df
+```
 
+```{r}
+M1 <- 
+  declare_model(
+    N = 10000, 
+    X = rnorm(N),
+    Y = rnorm(N),
+    K = rbinom(N, 1, prob = pnorm(X / Y))) +
+  declare_inquiry(ATE = 0) +
+  declare_estimator(
+    Y ~ X,
+    .method = lm_robust,
+    label = "conditioning",
+    subset = K == 1
+  )
+
+M1$model()
+
+sim_data <- draw_data(M1)
+head(sim_data)
+with(sim_data,cor(X,Y))
+with(sim_data %>% filter(K==1),cor(X,Y))
+sim_data %>%dim()
+
+#Plot X and Y and color by K 
+sim_data %>% ggplot(aes(X,Y, color= K)) + geom_point()
+
+estimates <- draw_estimates(M1)
+
+diag <- diagnose_design(M1)
+diag
 ```
 
 ### Q.5.1. Consider the following data. Treatment is assigned in two blocks. One third of block 1 got treatment (randomly); one third of block two got treatment (randomly). The data are as below:
