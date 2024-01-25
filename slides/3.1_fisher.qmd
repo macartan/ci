@@ -17,6 +17,8 @@ bibliography: bib.bib
 
 source("setup.R")
 
+# run <- FALSE
+
 ```
 
 # Frequentist Analysis {#secfisher}
@@ -25,9 +27,9 @@ source("setup.R")
 
 -   Simple estimates from experimental data
 -   Weighting, blocking
--   Doubly robust estimation
 -   Design based variance estimates
 -   Design based $p$ values
+-   Controls and Doubly robust estimation
 -   Reporting
 
 ### ATE: DIM
@@ -148,7 +150,7 @@ estimatr::difference_in_means(Y ~ Z, weights = ip, data = df) |>
 
 -   With sampling weights however you can include units even if their weight was 1. *Why can you not include these units when doing inverse propensity weighting?*
 
-### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer {#Fixer}
+### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer {.smaller}
 
 Say you made a mess and used a randomization that was correlated with some variable, $U$. For example:
 
@@ -156,9 +158,10 @@ Say you made a mess and used a randomization that was correlated with some varia
 -   Then possibly, even though there is no true causal effect, we naively estimate a large one --- enormous bias
 -   However since we know the assignment procedure we can **fully** correct for the bias
 
-### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer 
+### Illustration: Estimating treatment effects with terrible treatment assignments: Fixer  {.smaller}
 
--   In the next example, we do this using "**inverse propensity score weighting**." This is exactly analogous to standard survey weighting --- since we selected different units for treatment with different probabilities, we weight them differently to recover the average outcome among treated units (same for control).
+- In the next example, we do this using "**inverse propensity score weighting**." 
+- This is exactly analogous to standard survey weighting --- since we selected different units for treatment with different probabilities, we weight them differently to recover the average outcome among treated units (same for control).
 
 ### Basic randomization: Fixer
 
@@ -203,7 +206,7 @@ diagnosis$simulations_df |>
 ```
 
 
-### Fixer
+### A fix
 
 To fix you can estimate the assignment probabilities by replicating the assignment many times:
 
@@ -269,6 +272,31 @@ You toss a coin.
 *So* your expected estimate is: $$0.5 \times 4 - 0.5 \times (-2) = 1$$
 
 Great on average but *always* lousy
+
+
+### Generalization: why IPW works {.smaller}
+
+
+* Say a given unit is assigned to treatment with probability  $\pi_i$
+* We estimate the average $Y(1)$ using 
+
+$$\hat{\overline{Y_1}} = \frac{1}n\left(\sum_i \frac{Z_iY_i(1)}{\pi_i}\right)$$
+With independent assignment the expected value of $\hat{\overline{Y_1}}$ is just:
+
+$$\mathbb{E}[\hat{\overline{Y_1}}] =\frac1n\left( \left(\pi_1 \frac{1\times Y_1(1)}{\pi_1} + (1-\pi_1) \frac{0\times Y_1(1)}{\pi_1}\right) + \left(\pi_2 \frac{1\times Y_2(1)}{\pi_2} + (1-\pi_2) \frac{0\times Y_1(1)}{\pi_2}\right) + \dots\right)$$
+
+$$\mathbb{E}[\hat{\overline{Y_1}}] =\frac1n\left( Y_1(1) + Y_2(1) + \dots\right) = \overline{Y_1}$$
+
+and similarly for $\mathbb{E}[\hat{\overline{Y_0}}]$ and so using linearity of expectations:
+
+$$\mathbb{E}[\widehat{\overline{Y_1 - Y_0}}] = \overline{Y_1 - Y_0}$$
+
+
+### Generalization: why IPW works {.smaller}
+
+* Note we needed $\pi_i >0$ and also $\pi_i <1$ everywhere. Why?
+* We used independence here; sampling theory is used to show similar results for e.g. complete randomization
+* For blocked randomization this is easy to see
 
 
 ## Design Based Estimation of Variance
@@ -542,7 +570,8 @@ Then:
 
 ```{r}
 # data
-df <- fabricate(N = 2000, Z = rep(c(0,1), N/2), Y=  .1*Z + rnorm(N))
+set.seed(1)
+df <- fabricate(N = 1000, Z = rep(c(0,1), N/2), Y=  .1*Z + rnorm(N))
 
 # test stat
 test.stat <- function(df) with(df, mean(Y[Z==1])- mean(Y[Z==0]))
@@ -566,11 +595,11 @@ hist(ts); abline(v = test.stat(df), col = "red")
 
 You can do the same using Alex Coppock's [ri2](https://cloud.r-project.org/web/packages/ri2/vignettes/ri2_vignette.html) package
 
-```{r}
+```{r, eval = FALSE}
 library(ri2)
 
 # Declare the assignment
-assignment <- declare_ra(N = 2000, m = 1000)
+assignment <- declare_ra(N = 1000, m = 500)
 
 # Implement
 ri2_out <- conduct_ri(
@@ -584,10 +613,30 @@ ri2_out <- conduct_ri(
 
 ```
 
+
+```{r, echo = FALSE}
+library(ri2)
+
+# Declare the assignment
+assignment <- declare_ra(N = 1000, m = 500)
+
+# Implement
+if(run)
+ri2_out <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = assignment,
+  sharp_hypothesis = 0,
+  data = df, 
+  p = "upper",
+  sims = 4000
+) |> write_rds("saved/ri2eg.rds")
+
+```
+
 ### Using `ri2`
 
 ```{r, echo = FALSE}
-summary(ri2_out)
+read_rds("saved/ri2eg.rds") |> summary() |> kable()
 ```
 
 
@@ -595,7 +644,7 @@ You'll notice slightly different answer. This is because although the procedure 
 
 ### Randomization Inference {.smaller}
 
--   Randomization inference can get quite a bit more complicated when you want to test a null other than the sharp null of no effect.
+-   Randomization inference can get more complicated when you want to test a null other than the sharp null of no effect.
 -   Say you wanted to test the null that the effect is 2 for all units. How do you do it?
 -   Say you wanted to test the null that an *interaction effect* is zero. How do you do it?
 -   In both cases by filling in a potential outcomes schedule given the hypothesis in question and then generating a test statistic
@@ -628,13 +677,142 @@ kable(data_renamed, format = "html", table.attr = "class='table'", row.names = F
 
 ### RI and CIs {.smaller}
 
-It is possible to use this procedure to generate confidence intervals with a natural interpretation.
+It is possible to use this procedure to generate **confidence intervals** with a natural interpretation.
+
+* The key idea is that we can use the same procedure to assess the probability of the data igven a sharp null of no effect, but also a sharp null of *any other* **constant* effect. 
+* We can then see what set of effects we *reject* and what set we *accept* 
+* We are left with a set of values that *we cannot reject* at the 0.05 level.
 
 
+### RI and CIs in practice  {.smaller}
+
+```{r, eval = FALSE}
+candidates <- seq(0, .3, length = 20)
+
+get_p <- function(j)
+  (conduct_ri(
+      formula = Y ~ Z,
+      declaration = assignment,
+      sharp_hypothesis = j,
+      data = df,
+      sims = 1000,
+    ) |> summary()
+  )$two_tailed_p_value
+
+# Implement
+ps <- candidates |> sapply(get_p)
+```
+
+### RI and CIs in practice  {.smaller}
+
+```{r, echo = FALSE}
+candidates <- seq(0, .3, length = 20)
+
+get_p <- function(j)
+  (conduct_ri(
+      formula = Y ~ Z,
+      declaration = assignment,
+      sharp_hypothesis = j,
+      data = df,
+      sims = 1000,
+    ) |> summary()
+  )$two_tailed_p_value
+
+# Implement
+if(run)
+ candidates |> sapply(get_p) |>
+  write_rds("saved/ri_ci.rds")
+
+ci_df <- 
+  data.frame(candidates = candidates, p = read_rds("saved/ri_ci.rds"))  
+
+
+```
+
+```{r, echo = FALSE}
+ci_df |>
+  ggplot(aes(candidates, p)) + geom_line() + theme_bw() +
+  geom_hline(aes(yintercept = .05), color = "orange")
+```
+
+Warning: calculating confidence intervals this way is quite computationally intensive
+
+
+### `ri` with `DeclareDesign`
+
+`DeclareDesign` can do randomization inference natively. The trick is to ensure that the *only* stochastic component is the assignment to treatment when calculating the $p$ values (though if you are very careful you can also think through other sources of variability).
+
+```{r}
+set.seed(1)
+df <- fabricate(N = 1000, Z = rep(c(0,1), N/2), Y=  .1*Z + rnorm(N))
+my_estimate <- with(df, mean(Y[Z==1]) - mean(Y[Z==0]))
+
+design <- 
+  declare_model(data = df) +
+  declare_measurement(Z = sample(Z)) +
+  declare_estimator(Y ~ Z)
+```
+
+### `ri` with `DeclareDesign`
+
+```{r, eval = FALSE}
+diagnose_design(design, sims = 1000,
+                diagnosands = declare_diagnosands(
+                  one_sided_pos = mean(estimate >= my_estimate),
+                  one_sided_neg = mean(estimate <= my_estimate),
+                  two_sided = mean(abs(estimate) >= abs(my_estimate))))
+
+```
+
+```{r, echo = FALSE}
+if(run)
+  diagnose_design(design, sims = 1000,
+                diagnosands = declare_diagnosands(
+                  one_sided_pos = mean(estimate >= my_estimate),
+                  one_sided_neg = mean(estimate <= my_estimate),
+                  two_sided = mean(abs(estimate) >= abs(my_estimate)))) |>
+  write_rds("saved/ri_dd.rds")
+
+read_rds("saved/ri_dd.rds") |> reshape_diagnosis() |> kable()
+
+```
+
+
+### RI interactions
+
+Lets now imagine a world with two treatments and we are interested in using `ri` for assessing the interaction. (Code from [Coppock, `ri2``](https://cloud.r-project.org/web/packages/ri2/vignettes/ri2_vignette.html)) 
+
+```{r}
+set.seed(1)
+
+N <- 100
+declaration <- randomizr::declare_ra(N = N, m = 50)
+
+data <- fabricate(
+  N = N,
+  Z = conduct_ra(declaration),
+  X = rnorm(N),
+  Y = .9 * X + .2 * Z + .1 * X * Z + rnorm(N))
+
+out <-
+  conduct_ri(
+    model_1 = Y ~ Z + X,
+    model_2 = Y ~ Z + X + Z * X,
+    declaration = declaration,
+    assignment = "Z",
+    sharp_hypothesis = coef(lm(Y ~ Z, data = data))[2],
+    data = data, 
+    sims = 1000
+  )
+```
+
+### `ri` interactions with `DeclareDesign`
+
+* Coming: impute all potential outcomes and use reveal
 
 ### RI in practice
 
-In practice it is a good idea to create a $P$ matrix when you do your randomization (although note: if the null is about one treatment, then you are interested only in the randomization of that treatment, not the joint randomization of all)
+In practice (unless you have a design declaration) it is a good idea to create a $P$ matrix when you do your randomization. This records the set of possible randomizations you might have had: or a sample of these.
 
 ### RI Applications
 
@@ -651,7 +829,6 @@ diagnosis$simulations_df |> filter(estimator == "naive") |>
   geom_vline(xintercept = 0, color = "red")
 
 ```
-
 
 
 
@@ -985,7 +1162,7 @@ There are more or less sophisticated ways of doing this....
 
 ## Doubly robust estimation
 
-### Doubly robust estimation
+### Doubly robust estimation {.smaller}
 
 Doubly robust estimation combines:
 
@@ -1008,9 +1185,9 @@ Each part can be done using nonparameteric methods resulting in an overall semi-
 
 -   So if you can impute the potential outcomes, you are good (though hardly surprising)
 
-### Doubly robust estimation
+### Doubly robust estimation {.smaller}
 
--   More subtly say the $\hat{pi}$s are correct, but your imputations are wrong; then we again have an unbiased estimator.
+-   More subtly say the $\hat{\pi}$s are correct, but your imputations are wrong; then we again have an unbiased estimator.
 
 To see this imagine with probability $\pi$ we assign unit 1 to treatment and 2 to control (otherwise 1 to control and 2 to treatment).
 
