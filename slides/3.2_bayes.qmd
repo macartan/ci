@@ -1,24 +1,19 @@
 ---
 format: 
-   beamer:
-    theme: "AnnArbor"
-    colortheme: "seahorse"
+   revealjs:
+    embed-resources: true
+    theme: serif
     slide-level: 3
-    keep-tex: true
-    includes:
-      header-includes: include_nav.txt
-title: "Bayesian approaches"
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+title: "Bayes"
 author: "Macartan Humphreys"
-numbersections: true
-header-includes:
-  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
-  - \newcommand\E{\mathbb{E}}
-  - \newcommand\V{\mathbb{V}}
-  - \hypersetup{colorlinks=true,linkcolor=red}
-  - \usepackage{ulem}
-  - \pdfstringdefDisableCommands{\let\sout\relax}
-fontsize: 11pt  
+bibliography: bib.bib
 ---
+
 
 ```{r, include = FALSE}
 
@@ -32,7 +27,7 @@ run <- FALSE
 
 ## Bayes Basics
 
-### Bayes Rule
+### Bayes Rule {.smaller}
 
 -   Bayesian methods are just sets of procedures to figure out how to update beliefs in light of new information.
 
@@ -46,7 +41,7 @@ Bayesian inference takes into account:
 -   the uniqueness of the evidence to that hypothesis
 -   background knowledge about the problem.
 
-### Illustration 1
+### Illustration 1 {.smaller}
 
 I draw a card from a deck and ask *What are the chances it is a Jack of Spades?*
 
@@ -64,7 +59,7 @@ What if I said it was a face card and a spade.
 
 -   1 in 3.
 
-### Illustration 1
+### Illustration 1 {.smaller}
 
 These answers are applications of Bayes' rule.
 
@@ -72,7 +67,7 @@ In each case the answer is derived by assessing what is possible, given the new 
 
 $$\text{Prob Jack of Spades | Info} = \frac{\text{Is Jack of Spades Consistent w/ Info?}}{\text{How many cards are consistent w/ Info?}} $$
 
-### Illustration 2 **Interpreting Your Test Results**
+### Illustration 2 **Interpreting Your Test Results** {.smaller}
 
 You take a test to see whether you suffer from a disease that affects 1 in 100 people. The test is good in the following sense:
 
@@ -81,7 +76,7 @@ You take a test to see whether you suffer from a disease that affects 1 in 100 p
 
 The test result says that you have the disease. What are the chances you have it?
 
-### Illustration 2 **Interpreting Your Test Results**
+### Illustration 2 **Interpreting Your Test Results** {.smaller}
 
 -   It is *not* 99%. 99% is the probability of the result given the disease, but we want the probability of the disease given the result.
 
@@ -89,10 +84,10 @@ The test result says that you have the disease. What are the chances you have it
 
 -   e.g. if there were 10,000 people, then 100 would have the disease and 99 of these would test positive. But 9,900 would not have the disease and 99 of these would test positive. So the people with the disease that test positive are half of the total number testing positive.
 
-### Illustration 2. An illustration
+### Illustration 2. An illustration {.smaller}
 
-```{r, out.width="70%", fig.width=12, fig.height=6.5, fig.align='center'}
-  p=.9; ## power of test and prior prob healthy
+```{r, out.width="70%", fig.width=12, fig.height=6.5, fig.align='center', echo = FALSE}
+  p=.9    ## power of test and prior prob healthy
   s=2000  ## population size
   col5 = "red"
   col0 = "black"
@@ -113,13 +108,13 @@ The test result says that you have the disease. What are the chances you have it
 
 What's the probability of being a circle given you are black?
 
-### Illustration 2. More formally.
+### Illustration 2. More formally. {.smaller}
 
 As an equation this might be written:
 
 $$\text{Prob You have the Disease | Pos} = \frac{\text{How many have the disease and test pos?}}{\text{How many people test pos?}}$$
 
-### Two Child Problem
+### Two Child Problem {.smaller}
 
 Consider last an old puzzle found described @gardner1961second.
 
@@ -131,13 +126,18 @@ To be explicit about the puzzle, we will assume that the information that one ch
 
 Assuming also that there is a 50% probability that a given child is a boy.
 
-### Two Child Problem
+### Two Child Problem {.smaller}
 
 As an equation:
 
 $$\text{Prob both boys | Not both girls} = \frac{\text{Prob both boys}}{\text{Prob not both girls}} = \frac{\text{1 in 4}}{\text{3 in 4}}$$
 
-### Bayes Rule
+### Monty Hall
+
+Can anyone describe the Monty Hall puzzle?
+
+
+### Bayes Rule {.smaller}
 
 Formally, all of these equations are applications of Bayes' rule which is a simple and powerful formula for deriving updated beliefs from new data.
 
@@ -155,7 +155,7 @@ For continuous distributions and parameter vector $\theta$:
 
 $$p(\theta|\mathcal{D})=\frac{p(\mathcal{D}|\theta)p(\theta)}{\int_{\theta'}p(\mathcal{D|\theta'})p(\theta')d\theta}$$
 
-### Useful Distributions: Beta and Dirichlet Distributions
+### Useful Distributions: Beta and Dirichlet Distributions {.smaller}
 
 -   Bayes rule requires the ability to express a prior distribution but it does not require that the prior have any particular properties other than being probability distributions.
 -   Sometimes however it can be useful to make use of "off the shelf" distributions.
@@ -167,7 +167,7 @@ Consider **the share of people in a population that voted**. This is a quantity 
 
 Here the parameter of interest is a *share*. The **Beta** and **Dirichlet** distributions are particularly useful for representing beliefs on shares.
 
-### Beta
+### Beta {.smaller}
 
 -   The Beta distribution is a distribution over the $[0,1]$ that is governed by two parameters, $\alpha$ and $\beta$.
 -   In the case in which both $\alpha$ and $\beta$ are 1, the distribution is uniform -- all values are seen as equally likely.
@@ -177,7 +177,7 @@ Here the parameter of interest is a *share*. The **Beta** and **Dirichlet** dist
 
 An attractive feature is that if one has a prior Beta($\alpha$, $\beta$) over the probability of some event, and then one observes a positive case, the Bayesian posterior distribution is also a Beta with with parameters $\alpha+1, \beta$. Thus if people start with uniform priors and build up knowledge on seeing outcomes, their posterior beliefs should be Beta.
 
-### Beta
+### Beta {.smaller}
 
 Here is a set of such distributions.
 
@@ -194,7 +194,7 @@ plot(x, dbeta(x, 20, 10), type = "l", main = expression(paste("Beta distribution
 
 ```
 
-### Dirichlet distributions.
+### Dirichlet distributions. {.smaller}
 
 The Dirichlet distributions are generalizations of the Beta to the situation in which there are beliefs not just over a proportion, or a probability, but over collections of probabilities.
 
@@ -205,6 +205,58 @@ The Dirichlet distributions are generalizations of the Beta to the situation in 
 -   As with the Beta distribution, an uninformative prior (Jeffrey's prior) has $\alpha$ parameters of $(.5,.5,.5, \dots)$ and a uniform ("flat") distribution has $\alpha = (1,1,1,,\dots)$.
 
 -   The Dirichlet updates in a simple way. If you have a Dirichlet prior with parameter $\alpha = (\alpha_1, \alpha_2, \dots)$ and you observe outcome $1$, for example, then then posterior distribution is also Dirichlet with parameter vector $\alpha' = (\alpha_1+1, \alpha_2,\dots)$.
+
+## Bayes by hand
+
+*Bayes on a Grid*
+
+### Bayes by hand 
+
+* The simplest and most intuitive way to do Bayesian estimation is just to apply the formula over a grid of possible values
+* This becomes too hard once your parameter space grows but it is worth working though the logic by hand to get a feel for Bayes
+
+### Bayes by hand 
+
+* Lets say that we want to figure out the share of women in some population. 
+* We start off with a flat prior over all possible numbers
+* We draw a sample from the population: 100 people of which 20 are women
+* What's our posterior?
+
+### Bayes by hand 
+
+```{r, fig.height = 3, fig.width = 8}
+fabricate(N = 100,
+          parameters = seq(.01, .99, length = N),
+          likelihood = dbinom(20, 100, parameters),
+          posterior = likelihood/sum(likelihood)) |>
+  ggplot(aes(parameters, posterior)) + geom_line() + theme_bw()
+  
+
+```
+
+### Bayes by hand 
+
+Now with a strongish prior on 50%:
+
+```{r, fig.height = 3, fig.width = 8}
+fabricate(N = 100,
+          parameters = seq(.01, .99, length = N),
+          prior = dbeta(parameters, 20, 20), 
+          prior = prior/sum(prior),
+          likelihood = dbinom(20, 100, parameters),
+          posterior = likelihood*prior/sum(likelihood*prior)) |>
+  ggplot(aes(parameters, posterior)) + geom_line() + theme_bw() +
+  geom_line(aes(parameters, prior), color = "red")
+  
+  
+
+```
+
+### Bayes by hand 
+
+* This approach is sound, but if you are dealing with many continuous parameters, the full parameter space can get very large and so the number of calculations you do increases rapidly.
+
+* Luckily other approaches have been developed.
 
 ## Stan
 
@@ -279,14 +331,14 @@ some_data <- list(
 
 ```
 
-### Simple model: Now let's Run It
+### Simple model: Now Let's Run It {.smaller}
 
 ```{r, warning = FALSE, echo = TRUE, comment = NA, eval = FALSE}
 M <- stan(file = "assets/one_var.stan", 
           data = some_data)
 ```
 
-```{r, warning = FALSE, echo = TRUE, comment = NA, echo = FALSE}
+```{r, warning = FALSE, comment = NA, echo = FALSE}
 if(run)
   stan(file = "assets/one_var.stan", 
           data = some_data) |>
@@ -313,19 +365,18 @@ The model output contains the full posterior distribution.
 ```{r figposta, echo=TRUE, fig.align="center", fig.asp=1, out.width="50%"}
 my_posterior <- M |> extract() |> data.frame() 
 
-my_posterior |> ggplot(aes(a,b)) + geom_point()
+my_posterior |> ggplot(aes(a,b)) + geom_point() + theme_bw()
 ```
 
 ### A simple model: Now lets use it
 
-With the full posterior you can can look at marginal posterior distributions over arbitrary transformations of parameters.
+With the full posterior you can look at marginal posterior distributions over arbitrary transformations of parameters.
 
-```{r, echo = TRUE, fig.asp=1, comment = NA}
-summary((my_posterior$a + my_posterior$b)/my_posterior$a) |> tidy() |>
-  kable(digits = 2)
+```{r, echo = TRUE}
+summary((my_posterior$a + my_posterior$b)/my_posterior$a) |> round(2)
 ```
 
-### Building up
+### Building up {.smaller}
 
 Let's go back to the code.
 
@@ -435,13 +486,13 @@ Note that we get a much lower estimate for `b` with the same data.
 
 ### A multilevel model
 
-Now imagine a setting in which there are 10 villages, each with 10 respondents. Half in each village are assigned to treatment $X=1$, and half to control $X=0$.
+* Now imagine a setting in which there are 10 villages, each with 10 respondents. Half in each village are assigned to treatment $X=1$, and half to control $X=0$.
 
-Say that there is possible a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each draw from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
+* Say that there is possible a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each draw from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
 
-This all implies a multilevel structure.
+* This all implies a multilevel structure.
 
-### A ml model
+### A multilevel model {.smaller}
 
 Here is a model for this
 
@@ -477,6 +528,8 @@ model {
 }
 '
 ```
+
+### A multilevel model {.smaller}
 
 Here is a slightly more general version: [https://github.com/stan-dev/example-models/blob/master/ARM/Ch.17/17.1_radon_vary_inter_slope.stan](https://github.com/stan-dev/example-models/blob/master/ARM/Ch.17/17.1_radon_vary_inter_slope.stan)
 
@@ -515,7 +568,11 @@ M_ml  <-  read_rds("saved/ml_model.rds")
 kable(round(summary(M_ml)[[1]][c(24:25, 1:3),c(1,3,10)],2))
 ```
 
-### A game and a structural model
+## A game and a structural model {.smaller}
+
+*parameters drawn from theory*
+
+### A game and a structural model {.smaller}
 
 Say that a set of people in a population are playing sequential prisoner's dilemmas.
 
@@ -524,7 +581,7 @@ In such games selfish behavior might suggest defections by everyone everywhere. 
 -   One possible reason is that some people are irrational, in the sense that they simply choose to cooperate, ignoring the payoffs.
 -   Another possibility is that rational people think that others are irrational, in the sense that they think that others will reciprocate when they observe cooperative action
 
-### Model
+### Model  {.smaller}
 
 We will capture some of this intuition with a behavioral type model in which
 
@@ -539,7 +596,7 @@ In all, this means that a player with propensity $r_i>.5$ will cooperate with pr
 
 Interestingly the not-very-rational people sometimes cooperate strategically but the really rational people never cooperate strategically because they think it won't work.
 
-### Event Probabilities
+### Event Probabilities  {.smaller}
 
 What then are the probabilities of each of the possible outcomes?
 
@@ -549,7 +606,7 @@ What then are the probabilities of each of the possible outcomes?
 
 where $p$ is the density function on $r_i$ given $\theta$
 
-### Event probabilities
+### Event probabilities  {.smaller}
 
 Given the assumption on $p$
 
@@ -557,7 +614,7 @@ Given the assumption on $p$
 -   There will be cooperation by player 1 only with probability $(1+.25/\theta -.5\theta)(.5\theta)$
 -   There will be cooperation by neither player with probability $(.5\theta-.25/\theta)$
 
-### Data
+### Data {.smaller}
 
 -   We have data on the actions of the first movers and the second movers and are interested in the distribution of the $p_i$s.
 
@@ -590,6 +647,8 @@ model {
 }
 '
 ```
+
+### Model
 
 Note we define event weights as transformed parameters on a simplex. We also constrain $\theta$ to be $>.5$. Obviously we are relying *a lot* on our model.
 
@@ -644,3 +703,95 @@ A player with rationality $r_i$ will cooperate strategically with probability $r
 ```{r, warning = FALSE, echo = FALSE, comment = NA, fig.align="center", fig.asp=1, out.width="50%"}
 hist(.125/extract(M4)$theta, xlab = "Posterior on .125/theta", main = "", xlim = c(0,1))
 ```
+
+## `CausalQueries`
+
+*`CausalQueries` brings these elements together*
+
+### Big picture
+
+`CausalQueries` brings these elements together by allowing users to:
+
+1. Specify a DAG: `CausalQueries` figures out all principal strata and places a prior on these
+2. Provide data to the DAG:  `CausalQueries`  writes a stand model and updates on all parameters
+3. Query model: `CausalQueries` figures out which parameters correspond to a given causal query
+
+### Illustration: "Lipids" data
+
+```{r}
+#| echo: true
+
+data("lipids_data")
+
+lipids_data |> kable()
+
+```
+
+Note that in compact form we simply record the number of units ("count") that display each possible pattern of outcomes on the three variables ("event").[^1]
+
+###  Model
+
+
+```{r}
+#| echo: true
+#| eval: true
+#| purl: false
+
+model <- make_model("Z -> X -> Y; X <-> Y") 
+model |> plot()
+```
+
+
+### Updating and querying
+
+```{r}
+#| echo: true
+#| eval: false
+#| purl: false
+
+model |>
+  update_model(lipids_data, refresh = 0) |>
+  query_model(query = "Y[X=1] - Y[X=0]",
+              given = c("All",  "X==0 & Y==0", "X[Z=1] > X[Z=0]"),
+              using = "posteriors") 
+```
+
+```{r}
+#| label: tbl-lipids
+#| tbl-cap: "Replication of Chickering and Pearl  (1996)."
+#| echo: false
+
+if (run) {
+  
+  lipids_model <- 
+    make_model("Z -> X -> Y; X <-> Y") |>
+    update_model(lipids_data, refresh = 0) 
+  
+  lipids_model |> 
+    readr::write_rds(x = _, file = "saved/lipids_model.rds")
+     
+  lipids_model |>
+    query_model(
+      query = "Y[X=1] - Y[X=0]",
+      given = c("All",  "X==0 & Y==0", "X[Z=1] > X[Z=0]"),
+      using = "posteriors") |>
+    readr::write_rds(x = _, file = "saved/lipids_results.rds")
+
+}
+
+lipids_model <- read_rds("saved/lipids_model.rds")
+
+results <- read_rds("saved/lipids_results.rds")
+
+results |>
+  dplyr::select(query, given, mean, sd, starts_with("cred")) |>
+  knitr::kable(
+    digits = 2,
+    booktabs = TRUE,
+    align = "c",
+    escape = TRUE) 
+
+```
+
+
+

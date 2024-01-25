@@ -8,7 +8,8 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
-title: "Design based estimation"
+    link-color: orange
+title: "Design-based estimation"
 author: "Macartan Humphreys"
 bibliography: bib.bib
 ---
@@ -17,7 +18,7 @@ bibliography: bib.bib
 
 source("setup.R")
 
-# run <- FALSE
+# run <- TRUE
 
 ```
 
@@ -27,8 +28,8 @@ source("setup.R")
 
 -   Simple estimates from experimental data
 -   Weighting, blocking
--   Design based variance estimates
--   Design based $p$ values
+-   Design-based variance estimates
+-   Design-based $p$ values
 -   Controls and Doubly robust estimation
 -   Reporting
 
@@ -40,7 +41,7 @@ $$
 \widehat{ATE} = \frac{1}{n_T}\sum_TY_i - \frac{1}{n_C}\sum_CY_i,
 $$
 
-### ATE: DIM in practice
+### ATE: DIM in practice {.smaller}
 
 ```{r}
 df <- fabricatr::fabricate(N = 100, Z = rep(0:1, N/2), Y = rnorm(N) + Z)
@@ -56,7 +57,7 @@ estimatr::difference_in_means(Y ~ Z, data = df) |>
   tidy() |> kable(digits = 2)
 ```
 
-### ATE: DIM in practice
+### ATE: DIM in practice  {.smaller}
 
 We can also do this with regression:
 
@@ -68,18 +69,29 @@ estimatr::lm_robust(Y ~ Z, data = df) |>
 
 See @freedman2008regression on why regression is fine here
 
-### ATE: Blocks
+### ATE: Blocks  {.smaller}
 
 Say now different strata or blocks $\mathcal{S}$ had different *assignment probabilities*. Then you could estimate:
 
 $$
 \widehat{ATE} = \sum_{S\in \mathcal{S}}\frac{n_{S}}{n}
 \left(\frac{1}{n_{S1}}\sum_{S\cap T}y_i - \frac{1}{n_{S0}}\sum_{S\cap C}y_i \right)
-$$ Note: you cannot just ignore the blocks because assignment is no longer independent of potential outcomes: you might be sampling units with different potential outcomes with different probabilities.
+$$ 
+
+**Note**: you cannot just ignore the blocks because assignment is no longer independent of potential outcomes: you might be sampling units with different potential outcomes with different probabilities.
 
 However, the formula above works fine because selecting is random *conditional* on blocks.
 
-### ATE: Blocks in practice
+### ATE: Blocks  {.smaller}
+
+As a DAG this is just classic confounding:
+
+```{r}
+make_model("Block -> Z ->Y <- Block") |> 
+  plot(x_coord = c(2,1,3), y_coord = c(2, 1, 1))
+```
+
+### ATE: Blocks in practice  {.smaller}
 
 Data with heterogeneous assignments:
 
@@ -99,7 +111,7 @@ estimatr::difference_in_means(Y ~ Z, data = df) |>
   tidy() |> kable(digits = 2)
 ```
 
-### ATE: Blocks in practice
+### ATE: Blocks in practice  {.smaller}
 
 Averaging over effects in blocks
 
@@ -120,13 +132,13 @@ estimatr::difference_in_means(Y ~ Z, blocks = X, data = df) |>
   tidy() |> kable(digits = 2)
 ```
 
-### ATE with IPW
+### ATE with IPW  {.smaller}
 
 This also corresponds to the difference in the weighted average of treatment outcomes (with weights given by the inverse of the probability that each unit is assigned to treatment) and control outcomes (with weights given by the inverse of the probability that each unit is assigned to control).
 
 -   The average difference in means estimator is the same as what you would get if you weighted inversely by shares of units in different conditions inside blocks.
 
-### ATE with IPW in practice
+### ATE with IPW in practice  {.smaller}
 
 ```{r}
 # by hand
@@ -142,7 +154,7 @@ estimatr::difference_in_means(Y ~ Z, weights = ip, data = df) |>
   tidy() |> kable(digits = 2)
 ```
 
-### ATE with IPW
+### ATE with IPW  {.smaller}
 
 -   But **inverse propensity weighting** is a more general principle, which can be used even if you do not have blocks.
 
@@ -163,7 +175,7 @@ Say you made a mess and used a randomization that was correlated with some varia
 - In the next example, we do this using "**inverse propensity score weighting**." 
 - This is exactly analogous to standard survey weighting --- since we selected different units for treatment with different probabilities, we weight them differently to recover the average outcome among treated units (same for control).
 
-### Basic randomization: Fixer
+### Basic randomization: Fixer  {.smaller}
 
 Bad assignment, some randomization process you can't understand (but can replicate) that results in unequal probabilities.
 
@@ -184,7 +196,7 @@ U <- runif(N, .1, .9)
 ```
 
 
-### Basic randomization: Fixer
+### Basic randomization: Fixer  {.smaller}
 
 Results is a sampling distribution not centered on the true effect (0)
 
@@ -206,7 +218,7 @@ diagnosis$simulations_df |>
 ```
 
 
-### A fix
+### A fix  {.smaller}
 
 To fix you can estimate the assignment probabilities by replicating the assignment many times:
 
@@ -225,7 +237,7 @@ design_2 <-
 
 ```
 
-### Basic randomization: Fixer
+### Basic randomization: Fixer  {.smaller}
 
 Implied weights
 
@@ -299,7 +311,9 @@ $$\mathbb{E}[\widehat{\overline{Y_1 - Y_0}}] = \overline{Y_1 - Y_0}$$
 * For blocked randomization this is easy to see
 
 
-## Design Based Estimation of Variance
+## Design-based Estimation of Variance
+
+*Lets talk about "inference"*
 
 ### Var(ATE)
 
@@ -371,9 +385,9 @@ The first two terms correspond to the variance of $Y(1)$ and the variance of $Y(
 
 ### Var(ATE): Generalizing {.smaller}
 
-From [Freedman Prop 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
+From [Freedman Prop 1 / Example 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
 
-$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V_1 + \frac{n_T}{n_C}V_0\right] + 2C_{01}$
+$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V_1 + \frac{n_T}{n_C}V_0 + 2C_{01}\right]$
 
 ... where $V_0, V_1$ denote variances and $C_{01}$ covariance
 
@@ -383,7 +397,7 @@ This is usefully rewritten as:
 
 $$
 \begin{split}
-  V(\widehat{ATE}) & = \frac{1}{n-1}\left[\frac{n - n_T}{n_T}V_1 + \frac{n - n_C}{n_C}V_0\right] + 2C_{01} \\
+  V(\widehat{ATE}) & = \frac{1}{n-1}\left[\frac{n - n_T}{n_T}V_1 + \frac{n - n_C}{n_C}V_0 + 2C_{01}\right] \\
     & = \frac{n}{n-1}\left[\frac{V_1}{n_T} + \frac{V_0}{n_C}\right] - \frac{1}{n-1}\left[V_1 + V_0 - 2C_{01}\right]
 \end{split}
 $$
@@ -405,15 +419,15 @@ For the case with blocking, the conservative estimator is:
 
 $V(\widehat{ATE}) = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \left({\frac{s^2_{S1}}{n_{S1}}} + {\frac{s^2_{S0}}{n_{S0}}} \right)}$
 
-### Illustration of Neyman Conservative Estimator
+### Illustration of Neyman Conservative Estimator {.smaller}
 
 An illustration of *how* conservative the conservative estimator of variance really is (numbers in plot are correlations between $Y(1)$ and $Y(0)$.
 
 We confirm that:
 
 1.  the estimator is conservative
-2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment %, and
-3.  with $\tau$ and $V(Y(0))$ fixed. high positive correlations are associated with highest variance.
+2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment, and
+3.  with $\tau$ and $V(Y(0))$ fixed, high positive correlations are associated with highest variance.
 
 ```{r, echo = FALSE}
 n    <- 100; Y0 <- scale(1:n); e <- 2*abs(Y0)     
@@ -441,16 +455,8 @@ VN1 <- sapply(s, function(i) neyman(5000, i, cons=0)) # True variance; Formula c
 VN2 <- sapply(s, function(i) neyman(5000, i, cons=1)) # Neyman conservative estimate
 ```
 
-### Illustration of Neyman Conservative Estimator
 
-```{r, echo = FALSE}
-plot(V, VN1, xlim=c(0, max(VN1, VN2,V)), ylim=c(0, max(V, VN1, VN2)), 
-main="Neyman estimator for  Y(1) and Y(0) correlations, ATE=1, Var(Y(0)=1, Var(Y(1) free" ,
-ylab="Conservative Neyman Estimator", xlab="True Variance", col="grey")
-lines(V, VN2, col="red"); text(V, VN2, round(cors,2), offset=TRUE); abline(0,1)
-```
-
-### Illustration of Neyman Conservative Estimator
+### Illustration of Neyman Conservative Estimator {.smaller}
 
 | $\tau$ | $\rho$ | $\sigma^2_{Y(1)}$ | $\Delta$ | $\sigma^2_{\tau}$ | $\widehat{\sigma}^2_{\tau}$ | $\widehat{\sigma}^2_{\tau(\text{Neyman})}$ |
 |-----------|-----------|-----------|-----------|-----------|-----------|-----------|
@@ -464,7 +470,16 @@ lines(V, VN2, col="red"); text(V, VN2, round(cors,2), offset=TRUE); abline(0,1)
 
 Here $\rho$ is the unobserved correlation between $Y(1)$ and $Y(0)$; and $\Delta$ is the final term in the sample variance equation that we cannot estimate.
 
-### Tighter Bounds On Variance Estimate
+### Illustration of Neyman Conservative Estimator {.smaller}
+
+```{r, echo = FALSE}
+plot(V, VN1, xlim=c(0, max(VN1, VN2,V)), ylim=c(0, max(V, VN1, VN2)), 
+main="Neyman estimator for  Y(1) and Y(0) correlations, ATE=1, Var(Y(0)=1, Var(Y(1) free" ,
+ylab="Conservative Neyman Estimator of the Variance", xlab="True Variance of Estimates", col="grey")
+lines(V, VN2, col="red"); text(V, VN2, round(cors,2), offset=TRUE); abline(0,1)
+```
+
+### Tighter Bounds On Variance Estimate 
 
 The conservative variance comes from the fact that you do not know the covariance between $Y(1)$ and $Y(0)$.
 
@@ -472,35 +487,40 @@ The conservative variance comes from the fact that you do not know the covarianc
 -   Intuitively, if you know that the variance of $Y(1)$ is 0, then the covariance also has to be zero.
 -   This basic insight opens a way of calculating bounds on the variance of the sample average treatment effect.
 
-### Tighter Bounds On Variance Estimate
+### Tighter Bounds On Variance Estimate {.smaller}
 
 Example:
 
 -   Take a million-observation dataset, with treatment randomly assigned
 -   Assume $Y(0)=0$ for everyone and $Y(1)$ distributed normally with mean 0 and standard deviation of 1000.
 -   Note here the covariance of $Y(1)$ and $Y(0)$ is 0.
--   Note the true variance of the estimated sample average treatment effect should be (approx) $\frac{Var(Y(1))}{\sqrt{1000000}} + \frac{Var(Y(0))}{\sqrt{1000000}} = 1$.
--   But using the Neyman estimator (or OLS!) we estimate (approx) $\frac{Var(Y(1))}{\sqrt{1000000/2}} + \frac{Var(Y(0))}{\sqrt{1000000/2}} = \sqrt{2}$.
+-   Note the true variance of the estimated sample average treatment effect should be (approx) $\frac{Var(Y(1))}{{1000000}} + \frac{Var(Y(0))}{{1000000}} = 1+0=1$, for an se of $1$.
+-   But using the Neyman estimator (or OLS!) we estimate (approx) $\frac{Var(Y(1))}{({1000000/2})} + \frac{Var(Y(0))}{({1000000/2})} = 2$, for an se of $\sqrt{2}$.
 -   But we can recover the truth knowing the covariance between $Y(1)$ and $Y(0)$ is 0.
 
 ### Tighter Bounds On Variance Estimate: Code
 
 ```{r}
-sharp_var <- function(yt,yc,N=length(c(yt,yc)),upper=TRUE){
- m <- length(yt);  n <- m + length(yc)
- V <- function(x,N) {
-       (N-1)/(N*(length(x)-1)) * sum((x - mean(x))^2)}
- yt <- sort(yt)
- if(upper) {yc <- sort(yc)
-       } else {yc <- sort(yc,decreasing=TRUE)}
- p_i <- unique(sort(c(seq(0,n-m,1)/(n-m),seq(0,m,1)/m)))- 
+sharp_var <- function(yt, yc, N=length(c(yt,yc)), upper=TRUE){
+  
+  m <- length(yt)
+  n <- m + length(yc)
+  V <- function(x,N) (N-1)/(N*(length(x)-1)) * sum((x - mean(x))^2)
+  yt <- sort(yt)
+  if(upper) {yc <- sort(yc)
+  } else {
+    yc <- sort(yc,decreasing=TRUE)}
+  p_i <- unique(sort(c(seq(0,n-m,1)/(n-m),seq(0,m,1)/m)))- 
         .Machine$double.eps^.5
- p_i[1] <- .Machine$double.eps^.5
- yti <- yt[ceiling(p_i*m)]; yci <- yc[ceiling(p_i*(n-m))]
- p_i_minus <- c(NA,p_i[1: (length(p_i)-1)])
- return(((N-m)/m * V(yt,N) + (N-(n-m))/(n-m)*V(yc,N) +
-	   2*sum(((p_i-p_i_minus)*yti*yci)[2:length(p_i)]) -
-	   2*mean(yt)*mean(yc))/(N-1))}
+  p_i[1] <- .Machine$double.eps^.5
+  
+  yti <- yt[ceiling(p_i*m)]
+  yci <- yc[ceiling(p_i*(n-m))]
+  
+  p_i_minus <- c(NA,p_i[1: (length(p_i)-1)])
+ 
+ ((N-m)/m * V(yt,N) + (N-(n-m))/(n-m)*V(yc,N) + 
+     2*sum(((p_i-p_i_minus)*yti*yci)[2:length(p_i)]) - 2*mean(yt)*mean(yc))/(N-1)}
 ```
 
 ### Illustration
@@ -509,12 +529,17 @@ sharp_var <- function(yt,yc,N=length(c(yt,yc)),upper=TRUE){
 n   <- 1000000
 Y   <- c(rep(0,n/2), 1000*rnorm(n/2))
 X   <- c(rep(0,n/2), rep(1, n/2))
-ols <- round(coef(summary(lm(Y~X)))[2,],3)
+
+lm_robust(Y~X) |> tidy() |> kable(digits = 2)
+
 kable(t(as.matrix(ols)))
-sharp <- round(c(sharp_var(Y[X==1], Y[X==0], upper = FALSE), 
-                 sharp_var(Y[X==1], Y[X==0], upper = TRUE)),3)
-sharp
+
+c(sharp_var(Y[X==1], Y[X==0], upper = FALSE),
+  sharp_var(Y[X==1], Y[X==0], upper = TRUE)) |> 
+  round(2)
 ```
+
+The sharp bounds are $[1,1]$ but the conservative estimate is $\sqrt{2}$.
 
 ### Asymptotics
 
@@ -679,7 +704,7 @@ kable(data_renamed, format = "html", table.attr = "class='table'", row.names = F
 
 It is possible to use this procedure to generate **confidence intervals** with a natural interpretation.
 
-* The key idea is that we can use the same procedure to assess the probability of the data igven a sharp null of no effect, but also a sharp null of *any other* **constant* effect. 
+* The key idea is that we can use the same procedure to assess the probability of the data given a sharp null of no effect, but also a sharp null of *any other* **constant* effect. 
 * We can then see what set of effects we *reject* and what set we *accept* 
 * We are left with a set of values that *we cannot reject* at the 0.05 level.
 
@@ -687,7 +712,7 @@ It is possible to use this procedure to generate **confidence intervals** with a
 ### RI and CIs in practice  {.smaller}
 
 ```{r, eval = FALSE}
-candidates <- seq(0, .3, length = 20)
+candidates <- seq(0, .3, length = 30)
 
 get_p <- function(j)
   (conduct_ri(
@@ -695,7 +720,7 @@ get_p <- function(j)
       declaration = assignment,
       sharp_hypothesis = j,
       data = df,
-      sims = 1000,
+      sims = 4000,
     ) |> summary()
   )$two_tailed_p_value
 
@@ -706,7 +731,7 @@ ps <- candidates |> sapply(get_p)
 ### RI and CIs in practice  {.smaller}
 
 ```{r, echo = FALSE}
-candidates <- seq(0, .3, length = 20)
+candidates <- seq(0, .3, length = 30)
 
 get_p <- function(j)
   (conduct_ri(
@@ -714,7 +739,7 @@ get_p <- function(j)
       declaration = assignment,
       sharp_hypothesis = j,
       data = df,
-      sims = 1000,
+      sims = 4000,
     ) |> summary()
   )$two_tailed_p_value
 
@@ -738,9 +763,11 @@ ci_df |>
 Warning: calculating confidence intervals this way is quite computationally intensive
 
 
-### `ri` with `DeclareDesign`
+### `ri` with `DeclareDesign`  {.smaller}
 
-`DeclareDesign` can do randomization inference natively. The trick is to ensure that the *only* stochastic component is the assignment to treatment when calculating the $p$ values (though if you are very careful you can also think through other sources of variability).
+* `DeclareDesign` can do randomization inference natively. 
+* The trick is to ensure that the *only* stochastic component is the assignment to treatment when calculating the $p$ values 
+* (though if you are very careful you can also think through other sources of variability).
 
 ```{r}
 set.seed(1)
@@ -753,24 +780,29 @@ design <-
   declare_estimator(Y ~ Z)
 ```
 
-### `ri` with `DeclareDesign`
+### `ri` with `DeclareDesign` {.smaller}
 
 ```{r, eval = FALSE}
-diagnose_design(design, sims = 1000,
-                diagnosands = declare_diagnosands(
-                  one_sided_pos = mean(estimate >= my_estimate),
-                  one_sided_neg = mean(estimate <= my_estimate),
-                  two_sided = mean(abs(estimate) >= abs(my_estimate))))
+
+ri_ps <-  function(my_estimate) 
+  declare_diagnosands(
+    one_sided_pos = mean(estimate >= my_estimate),
+    one_sided_neg = mean(estimate <= my_estimate),
+    two_sided = mean(abs(estimate) >= abs(my_estimate)))
+
+diagnose_design(design, sims = 1000, diagnosands = ri_ps(my_estimate))
 
 ```
 
 ```{r, echo = FALSE}
+ri_ps <-  function(my_estimate) 
+  declare_diagnosands(
+    one_sided_pos = mean(estimate >= my_estimate),
+    one_sided_neg = mean(estimate <= my_estimate),
+    two_sided = mean(abs(estimate) >= abs(my_estimate)))
+
 if(run)
-  diagnose_design(design, sims = 1000,
-                diagnosands = declare_diagnosands(
-                  one_sided_pos = mean(estimate >= my_estimate),
-                  one_sided_neg = mean(estimate <= my_estimate),
-                  two_sided = mean(abs(estimate) >= abs(my_estimate)))) |>
+  diagnose_design(design, sims = 1000, diagnosands = ri_ps(my_estimate)) |>
   write_rds("saved/ri_dd.rds")
 
 read_rds("saved/ri_dd.rds") |> reshape_diagnosis() |> kable()
@@ -778,9 +810,9 @@ read_rds("saved/ri_dd.rds") |> reshape_diagnosis() |> kable()
 ```
 
 
-### RI interactions
+### RI interactions {.smaller}
 
-Lets now imagine a world with two treatments and we are interested in using `ri` for assessing the interaction. (Code from [Coppock, `ri2``](https://cloud.r-project.org/web/packages/ri2/vignettes/ri2_vignette.html)) 
+Lets now imagine a world with two treatments and we are interested in using `ri` for assessing the interaction. (Code from [Coppock, `ri2`](https://cloud.r-project.org/web/packages/ri2/vignettes/ri2_vignette.html)) 
 
 ```{r}
 set.seed(1)
@@ -793,9 +825,14 @@ data <- fabricate(
   Z = conduct_ra(declaration),
   X = rnorm(N),
   Y = .9 * X + .2 * Z + .1 * X * Z + rnorm(N))
+```
 
-out <-
-  conduct_ri(
+### `ri` interactions {.smaller}
+
+The approach is to declare a null model that is nested by the full model. Then $F$ test statistic from the model comparisons is taken as the test statistic and distribution of this is built up under re-randomizations.
+
+```{r}
+conduct_ri(
     model_1 = Y ~ Z + X,
     model_2 = Y ~ Z + X + Z * X,
     declaration = declaration,
@@ -803,16 +840,79 @@ out <-
     sharp_hypothesis = coef(lm(Y ~ Z, data = data))[2],
     data = data, 
     sims = 1000
-  )
+  )  |> summary() |> kable()
 ```
 
-### `ri` interactions with `DeclareDesign`
+### `ri` interactions with `DeclareDesign` {.smaller}
 
-* Coming: impute all potential outcomes and use reveal
+Let's imagine a true model with interactions. We take an estimate. We then ask how likely that estimate is from a *null* model with constant effects
+
+Note: this is *quite* a sharp hypothesis
+
+```{r}
+df <- fabricate(N = 1000, Z1 = rep(c(0,1), N/2), Z2 = sample(Z1), Y = Z1 + Z2 - .15*Z1*Z2 + rnorm(N))
+
+my_estimate <- (lm(Y ~ Z1*Z2, data = df) |> coef())[4]
+
+null_model <-  function(df) {
+  M0 <- lm(Y ~ Z1 + Z2, data = df) 
+  d1 <- coef(M0)[2]
+  d2 <- coef(M0)[3]
+  df |> mutate(
+    Y_Z1_0_Z2_0 = Y - Z1*d1 - Z2*d2,
+    Y_Z1_1_Z2_0 = Y + (1-Z1)*d1 - Z2*d2,
+    Y_Z1_0_Z2_1 = Y - Z1*d1 + (1-Z2)*d2,
+    Y_Z1_1_Z2_1 = Y + (1-Z1)*d1 + (1-Z2)*d2)
+  }
+```
+
+### `ri` interactions with `DeclareDesign` {.smaller}
+
+Let's imagine a true model with interactions. We take an estimate. We then ask how likely that estimate is from a *null* model with constant effects
+
+**Imputed** potential outcomes  look like this:
+
+```{r}
+df <- df |> null_model()
+
+df |>  head() |> kable(digits = 2, align = "c")
+```
+
+### `ri` interactions with `DeclareDesign` {.smaller}
+
+
+```{r}
+design <- 
+  declare_model(data = df) +
+  declare_measurement(Z1 = sample(Z1), Z2 = sample(Z2),
+                      Y = reveal_outcomes(Y ~ Z1 + Z2)) +
+  declare_estimator(Y ~ Z1*Z2, term = "Z1:Z2")
+```
+
+
+```{r, eval = FALSE}
+diagnose_design(design, sims = 1000, diagnosands = ri_ps(my_estimate))
+```
+
+
+```{r, echo = FALSE}
+if(run)
+  diagnose_design(design, sims = 1000,
+                diagnosands = ri_ps(my_estimate)) |>
+  write_rds("saved/ri_dd_inter.rds")
+
+read_rds("saved/ri_dd_inter.rds") |> reshape_diagnosis() |> kable()
+
+```
+
+
+
 
 ### RI in practice
 
-In practice (unless you have a design declaration) it is a good idea to create a $P$ matrix when you do your randomization. This records the set of possible randomizations you might have had: or a sample of these.
+* In practice (unless you have a design declaration), it is a good idea to create a $P$ matrix when you do your randomization. 
+* This records the set of possible randomizations you might have had: or a sample of these.
+* So, again: assignments have to be replicable
 
 ### RI Applications
 
@@ -863,7 +963,7 @@ Constraints due to subjects
 
 ### RI Applications {.smaller}
 
-[If you think hard about assignment you might come up with an allocation like this.]{style="font-size:  80%;"}
+If you think hard about assignment you might come up with an allocation like this.
 
 ```{r, warning=FALSE, echo=FALSE,fig.align='center', fig.cap="Assignment of people to days"}
 df <- data.frame(
@@ -886,7 +986,9 @@ kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
   add_header_above(c(" " = 3, "Allocations" = 3))
 ```
 
-[That allocation balances as much as possible. Given the allocation you might randomly assign individuals to different days as well as randomly assigning them to treatments within days. If you then figure out assignment propensities, this is what you would get:]{style="font-size: 80%;"}
+### RI Applications {.smaller}
+
+That allocation balances as much as possible. Given the allocation you might randomly assign individuals to different days as well as randomly assigning them to treatments within days. If you then figure out assignment propensities, this is what you would get:
 
 ```{r, warning=FALSE, echo=FALSE,fig.align='center'}
 df <- data.frame(
@@ -942,6 +1044,8 @@ kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
 
 -   However subpopulation $A$ is assigned to $A$ (versus $B$) with probability 4/5; while population $B$ is assigned with probability 3/8
 
+### RI Applications {.smaller}
+
 -   **Implications for design**: need to uncluster treatment delivery
 
 -   **Implications for analysis**: need to take account of propensities
@@ -949,11 +1053,23 @@ kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
 **Idea**: Wacky assignments happen but if you know the propensities you can do the analysis.
 
 
+### RI Applications: Indirect assignments {.smaller}
+
+
+A particularly interesting application is where a random assignment combines with existing features to determine an assignment to an "indirect" treatment.
+
+* For instance:  $n$ of $N$ are assigned to a treatment.
+* You are interested in whether "having a friend assigned to treatment" makes a difference to a subject.  Or maybe "a friend of a friend"
+* That means the subject has a complex *clustered* assignment that depends on how many friends they have
+* A bit mind-boggling, but:
+  * Rerun your assignment many times and each time figure out whether a subject is assigned to an indirect treatment or not 
+  * Calculate the implied quantitiy of interest for each assignment
+  * Assess the place of the actual quantitiy in the sampling distribution
 
 ## Covariate Adjustment
 
 
-### Example
+### Example {.smaller}
 
 Consider for example this data.
 
@@ -963,7 +1079,7 @@ Consider for example this data.
 
 Should you believe it?
 
-### Covariate Adjustment
+### Covariate Adjustment {.smaller}
 
 -   Population: randomly matched Baganda (80% of pop) and Banyankole (20% of pop)
 -   You find: in non-coethnic pairings 35% is offered, in coethnic pairings 48% is offered.
@@ -1008,13 +1124,15 @@ Instead you can use formula above for $\hat{\tau}_{ATE}$ to estimate ATE
 
 alternatively...
 
-### Covariate adjustment via saturated regression
+### Covariate adjustment via saturated regression {.smaller}
 
-Alternatively you can use a regression that includes both the treatment and the treatment *interacted* with the covariates.
+* Alternatively you can use propensity weights.
+* Alternatively you can use a regression that includes both the treatment and the treatment *interacted* with the covariates.
+  * In practice this is best done by *demeaning* the covariates; doing this lets you read off the average effect from the main term. Key resource: @lin2012agnostic
 
-In practice this is best done by *demeaning* the covariates; doing this lets you read off the average effect from the main term. Key resource: @lin2012agnostic
+You should have noticed that the logic for controlling for a covariate here is equivalent to the logic we saw for heterogeneous assignment propensities. These are really the same thing.
 
-### Covariate adjustment via saturated regression
+### Covariate adjustment via saturated regression {.smaller}
 
 Returning to prior example:
 
@@ -1029,7 +1147,7 @@ lm_robust(Y ~ Z*X_c, data = df |> mutate(X_c = X - mean(X))) |>
   tidy() |> kable(digits = 2)
 ```
 
-### Covariate adjustment via saturated regression
+### Covariate adjustment via saturated regression {.smaller}
 
 Returning to prior example:
 
@@ -1040,16 +1158,16 @@ lm_lin(Y ~ Z, ~ X, data = df) |>
 
 ```
 
-### Demeaning and saturating
+### Demeaning and saturating 
 
 Demeaning interactions
 
--   Say you have a factorial design with treatments X1 and X2 (or obervational data with two covariates)
+-   Say you have a factorial design with treatments X1 and X2 (or observational data with two covariates)
 -   You analyse with a model that has main terms and interaction terms
 -   Interpreting coefficients can be confusing, but sometimes demeaning can help. What does demeaning do?
 
 
-### Demeaning and saturating
+### Demeaning and saturating {.smaller}
 
 Let's:
 
@@ -1062,16 +1180,14 @@ where u is distributed $U[0,1]$.
 -   Specify estimands carefully
 -   Run analyses in which we do and do not demean the treatments; compare and explain results
 
-### Demeaning interactions
+### Demeaning interactions {.smaller}
 
 ```{r}
 f_Y <- function(X1, X2, u) .1 + .2*X1 + .3*X2 + u*X1*X2
 
 design <-
-  declare_model(N = 1000,
-                u = runif(N),
-                X1 = complete_ra(N),
-                X2 = block_ra(blocks = X1),
+  declare_model(N = 1000, u = runif(N),
+                X1 = complete_ra(N), X2 = block_ra(blocks = X1),
                 X1_demeaned = X1 - mean(X1),
                 X2_demeaned = X2 - mean(X2),
                 Y = f_Y(X1, X2, u)) +
@@ -1096,69 +1212,159 @@ design <-
 
 ### Demeaning interactions: Solution {.smaller}
 
-`f_Y <- function(X1, X2, u) .1 + .2*X1 + .3*X2 + u*X1*X2`
-
 ```{r, echo = FALSE}
 if(run)
-  design |> diagnose_design() |>write_rds("saved/demeaned.rds")
+  design |> diagnose_design(bootstrap_sims = 0) |>write_rds("saved/demeaned.rds")
 
 read_rds("saved/demeaned.rds") |> reshape_diagnosis() |> 
-  select(Inquiry,	Estimator,	Term,	'Mean Estimand',	'Mean Estimate') |>  
-  kable()
+  select(Estimator,	 Inquiry,	Term,	'Mean Estimand',	'Mean Estimate') |>  
+  arrange(Estimator, Inquiry) |>
+  kable(align = c("l", "l", "l", "c", "c"))
 
 ```
 
 It's all good. But you need to match the estimator to the inquiry: demean for average marginal effects; do not demean for conditional marginal effects.
 
-### Summary
+### Recap {.smaller}
 
 If you have different groups with different assignment propensities you can do any or all of these:
 
 1.  Blocked differences in means
 2.  Inverse propensity weighting
 3.  Saturated regression (Lin)
-
-We will compare the performances of these different approaches later.
+4.  More... (coming)
 
 You cannot (reliably):
 
 1.  Ignore the groups
 2.  Include them in a regression (without interactions)
 
-### Covariate Adjustment {#CA}
+### Covariate Adjustment: Wilder covariates {#CA}  {.smaller}
 
--   Even though randomization ensures no bias, you may sometimes **want** to "**control**" for covariates in order to improve efficiency (see the discussion of blocking above).
--   Or you may **have** to take account of the fact that the assignment to treatment is correlated with a covariate.
+- Even though randomization ensures no bias, you may sometimes **want** to "**control**" for covariates in order to improve efficiency (see the discussion of blocking above).
+- Or you may **have** to take account of the fact that the assignment to treatment is correlated with a covariate (as above).
+- In observational work you might also figure out you have to control for a covariate to justify inferences (Refer to our discussion of the backdoor criteria)
 
 ### Conditional Bias and Precision Gains from Controls
 
-Controls can do reduce noise and improve precision. This is an argument for using variables that are correlated with the output (not with the treatment).
+* Experimental motivation: Controls can  reduce noise and improve precision. This is an argument for using variables that are correlated with the output (not with the treatment).
+* Observational motivation: Controls can provide grounds for identification
 
-```{r, echo = FALSE}
+### How much gain from controls?
+
+```{r, echo = FALSE, fig.cap = "Gains as a function of the correlation of a control and an outcome"}
 knitr::include_graphics("figs/n.png")
+```
+
+### Precision Gains from Controls  {.smaller}
+
+Introducing controls can create complications
+
+* As argued by Freedman (summary from @lin2012agnostic), we can get: "worsened asymptotic precision, invalid measures of precision, and small-sample bias"$^*$
+
+* These adverse effects are essentially removed with an interacted model
+
+* See discussions in @imbens2015causal (7.6, 7.7) and especially Theorem 7.2 for the asymptotic variance of the estimator
+
+$^*$ though note that the precision concern does not hold when treatment and control groups are equally sized
+
+### To control or not {.smaller}
+
+We will illustrate by comparing:
+
+  * DIM
+  * OLS (linear controls)
+  * Lin (saturated)
+
+With:
+
+  * Varying fraction assigned to treatment
+  * Varying relation between $Y(0)$ and $Y(1)$
+
+### Declaration (from RDSS) {.smaller}
+
+```{r}
+# https://book.declaredesign.org/library/experimental-causal.html
+
+prob <- 0.5
+control_slope <- -1
+
+declaration_18.3 <-
+  declare_model(N = 100, X = runif(N, 0, 1),
+                U = rnorm(N, sd = 0.1),
+                Y_Z_1 = 1*X + U, Y_Z_0 = control_slope*X + U
+  ) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = complete_ra(N = N, prob = prob)) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, inquiry = "ATE", label = "DIM") +
+  declare_estimator(Y ~ Z + X, .method = lm_robust, inquiry = "ATE", label = "OLS") +
+  declare_estimator(Y ~ Z, covariates = ~X, .method = lm_lin, 
+                    inquiry = "ATE", label = "Lin")
+```
+
+### Implied potential outcomes
+
+The variances and covariance of potential outcomes depend on the slope parameter
+
+```{r, echo = FALSE, fig.width = 8, fig.height = 3}  
+datas <- declaration_18.3 |> 
+  redesign(control_slope = seq(-1, 1, 1)) |> 
+  lapply(function(x) draw_data(x) )   
+
+names(datas) <- paste("slope", -1:1)
+  
+datas |>    bind_rows(.id = "control_slope") |>
+  gather(var, val, -X,  -Y, -Z, -ID, -U, -control_slope) |>
+  ggplot(aes(X, val, color = var)) + geom_point(alpha = .5) + 
+  facet_grid(~control_slope) + theme_bw()
+
+```
+
+### To control or not {.smaller}
+
+Diagnosis:
+
+```{r, eval = FALSE}
+declaration_18.3 |> 
+  redesign(
+    control_slope = seq(-1, 1, 0.5), 
+    prob = seq(0.1, 0.9, 0.1)) |> 
+  diagnose_designs()
+```
+
+### To control or not {.smaller}
+
+* Lin always does well
+* OLS does fine with equal probability assignments
+* Otherwise the ranking of DIM and OLS is design dependent
+
+```{r, echo = FALSE, fig.width = 8, fig.height = 3}
+if(run)
+  declaration_18.3 |> 
+  redesign(
+    control_slope = seq(-1, 1, 0.5), 
+    prob = seq(0.1, 0.9, 0.1)) |> 
+  diagnose_designs() |>
+  write_rds("saved/freedman18.3.rds") 
+
+read_rds("saved/freedman18.3.rds")$diagnosands_df |> 
+  ggplot(aes(prob, sd_estimate, color = estimator)) + geom_line() + facet_grid(~control_slope, labeller = label_both) + theme_bw() +
+  xlab("Fraction assigned to treatment") + ylab("(real) standard error")
+
+       
+         
 ```
 
 ### Conditional Bias and Precision Gains from Controls
 
-Introducing controls can create complications
-
-As argued by Freedman (summary from @lin2012agnostic), we can get: "worsened asymptotic precision, invalid measures of precision, and small-sample bias"[^1]
-
-[^1]: though note that the precision concern does not hold when treatment and control groups are equally sized
-
-These adverse effects are essentially removed with an interacted model
-
-See discussions in @imbens2015causal (7.6, 7.7) and especialy Theorem 7.2 for the aymptotic variance of the estimator
-
-### Conditional Bias and Precision Gains from Controls
-
-Note also including controls when treatment is correlated with covariates can induce "conditional bias." Doing this will change your estimates so be sure not to fish!
+Treatment  correlated with covariates can induce "conditional bias." Including controls can change your estimates so be sure not to fish!
 
 ```{r, echo = FALSE, fig.cap = "Advantages of controlling for vars that are correlated with outcomes"}
 knitr::include_graphics("figs/cb.jpg")
 ```
 
-There are more or less sophisticated ways of doing this....
+
 
 ## Doubly robust estimation
 
@@ -1279,7 +1485,7 @@ Resource: <https://muse.jhu.edu/article/883477>
 
 ## Principle: Keep the reporting close to the design
 
-### Design based analysis {.smaller}
+### Design-based analysis {.smaller}
 
 Report the analysis that is implied by the design.
 
