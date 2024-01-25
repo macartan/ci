@@ -286,8 +286,10 @@ Consider the following data. Treatment is assigned in two blocks. One third of b
 
 * Can you estimate the ATE? How about the ATT? And the ATC?
 * How do these compare to a simple difference in means between treatment and control? 
-* Use `DeclareDesign` to compare the answers you get if you use (1) OLS and controlled for block (2)  IPW and (3)  the Lin estimator
+* Use `DeclareDesign` to compare the answers you get if you use exactly this data and calculate (1) OLS and controlled for block (2)  IPW and (3)  the Lin estimator
 * Imagine now letting the size of the data increase by a factor $k$--- meaning that if $k=2$ increase you would have twice as many units in each block. Show how the precision of your estimates changes under these different strategies as $k$ increases
+
+**Hint**: If you use exactly this data and replicate it there is no stochastic component; you can run with `sims = 1`; to get the precision of your estimates you can  declare the diagnosand `mean_se = mean(std.error)`
 :::
 
 

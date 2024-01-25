@@ -77,7 +77,7 @@ $$ Note: you cannot just ignore the blocks because assignment is no longer indep
 
 However, the formula above works fine because selecting is random *conditional* on blocks.
 
-## ATE: Blocks in practice
+### ATE: Blocks in practice
 
 Data with heterogeneous assignments:
 
@@ -97,7 +97,7 @@ estimatr::difference_in_means(Y ~ Z, data = df) |>
   tidy() |> kable(digits = 2)
 ```
 
-## ATE: Blocks in practice
+### ATE: Blocks in practice
 
 Averaging over effects in blocks
 
@@ -203,7 +203,7 @@ diagnosis$simulations_df |>
 ```
 
 
-## Fixer
+### Fixer
 
 To fix you can estimate the assignment probabilities by replicating the assignment many times:
 
@@ -234,7 +234,7 @@ draw_data(design_2) |>
 
 ```
 
-### Basic randomization: Fixer
+### Basic randomization: Fixer {#fixer}
 
 Improved results
 
@@ -270,9 +270,513 @@ You toss a coin.
 
 Great on average but *always* lousy
 
-## Example
 
-### Covariate Adjustment
+## Design Based Estimation of Variance
+
+### Var(ATE)
+
+-   Recall that the treatment effect is gotten by taking a sample of outcomes under treatment and comparing them to a sample of outcomes under control
+-   Say that there is no "error"
+-   Why would this procedure produce uncertainty?
+
+### Var(ATE)
+
+-   Why would this procedure produce uncertainty?
+-   The uncertainty comes from being uncertain about the average outcome under control from observations of the control units, and from being uncertain about the average outcome under treatment from observation of the treated units
+-   In other words, it comes from the variance in the treatment outcomes and variance in the control outcomes (and not, for example, from variance in the treatment effect)
+
+### Var(ATE) {.smaller}
+
+* In classical statistics we characterize our uncertainty over an estimate using an estimate of variance of the sampling distribution of the estimator. 
+
+* Key idea is we want to be able to say: how likely are we to have gotten such an estimate if the distribution of estimates associated with our design looked a given way.
+
+* More specifically we want to estimate "standard error" or the "standard deviation of the sampling distribution"
+
+(See [Woolridge (2023)](https://www.sciencedirect.com/science/article/pii/S0304407623002336) where the standard error is understood as the  "*estimate* of the standard deviation of the sampling distribution")
+
+
+### Variance and standard errors {.smaller}
+
+Given:
+
+* $\hat\tau$ is an estimate for $\tau$ 
+* $\overline{x}$ is the average values of $x$ 
+
+The variance of the estimator of $n$ repeated 'runs' of a design is:
+$Var(\hat{\tau}) = \frac{1}n\sum_i(\hat\tau_i - \overline{\hat\tau_i})^2$
+
+And the standard error is:
+
+
+$se(\hat{\tau}) = \sqrt{\frac{1}n\sum_i(\hat\tau_i - \overline{\hat\tau_i})^2}$
+
+### Variance and standard errors {.smaller}
+
+If we have a good measure for the *shape* of the sampling distribution we can start to make statements of the form:
+
+*  What are the chances that an estimate would be this large or larger?
+
+If the sampling distribution is roughly normal, as it may be with large samples, then we can use procedures such as:  "there is a 5%  probability that an estimate would be more than 1.96 standard errors away from the mean of the sampling distribution"
+
+### Var(ATE) {.smaller}
+
+* **Key idea**: You can estimate variance straight from the data,  given knowledge of the **assignment process** and assuming well defined potential outcomes?
+
+* Recall in general $Var(x) = \frac{1}n\sum_i(x_i - \overline{x})^2$. here the $x_i$s are the treatment effect estimates we might get under different random assignments, the $n$ is number of different assignments (assumed here all equally likely, but otherwise we can weight) and $\overline{x}$ is the truth.
+
+* For intuition imagine we have just two units $A$, $B$, with potential outcomes $A_1$, $A_0$, $B_1$, $B_0$.
+
+* When there are two units with outcomes $x_1, x_2$, the variance simplifies like this:
+
+$$Var(x) = \frac{1}2\left(x_1 - \frac{x_1 + x_2}{2}\right)^2 + \frac{1}2\left(x_2 - \frac{x_1 + x_2}{2}\right)^2 = \left(\frac{x_1 - x_2}{2}\right)^2$$
+
+### Var(ATE)  {.smaller}
+
+In the two unit case the two possible treatment estimates are: $\hat{\tau}_1=A_1 - B_0$ and $\hat{\tau}_2=B_1 - A_0$, depending on what gets put into treatment. So the variance is:
+
+$$Var(\hat{\tau}) = \left(\frac{\hat{\tau}_1 - \hat{\tau}_2}{2}\right)^2 = \left(\frac{A_1 - B_0 - B_1 - A_0}{2}\right)^2 =\left(\frac{(A_1 - B_1) - (A_0 - B_0)}{2}\right)^2 $$
+which we can re-write as:
+
+$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ (A_1 - B_1)(A_0-B_0)$$
+The first two terms correspond to the variance of $Y(1)$ and the variance of $Y(0)$. The last term is a bit pesky though, it corresponds to twice the *covariance* of $Y(1)$ and $Y(0)$. 
+
+### Var(ATE): Generalizing {.smaller}
+
+From [Freedman Prop 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
+
+$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V_1 + \frac{n_T}{n_C}V_0\right] + 2C_{01}$
+
+... where $V_0, V_1$ denote variances and $C_{01}$ covariance
+
+This is usefully rewritten as:
+
+
+
+$$
+\begin{split}
+  V(\widehat{ATE}) & = \frac{1}{n-1}\left[\frac{n - n_T}{n_T}V_1 + \frac{n - n_C}{n_C}V_0\right] + 2C_{01} \\
+    & = \frac{n}{n-1}\left[\frac{V_1}{n_T} + \frac{V_0}{n_C}\right] - \frac{1}{n-1}\left[V_1 + V_0 - 2C_{01}\right]
+\end{split}
+$$
+
+where the final term is positive
+
+### Var(ATE)
+
+Note:
+
+-   We can use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
+-   But $C_{01}$ cannot be estimated from data.
+-   The **Neyman estimator** ignores the second part (and so is conservative).
+-   Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
+
+### ATE and Var(ATE)
+
+For the case with blocking, the conservative estimator is:
+
+$V(\widehat{ATE}) = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \left({\frac{s^2_{S1}}{n_{S1}}} + {\frac{s^2_{S0}}{n_{S0}}} \right)}$
+
+### Illustration of Neyman Conservative Estimator
+
+An illustration of *how* conservative the conservative estimator of variance really is (numbers in plot are correlations between $Y(1)$ and $Y(0)$.
+
+We confirm that:
+
+1.  the estimator is conservative
+2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment %, and
+3.  with $\tau$ and $V(Y(0))$ fixed. high positive correlations are associated with highest variance.
+
+```{r, echo = FALSE}
+n    <- 100; Y0 <- scale(1:n); e <- 2*abs(Y0)     
+s    <- c(-1, -4/9, -1/9, .00001 , 1/9, 4/9, 1)   # Correlation between Y1,Y0
+Z    <- c(rep(TRUE, n/2), rep(FALSE, n/2))
+gY1  <- function(Y0, s) {.Y1 <- scale(sign(s)*( abs(s)^.5*Y0 + (1-abs(s))^.5*e))+1}
+tau  <- sapply(s, function(i) mean(gY1(Y0, i) - Y0))
+cors <- sapply(s, function(i) cor(gY1(Y0, i),  Y0))  # possible correlations
+var1 <- sapply(s, function(i) var(gY1(Y0, i)))
+phis <- sapply(s, function(i) (1/(n-1))*(2*cov(gY1(Y0, i), Y0) - var(gY1(Y0, i))-var(Y0)))  # Unknown term
+tauhat <- function(sims, s=1){
+ Y1 <- gY1(Y0, s)
+ m  <- matrix(NA, sims)
+  for(i in 1:sims){  Z=(1:100 %in% sample(n, n/2)); m[i]=mean(Y1[Z] - Y0[!Z])}
+  m}
+neyman <- function(sims, s=1, cons=1){  # Neyman Estimate
+ Y1 <- gY1(Y0, s)   
+ NE = matrix(NA, sims)
+ for(i in 1:sims){ Z <- sample(Z)
+ NE[i] <- (n/(n-1))*(var(Y1[Z])/(n/2) + var(Y0[!Z])/(n/2))+ 
+ (1-cons)*(1/(n-1))*(2*cov(Y1, Y0) - var(Y1)-var(Y0))}
+ mean(NE)}
+V   <- sapply(s, function(i) var(tauhat(5000, i)))      # True variance; Empirical estimate
+VN1 <- sapply(s, function(i) neyman(5000, i, cons=0)) # True variance; Formula check
+VN2 <- sapply(s, function(i) neyman(5000, i, cons=1)) # Neyman conservative estimate
+```
+
+### Illustration of Neyman Conservative Estimator
+
+```{r, echo = FALSE}
+plot(V, VN1, xlim=c(0, max(VN1, VN2,V)), ylim=c(0, max(V, VN1, VN2)), 
+main="Neyman estimator for  Y(1) and Y(0) correlations, ATE=1, Var(Y(0)=1, Var(Y(1) free" ,
+ylab="Conservative Neyman Estimator", xlab="True Variance", col="grey")
+lines(V, VN2, col="red"); text(V, VN2, round(cors,2), offset=TRUE); abline(0,1)
+```
+
+### Illustration of Neyman Conservative Estimator
+
+| $\tau$ | $\rho$ | $\sigma^2_{Y(1)}$ | $\Delta$ | $\sigma^2_{\tau}$ | $\widehat{\sigma}^2_{\tau}$ | $\widehat{\sigma}^2_{\tau(\text{Neyman})}$ |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| 1.00   | -1.00  | 1.00              | -0.04    | 0.00              | -0.00                       | 0.04                                       |
+| 1.00   | -0.67  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
+| 1.00   | -0.33  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
+| 1.00   | 0.00   | 1.00              | -0.02    | 0.02              | 0.02                        | 0.04                                       |
+| 1.00   | 0.33   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
+| 1.00   | 0.67   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
+| 1.00   | 1.00   | 1.00              | 0.00     | 0.04              | 0.04                        | 0.04                                       |
+
+Here $\rho$ is the unobserved correlation between $Y(1)$ and $Y(0)$; and $\Delta$ is the final term in the sample variance equation that we cannot estimate.
+
+### Tighter Bounds On Variance Estimate
+
+The conservative variance comes from the fact that you do not know the covariance between $Y(1)$ and $Y(0)$.
+
+-   But as [Aronow, Green, and Lee (2014)](http://arxiv.org/pdf/1405.6555.pdf) point out, you *do* know something.
+-   Intuitively, if you know that the variance of $Y(1)$ is 0, then the covariance also has to be zero.
+-   This basic insight opens a way of calculating bounds on the variance of the sample average treatment effect.
+
+### Tighter Bounds On Variance Estimate
+
+Example:
+
+-   Take a million-observation dataset, with treatment randomly assigned
+-   Assume $Y(0)=0$ for everyone and $Y(1)$ distributed normally with mean 0 and standard deviation of 1000.
+-   Note here the covariance of $Y(1)$ and $Y(0)$ is 0.
+-   Note the true variance of the estimated sample average treatment effect should be (approx) $\frac{Var(Y(1))}{\sqrt{1000000}} + \frac{Var(Y(0))}{\sqrt{1000000}} = 1$.
+-   But using the Neyman estimator (or OLS!) we estimate (approx) $\frac{Var(Y(1))}{\sqrt{1000000/2}} + \frac{Var(Y(0))}{\sqrt{1000000/2}} = \sqrt{2}$.
+-   But we can recover the truth knowing the covariance between $Y(1)$ and $Y(0)$ is 0.
+
+### Tighter Bounds On Variance Estimate: Code
+
+```{r}
+sharp_var <- function(yt,yc,N=length(c(yt,yc)),upper=TRUE){
+ m <- length(yt);  n <- m + length(yc)
+ V <- function(x,N) {
+       (N-1)/(N*(length(x)-1)) * sum((x - mean(x))^2)}
+ yt <- sort(yt)
+ if(upper) {yc <- sort(yc)
+       } else {yc <- sort(yc,decreasing=TRUE)}
+ p_i <- unique(sort(c(seq(0,n-m,1)/(n-m),seq(0,m,1)/m)))- 
+        .Machine$double.eps^.5
+ p_i[1] <- .Machine$double.eps^.5
+ yti <- yt[ceiling(p_i*m)]; yci <- yc[ceiling(p_i*(n-m))]
+ p_i_minus <- c(NA,p_i[1: (length(p_i)-1)])
+ return(((N-m)/m * V(yt,N) + (N-(n-m))/(n-m)*V(yc,N) +
+	   2*sum(((p_i-p_i_minus)*yti*yci)[2:length(p_i)]) -
+	   2*mean(yt)*mean(yc))/(N-1))}
+```
+
+### Illustration
+
+```{r}
+n   <- 1000000
+Y   <- c(rep(0,n/2), 1000*rnorm(n/2))
+X   <- c(rep(0,n/2), rep(1, n/2))
+ols <- round(coef(summary(lm(Y~X)))[2,],3)
+kable(t(as.matrix(ols)))
+sharp <- round(c(sharp_var(Y[X==1], Y[X==0], upper = FALSE), 
+                 sharp_var(Y[X==1], Y[X==0], upper = TRUE)),3)
+sharp
+```
+
+### Asymptotics
+
+* It is a remarkable thing that you can estimate the standard error straight from the data
+* However, once you want to *use* the standard error to do hypothesis testing you generally end up looking up distributions ($t$-distributions or normal distributions)
+* That's a little disappointing and has been one of the criticisms made by @deaton2018understanding
+
+However you *can* do hypothesis testing even without an estimate of the standard error.
+
+Up next
+
+
+
+## Randomization Inference {#ri}
+
+*A procedure for using the randomization distribution to calculate $p$ values*
+
+### Calculate a $p$ value in your head {.smaller}
+
+-   Illustrating $p$ values via "randomization inference"
+
+-   Say you randomized assignment to treatment and your data looked like this.
+
+| Unit         | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|--------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| Treatment    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   | 0   | 0   |
+| Health score | 4   | 2   | 3   | 1   | 2   | 3   | 4   | 8   | 7   | 6   |
+
+Then:
+
+-   Does the treatment improve your health?
+-   What's the $p$ value for the null that treatment had no effect on anybody?
+
+### Calculate a $p$ value in your head  {.smaller}
+
+-   Illustrating $p$ values via "randomization inference"
+-   Say you randomized assignment to treatment and your data looked like this.
+
+| Unit         | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+|--------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| Treatment    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   | 0   |
+| Health score | 4   | 2   | 3   | 1   | 2   | 3   | 4   | 8   | 7   | 6   |
+
+Then:
+
+-   Does the treatment improve your health?
+-   What's the $p$ value for the null that treatment had no effect on anybody?
+
+### Randomization Inference: Some code
+
+-   In principle it is very easy.
+-   These few lines generate data, produce the regression estimate and then an RI estimate of $p$:
+
+```{r}
+# data
+df <- fabricate(N = 2000, Z = rep(c(0,1), N/2), Y=  .1*Z + rnorm(N))
+
+# test stat
+test.stat <- function(df) with(df, mean(Y[Z==1])- mean(Y[Z==0]))
+
+# test stat distribution
+ts <- replicate(4000, df |> mutate(Z = sample(Z)) |> test.stat())
+
+# test
+mean(ts >= test.stat(df))   # One sided p value
+```
+
+
+### Randomization Inference: Some code
+
+The $p$ value is the mass to the right of the vertical
+
+```{r}
+hist(ts); abline(v = test.stat(df), col = "red") 
+```
+### Using `ri2`
+
+You can do the same using Alex Coppock's [ri2](https://cloud.r-project.org/web/packages/ri2/vignettes/ri2_vignette.html) package
+
+```{r}
+library(ri2)
+
+# Declare the assignment
+assignment <- declare_ra(N = 2000, m = 1000)
+
+# Implement
+ri2_out <- conduct_ri(
+  formula = Y ~ Z,
+  declaration = assignment,
+  sharp_hypothesis = 0,
+  data = df, 
+  p = "upper",
+  sims = 4000
+)
+
+```
+
+### Using `ri2`
+
+```{r, echo = FALSE}
+summary(ri2_out)
+```
+
+
+You'll notice slightly different answer. This is because although the procedure is "exact" it is subject to simulation error.
+
+### Randomization Inference {.smaller}
+
+-   Randomization inference can get quite a bit more complicated when you want to test a null other than the sharp null of no effect.
+-   Say you wanted to test the null that the effect is 2 for all units. How do you do it?
+-   Say you wanted to test the null that an *interaction effect* is zero. How do you do it?
+-   In both cases by filling in a potential outcomes schedule given the hypothesis in question and then generating a test statistic
+
+```{r,warning=FALSE, fig.align='center', echo = FALSE}
+
+data <- data.frame(
+  Observed_Y0 = c(1, 2, NA, NA),
+  Observed_Y1 = c(NA, NA, 4, 3),
+  UnderNull_0_Y0 = c(1, 2, 4, 3),
+  UnderNull_0_Y1 = c(1, 2, 4, 3),
+  UnderNull_2_Y0 = c(1, 2, 2, 1),
+  UnderNull_2_Y1 = c(3, 4, 4, 3)
+)
+
+# Custom labels
+custom_labels <- c("Y(0)", "Y(1)", "Y(0)", "Y(1)", "Y(0)", "Y(1)")
+
+# Rename columns before applying column_spec
+data_renamed <- data
+colnames(data_renamed) <- custom_labels
+
+kable(data_renamed, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c("Observed" = 2, "Under null that\n effect is 0" = 2, "Under null that\n effect is 2" = 2))
+
+
+```
+
+
+### RI and CIs {.smaller}
+
+It is possible to use this procedure to generate confidence intervals with a natural interpretation.
+
+
+
+### RI in practice
+
+In practice it is a good idea to create a $P$ matrix when you do your randomization (although note: if the null is about one treatment, then you are interested only in the randomization of that treatment, not the joint randomization of all)
+
+### RI Applications
+
+- Recall that  silly randomization procedure from [this slide](#fixer). 
+- Say you forgot to take account of the wacky assignment in your estimates and you estimate 0.15.
+- *Does the treatment improve your health?*: $p=?$
+
+
+
+```{r, echo = FALSE, fig.height = 3, fig.width = 8}
+diagnosis <- read_rds("saved/fixer2.rds")
+diagnosis$simulations_df |> filter(estimator == "naive") |>
+  ggplot(aes(estimate)) + geom_histogram() +
+  geom_vline(xintercept = 0, color = "red")
+
+```
+
+
+
+
+
+### RI Applications
+
+-   Randomization procedures are sometimes funky in lab experiments
+-   Using randomization inference would force a focus on the true assignment of individuals to treatments
+-   Fake (but believable) example follows
+
+### RI Applications {.smaller}
+ 
+::: {fig-optimalassigment}
+|         |          | Capacity | T1  | T2  | T3  |
+|---------|----------|----------|-----|-----|-----|
+| Session | Thursday | 40       | 10  | 30  | 0   |
+|         | Friday   | 40       | 10  | 0   | 30  |
+|         | Saturday | 10       | 10  | 0   | 0   |
+
+Optimal assignment to treatment given constraints due to facilities
+:::
+
+::: {fig-constraints}
+| Subject type | N   | Available  |
+|--------------|-----|------------|
+| A            | 3   | Thurs, Fri |
+| B            | 30  | Thurs, Sat |
+| C            | 30  | Fri, Sat   |
+
+Constraints due to subjects
+:::
+
+### RI Applications {.smaller}
+
+[If you think hard about assignment you might come up with an allocation like this.]{style="font-size:  80%;"}
+
+```{r, warning=FALSE, echo=FALSE,fig.align='center', fig.cap="Assignment of people to days"}
+df <- data.frame(
+  Subject_Type = c("A", "B", "C"),
+  N = c(30, 30, 30),
+  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
+  Thurs = c(15, 25, NA),
+  Fri = c(15, NA, 25),
+  Sat = c(NA, 5, 5)
+)
+
+# Custom labels
+custom_labels <- c("Subject type", "N", "Available", "Thurs", "Fri", "Sat")
+
+# Rename columns before applying column_spec
+colnames(df) <- custom_labels
+
+kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c(" " = 3, "Allocations" = 3))
+```
+
+[That allocation balances as much as possible. Given the allocation you might randomly assign individuals to different days as well as randomly assigning them to treatments within days. If you then figure out assignment propensities, this is what you would get:]{style="font-size: 80%;"}
+
+```{r, warning=FALSE, echo=FALSE,fig.align='center'}
+df <- data.frame(
+  Subject_Type = c("A", "B", "C"),
+  N = c(30, 30, 30),
+  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
+  T1 = c(0.25, 0.375, 0.375),
+  T2 = c(0.375, 0.625, NA),  # Use NA for missing value
+  T3 = c(0.375, 0, 0.625)
+)
+
+# Custom labels
+custom_labels <- c("Subject type", "N", "Available", "T1", "T2", "T3")
+
+# Rename columns before applying column_spec
+colnames(df) <- custom_labels
+
+kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c(" " = 3, "Assignment Probabilities" = 3))
+```
+
+### RI Applications {.smaller}
+
+[Even under the assumption that the day of measurement does not matter, these assignment probabilities have big implications for analysis.]{style="font-size: 80%;"}
+
+```{r,warning=FALSE, echo=FALSE, fig.align='center'}
+df <- data.frame(
+  Subject_Type = c("A", "B", "C"),
+  N = c(30, 30, 30),
+  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
+  T1 = c(0.25, 0.375, 0.375),
+  T2 = c(0.375, 0.625, NA),  # Use NA for missing value
+  T3 = c(0.375, 0, 0.625)
+)
+
+# Custom labels
+custom_labels <- c("Subject type", "N", "Available", "T1", "T2", "T3")
+
+# Rename columns before applying column_spec
+colnames(df) <- custom_labels
+
+kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
+  add_header_above(c(" " = 3, "Assignment Probabilities" = 3))
+```
+
+-   Only the type $A$ subjects could have received any of the three treatments.
+
+-   There are no two treatments for which it is possible to compare outcomes for subpopulations $B$ and $C$
+
+-   A comparison of $T1$ versus $T2$ can only be made for population $A \cup B$
+
+-   However subpopulation $A$ is assigned to $A$ (versus $B$) with probability 4/5; while population $B$ is assigned with probability 3/8
+
+-   **Implications for design**: need to uncluster treatment delivery
+
+-   **Implications for analysis**: need to take account of propensities
+
+**Idea**: Wacky assignments happen but if you know the propensities you can do the analysis.
+
+
+
+## Covariate Adjustment
+
+
+### Example
 
 Consider for example this data.
 
@@ -520,11 +1024,10 @@ $\frac12\left(Y_{11} - Y_{10} + Y_{21}- Y_{20}\right)$
 
 @robins1994estimation
 
-## Doubly robust estimation illustration
+### Doubly robust estimation illustration
 
-### Data with confounding
 
-Consider this data:
+Consider this data (with confounding):
 
 ```{r}
 # df with true treatment effect of 1 
@@ -591,413 +1094,15 @@ wald_test(drtmle_fit, contrast = c(-1,1))
 
 Resource: <https://muse.jhu.edu/article/883477>
 
-## Assessing performance
+### Assessing performance
 
 **Challenge**: Use `DeclareDesign` to compare performance of `drtmle` and `lm_lin`
 
-## Randomization Inference {#ri}
 
-### Calculate a $p$ value in your head
-
--   Illustrating $p$ values via "randomization inference"
-
--   Say you randomized assignment to treatment and your data looked like this.
-
-| Unit         | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
-|--------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-| Treatment    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   | 0   | 0   |
-| Health score | 4   | 2   | 3   | 1   | 2   | 3   | 4   | 8   | 7   | 6   |
-
-Then:
-
--   Does the treatment improve your health?
--   What's the $p$ value for the null that treatment had no effect on anybody?
-
-### Calculate a $p$ value in your head
-
--   Illustrating $p$ values via "randomization inference"
--   Say you randomized assignment to treatment and your data looked like this.
-
-| Unit         | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
-|--------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-| Treatment    | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 0   | 1   | 0   |
-| Health score | 4   | 2   | 3   | 1   | 2   | 3   | 4   | 8   | 7   | 6   |
-
-Then:
-
--   Does the treatment improve your health?
--   What's the $p$ value for the null that treatment had no effect on anybody?
-
-### Randomization Inference: Some code
-
--   In principle it is very easy.
--   These few lines generate data, produce the regression estimate and then an RI estimate of $p$:
-
-```{r}
-# data
-df <- fabricate(N = 200, X = rep(c(FALSE,TRUE), N/2), Y=  .1*X + rnorm(N))
-
-# test stat
-t <- function(df) with(df, mean(Y[X])- mean(Y[!X]))
-
-# test stat distribution
-ts <- replicate(1000, df |> mutate(X = sample(X)) |> t())
-
-# test
-mean(ts >= t(df))   # One sided p value
-```
-
-### Randomization Inference
-
-In practice it is a good idea to create a $P$ matrix when you do your randomization (although note: if the null is about one treatment, then you are interested only in the randomization of that treatment, not the joint randomization of all)
-
-### Randomization Inference
-
--   Say you had a silly randomization procedure and forgot to take account of it in your estimates.
-
-```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("figs/pw2.png")
-```
-
--   You estimate .15. *Does the treatment improve your health?*
-
--   $p=$?
-
-### Randomization Inference
-
--   Randomization procedures are sometimes funky in lab experiments
--   Using randomization inference would force a focus on the true assignment of individuals to treatments
--   Fake (but believable) example follows
-
-### Randomization Inference
-
-::: {fig-optimalassigment}
-|         |          | Capacity | T1  | T2  | T3  |
-|---------|----------|----------|-----|-----|-----|
-| Session | Thursday | 40       | 10  | 30  | 0   |
-|         | Friday   | 40       | 10  | 0   | 30  |
-|         | Saturday | 10       | 10  | 0   | 0   |
-
-Optimal assignment to treatment given constraints due to facilities
-:::
-
-::: {fig-constraints}
-| Subject type | N   | Available  |
-|--------------|-----|------------|
-| A            | 3   | Thurs, Fri |
-| B            | 30  | Thurs, Sat |
-| C            | 30  | Fri, Sat   |
-
-Constraints due to subjects
-:::
-
-### Randomization Inference
-
-[If you think hard about assignment you might come up with an allocation like this.]{style="font-size:  80%;"}
-
-```{r, warning=FALSE, echo=FALSE,fig.align='center', fig.cap="Assignment of people to days"}
-df <- data.frame(
-  Subject_Type = c("A", "B", "C"),
-  N = c(30, 30, 30),
-  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
-  Thurs = c(15, 25, NA),
-  Fri = c(15, NA, 25),
-  Sat = c(NA, 5, 5)
-)
-
-# Custom labels
-custom_labels <- c("Subject type", "N", "Available", "Thurs", "Fri", "Sat")
-
-# Rename columns before applying column_spec
-colnames(df) <- custom_labels
-
-kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
-  kable_styling(full_width = FALSE) %>%
-  add_header_above(c(" " = 3, "Allocations" = 3))
-```
-
-[That allocation balances as much as possible. Given the allocation you might randomly assign individuals to different days as well as randomly assigning them to treatments within days. If you then figure out assignment propensities, this is what you would get:]{style="font-size: 80%;"}
-
-```{r, warning=FALSE, echo=FALSE,fig.align='center'}
-df <- data.frame(
-  Subject_Type = c("A", "B", "C"),
-  N = c(30, 30, 30),
-  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
-  T1 = c(0.25, 0.375, 0.375),
-  T2 = c(0.375, 0.625, NA),  # Use NA for missing value
-  T3 = c(0.375, 0, 0.625)
-)
-
-# Custom labels
-custom_labels <- c("Subject type", "N", "Available", "T1", "T2", "T3")
-
-# Rename columns before applying column_spec
-colnames(df) <- custom_labels
-
-kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
-  kable_styling(full_width = FALSE) %>%
-  add_header_above(c(" " = 3, "Assignment Probabilities" = 3))
-```
-
-### Randomization Inference
-
-[Even under the assumption that the day of measurement does not matter, these assignment probabilities have big implications for analysis.]{style="font-size: 80%;"}
-
-```{r,warning=FALSE, echo=FALSE, fig.align='center'}
-df <- data.frame(
-  Subject_Type = c("A", "B", "C"),
-  N = c(30, 30, 30),
-  Available = c("Thurs, Fri", "Thurs, Sat", "Fri, Sat"),
-  T1 = c(0.25, 0.375, 0.375),
-  T2 = c(0.375, 0.625, NA),  # Use NA for missing value
-  T3 = c(0.375, 0, 0.625)
-)
-
-# Custom labels
-custom_labels <- c("Subject type", "N", "Available", "T1", "T2", "T3")
-
-# Rename columns before applying column_spec
-colnames(df) <- custom_labels
-
-kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
-  kable_styling(full_width = FALSE) %>%
-  add_header_above(c(" " = 3, "Assignment Probabilities" = 3))
-```
-
--   Only the type $A$ subjects could have received any of the three treatments.
-
--   There are no two treatments for which it is possible to compare outcomes for subpopulations $B$ and $C$
-
--   A comparison of $T1$ versus $T2$ can only be made for population $A \cup B$
-
--   However subpopulation $A$ is assigned to $A$ (versus $B$) with probability 4/5; while population $B$ is assigned with probability 3/8
-
--   **Implications for design**: need to uncluster treatment delivery
-
--   **Implications for analysis**: need to take account of propensities
-
-**Idea**: Wacky assignments happen but if you know the propensities you can do the analysis.
-
-### Randomization Inference
-
--   Randomization inference can get quite a bit more complicated when you want to test a null other than the sharp null of no effect.
--   Say you wanted to test the null that the effect is 2 for all units. How do you do it?
--   Say you wanted to test the null that an *interaction effect* is zero. How do you do it?
--   In both cases by filling in a potential outcomes schedule given the hypothesis in question and then generating a test statistic
-
-```{r,warning=FALSE, fig.align='center'}
-
-data <- data.frame(
-  Observed_Y0 = c(1, 2, NA, NA),
-  Observed_Y1 = c(NA, NA, 4, 3),
-  UnderNull_0_Y0 = c(1, 2, 4, 3),
-  UnderNull_0_Y1 = c(1, 2, 4, 3),
-  UnderNull_2_Y0 = c(1, 2, 2, 1),
-  UnderNull_2_Y1 = c(3, 4, 4, 3)
-)
-
-# Custom labels
-custom_labels <- c("Y(0)", "Y(1)", "Y(0)", "Y(1)", "Y(0)", "Y(1)")
-
-# Rename columns before applying column_spec
-data_renamed <- data
-colnames(data_renamed) <- custom_labels
-
-kable(data_renamed, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
-  kable_styling(full_width = FALSE) %>%
-  add_header_above(c("Observed" = 2, "Under null that\n effect is 0" = 2, "Under null that\n effect is 2" = 2))
-
-
-```
-
-## Design Based Estimation of Variance
-
-### Var(ATE)
-
--   Recall that the treatment effect is gotten by taking a sample of outcomes under treatment and comparing them to a sample of outcomes under control
--   Say that there is no "error"
--   Why would this procedure produce uncertainty?
-
-### Var(ATE)
-
--   Why would this procedure produce uncertainty?
--   The uncertainty comes from being uncertain about the average outcome under control from observations of the control units, and from being uncertain about the average outcome under treatment from obervation of the treated units
--   In other words, it comes from the variance in the treatment outcomes and variance in the control outcomes (and not, for example, from variance in the treatment effect)
-
-### Var(ATE) {.smaller}
-
-* You can also estimate variance straight from the data. 
-
-* Let's step back and ask: what *is* the variance of the sampling distribution given the assignment process and assuming well defined potential outcomes?
-
-* Recall in general $Var(x) = \frac{1}n\sum_i(x_i - \overline{x})^2$. here the $x_i$s are the treatment effect estimates we might get under different random assignments, the $n$ is number of different assignments (assumed here all equally likely, but otherwise we can weight) and $\overline{x}$ is the truth.
-
-* For intuition imagine we have just two units $A$, $B$, with potential outcomes $A_1$, $A_0$, $B_1$, $B_0$.
-
-* When there are two units with outcomes $x_1, x_2$, the variance simplifies like this:
-
-$$Var(x) = \frac{1}2\left(x_1 - \frac{x_1 + x_2}{2}\right)^2 + \frac{1}2\left(x_2 - \frac{x_1 + x_2}{2}\right)^2 = \left(\frac{x_1 - x_2}{2}\right)^2$$
-
-### Var(ATE)  {.smaller}
-
-In the two unit case the two possible treatment estimates are: $\hat{\tau}_1=A_1 - B_0$ and $\hat{\tau}_2=B_1 - A_0$, depending on what gets put into treatment. So the variance is:
-
-$$Var(\hat{\tau}) = \left(\frac{\hat{\tau}_1 - \hat{\tau}_2}{2}\right)^2 = \left(\frac{A_1 - B_0 - B_1 - A_0}{2}\right)^2 =\left(\frac{(A_1 - B_1) - (A_0 - B_0)}{2}\right)^2 $$
-which we can re-write as:
-
-$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ (A_1 - B_1)(A_0-B_0)$$
-The first two terms correspond to the variance of $Y(1)$ and the variance of $Y(0)$. The last term is a bit pesky though, it corresponds to twice the *covariance* of $Y(1)$ and $Y(0)$. 
-
-### Var(ATE): Generalizing {.smaller}
-
-From [Freedman Prop 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
-
-$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V_1 + \frac{n_T}{n_C}V_0\right] + 2C_{01}$
-
-... where $V_0, V_1$ denote variances and $C_{01}$ covariance
-
-This is usefully rewritten as:
-
-
-
-$$
-\begin{split}
-  V(\widehat{ATE}) & = \frac{1}{n-1}\left[\frac{n - n_T}{n_T}V_1 + \frac{n - n_C}{n_C}V_0\right] + 2C_{01} \\
-    & = \frac{n}{n-1}\left[\frac{V_1}{n_T} + \frac{V_0}{n_C}\right] - \frac{1}{n-1}\left[V_1 + V_0 - 2C_{01}\right]
-\end{split}
-$$
-
-where the final term is positive
-
-### Var(ATE)
-
-Note:
-
--   We can use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
--   But $C_{01}$ cannot be estimated from data.
--   The **Neyman estimator** ignores the second part (and so is conservative).
--   Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
-
-### ATE and Var(ATE)}
-
-For the case with blocking, the conservative estimator is:
-
-$V(\widehat{ATE}) = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \left({\frac{s^2_{S1}}{n_{S1}}} + {\frac{s^2_{S0}}{n_{S0}}} \right)}$
-
-### Illustration of Neyman Conservative Estimator
-
-An illustration of *how* conservative the conservative estimator of variance really is (numbers in plot are correlations between $Y(1)$ and $Y(0)$.
-
-We confirm that:
-
-1.  the estimator is conservative
-2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment %, and
-3.  with $\tau$ and $V(Y(0))$ fixed. high positive correlations are associated with highest variance.
-
-```{r, echo = FALSE}
-n    <- 100; Y0 <- scale(1:n); e <- 2*abs(Y0)     
-s    <- c(-1, -4/9, -1/9, .00001 , 1/9, 4/9, 1)   # Correlation between Y1,Y0
-Z    <- c(rep(TRUE, n/2), rep(FALSE, n/2))
-gY1  <- function(Y0, s) {.Y1 <- scale(sign(s)*( abs(s)^.5*Y0 + (1-abs(s))^.5*e))+1}
-tau  <- sapply(s, function(i) mean(gY1(Y0, i) - Y0))
-cors <- sapply(s, function(i) cor(gY1(Y0, i),  Y0))  # possible correlations
-var1 <- sapply(s, function(i) var(gY1(Y0, i)))
-phis <- sapply(s, function(i) (1/(n-1))*(2*cov(gY1(Y0, i), Y0) - var(gY1(Y0, i))-var(Y0)))  # Unknown term
-tauhat <- function(sims, s=1){
- Y1 <- gY1(Y0, s)
- m  <- matrix(NA, sims)
-  for(i in 1:sims){  Z=(1:100 %in% sample(n, n/2)); m[i]=mean(Y1[Z] - Y0[!Z])}
-  m}
-neyman <- function(sims, s=1, cons=1){  # Neyman Estimate
- Y1 <- gY1(Y0, s)   
- NE = matrix(NA, sims)
- for(i in 1:sims){ Z <- sample(Z)
- NE[i] <- (n/(n-1))*(var(Y1[Z])/(n/2) + var(Y0[!Z])/(n/2))+ 
- (1-cons)*(1/(n-1))*(2*cov(Y1, Y0) - var(Y1)-var(Y0))}
- mean(NE)}
-V   <- sapply(s, function(i) var(tauhat(5000, i)))      # True variance; Empirical estimate
-VN1 <- sapply(s, function(i) neyman(5000, i, cons=0)) # True variance; Formula check
-VN2 <- sapply(s, function(i) neyman(5000, i, cons=1)) # Neyman conservative estimate
-```
-
-### Illustration of Neyman Conservative Estimator
-
-```{r, echo = FALSE}
-plot(V, VN1, xlim=c(0, max(VN1, VN2,V)), ylim=c(0, max(V, VN1, VN2)), 
-main="Neyman estimator for  Y(1) and Y(0) correlations, ATE=1, Var(Y(0)=1, Var(Y(1) free" ,
-ylab="Conservative Neyman Estimator", xlab="True Variance", col="grey")
-lines(V, VN2, col="red"); text(V, VN2, round(cors,2), offset=TRUE); abline(0,1)
-```
-
-### Illustration of Neyman Conservative Estimator
-
-| $\tau$ | $\rho$ | $\sigma^2_{Y(1)}$ | $\Delta$ | $\sigma^2_{\tau}$ | $\widehat{\sigma}^2_{\tau}$ | $\widehat{\sigma}^2_{\tau(\text{Neyman})}$ |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
-| 1.00   | -1.00  | 1.00              | -0.04    | 0.00              | -0.00                       | 0.04                                       |
-| 1.00   | -0.67  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
-| 1.00   | -0.33  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
-| 1.00   | 0.00   | 1.00              | -0.02    | 0.02              | 0.02                        | 0.04                                       |
-| 1.00   | 0.33   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
-| 1.00   | 0.67   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
-| 1.00   | 1.00   | 1.00              | 0.00     | 0.04              | 0.04                        | 0.04                                       |
-
-Here $\rho$ is the unobserved correlation between $Y(1)$ and $Y(0)$; and $\Delta$ is the final term in the sample variance equation that we cannot estimate.
-
-### Tighter Bounds On Variance Estimate
-
-The conservative variance comes from the fact that you do not know the covariance between $Y(1)$ and $Y(0)$.
-
--   But as [Aronow, Green, and Lee (2014)](http://arxiv.org/pdf/1405.6555.pdf) point out, you *do* know something.
--   Intuitively, if you know that the variance of $Y(1)$ is 0, then the covariance also has to be zero.
--   This basic insight opens a way of calculating bounds on the variance of the sample average treatment effect.
-
-### Tighter Bounds On Variance Estimate
-
-Example:
-
--   Take a million-observation dataset, with treatment randomly assigned
--   Assume $Y(0)=0$ for everyone and $Y(1)$ distributed normally with mean 0 and standard deviation of 1000.
--   Note here the covariance of $Y(1)$ and $Y(0)$ is 0.
--   Note the true variance of the estimated sample average treatment effect should be (approx) $\frac{Var(Y(1))}{\sqrt{1000000}} + \frac{Var(Y(0))}{\sqrt{1000000}} = 1$.
--   But using the Neyman estimator (or OLS!) we estimate (approx) $\frac{Var(Y(1))}{\sqrt{1000000/2}} + \frac{Var(Y(0))}{\sqrt{1000000/2}} = \sqrt{2}$.
--   But we can recover the truth knowing the covariance between $Y(1)$ and $Y(0)$ is 0.
-
-### Tighter Bounds On Variance Estimate: Code
-
-```{r}
-sharp_var <- function(yt,yc,N=length(c(yt,yc)),upper=TRUE){
- m <- length(yt);  n <- m + length(yc)
- V <- function(x,N) {
-       (N-1)/(N*(length(x)-1)) * sum((x - mean(x))^2)}
- yt <- sort(yt)
- if(upper) {yc <- sort(yc)
-       } else {yc <- sort(yc,decreasing=TRUE)}
- p_i <- unique(sort(c(seq(0,n-m,1)/(n-m),seq(0,m,1)/m)))- 
-        .Machine$double.eps^.5
- p_i[1] <- .Machine$double.eps^.5
- yti <- yt[ceiling(p_i*m)]; yci <- yc[ceiling(p_i*(n-m))]
- p_i_minus <- c(NA,p_i[1: (length(p_i)-1)])
- return(((N-m)/m * V(yt,N) + (N-(n-m))/(n-m)*V(yc,N) +
-	   2*sum(((p_i-p_i_minus)*yti*yci)[2:length(p_i)]) -
-	   2*mean(yt)*mean(yc))/(N-1))}
-```
-
-### Illustration
-
-```{r}
-n   <- 1000000
-Y   <- c(rep(0,n/2), 1000*rnorm(n/2))
-X   <- c(rep(0,n/2), rep(1, n/2))
-ols <- round(coef(summary(lm(Y~X)))[2,],3)
-kable(t(as.matrix(ols)))
-sharp <- round(c(sharp_var(Y[X==1], Y[X==0], upper = FALSE), 
-                 sharp_var(Y[X==1], Y[X==0], upper = TRUE)),3)
-sharp
-```
 
 ## Principle: Keep the reporting close to the design
 
-### Design based analysis
+### Design based analysis {.smaller}
 
 Report the analysis that is implied by the design.
 
@@ -1014,3 +1119,4 @@ Report the analysis that is implied by the design.
 |              |              | (sd)                | (sd)                | (sd)                | (sd)                            |
 
 This is instantly recognizable from the design and returns all the benefits of the factorial design including all main effects, conditional causal effects, interactions and summary outcomes. It is much clearer and more informative than a regression table.
+
