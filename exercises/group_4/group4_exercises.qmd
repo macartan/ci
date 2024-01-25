@@ -198,3 +198,219 @@ query_model(
   kable(digits = 2) %>%
   kableExtra::kable_styling(font_size = 18)
 ```
+
+## Q 5.4
+
+Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it? Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to b, and so to treatment effects. Say X is missing with probability p.
+
+Compare answer strategies in which you:
+
+-   do not control for
+-   do control for but drop whenever is missing and
+-   Treat as a block in your analysis design with three values (0, 1, and missing).
+
+### Varying N
+
+```{r}
+p <- 0.5
+
+# Model with standard random assignment
+model_random <-
+  declare_model(
+    N = 100,
+    b = 0.5,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                  sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
+                  sample(x = c(0, NA), size = N, prob = c(1-p, p), replace = TRUE)),
+    U = X + rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  )
+
+inquiry_ate <- 
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0))
+
+data_strategy_ra <- 
+  declare_assignment(Z = complete_ra(N)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z))
+  
+answer_strategy_ra <-  
+  declare_estimator(Y ~ Z, covariates = ~X, .method = lm_lin, inquiry = "ATE", label = "X Complete") +
+  declare_estimator(Y ~ Z, inquiry = "ATE", label = "X Drop") +
+  declare_estimator(Y ~ Z, covariates = ~X_mi, .method = lm_lin, inquiry = "ATE", label = "X Incomplete")
+
+design_54_N_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strategy_ra
+
+# Model with block random assignment
+model_blocks <-
+  declare_model(
+    N = 100,
+    b = 1,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                  sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
+                  sample(x = c(0, NA), size = N, prob = c(1-p, p), replace = TRUE)),
+    Blocks = case_when(X_mi == 1 ~ "one",
+                       X_mi == 0 ~ "zero",
+                       is.na(X_mi) == TRUE ~ "missing"),
+    U = X + rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  )
+
+data_strategy_bl <-
+  declare_assignment(Z = block_ra(blocks = Blocks),
+                     Y = reveal_outcomes(Y ~ Z))
+  
+answer_strategy_bl <-
+  declare_estimator(Y ~ Z, covariates = ~X_mi, .method = lm_lin, label = "X Blocks") # including fixed effects for blocks by inserting Blocks as a factor
+
+design_54_N_bl <- model_blocks + inquiry_ate + data_strategy_bl + answer_strategy_bl
+
+# Varying N
+design_54_N_ra <- redesign(design_54_N_ra, N = c(100, 500, 1000))
+design_54_N_bl <- redesign(design_54_N_bl, N = c(100, 500, 1000))
+
+designs_vary_N <- append(design_54_N_ra,
+                         design_54_N_bl)
+
+names(designs_vary_N) <-
+  list("N = 100 Random",
+       "N = 500 Random",
+       "N = 1000 Random",
+       "N = 100 Blocks",
+       "N = 500 Blocks",
+       "N = 1000 Blocks")
+```
+
+```{r}
+designs_vary_N %>% 
+  diagnose_design() %>%
+  reshape_diagnosis(exclude = c(
+    "b", "Inquiry", "Outcome", "N Sims", "Mean Estimand", "Bias", "SD Estimate", "Coverage"
+  ))
+```
+
+### Varying p
+
+```{r}
+p01 <- 0.1
+p09 <- 0.9
+
+# Using basic model components with N = 100
+design_54_p05_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_p05_bl <- model_blocks + inquiry_ate + data_strategy_bl + answer_strategy_bl
+
+# New models with p = 0.1
+model_random_p01 <- # random assignment
+  declare_model(
+    N = 100,
+    b = 0.5,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                  sample(x = c(1, NA), size = N, prob = c(1-p01, p01), replace = TRUE),
+                  sample(x = c(0, NA), size = N, prob = c(1-p01, p01), replace = TRUE)),
+    U = X + rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  )
+
+design_54_p01_ra <- model_random_p01 + inquiry_ate + data_strategy_ra + answer_strategy_ra
+
+model_blocks_p01 <-
+  declare_model(
+    N = 100,
+    b = 1,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                     sample(x = c(1, NA), size = N, prob = c(1-p01, p01), replace = TRUE),
+                     sample(x = c(0, NA), size = N, prob = c(1-p01, p01), replace = TRUE)),
+    Blocks = case_when(X_mi == 1 ~ "one",
+                         X_mi == 0 ~ "zero",
+                         is.na(X_mi) == TRUE ~ "missing"),
+    U = X + rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  )
+
+design_54_p01_bl <- model_blocks_p01 + inquiry_ate + data_strategy_bl + answer_strategy_bl
+
+# New models with p = 0.9
+model_random_p09 <- # random assignment
+  declare_model(
+    N = 100,
+    b = 0.5,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                  sample(x = c(1, NA), size = N, prob = c(1-p09, p09), replace = TRUE),
+                  sample(x = c(0, NA), size = N, prob = c(1-p09, p09), replace = TRUE)),
+    U = X + rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  )
+
+design_54_p09_ra <- model_random_p09 + inquiry_ate + data_strategy_ra + answer_strategy_ra
+
+model_blocks_p09 <-
+  declare_model( # block assignment
+    N = 100,
+    b = 1,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                     sample(x = c(1, NA), size = N, prob = c(1-p09, p09), replace = TRUE),
+                     sample(x = c(0, NA), size = N, prob = c(1-p09, p09), replace = TRUE)),
+    Blocks = case_when(X_mi == 1 ~ "one",
+                         X_mi == 0 ~ "zero",
+                         is.na(X_mi) == TRUE ~ "missing"),
+    U = X + rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  )
+
+design_54_p09_bl <- model_blocks_p09 + inquiry_ate + data_strategy_bl + answer_strategy_bl
+
+designs_vary_p <- list("p = 0.1 random" = design_54_p01_ra,
+                       "p = 0.1 block" = design_54_p01_bl,
+                       "p = 0.5 random" = design_54_p05_ra, 
+                       "p = 0.5 block" = design_54_p05_bl,
+                       "p = 0.9 random" = design_54_p09_ra,
+                       "p = 0.9 block" = design_54_p09_bl)
+```
+
+```{r}
+#| warning: false
+
+designs_vary_p %>% 
+  diagnose_design() %>%
+  reshape_diagnosis(exclude = c(
+    "b", "Inquiry", "Outcome", "N Sims", "Mean Estimand", "Bias", "SD Estimate", "Coverage"
+  ))
+```
+
+### Varying b
+
+```{r}
+# Using basic model components with N = 100
+design_54_b_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_b_bl <- model_blocks + inquiry_ate + data_strategy_bl + answer_strategy_bl
+
+# Varying b
+design_54_b_ra <- redesign(design_54_b_ra, b = c(0.1, 0.5, 0.9))
+design_54_b_bl <- redesign(design_54_b_bl, b = c(0.1, 0.5, 0.9))
+
+designs_vary_b <- append(design_54_b_ra,
+                         design_54_b_bl)
+
+names(designs_vary_b) <-
+  list("b = 0.1 Random",
+       "b = 0.5 Random",
+       "b = 0.9 Random",
+       "b = 0.1 Blocks",
+       "b = 0.5 Blocks",
+       "b = 0.9 Blocks")
+```
+
+```{r}
+#| warning: false
+
+designs_vary_b %>% 
+  diagnose_design() %>%
+  reshape_diagnosis(exclude = c(
+    "b", "Inquiry", "Outcome", "N Sims", "Mean Estimand", "Bias", "SD Estimate", "Coverage"
+  ))
+```
