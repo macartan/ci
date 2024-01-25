@@ -1,0 +1,194 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Exercise 4.1 & 5.1"
+author: "Nora Chirikure, Ziyu Lin, Felix Hüskes, Anton Bogs & Elias Koch"
+---
+```{r setup, include=FALSE}
+pacman::p_load(knitr, tidyverse, CausalQueries, DeclareDesign, rvest, kableExtra, knitr, ggdag) #load packages
+
+table_5_1 <- html_nodes(read_html("https://macartan.github.io/ci/exercises.html#estimation-and-inference-frequentist"), #pull data for 5.1
+                    "table") 
+```
+
+
+# Collider Bias (4.1)
+Declare a simple design in which 
+
+- X and Y both have a positive effect on (binary) K but X does not cause Y 
+- a researcher conditions on K == 1 when estimating the effect of X on Y
+
+Show that this can generate biased results. ***Can you find situations where the bias can be either positive or negative?***
+
+## DAG
+```{r}
+set.seed(12) 
+dagify(K ~ X,
+       K ~ Y,
+       outcome = "K",
+       exposure = c("X", "Y"),
+       labels = c("K" = "K==1")) |> 
+  ggdag(use_labels = "label")+
+  theme_dag()
+```
+
+## How can the relationship between X and Y be changed?
+
+###  *K = rbinom(N, 1, prob = pnorm(X + Y))*
+```{r}
+M1 <- 
+  declare_model(
+    N = 100000, 
+    X = rnorm(N),
+    Y = rnorm(N),
+    K = rbinom(N, 1, prob = pnorm(X + Y))) +
+  declare_inquiry(Ybar = mean(Y[X==1])) +
+  declare_sampling(S = simple_rs(N, prob = 0.2), 
+                   filter = S == 1) +
+  declare_estimator(
+    Y ~ X,
+    .method = lm_robust,
+    .summary = tidy,
+    term = "X",
+    inquiry = "ATE",
+    label = "OLS",
+    subset = K == 1
+  )
+
+draw_data(M1)|> ggplot(aes(X, Y, color =K)) + geom_point()
+```
+
+###  *K = rbinom(N, 1, prob = pnorm(X x Y))*
+```{r}
+M2 <- 
+  declare_model(
+    N = 100000, 
+    X = rnorm(N),
+    Y = rnorm(N),
+    K = rbinom(N, 1, prob = pnorm(X * Y))) +
+  declare_inquiry(Ybar = mean(Y[X==1])) +
+  declare_sampling(S = simple_rs(N, prob = 0.2), 
+                   filter = S == 1) +
+  declare_estimator(
+    Y ~ X,
+    .method = lm_robust,
+    .summary = tidy,
+    term = "X",
+    inquiry = "ATE",
+    label = "OLS",
+    subset = K == 1
+  )
+
+draw_data(M2)|> ggplot(aes(X, Y, color =K)) + geom_point()
+
+```
+
+
+### *K = rbinom(N, 1, prob = pnorm(X / Y))*
+```{r}
+M3 <- 
+  declare_model(
+    N = 100000, 
+    X = rnorm(N),
+    Y = rnorm(N),
+    K = rbinom(N, 1, prob = pnorm(X / Y))) +
+  declare_inquiry(Ybar = mean(Y[X==1])) +
+  declare_sampling(S = simple_rs(N, prob = 0.2), 
+                   filter = S == 1) +
+  declare_estimator(
+    Y ~ X,
+    .method = lm_robust,
+    .summary = tidy,
+    term = "X",
+    inquiry = "ATE",
+    label = "OLS",
+    subset = K == 1
+  )
+
+draw_data(M3)|> ggplot(aes(X, Y, color =K)) + geom_point()
+```
+
+# Estimators (5.1)
+```{r}
+table_data <- html_table(table_5_1, fill = TRUE)[[5]] %>%
+  rename("Treat" = "Z",
+         "Outcome" = "Y")
+kable(table_data, "html") %>%
+  kable_styling() %>%
+  scroll_box(width = "100%")
+```
+
+## Block-Wise Estimated Effects
+```{r}
+# Calculating ATE (ATT and ATU would require pre-treatment observations)
+mean_treatment_1 <- mean(table_data$Outcome[table_data$Block == "1" & 
+                                              table_data$Treat == "1"])
+mean_control_1 <- mean(table_data$Outcome[table_data$Block == "1" & 
+                                            table_data$Treat == "0"])
+
+mean_treatment_2 <- mean(table_data$Outcome[table_data$Block == "2" & 
+                                              table_data$Treat == "1"])
+mean_control_2 <- mean(table_data$Outcome[table_data$Block == "2" & 
+                                            table_data$Treat == "0"])
+
+te_1 <- mean_treatment_1 - mean_control_1
+te_2 <- mean_treatment_2 - mean_control_2
+
+
+
+# Plot Treatment Effects
+df_te <- data.frame(Block = c("Block 1", "Block 2"),
+                     te = c(te_1, te_2))
+
+plot_te <- ggplot(df_te, aes(x = Block, y = te)) +
+  geom_point(aes(size = 3)) +
+  scale_size(guide = "none") +
+  lims(y = c(0, 1.2)) +
+  labs(x = "",
+       y = "Estimated Effect of Z")
+plot_te
+
+```
+
+## ATE, ATT, ATU, DIM
+```{r}
+ate <- #ATE
+  (3/9)* #Share of observations in Block 1
+  te_1+
+  (6/9)* # Share of observations in Block 2
+  te_2
+
+atc <- #ATC
+  (2/5)* #Share of control observations in Block 1
+  te_1+
+  (3/5)* #Share of control observations in Block 2
+  te_2
+
+att <- # ATT
+  (1/4)* #Share of treated observations in Block 1
+  te_1+
+  (3/4)* #Share of treated observations in Block 2
+  te_2
+
+dim <- #DIM
+  (3/4)-
+  (1/5)
+
+
+measures <- data.frame(Measures = c("Average Treatment\nEffect (ATT)", "Average Treatment Effect\non the Control (ATC)", "Average Treatment Effect\non the Treated (ATT)", "Difference in\nMeans (DIM)"),
+                       Effect = c(ate, atc, att, dim))
+
+ggplot(measures, aes(x = Measures %>% reorder(Effect), y = Effect))+
+  geom_col()+
+  labs(x = "")
+```
+
+## Redesinging & Diagnosing the last Design
+
