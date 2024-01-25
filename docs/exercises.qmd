@@ -279,28 +279,40 @@ Consider the following data. Treatment is assigned in two blocks. One third of b
 | 1     | 1 | 1 |
 | 2     | 0 | 0 |
 | 2     | 0 | 0 |
-| 2     | 1 | 0 |
+| 2     | 0 | 1 |
 | 2     | 1 | 0 |
 | 2     | 1 | 1 |
 | 2     | 1 | 1 |
 
 * Can you estimate the ATE? How about the ATT? And the ATC?
 * How do these compare to a simple difference in means between treatment and control? 
-* What would you get if you did OLS and controlled for block?
+* Use `DeclareDesign` to compare the answers you get if you use exactly this data and calculate (1) OLS and controlled for block (2)  IPW and (3)  the Lin estimator
+* Imagine now letting the size of the data increase by a factor $k$--- meaning that if $k=2$ increase you would have twice as many units in each block. Show how the precision of your estimates changes under these different strategies as $k$ increases
 
+**Hint**: If you use exactly this data and replicate it there is no stochastic component; you can run with `sims = 1`; to get the precision of your estimates you can  declare the diagnosand `mean_se = mean(std.error)`
 :::
 
 
-::: {.Q #q-weights}
+::: {.Q #q-ri1}
 
-**what weights**
+**randomization inferences**
 
-Say you sampled subject A with probability .6 and subject B with probability .4. Say you assigned each to treatment with probability .6. What weight should you put on A in your analysis if they end up in treatment? What if they end up in control? How about B?
+Declare a factorial design with two binary treatments and an interaction between them. For example $Y = .1*X1 + .3*X2 -  .2*X1*X2$
+
+Have a non-stochastic model declaration so that the only source of randomness is in the assignment procedure.
+
+Calculate a $p$ values for the null hypothesis of *no interaction between treatments* using randomization inference. 
+
+* Bonus: Can you check the validity of the p value using the simulations dataframe?
+
+Hint: You can use the `ri2` package.  Hint you can keep the top level fixed by declaring shocks outside the design (`U <- rnorm(N)`) or by using a simulation vector in diagnosis (`sims = c(1,1,500, 1, ...)`)
 
 :::
 
 
 ::: {.Q #q-lin}
+
+**doubly robust**
 
 Replicate Table 1 in @lin2012agnostic; ignore first rows which are theoretical results; include standard errors of  estimates (these are not included in Table 1 but are produced by `diagnose_design`); 'Tyranny of the minority' estimator is optional.
 
@@ -333,20 +345,77 @@ Assess performance (RMSE) over a range of values for `p` and `b`. How do you thi
 # Bayesian 
 
 
+
+
 ::: {.Q #q-POC}
 
-* Set up a model in which $X \rightarrow Y$ ($X$ as if $Y$) and there is a true effect of 0.56.
+**Clues from causal processes**
+
+* Set up a model in which $X \rightarrow Y$ ($X$ as if random) and there is a true effect of 0.56.
 * Update using large data generated according to some distribution over causal types
 * Calculate a  posterior on the share of  $X=1, Y=1$ cases for which $Y=1$ is due to $X=1$
 * Say you know that the effect of $X$ on $Y$ passes through $M$ and so you have model $X \rightarrow M \rightarrow Y$ and effects of 0.8 at the first stage and .7 at the second stage.
 * Update using large data generated according to some distribution over causal types
 * Calculate a  posterior on the share of  $X=1, Y=1$ cases for which $Y=1$ is due to $X=1$ (a) when you know that $M=1$ and (b) when you know that $M=0$
 
+Bonus: Say instead of a single mediator $M$ you had a chain: $M_1, M_2, \dots$. Does lengthening the chain sufficiently allow you to identify causal effects?
+
 :::
 
 
+::: {.Q #q-napkin}
 
-To come
+**Napkin identification**
+
+Consider the Napkin model: `W->Z->X->Y; W <-> X; W <-> Y`
+
+```{r, fig.height = 3, fig.width = 6}
+make_model("W->Z->X->Y; W <-> X; W <-> Y") |> plot(x_coord = 1:4, y_coord = c(1,1,1,1))
+```
+
+Consider some true parameter vector and generate data from this vector, varying the amount of data from 10 to 100 to 1000 observations. Assume in particular that there is confounding: e.g. that the probability $X=1, Y=1$ depends on $W$.
+
+In each case calculate the posterior distribution on the average effect of $X$ on $Y$. Assess whether the quantity appears to be identified. 
+
+Can you use a formula to calculate an  effect directly?
+
+Hint:  You can generate a "target" model, generate data from that,  and calculate from that a target query.
+
+```{r, eval = FALSE}
+target_model <- make_model("W->Z->X->Y; W <-> X; W <-> Y") |>  
+  set_parameters(param_name = "Y.11_W.1", parameters = .9) |> 
+  set_parameters(param_name = "X.11_W.1", parameters = .9)
+```
+
+Note: this is hard because  the `W <-> Y` confounding implies an `X <-> Y` confounding. There is no scope for front door adjustment. If you control for $W$ you open a path from $X$ to $Y$ (since $W$ is a collider) and, more subtly, conditioning on $Z$ also partly opens a collider path. See this discussion: https://twitter.com/analisereal/status/1273099716956430340
+
+:::
+
+
+::: {.Q #q-Priors}
+
+**Priors matter**
+
+Generate a simple experimental design and estimate treatment effects using a (a) Bayesian regression with `rstanarm`. Provide informative priors (b) `lm_robust`
+
+Let the size of the data increase from 10 to 1000 and: plot the estimates from the two approaches as $N$ increases,  plot the average standard error and the posterior variance from the two approaches as $N$ increases.
+
+:::
+
+
+::: {.Q #q-Hierarchy}
+
+**Hierarchical** 
+
+Generate a simple multilevel experimental design (e.g 20 children each in 20 schools). Assume that the treatment effect in each schools is draw from a normal distribution with a given variance $\sigma$.
+
+Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover $\sigma$. 
+
+Bonus: Are estimates of treatment effects more or less reliable than what you would get from a frequentist approach that interacts school IDs with treatment?
+
+:::
+
+
 
 # Experimental Design
 
@@ -513,5 +582,14 @@ No exercises
 
 
 
+# Other
+
+::: {.Q #q-weights}
+
+**what weights**
+
+Say you sampled subject A with probability .6 and subject B with probability .4. Say you assigned each to treatment with probability .6. What weight should you put on A in your analysis if they end up in treatment? What if they end up in control? How about B?
+
+:::
 
 # References

@@ -274,7 +274,7 @@ Informally a quantity is "identified" if it can be "recovered" once you have eno
 -   If I gather lots and lots of data on the wages of (male and female) couples, e.g. $x^c_i = x^m_i + x^w_i$ then, although this will be informative, it will never be sufficient to recover $x^m$ for men and $x^w$.
 -   I can recover $x^c$, but there are too many combinations of possible values of $x^m$ and $x^w$ consistent with the observed data.
 
-### Identification : Goal
+### Identification : Goal {.smaller}
 
 Our goal in causal inference is to estimate quantities such as:
 

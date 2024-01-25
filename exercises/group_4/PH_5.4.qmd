@@ -1,0 +1,105 @@
+---
+title: "PH_5.4"
+format: html
+editor: visual
+---
+
+```{r include=FALSE}
+p_needed <- c(
+  "knitr",
+  "tidyverse",
+  "CausalQueries",
+  "DeclareDesign",
+  "ggdag",
+  "ggplot2",
+  "dagitty",
+  "mice" # insert missings
+)
+
+# check if packages are installed and if not, install them
+lapply(p_needed[!(p_needed %in% rownames(installed.packages()))], install.packages)
+
+# prepare packages for use with library
+lapply(p_needed, library, character.only = TRUE)
+```
+
+```{r}
+set.seed(84756)
+```
+
+# 5.4
+
+Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it? Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to b, and so to treatment effects. Say X is missing with probability p.
+
+Compare answer strategies in which you:
+
+- do not control for 
+- do control for but drop whenever is missing and
+- Treat as a block in your analysis design with three values (0, 1, and missing).
+
+```{r}
+p <- 0.5 # probability of missingeness in  X
+samplesize <- 100
+
+# With complete X, X missing completely at random, and X dropped
+design_1 <- 
+  declare_model(
+    b = 0.5,
+    N = samplesize,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mcar = ifelse(is.na(X) == FALSE, # New version of X with missings (missing completely at random)
+                   sample(x = c(0, 1, NA), size = N, prob = c((1-p)/2, (1-p)/2, p), replace = TRUE)),
+    U = rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b*X + U, conditions = list(Z = c(0, 1)))
+    ) +
+  declare_assignment(Z = complete_ra(N),
+                     Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z + b*X + U, inquiry = "ate", label = "X") +
+  declare_estimator(Y ~ Z + U, inquiry = "ate", label = "Without X") +
+  declare_estimator(Y ~ Z + b*X_mcar + U, inquiry = "ate", label = "X MCAR")
+
+# With Blocks for X
+design_2 <-
+  declare_model(
+    b = 0.5,
+    N = samplesize,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mcar = ifelse(is.na(X) == FALSE, # New version of X with missings (missing completely at random)
+                   sample(x = c(0, 1, NA), size = N, prob = c((1-p)/2, (1-p)/2, p), replace = TRUE)),
+    Blocks = case_when(X_mcar == 1 ~ "one",
+                       X_mcar == 0 ~ "zero",
+                       is.na(X_mcar) == TRUE ~ "missing"),
+    U = rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b*X + U, conditions = list(Z = c(0, 1)))
+    ) +
+  declare_assignment(Z = block_ra(blocks = Blocks),
+                     Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z + factor(Blocks) + U, inquiry = "ate", label = "X MCAR Blocks") # including fixed effects for blocks by inserting Blocks as a factor
+```
+
+```{r}
+#| warning: false
+
+data_1 <- draw_data(design_1)
+data_2 <- draw_data(design_2)
+
+design_1 %>% 
+  run_design() %>%
+  kable()
+
+design_2 %>% 
+  run_design() %>%
+  kable()
+
+design_1 %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+
+design_2 %>% 
+  diagnose_design() %>%
+  reshape_diagnosis()
+```
+
+The diagnosis reveals that the RMSE varies with across different design specifications. For dropping X entirely, the RMSE equals 0.05. For including the missings of X and thereby dropping around half of the observations, the RMSE amounts 0.08. With Blocks, the RMSE seems to be the similar to the approach where X is dropped, yielding an RMSE of 0.05.
