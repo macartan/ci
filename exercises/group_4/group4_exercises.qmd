@@ -223,7 +223,7 @@ model_random <-
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                   sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
                   sample(x = c(0, NA), size = N, prob = c(1-p, p), replace = TRUE)),
-    U = X + rnorm(N, mean = 0, sd = 1),
+    U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
@@ -245,7 +245,7 @@ design_54_N_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strateg
 model_blocks <-
   declare_model(
     N = 100,
-    b = 1,
+    b = 0.5,
     X = rbinom(N, size = 1, prob = 0.5),
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                   sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
@@ -253,7 +253,7 @@ model_blocks <-
     Blocks = case_when(X_mi == 1 ~ "one",
                        X_mi == 0 ~ "zero",
                        is.na(X_mi) == TRUE ~ "missing"),
-    U = X + rnorm(N, mean = 0, sd = 1),
+    U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
@@ -309,7 +309,7 @@ model_random_p01 <- # random assignment
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                   sample(x = c(1, NA), size = N, prob = c(1-p01, p01), replace = TRUE),
                   sample(x = c(0, NA), size = N, prob = c(1-p01, p01), replace = TRUE)),
-    U = X + rnorm(N, mean = 0, sd = 1),
+    U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
@@ -318,7 +318,7 @@ design_54_p01_ra <- model_random_p01 + inquiry_ate + data_strategy_ra + answer_s
 model_blocks_p01 <-
   declare_model(
     N = 100,
-    b = 1,
+    b = 0.5,
     X = rbinom(N, size = 1, prob = 0.5),
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                      sample(x = c(1, NA), size = N, prob = c(1-p01, p01), replace = TRUE),
@@ -326,7 +326,7 @@ model_blocks_p01 <-
     Blocks = case_when(X_mi == 1 ~ "one",
                          X_mi == 0 ~ "zero",
                          is.na(X_mi) == TRUE ~ "missing"),
-    U = X + rnorm(N, mean = 0, sd = 1),
+    U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
@@ -341,7 +341,7 @@ model_random_p09 <- # random assignment
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                   sample(x = c(1, NA), size = N, prob = c(1-p09, p09), replace = TRUE),
                   sample(x = c(0, NA), size = N, prob = c(1-p09, p09), replace = TRUE)),
-    U = X + rnorm(N, mean = 0, sd = 1),
+    U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
@@ -350,7 +350,7 @@ design_54_p09_ra <- model_random_p09 + inquiry_ate + data_strategy_ra + answer_s
 model_blocks_p09 <-
   declare_model( # block assignment
     N = 100,
-    b = 1,
+    b = 0.5,
     X = rbinom(N, size = 1, prob = 0.5),
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                      sample(x = c(1, NA), size = N, prob = c(1-p09, p09), replace = TRUE),
@@ -358,7 +358,7 @@ model_blocks_p09 <-
     Blocks = case_when(X_mi == 1 ~ "one",
                          X_mi == 0 ~ "zero",
                          is.na(X_mi) == TRUE ~ "missing"),
-    U = X + rnorm(N, mean = 0, sd = 1),
+    U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
