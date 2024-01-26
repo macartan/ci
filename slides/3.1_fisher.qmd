@@ -377,7 +377,7 @@ $$Var(x) = \frac{1}2\left(x_1 - \frac{x_1 + x_2}{2}\right)^2 + \frac{1}2\left(x_
 
 In the two unit case the two possible treatment estimates are: $\hat{\tau}_1=A_1 - B_0$ and $\hat{\tau}_2=B_1 - A_0$, depending on what gets put into treatment. So the variance is:
 
-$$Var(\hat{\tau}) = \left(\frac{\hat{\tau}_1 - \hat{\tau}_2}{2}\right)^2 = \left(\frac{A_1 - B_0 - B_1 - A_0}{2}\right)^2 =\left(\frac{(A_1 - B_1) - (A_0 - B_0)}{2}\right)^2 $$
+$$Var(\hat{\tau}) = \left(\frac{\hat{\tau}_1 - \hat{\tau}_2}{2}\right)^2 = \left(\frac{(A_1 - B_0) - (B_1 - A_0)}{2}\right)^2 =\left(\frac{(A_1 - B_1) + (A_0 - B_0)}{2}\right)^2 $$
 which we can re-write as:
 
 $$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ (A_1 - B_1)(A_0-B_0)$$
@@ -1063,8 +1063,8 @@ A particularly interesting application is where a random assignment combines wit
 * That means the subject has a complex *clustered* assignment that depends on how many friends they have
 * A bit mind-boggling, but:
   * Rerun your assignment many times and each time figure out whether a subject is assigned to an indirect treatment or not 
-  * Calculate the implied quantitiy of interest for each assignment
-  * Assess the place of the actual quantitiy in the sampling distribution
+  * Calculate the implied quantity of interest for each assignment
+  * Assess the place of the actual quantity in the sampling distribution
 
 ## Covariate Adjustment
 

@@ -306,9 +306,8 @@ Answer: arguably neither since X1 makes no difference given the value of X2, and
 
 One could also argue that the package of X1 and X2 produced the effect, though this depends on a coarsening of the treatments.
 
-# 3.4 Rival causes  {.smaller}
 
-## Puzzle 1  {.smaller}
+## Puzzle   {.smaller}
 
 Consider a process with: Y(0,0) =0,   Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.
 
@@ -319,9 +318,8 @@ Consider a process with: Y(0,0) =0,   Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.
 
 Arguably both since X1 makes a difference given the value of X2, and similarly   X2 makes a difference given the value of X1.
 
-# 3.4 Rival causes  {.smaller}
 
-## Puzzle 2  {.smaller}
+## Puzzle   {.smaller}
 
 Consider a process with: Y(0,0) =0,   Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.
 
@@ -351,7 +349,7 @@ However:
 
 *The rare event is more likely to have been pivotal* when causes are complements
 
-# 3.3 Effects on changes  {.smaller}
+# 3.4 Effects on changes  {.smaller}
 
 ## Puzzle   {.smaller}
 
@@ -398,7 +396,7 @@ design <-
 
 ```
 
-## 4.1 Diagnosis  {.smaller}
+## Diagnosis  {.smaller}
 
 ```{r, eval = FALSE}
 
@@ -458,7 +456,7 @@ expand_grid(A=0:1, B = 0:1, C= 0:1)|>
 Set up a model in `DeclareDesign` that has this distribution. Draw a large dataset from it and check if relations of conditional independence implied by your DAG.
 
 
-## 4.3 Answer  {.smaller}
+## Answer  {.smaller}
 
 We have a table of probabilities for all data realizations for 3 binary nodes. This distribution is consistent with some but not all relations of conditional independence, which makes them consistent with some but not all DAGs.
 
@@ -472,7 +470,7 @@ So: *C and B are conditionally independent given A*
 
 These are our clues.
 
-## 4.3 Answer  {.smaller}
+## Answer  {.smaller}
 
 Calculations confirming these clues:
 
@@ -486,7 +484,7 @@ df |> group_by(A, B) |> mutate(p = p/sum(p)) |> ungroup()  |> filter(C==1)
 ```
 
 
-## 4.3 Answer  {.smaller}
+## Answer  {.smaller}
 
 So one possibility is $B \rightarrow A \rightarrow C$
 
@@ -496,7 +494,7 @@ $$\Pr(b)\Pr(a|b)\Pr(c|a)$$
 
 Now lets figure out these probabilities and conditional probabilities
 
-## 4.3 Find a DAG, find probabilities  {.smaller}
+## Find a DAG, find probabilities  {.smaller}
 
 The probability that $C=1$ is 0.4:
 
@@ -517,7 +515,7 @@ df |> filter(C==0) |> mutate(p = p/sum(p)) |> filter(A==1) |> summarize(sum(p))
 ```
 
 
-## 4.3 Find a DAG, find probabilities  {.smaller}
+## Find a DAG, find probabilities  {.smaller}
 
 The probability that $B=1$ given $A=1$: 0.75
 
@@ -531,7 +529,7 @@ The probability that $B=1$ given $A=0$: 0.2
 df |> filter(A==0) |> mutate(p = p/sum(p)) |> filter(B==1) |> summarize(sum(p))
 ```
 
-## 4.3 Find a DAG, find probabilities  {.smaller}
+## Find a DAG, find probabilities  {.smaller}
 
 So for example:
 
@@ -539,7 +537,7 @@ So for example:
 
 and so on
 
-## 4.3 Design declaration
+## Design declaration
 
 
 We will just do the model step:
@@ -558,7 +556,7 @@ model() |> group_by(A, B, C) |> summarize(p = n()/10000) |> round(2)
 
 # 4.4 Front door criterion {.smaller}
 
-## 4.4 Answer  {.smaller}
+## Answer  {.smaller}
 
 The first example satisfies the "front door criterion" which we cover in week 2. 
 
@@ -717,3 +715,48 @@ design |>
 ## Diagnosis {.smaller}
 
 The OLS bias never goes away. The precision gains from lin over IPW gradually drop out.
+
+
+# 5.3 Lin
+
+## Design
+
+```{r}
+nA <- 750
+x  <- runif(1000, -4, 4)
+
+lin_replication <-
+  declare_model(N = 1000, z = runif(N, 0, 1),
+                Y_Z_1 = (exp(x) + exp(x/2))/4 + rnorm(N), 
+                Y_Z_0 = (-exp(x) - exp(x/2))/4 + rnorm(N)
+  ) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = complete_ra(N = N, m = nA)) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, inquiry = "ATE", label = "DIM") +
+  declare_estimator(Y ~ Z + x, inquiry = "ATE", label = "OLS") +
+  declare_estimator(Y ~ Z, covariates = ~ x, .method = lm_lin, 
+                    inquiry = "ATE", label = "Lin")
+```
+
+## Diagnosis
+
+```{r, eval = FALSE}
+lin_replication_diagnosis <- lin_replication |> 
+  redesign(nA = c(750, 600, 400, 250)) |>
+  diagnose_design()
+```
+
+```{r, echo = FALSE}
+if(params$run)
+lin_replication |> redesign(nA = c(750, 600, 400, 250)) |>
+  diagnose_design(sims = 10000) |> write_rds("saved/5.3.rds")
+
+read_rds("saved/5.3.rds") |>
+  tidy() |> filter(diagnosand %in% c("bias", "sd_estimate")) |>
+  ggplot(aes(as.numeric(nA), estimate*1000, color = estimator))+
+  geom_errorbar(aes(ymin = conf.low*1000, ymax = conf.high*1000), width = 10) + 
+  geom_line() + facet_grid(diagnosand~., scales = "free") 
+
+```
+
