@@ -190,7 +190,7 @@ ggplot(measures, aes(x = Measures %>% reorder(Effect), y = Effect))+
   labs(x = "")
 ```
 
-## Redesinging & Diagnosing the last Design
+## Redesinging & Diagnosing the last Design (Code by Macartan)
 
 ```{r}
 df <- data.frame(Block = c(1,1,1,2,2,2,2,2,2),
@@ -214,11 +214,12 @@ diagnosands <- declare_diagnosands(
 diagnose_design(design, diagnosands = diagnosands, sims = 2)
 
 replicate <- function(df, w) df |> uncount(w) # uncount used here to replicate data
-
+```
+## Estimators side-by-side
+```{r}
 design |> 
   insert_step(after = 1, declare_measurement(handler = replicate, w = k)) |>
   redesign(k = 1:5) |> 
   diagnose_design(diagnosands = diagnosands, sims = 2) |> tidy() |>
   ggplot(aes(k, estimate, color = estimator)) + geom_line() + facet_grid(~diagnosand, scales = "free")
-
 ```
