@@ -1,6 +1,8 @@
 ---
-title: "Group 4 - Week 1"
+title: "Group 4 - Week 1 & 2"
+subtitle: "Causal Inference and Experimental Design"
 date: "19 January, 2024"
+date-format: "long"
 author:
   - name: Philipp Heyna
     email: "<a href='mailto:philipp.heyna@hu-berlin.de'><span>&#64;</span>philipp.heyna</a>"
@@ -8,8 +10,6 @@ author:
     email: "<a href='mailto:nader.hotait@hu-berlin.de'><span>&#64;</span>nader.hotait</a>"
   - name: Daniel Kuhlen
     email: "<a href='mailto:kuhlenda@hu-berlin.de'><span>&#64;</span>kuhlenda</a>"
-  - name: Robert Stelzle
-    email: "<a href='mailto:robert.martin.stelzle@student.hu-berlin.de'><span>&#64;</span>robert.martin.stelzle</a>"
   - name: Yoanna Yankova
     email: "<a href='mailto:yankovay@hu-berlin.de'><span>&#64;</span>yankovay</a>"
 format:
@@ -24,6 +24,7 @@ format:
     preview-links: auto
     number-sections: false
     scrollable: true
+    chalkboard: true
 ---
 
 ```{r packages, echo=FALSE}
@@ -34,6 +35,8 @@ pacman::p_load(tidyverse,
                knitr,
                kableExtra)
 ```
+
+## Week 1
 
 ## Q 2.4 (Confounded) {.smaller}
 
@@ -198,6 +201,8 @@ query_model(
   kable(digits = 2) %>%
   kableExtra::kable_styling(font_size = 18)
 ```
+
+## Week 2
 
 ## Q 5.4
 
