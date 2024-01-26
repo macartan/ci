@@ -93,7 +93,7 @@ that can be affected by two variables and
 . All variables are binary. Can you fill in the potential outcomes (rows) for each of the column types?
 
 |          |                                                  |                                    |                                    |                                                               |
-|---------------|---------------|---------------|---------------|---------------|
+|----------|--------------------------------------------------|------------------------------------|------------------------------------|---------------------------------------------------------------|
 |          |                                                  |                                    |                                    |                                                               |
 |          | X1 is a necessary and sufficient condition for Y | X1 is necessary but not sufficient | X1 is sufficient but not necessary | X1 sometimes causes Y but is neither necessary nor sufficient |
 | Y(0,0) = | 0                                                | 0                                  | 0                                  | 0                                                             |
