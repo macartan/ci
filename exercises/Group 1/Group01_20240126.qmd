@@ -192,3 +192,33 @@ ggplot(measures, aes(x = Measures %>% reorder(Effect), y = Effect))+
 
 ## Redesinging & Diagnosing the last Design
 
+```{r}
+df <- data.frame(Block = c(1,1,1,2,2,2,2,2,2),
+                   Z = c(0,0,1,0,0,0,1,1,1),
+                   Y = c(0,0,1,0,0,1,0,1,1)) |>
+  group_by(Block) |> 
+  mutate(p = mean(Z), ipw = Z/p + (1-Z)/(1-p)) |>
+  ungroup() |> data.frame()
+
+design <- declare_model(data = df) +
+  declare_inquiry(ATE = 5/9) +
+  declare_estimator(Y ~ Z + Block, label = "FE") +
+  declare_estimator(Y ~ Z, weights = ipw, label = "IPW") +
+  declare_estimator(Y ~ Z, covariates = ~ Block, .method = lm_lin, label = "lin") 
+
+diagnosands <- declare_diagnosands(
+                  bias = mean(estimate - estimand),
+                  sd_estimate = sd(estimate),
+                  mean_se = mean(std.error))
+
+diagnose_design(design, diagnosands = diagnosands, sims = 2)
+
+replicate <- function(df, w) df |> uncount(w) # uncount used here to replicate data
+
+design |> 
+  insert_step(after = 1, declare_measurement(handler = replicate, w = k)) |>
+  redesign(k = 1:5) |> 
+  diagnose_design(diagnosands = diagnosands, sims = 2) |> tidy() |>
+  ggplot(aes(k, estimate, color = estimator)) + geom_line() + facet_grid(~diagnosand, scales = "free")
+
+```
