@@ -49,20 +49,21 @@ M1 <-
     X = rnorm(N),
     Y = rnorm(N),
     K = rbinom(N, 1, prob = pnorm(X + Y))) +
-  declare_inquiry(Ybar = mean(Y[X==1])) +
-  declare_sampling(S = simple_rs(N, prob = 0.2), 
-                   filter = S == 1) +
+  declare_inquiry(ATE = 0) +
   declare_estimator(
     Y ~ X,
     .method = lm_robust,
-    .summary = tidy,
-    term = "X",
-    inquiry = "ATE",
-    label = "OLS",
+    label = "conditioning",
     subset = K == 1
   )
 
 draw_data(M1)|> ggplot(aes(X, Y, color =K)) + geom_point()
+```
+
+### *K = rbinom(N, 1, prob = pnorm(X + Y))*
+```{r}
+diag1 <- diagnose_design(M1)
+diag1
 ```
 
 ###  *K = rbinom(N, 1, prob = pnorm(X x Y))*
@@ -73,16 +74,11 @@ M2 <-
     X = rnorm(N),
     Y = rnorm(N),
     K = rbinom(N, 1, prob = pnorm(X * Y))) +
-  declare_inquiry(Ybar = mean(Y[X==1])) +
-  declare_sampling(S = simple_rs(N, prob = 0.2), 
-                   filter = S == 1) +
+  declare_inquiry(ATE = 0) +
   declare_estimator(
     Y ~ X,
     .method = lm_robust,
-    .summary = tidy,
-    term = "X",
-    inquiry = "ATE",
-    label = "OLS",
+    label = "conditioning",
     subset = K == 1
   )
 
@@ -90,6 +86,11 @@ draw_data(M2)|> ggplot(aes(X, Y, color =K)) + geom_point()
 
 ```
 
+### *K = rbinom(N, 1, prob = pnorm(X x Y))*
+```{r}
+diag2 <- diagnose_design(M2)
+diag2
+```
 
 ### *K = rbinom(N, 1, prob = pnorm(X / Y))*
 ```{r}
@@ -99,21 +100,23 @@ M3 <-
     X = rnorm(N),
     Y = rnorm(N),
     K = rbinom(N, 1, prob = pnorm(X / Y))) +
-  declare_inquiry(Ybar = mean(Y[X==1])) +
-  declare_sampling(S = simple_rs(N, prob = 0.2), 
-                   filter = S == 1) +
+  declare_inquiry(ATE = 0) +
   declare_estimator(
     Y ~ X,
     .method = lm_robust,
-    .summary = tidy,
-    term = "X",
-    inquiry = "ATE",
-    label = "OLS",
+    label = "conditioning",
     subset = K == 1
   )
 
 draw_data(M3)|> ggplot(aes(X, Y, color =K)) + geom_point()
 ```
+
+### *K = rbinom(N, 1, prob = pnorm(X / Y))*
+```{r}
+diag3 <- diagnose_design(M3)
+diag3
+```
+
 
 # Estimators (5.1)
 ```{r}
