@@ -591,7 +591,7 @@ Then:
 ### Randomization Inference: Some code
 
 -   In principle it is very easy.
--   These few lines generate data, produce the regression estimate and then an RI estimate of $p$:
+-   These few lines generate data, produce the regression estimate and then an `ri` estimate of $p$:
 
 ```{r}
 # data
@@ -700,7 +700,7 @@ kable(data_renamed, format = "html", table.attr = "class='table'", row.names = F
 ```
 
 
-### RI and CIs {.smaller}
+### `ri` and CIs {.smaller}
 
 It is possible to use this procedure to generate **confidence intervals** with a natural interpretation.
 
@@ -709,10 +709,10 @@ It is possible to use this procedure to generate **confidence intervals** with a
 * We are left with a set of values that *we cannot reject* at the 0.05 level.
 
 
-### RI and CIs in practice  {.smaller}
+### `ri` and CIs in practice  {.smaller}
 
 ```{r, eval = FALSE}
-candidates <- seq(0, .3, length = 30)
+candidates <- seq(-.05, .3, length = 50)
 
 get_p <- function(j)
   (conduct_ri(
@@ -720,7 +720,7 @@ get_p <- function(j)
       declaration = assignment,
       sharp_hypothesis = j,
       data = df,
-      sims = 4000,
+      sims = 5000,
     ) |> summary()
   )$two_tailed_p_value
 
@@ -728,10 +728,10 @@ get_p <- function(j)
 ps <- candidates |> sapply(get_p)
 ```
 
-### RI and CIs in practice  {.smaller}
+### `ri` and CIs in practice  {.smaller}
 
 ```{r, echo = FALSE}
-candidates <- seq(0, .3, length = 30)
+candidates <- seq(-.05, .3, length = 40)
 
 get_p <- function(j)
   (conduct_ri(
@@ -739,7 +739,7 @@ get_p <- function(j)
       declaration = assignment,
       sharp_hypothesis = j,
       data = df,
-      sims = 4000,
+      sims = 5000,
     ) |> summary()
   )$two_tailed_p_value
 
@@ -756,11 +756,11 @@ ci_df <-
 
 ```{r, echo = FALSE}
 ci_df |>
-  ggplot(aes(candidates, p)) + geom_line() + theme_bw() +
+  ggplot(aes(candidates, p)) + geom_line() + geom_point() + theme_bw() +
   geom_hline(aes(yintercept = .05), color = "orange")
 ```
 
-Warning: calculating confidence intervals this way is quite computationally intensive
+**Warning**: calculating confidence intervals this way can be computationally intensive
 
 
 ### `ri` with `DeclareDesign`  {.smaller}
@@ -810,7 +810,7 @@ read_rds("saved/ri_dd.rds") |> reshape_diagnosis() |> kable()
 ```
 
 
-### RI interactions {.smaller}
+### `ri` interactions {.smaller}
 
 Lets now imagine a world with two treatments and we are interested in using `ri` for assessing the interaction. (Code from [Coppock, `ri2`](https://cloud.r-project.org/web/packages/ri2/vignettes/ri2_vignette.html)) 
 
@@ -908,13 +908,13 @@ read_rds("saved/ri_dd_inter.rds") |> reshape_diagnosis() |> kable()
 
 
 
-### RI in practice
+### `ri` in practice
 
 * In practice (unless you have a design declaration), it is a good idea to create a $P$ matrix when you do your randomization. 
 * This records the set of possible randomizations you might have had: or a sample of these.
 * So, again: assignments have to be replicable
 
-### RI Applications
+### `ri` Applications
 
 - Recall that  silly randomization procedure from [this slide](#fixer). 
 - Say you forgot to take account of the wacky assignment in your estimates and you estimate 0.15.
@@ -933,13 +933,13 @@ diagnosis$simulations_df |> filter(estimator == "naive") |>
 
 
 
-### RI Applications
+### `ri` Applications
 
 -   Randomization procedures are sometimes funky in lab experiments
 -   Using randomization inference would force a focus on the true assignment of individuals to treatments
 -   Fake (but believable) example follows
 
-### RI Applications {.smaller}
+### `ri` Applications {.smaller}
  
 ::: {fig-optimalassigment}
 |         |          | Capacity | T1  | T2  | T3  |
@@ -961,7 +961,7 @@ Optimal assignment to treatment given constraints due to facilities
 Constraints due to subjects
 :::
 
-### RI Applications {.smaller}
+### `ri` Applications {.smaller}
 
 If you think hard about assignment you might come up with an allocation like this.
 
@@ -986,7 +986,7 @@ kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
   add_header_above(c(" " = 3, "Allocations" = 3))
 ```
 
-### RI Applications {.smaller}
+### `ri` Applications {.smaller}
 
 That allocation balances as much as possible. Given the allocation you might randomly assign individuals to different days as well as randomly assigning them to treatments within days. If you then figure out assignment propensities, this is what you would get:
 
@@ -1011,7 +1011,7 @@ kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
   add_header_above(c(" " = 3, "Assignment Probabilities" = 3))
 ```
 
-### RI Applications {.smaller}
+### `ri` Applications {.smaller}
 
 [Even under the assumption that the day of measurement does not matter, these assignment probabilities have big implications for analysis.]{style="font-size: 80%;"}
 
@@ -1044,7 +1044,7 @@ kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
 
 -   However subpopulation $A$ is assigned to $A$ (versus $B$) with probability 4/5; while population $B$ is assigned with probability 3/8
 
-### RI Applications {.smaller}
+### `ri` Applications {.smaller}
 
 -   **Implications for design**: need to uncluster treatment delivery
 
@@ -1053,7 +1053,7 @@ kable(df, format = "html", table.attr = "class='table'", row.names = FALSE) %>%
 **Idea**: Wacky assignments happen but if you know the propensities you can do the analysis.
 
 
-### RI Applications: Indirect assignments {.smaller}
+### `ri` Applications: Indirect assignments {.smaller}
 
 
 A particularly interesting application is where a random assignment combines with existing features to determine an assignment to an "indirect" treatment.
