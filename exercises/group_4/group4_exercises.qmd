@@ -211,7 +211,7 @@ Compare answer strategies in which you:
 
 ### Varying N
 
-```{r}
+```{r echo=TRUE}
 p <- 0.5
 
 # Model with standard random assignment
@@ -292,7 +292,7 @@ designs_vary_N %>%
 
 ### Varying p
 
-```{r}
+```{r echo=TRUE}
 p01 <- 0.1
 p09 <- 0.9
 
@@ -384,7 +384,7 @@ designs_vary_p %>%
 
 ### Varying b
 
-```{r}
+```{r echo=TRUE}
 # Using basic model components with N = 100
 design_54_b_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strategy_ra
 design_54_b_bl <- model_blocks + inquiry_ate + data_strategy_bl + answer_strategy_bl
