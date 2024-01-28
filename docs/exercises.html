@@ -9,7 +9,7 @@
 <meta name="author" content="Macartan Humphreys">
 <meta name="dcterms.date" content="2024-01-04">
 
-<title>puzzles for causal infernece and experimental design</title>
+<title>puzzles for causal inference and experimental design</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -3256,7 +3256,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">puzzles for causal infernece and experimental design</h1>
+<h1 class="title">puzzles for causal inference and experimental design</h1>
 </div>
 
 
@@ -3339,39 +3339,39 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.3973046</td>
+<td style="text-align: right;">0.5917647</td>
 <td style="text-align: left;">001</td>
-<td style="text-align: right;">-2.0133699</td>
+<td style="text-align: right;">0.1260403</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.3973046</td>
+<td style="text-align: right;">0.5917647</td>
 <td style="text-align: left;">002</td>
-<td style="text-align: right;">0.3227697</td>
+<td style="text-align: right;">0.1244666</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-0.3973046</td>
+<td style="text-align: right;">0.5917647</td>
 <td style="text-align: left;">003</td>
-<td style="text-align: right;">-0.7599466</td>
+<td style="text-align: right;">-1.4247324</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.0838856</td>
+<td style="text-align: right;">0.0470489</td>
 <td style="text-align: left;">013</td>
-<td style="text-align: right;">-1.6683954</td>
+<td style="text-align: right;">1.3728940</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.0838856</td>
+<td style="text-align: right;">0.0470489</td>
 <td style="text-align: left;">014</td>
-<td style="text-align: right;">-0.9807250</td>
+<td style="text-align: right;">-0.1026590</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.0838856</td>
+<td style="text-align: right;">0.0470489</td>
 <td style="text-align: left;">015</td>
-<td style="text-align: right;">-0.5572465</td>
+<td style="text-align: right;">-0.9639386</td>
 </tr>
 </tbody>
 </table>
@@ -3395,7 +3395,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(Y_Z_0, Y_Z_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.4673842</code></pre>
+<pre><code>[1] 0.5254649</code></pre>
 </div>
 </div>
 </div></details>
@@ -3882,10 +3882,10 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <p>Compare the following strategies in terms of (a) bias (b) RMSE and (c) coverage:</p>
 <ol type="1">
 <li>Ignoring imbalances and using whatever randomization gets realized</li>
-<li>Set a rule and rerandomize if the rule is broke, then procede as normal</li>
+<li>Set a rule and rerandomize if the rule is broke, then proceed as normal</li>
 <li>Randomize many times and select the set of randomizations that meet your rule. Then select from that set at random.</li>
 </ol>
-<p>In case 3 you can make use of your knowledge of the randomization to generate asssignment propensities and implement randomization inference.</p>
+<p>In case 3 you can make use of your knowledge of the randomization to generate assignment propensities and implement randomization inference.</p>
 <p>See <a href="https://arxiv.org/abs/1207.5625v1">Morgan and Rubin</a></p>
 </div></details>
 </div>

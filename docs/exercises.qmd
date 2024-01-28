@@ -1,5 +1,5 @@
 ---
-title: "puzzles for causal infernece and experimental design"
+title: "puzzles for causal inference and experimental design"
 author: "Macartan Humphreys"
 date: "2024-01-04"
 format: 
@@ -496,10 +496,10 @@ You are worried that you will have a good chance of significant imbalance betwee
 Compare the following strategies in terms of (a) bias (b) RMSE and (c) coverage:
 
 1. Ignoring imbalances and using whatever randomization gets realized
-2. Set a rule and rerandomize if the rule is broke, then procede as normal
+2. Set a rule and rerandomize if the rule is broke, then proceed as normal
 3. Randomize many times and select the set of randomizations that meet your rule. Then select from that set at random. 
 
-In case 3 you can make use of your knowledge of the randomization to generate asssignment propensities and implement randomization inference.
+In case 3 you can make use of your knowledge of the randomization to generate assignment propensities and implement randomization inference.
 
 See [Morgan and Rubin](https://arxiv.org/abs/1207.5625v1)
 
