@@ -714,10 +714,12 @@ design |>
 
 ## Diagnosis {.smaller}
 
-The OLS bias never goes away. The precision gains from lin over IPW gradually drop out.
+The OLS bias never goes away. The precision gains from Lin over IPW gradually drop out.
 
 
 # 5.3 Lin
+
+*Replicate Table 1 in Lin's "Agnostic Notes"*
 
 ## Design
 
@@ -726,10 +728,9 @@ nA <- 750
 x  <- runif(1000, -4, 4)
 
 lin_replication <-
-  declare_model(N = 1000, z = runif(N, 0, 1),
+  declare_model(N = 1000,
                 Y_Z_1 = (exp(x) + exp(x/2))/4 + rnorm(N), 
-                Y_Z_0 = (-exp(x) - exp(x/2))/4 + rnorm(N)
-  ) +
+                Y_Z_0 = (-exp(x) - exp(x/2))/4 + rnorm(N)) +
   declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
   declare_assignment(Z = complete_ra(N = N, m = nA)) + 
   declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
@@ -739,24 +740,117 @@ lin_replication <-
                     inquiry = "ATE", label = "Lin")
 ```
 
-## Diagnosis
+## Diagnosis 
+
+* really large number of sims to get tight bias estimates
+* graph shows results scaled by $\times 1000$
 
 ```{r, eval = FALSE}
-lin_replication_diagnosis <- lin_replication |> 
-  redesign(nA = c(750, 600, 400, 250)) |>
-  diagnose_design()
+lin_replication |> redesign(nA = c(750, 600, 500, 400, 250)) |> diagnose_design()
 ```
 
 ```{r, echo = FALSE}
 if(params$run)
-lin_replication |> redesign(nA = c(750, 600, 400, 250)) |>
-  diagnose_design(sims = 10000) |> write_rds("saved/5.3.rds")
+lin_replication |> redesign(nA = c(750, 600, 500, 400, 250)) |>
+  diagnose_design(sims = 50000) |> write_rds("saved/5.3.rds")
 
 read_rds("saved/5.3.rds") |>
   tidy() |> filter(diagnosand %in% c("bias", "sd_estimate")) |>
-  ggplot(aes(as.numeric(nA), estimate*1000, color = estimator))+
+  ggplot(aes(nA, estimate*1000, color = estimator))+ xlab("n in treatment") +
   geom_errorbar(aes(ymin = conf.low*1000, ymax = conf.high*1000), width = 10) + 
   geom_line() + facet_grid(diagnosand~., scales = "free") 
 
 ```
 
+
+# Bayes by hand
+
+## Puzzle
+
+We imagine we have data on $Y$ for 50 $X=0$ cases and 50 $X=1$ cases like this:
+
+```{r}
+# data  
+set.seed(1)
+df <- fabricate(N = 100, Z = rep(0:1, 50), Y = rnorm(100, Z, 1+Z))
+
+y1 <- df$Y[df$Z==1]
+y0 <- df$Y[df$Z==0]
+
+```
+
+We want to use Bayesian methods to make inference on the treatment effect. And we want to do it "by hand"
+
+## Likelihood {.smaller}
+
+The likelihood function:
+
+```{r}
+L <-  function(m0, m1, sd0, sd1) 
+  (dnorm(y1, mean = m1, sd = sqrt(sd1)) |> prod()) * 
+  (dnorm(y0, mean = m0, sd = sqrt(sd0)) |> prod())
+```
+
+Bayes rule applied directly over a grid (uniform prior on range):
+
+```{r, eval = FALSE}
+# parameters
+k <- 40
+grid <-
+  expand_grid(m0 = seq(-3, 3, length = k),
+              m1 = seq(-3, 3, length = k),
+              sd0 = seq(.1, 4, length = k),
+              sd1 = seq(.1, 4, length = k)) 
+
+grid$L <-
+  with(grid, sapply(1:nrow(grid), function(i) L(m0[i], m1[i], sd0[i], sd1[i]))) 
+
+grid <- grid |> mutate(posterior = L / sum(L))
+```
+
+```{r, echo  = FALSE}
+# parameters
+k <- 40
+grid <-
+  expand_grid(m0 = seq(-3, 3, length = k),
+              m1 = seq(-3, 3, length = k),
+              sd0 = seq(.1, 4, length = k),
+              sd1 = seq(.1, 4, length = k)) 
+
+if(params$run)
+  with(grid, sapply(1:nrow(grid), function(i) L(m0[i], m1[i], sd0[i], sd1[i])))  |>
+  write_rds("saved/bayes_L.rds")
+
+grid$L <-  read_rds("saved/bayes_L.rds")
+
+grid <- grid |> mutate(posterior = L / sum(L))
+```
+
+## Inferences {.smaller}
+
+```{r}
+# Maximum likelihood estimates (very sensitive to  fineness of grid!)
+grid[grid$L == max(grid$L), ] |> kable(digit = 3)
+
+# Posterior mode  (very sensitive to  fineness of grid!)
+grid[grid$posterior == max(grid$posterior), ] |> kable(digit = 3)
+
+# Posteriors means
+f <- function(param) weighted.mean(grid[[param]], grid$posterior) 
+data.frame(m0 = f("m0"), m1 = f("m1"), sd0 = f("sd0"), sd1 = f("sd1"), 
+  ate = f("m1") - f("m0")) |> kable(digits = 3)
+ 
+# OLS
+lm_robust(Y ~ Z, df) |> tidy() |> kable(digit = 3)
+```
+## Plotted posterior {.smaller}
+
+
+Let's look at a marginal distribution for one parameter:
+
+```{r}
+max <- grid[grid$L == max(grid$L), ] 
+
+grid |> filter(m0 == max$m0, sd0 == max$sd0, sd1 == max$sd1) |>
+  ggplot(aes(m1, posterior)) + geom_point() + theme_bw()
+```

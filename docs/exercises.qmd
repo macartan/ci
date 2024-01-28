@@ -1,5 +1,5 @@
 ---
-title: "exercises"
+title: "puzzles for causal infernece and experimental design"
 author: "Macartan Humphreys"
 date: "2024-01-04"
 format: 
@@ -128,9 +128,7 @@ Discuss results. Do any of these return the right answer?
 **Hint:** You can add three separate `declare_estimator` steps. They should have distinct labels. The trickiest part is to figure out how to extract the estimate in (c) because you will have both a main term and an interaction term for $X$. 
 :::
 
-# Causality: 	Fundamental problems
-
-## Potential outcomes
+# Causality: 	Potential outcomes
 
 *These do not require coding*
 
@@ -392,13 +390,27 @@ Note: this is hard because  the `W <-> Y` confounding implies an `X <-> Y` confo
 :::
 
 
-::: {.Q #q-Priors}
+::: {.Q #q-Bayesbyhand}
 
-**Priors matter**
+**Bayes by hand**
 
-Generate a simple experimental design and estimate treatment effects using a (a) Bayesian regression with `rstanarm`. Provide informative priors (b) `lm_robust`
+Say that we have 50 observations of $Y_0$ and 50 observations of $Y_1$ from a random experiment. Assume these are each drawn independently from a normal distribution centered on $\mu_j$ with sd $\sigma_j$, $j\in\{0,1\}$.
 
-Let the size of the data increase from 10 to 1000 and: plot the estimates from the two approaches as $N$ increases,  plot the average standard error and the posterior variance from the two approaches as $N$ increases.
+1. Write down a likelihood function that returns the probability of seeing the 100 observations that you see given the four parameters: $\mu_0, \mu_1, \sigma_0, \sigma_1$.
+
+2. Use `grid <- expand_grid(m0 = ..., m1 = ...)` to generate a grid of possible values for the four parameters.
+
+3. Apply your likelihood function to all the possible parameter values contained in your grid. 
+
+4. Now:
+ * Identify the maximum likelihood set of values
+ * Calculate the posterior distribution assuming uniform priors over the range 
+ * Identify the posterior modes
+ * Calculate the posterior means
+ * Compare the estimates of a treatment effect you would obtain from 
+   * maximum likelihood 
+   * posterior means
+   * ols
 
 :::
 
@@ -407,7 +419,7 @@ Let the size of the data increase from 10 to 1000 and: plot the estimates from t
 
 **Hierarchical** 
 
-Generate a simple multilevel experimental design (e.g 20 children each in 20 schools). Assume that the treatment effect in each schools is draw from a normal distribution with a given variance $\sigma$.
+Generate a simple multilevel experimental design (e.g 20 children each in 20 schools). Assume that the treatment effect in each schools is drawn from a normal distribution with a given variance $\sigma$.
 
 Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover $\sigma$. 
 
@@ -464,10 +476,36 @@ Can you :
 
 Network Randomization
 
-You have access to a network of all friendship links in a classroom. You want to provide political information to a set of students and see how much more likely it is that a student that you do not give information to receives the information if a friend is treated compared to the situation in which a friend of a friend is treated.  So you want to be sure that some subjects have friends treated and some have only friends of friends treated. How would you assign treatment? How can you work out your treatment assignment probabilities? 
+You have access to a network of all friendship links in a classroom. This is in the form of an $n\times n$ adjacency matrix where a 0/1 means the row individual is / is not a friend of the column individual.
+
+You want to provide political information to a set of students and see how much more likely it is that a student that you do not give information to receives the information if a friend is treated compared to the situation in which a friend of a friend is treated.  So you want to be sure that some subjects have friends treated and some have only friends of friends treated. How would you assign treatment? How can you work out your treatment assignment probabilities? 
+
+*Bonus*: Generate data and diagnose the estimation strategy available using the [interference](https://github.com/szonszein/interference) package
 
 :::
 
+
+::: {.Q #q-rerand}
+
+Re-randomization
+
+You have 10 units that you want to assign to treatment and control. On each unit you have two covariates, each with a lopsided distribution (for example, log normally distributed) and each strongly associated with the outcome of interest.
+
+You are worried that you will have a good chance of significant imbalance between covariates and are thinking about using a procedure in which you re-randomize in the event in which you have some poor balance (for this you need to define what you mean by poor balance, e.g. you might want that balance is in the lower quartile of possible imbalances).
+
+Compare the following strategies in terms of (a) bias (b) RMSE and (c) coverage:
+
+1. Ignoring imbalances and using whatever randomization gets realized
+2. Set a rule and rerandomize if the rule is broke, then procede as normal
+3. Randomize many times and select the set of randomizations that meet your rule. Then select from that set at random. 
+
+In case 3 you can make use of your knowledge of the randomization to generate asssignment propensities and implement randomization inference.
+
+See [Morgan and Rubin](https://arxiv.org/abs/1207.5625v1)
+
+
+
+:::
 
 # Design evaluation
 
@@ -479,6 +517,7 @@ Compare the power gains from two strategies:
 
 * Adding covariates in the analysis stage
 * Blocked randomization in the design stage
+
 
 :::
 
@@ -582,13 +621,24 @@ No exercises
 
 
 
-# Other
+# Additional puzzle assortment
 
 ::: {.Q #q-weights}
 
 **what weights**
 
 Say you sampled subject A with probability .6 and subject B with probability .4. Say you assigned each to treatment with probability .6. What weight should you put on A in your analysis if they end up in treatment? What if they end up in control? How about B?
+
+:::
+
+
+::: {.Q #q-Priors}
+
+**Priors matter**
+
+Generate a simple experimental design and estimate treatment effects using a (a) Bayesian regression with `rstanarm`. Provide informative priors (b) `lm_robust`
+
+Let the size of the data increase from 10 to 1000 and: plot the estimates from the two approaches as $N$ increases,  plot the average standard error and the posterior variance from the two approaches as $N$ increases.
 
 :::
 
