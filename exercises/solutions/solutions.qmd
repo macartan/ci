@@ -618,10 +618,10 @@ if(params$run)
   bs |> lapply(function(b)  
   model |> update_model(data_function(b), iter = 5000)
   ) |>
-  write_rds("saved/frontdoorCQ.rds") 
+  write_rds("saved/4.4.rds") 
 
 
-read_rds("saved/frontdoorCQ.rds") |>
+read_rds("saved/4.4.rds") |>
   query_model("Y[X=1] - Y[X=0]", using = "posteriors") |>
   ggplot(aes(bs, mean)) + geom_abline(color = "orange")  + 
   geom_point() + geom_errorbar(aes(ymin = cred.low, ymax = cred.high)) + 
@@ -763,7 +763,7 @@ read_rds("saved/5.3.rds") |>
 ```
 
 
-# Bayes by hand
+# 6.3 Bayes by hand
 
 ## Puzzle
 
@@ -819,9 +819,9 @@ grid <-
 
 if(params$run)
   with(grid, sapply(1:nrow(grid), function(i) L(m0[i], m1[i], sd0[i], sd1[i])))  |>
-  write_rds("saved/bayes_L.rds")
+  write_rds("saved/6.3.rds")
 
-grid$L <-  read_rds("saved/bayes_L.rds")
+grid$L <-  read_rds("saved/6.3.rds")
 
 grid <- grid |> mutate(posterior = L / sum(L))
 ```
@@ -843,10 +843,11 @@ data.frame(m0 = f("m0"), m1 = f("m1"), sd0 = f("sd0"), sd1 = f("sd1"),
 # OLS
 lm_robust(Y ~ Z, df) |> tidy() |> kable(digit = 3)
 ```
+
 ## Plotted posterior {.smaller}
 
 
-Let's look at a marginal distribution for one parameter:
+Let's look at the posterior distribution for one parameter (specifically the distribution conditional on maximum likelihood values for other parameters):
 
 ```{r}
 max <- grid[grid$L == max(grid$L), ] 
