@@ -1,0 +1,89 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Exercise 5.3"
+author: "Team 3"
+---
+
+```{r, include=FALSE}
+library(DeclareDesign)
+library(knitr)
+library(quarto)
+library(latex2exp)
+library(tidyverse)
+```
+
+
+## Declaring higher-level variables
+
+```{r, echo = TRUE}
+
+n <-  1000    # Number of subjects
+n_a <- 750    # Number of subjects assigned to treatment condition A
+
+# Simulation as in Lin 2013, section 4.2.3
+x <- runif(n, -4, 4)
+v <- rnorm(n)
+e <- rnorm(n)
+a <- v + .25*( exp(x) + exp(x/2))           
+b <- e + .25*(-exp(x) + exp(x/2))
+
+n_sim <- 10000
+```
+
+## Design basics
+
+```{r, echo = TRUE}
+design_basic <-
+  
+  # Model
+  declare_model(
+    N = n, 
+    potential_outcomes(Y ~ a*Z + b*(1-Z))
+  ) + 
+  
+  # Inquiry
+  declare_inquiry(ate = mean(a) - mean(b)) + 
+  
+  # Data strategy
+  declare_assignment(Z = complete_ra(n, n_a)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z))
+```
+
+## Adding the estimators
+
+```{r, echo = TRUE}
+design <- design_basic +
+  
+  declare_estimator(
+    Y ~ Z, inquiry = "ate", term = "Z", .method = lm, 
+    label = "Unadjusted") +
+  
+  declare_estimator(
+    Y ~ Z + x, inquiry = "ate", term = "Z",  .method = lm,
+    label = "Usual OLS-adjusted") +
+  
+  declare_estimator(
+    Y ~ Z + x + Z*x, inquiry = "ate", term = "Z", .method = lm, 
+    label = "OLS with interaction")
+```
+
+## Diagnosis {.smaller}
+
+```{r, echo = TRUE}
+design |> redesign(n_a = c(750, 600, 500, 400, 250)) |>
+  diagnose_designs(sims = n_sim, bootstrap_sims = 0) |>
+  
+  tidy() |> filter(diagnosand %in% c("bias", "sd_estimate")) |>
+  select(estimator, n_a, diagnosand, estimate) |>
+  mutate(estimate = 1000 * estimate) |>
+  pivot_wider(names_from = "n_a", values_from = "estimate") |>
+  arrange(diagnosand) |> kable(digits = 0)
+```
