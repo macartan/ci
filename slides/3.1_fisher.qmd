@@ -380,8 +380,18 @@ In the two unit case the two possible treatment estimates are: $\hat{\tau}_1=A_1
 $$Var(\hat{\tau}) = \left(\frac{\hat{\tau}_1 - \hat{\tau}_2}{2}\right)^2 = \left(\frac{(A_1 - B_0) - (B_1 - A_0)}{2}\right)^2 =\left(\frac{(A_1 - B_1) + (A_0 - B_0)}{2}\right)^2 $$
 which we can re-write as:
 
-$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ (A_1 - B_1)(A_0-B_0)$$
+$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ 2\frac{(A_1 - B_1)(A_0-B_0)}{2}$$
 The first two terms correspond to the variance of $Y(1)$ and the variance of $Y(0)$. The last term is a bit pesky though, it corresponds to twice the *covariance* of $Y(1)$ and $Y(0)$. 
+
+### Var(ATE)  {.smaller}
+
+How can we go about estimating this?
+
+$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ 2\frac{(A_1 - B_1)(A_0-B_0)}{2}$$
+
+In the two unit case it is quite challenging because we do not have an estimate for any of the three terms: we do not have an estimate for the  variance in the treatment group or in the control group because we have only one observation in each case; and we do not have an estimate for the *covariance* because we don't observe both potential outcomes for *any* case.
+
+Things do look a bit better however with more units...
 
 ### Var(ATE): Generalizing {.smaller}
 
@@ -408,8 +418,8 @@ where the final term is positive
 
 Note:
 
--   We can use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
--   But $C_{01}$ cannot be estimated from data.
+-   With more than two units we  cannow  use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
+-   But $C_{01}$ still cannot be estimated from data.
 -   The **Neyman estimator** ignores the second part (and so is conservative).
 -   Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
 
