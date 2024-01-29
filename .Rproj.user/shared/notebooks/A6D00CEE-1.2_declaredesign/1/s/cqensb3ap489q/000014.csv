@@ -1,8 +1,0 @@
-"0","read_rds(""saved/redesigns.rds"") |>
-  select(N, m, diagnosand, estimate, std.error, conf.low, conf.high) |>  slice(c(1:4, 8:9, 29:30, 59:63)) |>           
-  kable(digits = 2) |> 
-  kable_styling(font_size = 20)
-"
-"2","Error in loadNamespace(i, c(lib.loc, .libPaths()), versionCheck = vI[[i]]) : 
-  namespace ‘htmltools’ 0.5.6 is already loaded, but >= 0.5.7 is required
-"

@@ -1,8 +1,0 @@
-"0","g <- dagitty(""dag{U1 -> Z  ; U1 -> y ; "
-"0","             U2 -> Z ; U2 -> x  -> y; "
-"0","             Z -> x}"")"
-"0","adjustmentSets(g, exposure = ""x"", outcome = ""y"")"
-"1","{ U1 }
-"
-"1","{ U2, Z }
-"

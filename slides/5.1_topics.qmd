@@ -20,201 +20,132 @@ header-includes:
 fontsize: 11pt  
 ---
 
-
-  
-  
 ```{r, include = FALSE}
 source("setup.R")
 ```
 
-
-# Topics {#citopics}
-
-
-\hyperlink{ideas}{\beamergotobutton{Top}}
-
-## Noncompliance and the LATE estimand \label{LATE}
-
-### LATE---Local Average Treatment Effects
-\footnotesize
-Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
-\begin{table}
-	\scriptsize
-	\centering
-		\begin{tabular}{l|cc}
-		&$X=0$&$X=1$\\ \hline
-		$T=0$& $\overline{y}_{00}$ & $\overline{y}_{01}$ \\
-	       & $(n_{00})$	& $(n_{01})$\\ \hline
-		$T=1$& $\overline{y}_{10}$ & $\overline{y}_{11}$ \\ 
-			   & $(n_{10})$	& $(n_{11})$\\ \hline
-		\end{tabular}
-\end{table}
-
-  
-  
-Say that people are one of 3 types: 
-
-1. $n_a$ ``always takers''  have $X=1$ no matter what and have average outcome $\overline{y}_a$
-2. $n_n$ never takers have $X=0$ no matter what with outcome $\overline{y}_n$
-3.  $n_c$ compliers  have $X=T$ and  average outcomes $\overline{y}^1_c$ if treated and $\overline{y}^0_c$ if not. 
-
-
+## Noncompliance and the LATE estimand {#LATE}
 
 ### LATE---Local Average Treatment Effects
 
 Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
-\begin{table}
-	\scriptsize
-	\centering
-		\begin{tabular}{l|cc}
-		&$X=0$&$X=1$\\ \hline
-		$T=0$& $\overline{y}_{00}$ & $\overline{y}_{01}$ \\
-	       & $(n_{00})$	& $(n_{01})$\\ \hline
-		$T=1$& $\overline{y}_{10}$ & $\overline{y}_{11}$ \\ 
-			   & $(n_{10})$	& $(n_{11})$\\ \hline
-		\end{tabular}
-\end{table}
+
+|     | X=0                           | X=1                           |
+|-----|-------------------------------|-------------------------------|
+| T=0 | $\overline{y}_{00}$ (n\_{00}) | $\overline{y}_{01}$ (n\_{01}) |
+| T=1 | $\overline{y}_{10}$ (n\_{10}) | $\overline{y}_{11}$ (n\_{11}) |
+
+Say that people are one of 3 types:
+
+1.  $n_a$ \`\`always takers'' have $X=1$ no matter what and have average outcome $\overline{y}_a$
+2.  $n_n$ never takers have $X=0$ no matter what with outcome $\overline{y}_n$
+3.  $n_c$ compliers have $X=T$ and average outcomes $\overline{y}^1_c$ if treated and $\overline{y}^0_c$ if not.
+
+### LATE---Local Average Treatment Effects
+
+Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
+
+|     | X=0                           | X=1                           |
+|-----|-------------------------------|-------------------------------|
+| T=0 | $\overline{y}_{00}$ (n\_{00}) | $\overline{y}_{01}$ (n\_{01}) |
+| T=1 | $\overline{y}_{10}$ (n\_{10}) | $\overline{y}_{11}$ (n\_{11}) |
+
 We can figure something about types:
-\begin{table}
-\scriptsize
-\centering
-\begin{tabular}{l|cc}
-&$X=0$ & $X=1$\\ \hline
-$T=0$ &  $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}^0_{c}+\frac{\frac{1}{2}n_n}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}_{n}$ &  $\overline{y}_{a}$ \\
-$T=1$& $\overline{y}_{n}$ & 
-$\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}^1_{c}+\frac{\frac{1}{2}n_a}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}_{a}$  		\\ \hline
-\end{tabular}
-\end{table}
 
-
+|       | $X=0$                                                                                                                                               | $X=1$                                                                                                                                               |
+|------------------------|------------------------|------------------------|
+| $T=0$ | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}^0_{c}+\frac{\frac{1}{2}n_n}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}_{n}$ | $\overline{y}_{a}$                                                                                                                                  |
+| $T=1$ | $\overline{y}_{n}$                                                                                                                                  | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}^1_{c}+\frac{\frac{1}{2}n_a}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}_{a}$ |
 
 ### LATE---Local Average Treatment Effects
-\footnotesize
-You give a medicine to 50\% but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
 
-\begin{table}
-\scriptsize
-\centering
-\begin{tabular}{l|cc}
-&$X=0$&$X=1$\\ \hline
-$T=0$ & $\frac{n_c}{n_c + n_n} \overline{y}^0_{c}+\frac{n_n}{n_c + n_n} \overline{y}_n$ &  $\overline{y}_{a}$ \\
-(n)&   ($\frac{1}{2}(n_c + n_n)$) &  ($\frac{1}{2}n_a$)\\ \\
-$T=1$& $\overline{y}_{n}$ & $\frac{n_c}{n_c + n_a} \overline{y}^1_{c}+\frac{n_a}{n_c + n_a} \overline{y}_{a}$  \\
-(n)&  ($\frac{1}{2}n_n$) &  ($\frac{1}{2}(n_a+n_c)$)\\
+You give a medicine to 50% but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
 
-\end{tabular}
-\end{table}
+|       | $X=0$                                                                           | $X=1$                                                                             |
+|--------------------------|-----------------------|-----------------------|
+| $T=0$ | $\frac{n_c}{n_c + n_n} \overline{y}^0_{c}+\frac{n_n}{n_c + n_n} \overline{y}_n$ | $\overline{y}_{a}$                                                                |
+| \(n\) | ($\frac{1}{2}(n_c + n_n)$)                                                      | ($\frac{1}{2}n_a$)                                                                |
+|       |                                                                                 |                                                                                   |
+| $T=1$ | $\overline{y}_{n}$                                                              | $\frac{n_c}{n_c + n_a} \overline{y}^1_{c}+\frac{n_a}{n_c + n_a} \overline{y}_{a}$ |
+| \(n\) | ($\frac{1}{2}n_n$)                                                              | ($\frac{1}{2}(n_a+n_c)$)                                                          |
 
-Average in $T=0$ group:  $\frac{{n_c} \overline{y}^0_{c}+  \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a\right)}{n_a+n_c+n_n}$
+Average in $T=0$ group: $\frac{{n_c} \overline{y}^0_{c}+ \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a\right)}{n_a+n_c+n_n}$
 
-Average in $T=1$ group:  $\frac{{n_c} \overline{y}^1_{c} + \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a \right)}{n_a+n_c+n_n}$
+Average in $T=1$ group: $\frac{{n_c} \overline{y}^1_{c} + \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a \right)}{n_a+n_c+n_n}$
 
 Difference: $ITT = ({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n}$
- 
+
 So: $LATE = ITT\times\frac{n}{n_c}$
-
-
 
 ### The good and the bad of LATE
 
-- You get a well-defined estimate even when there is non-random take-up 
-- May sometimes be used to assess mediation or knock-on effects
-- But:
-  - You need assumptions (monotonicity and the exclusion restriction -- *where were these used above*?)
-  - Your estimate is only for a subpopulation
-  - The subpopulation is not chosen by you and is unknown
-  - Different encouragements may yield different estimates since they may encourage different subgroups
+-   You get a well-defined estimate even when there is non-random take-up
+-   May sometimes be used to assess mediation or knock-on effects
+-   But:
+    -   You need assumptions (monotonicity and the exclusion restriction -- *where were these used above*?)
+    -   Your estimate is only for a subpopulation
+    -   The subpopulation is not chosen by you and is unknown
+    -   Different encouragements may yield different estimates since they may encourage different subgroups
 
-
-
-
-## Spillovers\label{SUTVA}
+## Spillovers {#SUTVA}
 
 ### SUTVA violations (Spillovers)
-\scriptsize Spillovers can result in the estimation of weaker effects when effects are actually stronger.
 
-```{r, echo = FALSE, fig.width = 11, fig.height = 6} 
+Spillovers can result in the estimation of weaker effects when effects are actually stronger.
+
+```{r, echo = FALSE, fig.width = 11, fig.height = 6}
 par(mfrow=c(2,1)); X=c("Control", "Treatment")
 barplot(c(0,4), names.arg=X, main="No spillovers. Total effect = 4, Estimated Effect = 4");  
 barplot(c(3,4), names.arg=X, main="With spillovers. Total effect = 7, Estimated Effect = 1")
 arrows(2,3,.75,2, lwd=2)
 ```
 
-\scriptsize The key problem is that $Y(1)$ and $Y(0)$ are not sufficient to describe potential outcomes
-
-
-
-
-
-
-### SUTVA violations
-More completely specified potential outcomes (and estimands) 
-\begin{table}
-\scriptsize
-\begin{center}
-\tiny
-\begin{tabular}{cc|cc|cc|cc|cc|cc}
-	 & & \multicolumn{2}{c}{0} & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{2}  & \multicolumn{2}{c}{3}& \multicolumn{2}{c}{4}\\ \hline	
-	Unit	&	Location& 	$D_\emptyset$ &	$y(D_\emptyset)$ & $D_1$		& $y(D_1)$	&  $D_2$		& $y(D_2)$	 &$D_3$		& $y(D_3)$	  &$D_4$		& $y(D_4)$	  \\
-	\hline
-	A&	1 & 0 & 0 & 1 &3 &0 &1 & 0 & 0 &0 &0\\
-	B & 2 & 0 & 0 & 0 &3 &1 &3 & 0 & 3 &0 &0\\
-	C & 3 & 0 & 0 & 0 &0 &0 &3 & 1 & 3 &0 &3\\
-	D & 4 & 0 & 0 & 0 &0 &0 &0 & 0 & 1 &1 &3\\
-	\hline\hline
-\multicolumn{2}{l|}{$\bar{y}_\text{treated}$} && - && 3 && 3 && 3 && 3  \\ 
-\multicolumn{2}{l|}{$\bar{y}_\text{untreated}$} && 0 && 1 && 4/3 && 4/3 && 1  \\ 
-\multicolumn{2}{l|}{$\bar{y}_\text{neighbors}$} && - && 3 && 2 && 2 && 3  \\ 
-\multicolumn{2}{l|}{$\bar{y}_\text{pure control}$} && 0 && 0 && 0 && 0 && 0  \\ 
-\hline
-\multicolumn{2}{l|}{ATT (direct effect)} && - && 3 && 3 && 3  && 3 \\ 
-\multicolumn{2}{l|}{ATT (indirect effect)} && - && 3 && 2 && 2 && 3  \\ 
-
-	\hline
-	\end{tabular}
-	\end{center}
-
-	\caption{Potential outcomes for four units for different treatment profiles, $D_1$-$D_4$. $D_i$ represents an allocation to treatment and $y_j(D_i)$ is the potential outcome for (row) unit $j$ given (column) allocation $i$.}
-\label{PotentialOutcomes112}
-
-\end{table}
-
-
-
+The key problem is that $Y(1)$ and $Y(0)$ are not sufficient to describe potential outcomes
 
 ### SUTVA violations
 
-\begin{table}
-\scriptsize
-	\begin{center}
-	\tiny
-	\begin{tabular}{cc|cc|cc|cc|cc|cc}
-	 & & \multicolumn{2}{c}{0} & \multicolumn{2}{c}{1} & \multicolumn{2}{c}{2}  & \multicolumn{2}{c}{3}& \multicolumn{2}{c}{4}\\ \hline	
-	Unit	&	Location& 	$D_\emptyset$ &	$y(D_\emptyset)$ & $D_1$		& $y(D_1)$	&  $D_2$		& $y(D_2)$	 &$D_3$		& $y(D_3)$	  &$D_4$		& $y(D_4)$	  \\
-	\hline
-	A	&	1 & 0 & 0	& 1 &3 &0 &1 & 0 & 0 &0 &0\\
-	B & 2 & 0 & 0 & 0 &3 &1 &3 & 0 & 3 &0 &0\\
-	C & 3 & 0 & 0 & 0 &0 &0 &3 & 1 & 3 &0 &3\\
-	D & 4 & 0 & 0 & 0 &0 &0 &0 & 0 & 1 &1 &3\\
-	\end{tabular}
-	\end{center}	\scriptsize
-	\caption{Potential outcomes for four units for different treatment profiles, $D_1$-$D_4$. $D_i$ represents an allocation to treatment and $y_j(D_i)$ is the potential outcome for (row) unit $j$ given (column) allocation $i$.} 
-	\label{PotentialOutcomes51}
-\end{table}
+More completely specified potential outcomes (and estimands)
 
-* The key is to think through the structure of spillovers. 
-* Here immediate neighbors are exposed
-* In this case we can \textbf{define a direct treatment} (being exposed) and \textbf{an indirect treatment} (having a neighbor exposed) and we can work out \textit{the \textbf{propensity} for each unit of receiving each type of treatment}	
-* These may be non uniform (here central types are more likely to have teated neighbors); but we can still use the randomization to assess effects 
+|                               |                           |               |                   |        |                   |        |                   |        |                   |        |                   |
+|------|------|------|------|------|------|------|------|------|------|------|------|
+|                               |                           |               | **0**             |        | **1**             |        | **2**             |        | **3**             |        | **4**             |
+| Unit                          | Location                  | $D_\emptyset$ | $y(D_\emptyset)$  | $D_1$  | $y(D_1)$          | $D_2$  | $y(D_2)$          | $D_3$  | $y(D_3)$          | $D_4$  | $y(D_4)$          |
+| -----                         | -----------               | ---------     | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- |
+| A                             | 1                         | 0             | 0                 | 1      | 3                 | 0      | 1                 | 0      | 0                 | 0      | 0                 |
+| B                             | 2                         | 0             | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 | 0      | 0                 |
+| C                             | 3                         | 0             | 0                 | 0      | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 |
+| D                             | 4                         | 0             | 0                 | 0      | 0                 | 0      | 0                 | 0      | 1                 | 1      | 3                 |
+| -----                         | -----------               | ---------     | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- |
+|                               | **Average**               |               |                   |        |                   |        |                   |        |                   |        |                   |
+| $\bar{y}_\text{treated}$      |                           |               | \-                |        |                   | 3      |                   | 3      |                   | 3      |                   |
+| $\bar{y}_\text{untreated}$    |                           |               | 0                 |        |                   | 1      |                   | 4/3    |                   | 4/3    |                   |
+| $\bar{y}_\text{neighbors}$    |                           |               | \-                |        |                   | 3      |                   | 2      |                   | 2      |                   |
+| $\bar{y}_\text{pure control}$ |                           |               | 0                 |        |                   | 0      |                   | 0      |                   | 0      |                   |
+| -----                         | -----------               | ---------     | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- |
+|                               | **ATT (direct effect)**   |               | \-                |        |                   | 3      |                   | 3      |                   | 3      |                   |
+|                               | **ATT (indirect effect)** |               | \-                |        |                   | 3      |                   | 2      |                   | 2      |                   |
+
+*Table: Potential outcomes for four units for different treatment profiles,* $D_1$-$D_4$. $D_i$ represents an allocation to treatment and $y_j(D_i)$ is the potential outcome for (row) unit $j$ given (column) allocation $i$.
+
+### SUTVA violations
+
+| Unit | Location | $D_\emptyset$ | $y(D_\emptyset)$ | $D_1$ | $y(D_1)$ | $D_2$ | $y(D_2)$ | $D_3$ | $y(D_3)$ | $D_4$ | $y(D_4)$ |
+|------|------|------|------|------|------|------|------|------|------|------|------|
+| A    | 1        | 0             | 0                | 1     | 3        | 0     | 1        | 0     | 0        | 0     | 0        |
+| B    | 2        | 0             | 0                | 0     | 3        | 1     | 3        | 0     | 3        | 0     | 0        |
+| C    | 3        | 0             | 0                | 0     | 0        | 0     | 3        | 1     | 3        | 0     | 3        |
+| D    | 4        | 0             | 0                | 0     | 0        | 0     | 0        | 0     | 1        | 1     | 3        |
+
+-   The key is to think through the structure of spillovers.
+-   Here immediate neighbors are exposed
+-   In this case we can **define a direct treatment** (being exposed) and **an indirect treatment** (having a neighbor exposed) and we can work out *the* ***propensity*** *for each unit of receiving each type of treatment*
+-   These may be non uniform (here central types are more likely to have teated neighbors); but we can still use the randomization to assess effects
 
 **Idea**: You can use the design to get a handle on spillovers
-
-
 
 ### SUTVA violations
 
 Even still, to estimate effects you need some SUTVA like assumption.
-
 
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/neelan.png")
@@ -222,100 +153,67 @@ knitr::include_graphics("figs/neelan.png")
 
 But NB: Estimates of treatment effects are sensitive to assumptions of spillover structures. In this example if one compared the outcome between treated units and all control units that are at least $n$ positions away from a treated unit you will get the wrong answer unless $n \geq 7$.
 
-
-
-## Mediation\label{mediation}
-
+## Mediation {#mediation}
 
 ### The problem of unidentified mediators
 
-- Consider a causal system like the below.
-- The effect of X on M1 and M2 can be measured in the usual way.
-- But unfortunately, if there are multiple mediators, the effect of M1 (or M2) on Y is not identified.
-- The 'exclusion restriction' is obviously violated when there are multiple mediators (unless you can account for them all).
-
+-   Consider a causal system like the below.
+-   The effect of X on M1 and M2 can be measured in the usual way.
+-   But unfortunately, if there are multiple mediators, the effect of M1 (or M2) on Y is not identified.
+-   The 'exclusion restriction' is obviously violated when there are multiple mediators (unless you can account for them all).
 
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/med1.png")
 ```
 
-
-
-
 ### The problem of unidentified mediators
 
-  \footnotesize
-	*  An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. 
-	*  But \textbf{both of these average effects may be positive (for example) even if there is no effect of X on Y through M1}.  
-\end{itemize}
-
+An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. But **both of these average effects may be positive (for example) even if there is no effect of X on Y through M1**.
 
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/med2.png")
 ```
 
-
-
-
 ### The problem of unidentified mediators
 
-  \footnotesize
-	*  An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. 
-	*  Similarly \textbf{both of these average effects may be zero even if X affects on Y through M1 for every unit!}.  
-\end{itemize}
+An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. Similarly **both of these average effects may be zero even if X affects on Y through M1 for every unit!**.
 
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/med2.png")
 ```
 
-
-
 ### The problem of unidentified mediators
 
-  \footnotesize
-	*  Another somewhat obvious approach is see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. 
-	*  But this common strategy is also not guaranteed to produce reliable results  
-	*  See \href{http://imai.princeton.edu/projects/mechanisms.html}{Imai} on better ways to think about this problem and designs to address it  
-\end{itemize}
+Another somewhat obvious approach is see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. But this common strategy is also not guaranteed to produce reliable results. See [Imai](http://imai.princeton.edu/projects/mechanisms.html) on better ways to think about this problem and designs to address it.
 
 ```{r, echo = FALSE, include = FALSE}
 knitr::include_graphics("figs/med3.png")
 ```
 
-
 ### The problem of unidentified mediators: Quantities
-*  In the potential outcomes framework we can describe a **mediation effect** as (see Imai et al):
-$$\delta_i(t) = Y_i(t, M_i(1)) - Y_i(t, M_i(0)) \textbf{ for } t = 0,1$$
-* The **direct effect** is:
-$$\psi_i(t) = Y_i(1, M_i(t)) - Y_i(0, M_i(t)) \textbf{ for } t = 0,1$$
-*  This is a **decomposition**, since:
-$$Y_i(1, M_i(1))  - Y_1(0, M_i(0)) = \frac{1}{2}(\delta_i(1) + \delta_i(0) + \psi_i(1) + \psi_i(0))  $$
-*  If (and a big if), there are no interaction effects---ie $\delta_i(1) = \delta_i(0), \psi_i(1) = \psi_i(0)$, then
-$$Y_i(1, M_i(1))  - Y_1(0, M_i(0)) = \delta_i  + \psi_i$$
-*  The bad news is that although a single experiment might identify the total effect, it can not identify these elements of the direct effect. 
 
+-   In the potential outcomes framework we can describe a **mediation effect** as (see Imai et al): $$\delta_i(t) = Y_i(t, M_i(1)) - Y_i(t, M_i(0)) \textbf{ for } t = 0,1$$
+-   The **direct effect** is: $$\psi_i(t) = Y_i(1, M_i(t)) - Y_i(0, M_i(t)) \textbf{ for } t = 0,1$$
+-   This is a **decomposition**, since: $$Y_i(1, M_i(1))  - Y_1(0, M_i(0)) = \frac{1}{2}(\delta_i(1) + \delta_i(0) + \psi_i(1) + \psi_i(0))  $$
+-   If (and a big if), there are no interaction effects---ie $\delta_i(1) = \delta_i(0), \psi_i(1) = \psi_i(0)$, then $$Y_i(1, M_i(1))  - Y_1(0, M_i(0)) = \delta_i  + \psi_i$$
+-   The bad news is that although a single experiment might identify the total effect, it can not identify these elements of the direct effect.
 
 ### The problem of unidentified mediators: Solutions?
 
-* Check **formal requirement** for identification under single experiment design ("sequential ignorability"---that, conditional on actual treatment, it is as if the value of the mediation variable is randomly assigned relative to potential outcomes). But this is strong (and in fact unverifiable) and if it does not hold, bounds on effects always include zero (Imai et al)
-*  You can use **interactions** with covariates **if you are willing to make assumptions on no heterogeneity of direct treatment effects** over covariates. eg you think that money makes people get to work faster because they can buy better cars; you look at the marginal effect of more money on time to work for people with and without cars and find it higher for the latter. This might imply mediation through transport but only if there is no direct effect heterogeneity (eg people with cars are less motivated by money).
-
-
+-   Check **formal requirement** for identification under single experiment design ("sequential ignorability"---that, conditional on actual treatment, it is as if the value of the mediation variable is randomly assigned relative to potential outcomes). But this is strong (and in fact unverifiable) and if it does not hold, bounds on effects always include zero (Imai et al)
+-   You can use **interactions** with covariates **if you are willing to make assumptions on no heterogeneity of direct treatment effects** over covariates. eg you think that money makes people get to work faster because they can buy better cars; you look at the marginal effect of more money on time to work for people with and without cars and find it higher for the latter. This might imply mediation through transport but only if there is no direct effect heterogeneity (eg people with cars are less motivated by money).
 
 ### The problem of unidentified mediators: Solutions?
 
-*  Weaker assumptions justify **parallel design** 
-    * Group A: $T$ is randomly assigned, $M$ left free. 
-    * Group B: divided into four groups $T\times M$ (requires two more assumptions (1) that the \textbf{manipulation} of the mediator only affects outcomes through the mediator (2) \textbf{no interaction}, for each unit,  $Y(1,m)-Y(0,m) =  Y(1,m')-Y(0,m')$.) 
+-   Weaker assumptions justify **parallel design**
+    -   Group A: $T$ is randomly assigned, $M$ left free.
+    -   Group B: divided into four groups $T\times M$ (requires two more assumptions (1) that the **manipulation** of the mediator only affects outcomes through the mediator (2) **no interaction**, for each unit, $Y(1,m)-Y(0,m) = Y(1,m')-Y(0,m')$.)
 
 **Idea 5**: Understanding mechanisms is harder than you think. Figure out what assumptions fly.
-
-
 
 ## Differences in differences
 
 New challenges, new developments
-
 
 ## Regression discontintuity
 

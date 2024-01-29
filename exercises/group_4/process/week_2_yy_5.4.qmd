@@ -1,0 +1,76 @@
+---
+title: "Week_2"
+format: html
+Authors:
+  - Nader
+  - Philipp
+  - Yoanna
+  - Robert
+  - Daniel
+---
+
+Exercise 5.4.
+
+**Missing data on controls**
+
+Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it?
+
+**Discussion**
+
+The way in which missing data is treated depends on the analysis. Missing data may compromise inferences from randomized trials. The potential bias due to missing data depends on the mechanism causing the data to be missing, and the analytical methods applied to amend the missingness. It also needs to be assessed if the missing data is missing at random or not as well as the extent of the missingness.
+
+Excluding the missing observations completely from the analysis may introduce bias if the variable is related to the treatment or outcome.
+
+A way to address missing data is through multiple imputation, which generates multiple sets of plausible values for the missing observations. Rather than imputing a single set of values, multiple imputation recognizes the uncertainty associated with missing data and aims to reflect this uncertainty in the analysis.
+
+------------------------------------------------------------------------
+
+Declare a design for an experiment in which a binary covariate `X` is related to potential outcomes, according to `b`, and so to treatment effects. Say `X` is missing with probability `p`.
+
+Compare answer strategies in which you:
+
+a.  do not control for X
+
+b.  do control for X but drop whenever X is missing and
+
+c.  Treat X as a block in your analysis design with three values (0, 1, and missing).
+
+Assess performance (RMSE) over a range of values for `p` and `b`. How do you think the comparison of strategies depends upon N?
+
+```{r}
+library(StanHeaders)
+library(rstan)
+library(dagitty)
+library(DeclareDesign)
+library(CausalQueries)
+library(ri2)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+```
+
+##Declare design
+
+```{r}
+
+#Trying out 
+
+# Scenario 1 (b = 1 / prob. of missing (p) = 0.2)
+# ???
+# T - treatment 1 or 0 - is it needed to be specified in the model?
+
+b <- 1
+
+design_missing <- declare_model(
+  N = 1000,     # Total number of observations
+  p = 0.2,      # Probability of missingness for X
+  U = rnorm(N),
+  potential_outcomes (Y ~ b * Z + X * T + U), conditions = (T = 0:1),
+  missingness = declare_missing(
+    X = prob_missing * (T= 0:1) +
+      declare_measurement(Y = reveal_outcomes(Y ~ Z) +
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z, inquiry = "ate", label = "no control for X") 
+)))
+ 
+```

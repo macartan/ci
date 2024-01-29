@@ -1,0 +1,253 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+title: "Exercises"
+author: "Group 1"
+params:
+  run: FALSE
+execute: 
+  echo: true
+  warning: false
+  error: false
+  cache: false
+---
+
+```{r setup, include=FALSE}
+pacman::p_load(knitr, tidyverse, CausalQueries, DeclareDesign, rvest, ggdag) #load packages
+
+table_5_1 <- html_nodes(read_html("https://macartan.github.io/ci/exercises.html#estimation-and-inference-frequentist"), #pull data for 5.1
+                    "table") 
+```
+
+### 2.1 False positives and s
+
+\*   You are not more likely to get a false positive with larger samples. When there is a true effect of some effect power, which is the probability of rejecting the null hypothesis when it is, in fact false, increases, when we have larger samples. If there is no true effect, power is unchanged even as our sample gets larger.
+
+### Assess by generating a simple experimental design from scratch in which we can vary the N and in which there is no true effect of some treatment.
+
+```{r}
+b <-0
+N <- 100
+
+simplest_design <- 
+  declare_model(N = N, U = rnorm(N), potential_outcomes(Y ~ b * Z + U)) +   declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+
+designs <- redesign(simplest_design, N = c(100, 200, 300, 400, 500))
+
+simulations_df <- diagnose_design(designs, sims = 100)
+
+head(simulations_df)
+
+N <- simulations_df$diagnosands_df$N
+
+power <- simulations_df$diagnosands_df$power
+
+ggplot(simulations_df$diagnosands_df, aes(x = N, y = power)) + geom_point()
+```
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = p.value)) +
+  geom_histogram(binwidth = 0.01, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of p-values",
+   	x = "p-value",
+   	y = "Frequency")
+```
+
+\# Plot the distribution of p values from the simulations_df. What shape is it and why?
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = p.value)) +
+  geom_histogram(binwidth = 0.01, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of p-values",
+       x = "p-value",
+       y = "Frequency") +
+  facet_wrap(~N, scales = "free")
+```
+
+Uniform distribution because there is no true effect.
+
+estimates vs p.values. More precise estimates with larger N
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = estimate, y = p.value)) +
+  geom_point() +
+  facet_wrap(~N)
+```
+
+### 3.1 Causality
+
+Potential outcomes
+
+Consider an outcome
+
+that can be affected by two variables and
+
+. All variables are binary. Can you fill in the potential outcomes (rows) for each of the column types?
+
+|          |                                                  |                                    |                                    |                                                               |
+|----------|--------------------------------------------------|------------------------------------|------------------------------------|---------------------------------------------------------------|
+|          |                                                  |                                    |                                    |                                                               |
+|          | X1 is a necessary and sufficient condition for Y | X1 is necessary but not sufficient | X1 is sufficient but not necessary | X1 sometimes causes Y but is neither necessary nor sufficient |
+| Y(0,0) = | 0                                                | 0                                  | 0                                  | 0                                                             |
+| Y(1,0) = | 1                                                | 0                                  | 1                                  | 1                                                             |
+| Y(0,1) = | 0                                                | 0                                  | 1                                  | 1                                                             |
+| Y(1,1) = | 1                                                | 1                                  | 1                                  | 0                                                             |
+
+### 4.1 **Collider bias**
+
+Declare a simple design in which (i) X and Y both have a positive effect on K (binary) but X does not cause Y (ii) a researcher conditions on K == 1 when estimating the effect of X on Y.
+
+```{r}
+set.seed(12) 
+dagify(K ~ X,
+       K ~ Y,
+       outcome = "K",
+       exposure = c("X", "Y"),
+       labels = c("K" = "K==1")) |> 
+  ggdag(use_labels = "label")+
+  theme_dag()
+```
+
+Show that this can generate biased results. Can you find situations where the bias can be either positive or negative?
+
+```{r}
+M1 <- 
+  declare_model(
+    N = 10000, 
+    X = rnorm(N),
+    Y = rnorm(N),
+    K = rbinom(N, 1, prob = pnorm(X + Y))) +
+  declare_inquiry(ATE = 0) +
+  declare_estimator(
+    Y ~ X,
+    .method = lm_robust,
+    label = "conditioning",
+    subset = K == 1
+  )
+
+M1$model()
+
+sim_data <- draw_data(M1)
+head(sim_data)
+with(sim_data,cor(X,Y))
+with(sim_data %>% filter(K==1),cor(X,Y))
+sim_data %>%dim()
+
+#Plot X and Y and color by K 
+sim_data %>% ggplot(aes(X,Y, color= K)) + geom_point()
+
+estimates <- draw_estimates(M1)
+
+diag <- diagnose_design(M1)
+diag
+simulations_df1 <- diagnose_design(M1, sims = 100)
+simulations_df1
+
+```
+
+```{r}
+M1 <- 
+  declare_model(
+    N = 10000, 
+    X = rnorm(N),
+    Y = rnorm(N),
+    K = rbinom(N, 1, prob = pnorm(X / Y))) +
+  declare_inquiry(ATE = 0) +
+  declare_estimator(
+    Y ~ X,
+    .method = lm_robust,
+    label = "conditioning",
+    subset = K == 1
+  )
+
+M1$model()
+
+sim_data <- draw_data(M1)
+head(sim_data)
+with(sim_data,cor(X,Y))
+with(sim_data %>% filter(K==1),cor(X,Y))
+sim_data %>%dim()
+
+#Plot X and Y and color by K 
+sim_data %>% ggplot(aes(X,Y, color= K)) + geom_point()
+
+estimates <- draw_estimates(M1)
+
+diag <- diagnose_design(M1)
+diag
+```
+
+### Q.5.1. Consider the following data. Treatment is assigned in two blocks. One third of block 1 got treatment (randomly); one third of block two got treatment (randomly). The data are as below:
+
+| Block | Z   | Y   |
+|-------|-----|-----|
+| 1     | 0   | 0   |
+| 1     | 0   | 0   |
+| 1     | 1   | 1   |
+| 2     | 0   | 0   |
+| 2     | 0   | 0   |
+| 2     | 0   | 1   |
+| 2     | 1   | 0   |
+| 2     | 1   | 1   |
+| 2     | 1   | 1   |
+
+-   Can you estimate the ATE? How about the ATT? And the ATC?
+
+    ```{r}
+    # 5.1
+    table_data <- html_table(table_5_1, fill = TRUE)[[5]] %>%
+      rename("Treat" = "Z",
+             "Outcome" = "Y")
+
+    # Calculating ATE (ATT and ATU would require pre-treatment observations)
+    mean_treatment_1 <- mean(table_data$Outcome[table_data$Block == "1" & 
+                                                  table_data$Treat == "1"])
+    mean_control_1 <- mean(table_data$Outcome[table_data$Block == "1" & 
+                                                table_data$Treat == "0"])
+
+    mean_treatment_2 <- mean(table_data$Outcome[table_data$Block == "2" & 
+                                                  table_data$Treat == "1"])
+    mean_control_2 <- mean(table_data$Outcome[table_data$Block == "2" & 
+                                                table_data$Treat == "0"])
+
+    ate_1 <- mean_treatment_1 - mean_control_1
+    ate_2 <- mean_treatment_2 - mean_control_2
+
+
+    # Plot
+    df_ate <- data.frame(Block = c("Block 1", "Block 2"),
+                         ATE = c(ate_1, ate_2))
+
+    plot_ate <- ggplot(df_ate, aes(x = Block, y = ATE)) +
+      geom_point(aes(size = 3)) +
+      scale_size(guide = "none") +
+      lims(y = c(0, 1.2)) +
+      coord_flip() +
+      labs(x = "")
+
+    plot_ate
+    ```
+
+<!-- -->
+
+-   How do these compare to a simple difference in means between treatment and control?
+
+-   Use `DeclareDesign` to compare the answers you get if you use (1) OLS and controlled for block (2) IPW and (3) the Lin estimator
+
+    ```{r}
+
+    ```
+
+-   Imagine now letting the size of the data increase by a factor k --- meaning that if k=2 increase you would have twice as many units in each block. Show how the precision of your estimates changes under these different strategies as k increases
+
+    ```{r}
+
+    ```

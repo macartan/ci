@@ -1,0 +1,330 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Exercise 4.3"
+author: "Team 3"
+---
+
+```{r, include=FALSE}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  DeclareDesign,
+  DeclareDesign,
+  ggdag,
+  ggplot2,
+  magrittr,
+  dplyr
+)
+```
+
+# Puzzle
+
+:::: columns
+
+::: {.column width="50%}
+
+Make a DAG that is consistent with this distribution
+
+:::
+
+::: {.column width="50%}
+
+::: {style="font-size: 75%"}
+| A | B | C |   p  |
+|---|---|---|------|
+| 0 | 0 | 0 | 0.32 |
+| 0 | 0 | 1 | 0.08 |
+| 0 | 1 | 0 | 0.08 |
+| 0 | 1 | 1 | 0.02 |
+| 1 | 0 | 0 | 0.08 |
+| 1 | 0 | 1 | 0.12 |
+| 1 | 1 | 0 | 0.12 |
+| 1 | 1 | 1 | 0.18 |
+
+
+:::
+
+:::
+
+::::
+
+## Making the DAG
+
+:::: columns
+
+::: {.column width="50%}
+
+::: {style="font-size: 75%"}
+| A | B | C |   p  |
+|---|---|---|------|
+| 0 | 0 | 0 | 0.32 |
+| 0 | 0 | 1 | 0.08 |
+| 0 | 1 | 0 | 0.08 |
+| 0 | 1 | 1 | 0.02 |
+| 1 | 0 | 0 | 0.08 |
+| 1 | 0 | 1 | 0.12 |
+| 1 | 1 | 0 | 0.12 |
+| 1 | 1 | 1 | 0.18 |
+:::
+
+:::
+
+::: {.column width="50%}
+
+Hint:
+
+The Markov Condition
+
+P(X,M,Y)=P(X)P(M|X)P(Y|M,X)
+
+:::{.fragment}
+P(A,B,C)=P(A)P(B|A)P(C|B,A)
+
+:::
+
+:::{.fragment}
+```{r}
+coord_dag <- list(
+  x = c(A = 0, B = 1, C = 2),
+  y = c(A = 0, B = 0, C = 0)
+)
+
+our_dag <- ggdag::dagify(C ~ B, B ~ A, coords = coord_dag)
+ggdag::ggdag(our_dag) + theme_void()
+
+```
+:::
+
+
+:::
+
+::::
+
+
+
+## Making the DAG
+
+:::: columns
+
+::: {.column width="50%}
+
+::: {style="font-size: 75%"}
+| A | B | C |   p  |
+|---|---|---|------|
+| 0 | 0 | 0 | 0.32 |
+| 0 | 0 | 1 | 0.08 |
+| 0 | 1 | 0 | 0.08 |
+| 0 | 1 | 1 | 0.02 |
+| 1 | 0 | 0 | 0.08 |
+| 1 | 0 | 1 | 0.12 |
+| 1 | 1 | 0 | 0.12 |
+| 1 | 1 | 1 | <span style="color: black; background-color: green;">0.18</span> |
+| <span style="color: black; background-color: yellow;">0.5</span> |  <span style="color: black; background-color: yellow;">0.4</span> |  <span style="color: black; background-color: yellow;">0.4</span> |      |
+:::
+
+:::
+
+::: {.column width="50%}
+
+Calculating Propabilities
+P(A,B,C)=P(A)P(B|A)P(C|B,A)
+
+:::{.fragment}
+P(A)=0.5
+<br>
+P(B)=0.4
+<br>
+P(C)=0.4
+<br>
+
+<span style="color: black; background-color: green;">P(A,B,C)=0.18</span>
+
+:::
+
+:::
+
+::::
+
+## Making the DAG
+
+:::: columns
+
+::: {.column width="50%}
+
+::: {style="font-size: 75%"}
+| A | B | C |   p  |
+|---|---|---|------|
+| <span style="color: gray;">0</span> | <span style="color: gray;">0</span> | <span style="color: gray;">0</span> | <span style="color: gray;">0.32</span> |
+| <span style="color: gray;">0</span> | <span style="color: gray;">0</span> | <span style="color: gray;">1</span> | <span style="color: gray;">0.08</span> |
+| <span style="color: gray;">0</span> | <span style="color: gray;">1</span> | <span style="color: gray;">0</span> | <span style="color: gray;">0.08</span> |
+| <span style="color: gray;">0</span> | <span style="color: gray;">1</span> | <span style="color: gray;">1</span> | <span style="color: gray;">0.02</span> |
+| 1 | 0 | 0 | 0.08 |
+| 1 | 0 | 1 | 0.12 |
+| 1 | 1 | 0 | 0.12 |
+| 1 | 1 | 1 | 0.18 |
+|0.5|0.4|0.4| 
+:::
+
+:::
+
+::: {.column width="50%}
+
+More tricky: P(B|A) & P(C|B,A)
+<br>
+
+
+:::{.fragment}
+P(B|A)= P(B,A)/P(A) = 
+<br>
+P(B|A)= (0.12 + 0.18) / (0.5)
+<br>
+P(B|A)= 0.6
+<br>
+<br>
+P(C|B,A)=0.6
+
+:::
+
+:::
+
+::::
+
+
+## Making the DAG
+
+:::: columns
+
+::: {.column width="50%"}
+
+Probabilities
+
+::: {style="font-size: 75%"}
+| A | B | C |   p  |
+|---|---|---|------|
+| 0 | 0 | 0 | 0.32 |
+| 0 | 0 | 1 | 0.08 |
+| 0 | 1 | 0 | 0.08 |
+| 0 | 1 | 1 | 0.02 |
+| 1 | 0 | 0 | 0.08 |
+| 1 | 0 | 1 | 0.12 |
+| 1 | 1 | 0 | 0.12 |
+| 1 | 1 | 1 | 0.18 |
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+Putting it together
+<br>
+P(A,B,C)=P(A)P(B|A)P(C|B,A)
+<br>
+P(A,B,C)= 0.5 x 0.6 x 0.6
+<br>
+P(A,B,C)= 0.18
+
+:::
+
+::::
+
+## Making the DAG
+
+:::: columns
+
+::: {.column width="50%"}
+
+Probabilities
+
+::: {style="font-size: 75%"}
+| A | B | C |   p  |
+|---|---|---|------|
+| 0 | 0 | 0 | 0.32 |
+| 0 | 0 | 1 | 0.08 |
+| 0 | 1 | 0 | 0.08 |
+| 0 | 1 | 1 | 0.02 |
+| 1 | 0 | 0 | 0.08 |
+| 1 | 0 | 1 | 0.12 |
+| 1 | 1 | 0 | 0.12 |
+| 1 | 1 | 1 | 0.18 |
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+But C -> B -> A also works
+<br>
+P(C,B,A)=P(C)P(B|C)P(A|C,B)
+<br>
+P(C,B,A)= 0.4 x 0.5 x 0.9
+<br>
+P(C,B,A)= 0.18
+
+P(C,B,A) feels better
+
+:::
+
+::::
+
+## DeclareDesign 
+
+```{r, echo = TRUE}
+N=10000
+# Modell
+ M1 <- 
+  declare_model(
+    N = N,
+    C = rbinom(N, size = 1, prob = 0.4),
+    B = if_else(C==1, rbinom(N, 1, 0.5), rbinom(N, 1, 0.333)),
+    A = if_else(B==1, rbinom(N, 1, 0.75), rbinom(N, 1, 0.333)))
+    
+data <- M1()
+  
+# Create data
+data <- M1()
+```
+
+
+## DeclareDesign 
+
+```{r}
+
+p1 <- sum(data$A==0 & data$B==0 & data$C==0)/N
+
+p2 <- sum(data$A==1 & data$B==1 & data$C==1)/N
+
+p3 <- sum(data$A==1 & data$B==0 & data$C==1)/N
+
+p4 <-sum(data$A==1 & data$B==1 & data$C==0)/N
+
+p5 <- sum(data$A==0 & data$B==0 & data$C==1)/N
+
+p6 <- sum(data$A==0 & data$B==1 & data$C==0)/N
+
+p7 <- sum(data$A==1 & data$B==0 & data$C==0)/N
+
+p8 <- sum(data$A==0 & data$B==1 & data$C==1)/N
+
+```
+
+| A | B | C |   p  | obs. p |
+|---|---|---|------|-----|
+| 0 | 0 | 0 | 0.32 |`r p1`|
+| 1 | 1 | 1 | 0.18 |`r p2`|
+| 1 | 0 | 1 | 0.12 |`r p3`|
+| 1 | 1 | 0 | 0.12 |`r p4`|
+| 0 | 0 | 1 | 0.08 |`r p5`|
+| 0 | 1 | 0 | 0.08 |`r p6`|
+| 1 | 0 | 0 | 0.08 |`r p7`|
+| 0 | 1 | 1 | 0.02 |`r p8`|
+
+

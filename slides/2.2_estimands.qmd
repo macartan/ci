@@ -1,23 +1,15 @@
 ---
 format: 
-   beamer:
-    theme: "AnnArbor"
-    colortheme: "seahorse"
+   revealjs:
+    embed-resources: true
+    theme: serif
     slide-level: 3
-    keep-tex: true
-    includes:
-      header-includes: include_nav.txt
-title: "Lectures on causal inference and experimental methods"
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Inquiries"
 author: "Macartan Humphreys"
-numbersections: true
-header-includes:
-  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
-  - \newcommand\E{\mathbb{E}}
-  - \newcommand\V{\mathbb{V}}
-  - \hypersetup{colorlinks=true,linkcolor=red}
-  - \usepackage{ulem}
-  - \pdfstringdefDisableCommands{\let\sout\relax}
-fontsize: 11pt  
 bibliography: bib.bib
 ---
 
@@ -31,7 +23,7 @@ source("setup.R")
 
 ## Estimands and inquiries
 
--   Your inquiry is your question and the estimand is the true (generally unknown) answer to the inquiry
+-   Your **inquiry** is your question and the **estimand** is the true (generally unknown) answer to the inquiry
 -   The estimand is the thing you want to estimate
 -   If you are estimating something you should be able to say what your estimand is
 -   You are responsible for your estimand. Your estimator will not tell you what your estimand is
@@ -40,7 +32,13 @@ source("setup.R")
 
 Read: [II ch 4](https://macartan.github.io/integrated_inferences/HJC4.html), [DD, ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
 
-### Estimands: ATE, ATT, ATC, S-, P-, C-, ITT, LATE
+### Estimands: ATE, ATT, ATC, S-, P- {.smaller}
+
+-   ATE is Average Treatment Effect (all units)
+-   ATT is Average Treatment Effect on the Treated
+-   ATC is Average Treatment Effect on the Controls
+
+### Estimands: ATE, ATT, ATC, S-, P- {.smaller}
 
 Say that units are randomly assigned to treatment in different strata (maybe just one); with fixed, though possibly different, shares assigned in each stratum. Then the key estimands and estimators are:
 
@@ -51,12 +49,6 @@ Say that units are randomly assigned to treatment in different strata (maybe jus
 | $\tau_{ATC} \equiv \mathbb{E}[\tau_i | Z_i = 0]$ | $\widehat{\tau}_{ATC} = \sum\nolimits_{x} \frac{(1-p_x)w_x}{\sum\nolimits_{j}(1-p_j)w_j}\widehat{\tau}_x$ |
 
 where $x$ indexes strata, $p_x$ is the share of units in each stratum that is treated, and $w_x$ is the size of a stratum.
-
-Here:
-
--   ATE is Average Treatment Effect (all units)
--   ATT is Average Treatment Effect on the Treated
--   ATC is Average Treatment Effect on the Controls
 
 ### Estimands: ATE, ATT, ATC, S-, P-, C-
 
@@ -69,13 +61,13 @@ And for different subgroups,
 
 -   given some value on a covariate, in which case we refer to CATE (conditional average treatment effect)
 
-### Broader classes of estimands: LATE/CATE
+### Broader classes of estimands: LATE/CATE {.smaller}
 
 The CATEs are **conditional** average treatment effects, for example the effect for men or for women. These are straightfoward.
 
 However we might also imagine conditioning on unobservable or counterfactual features.
 
--   The LATE (or CACE: complier average causal effect) asks about the effect of a treatment ($X$) on an outcome ($Y$) *for people that are responsive to an encouragement* ($Z$)
+-   The LATE (or CACE: "complier average causal effect") asks about the effect of a treatment ($X$) on an outcome ($Y$) *for people that are responsive to an encouragement* ($Z$)
 
 $$LATE =  \frac{1}{|C|}\sum_{j\in C}(Y_j(X=1) - Y_j(X=0))$$ $$C:=\{j:X_j(Z=1) > X_j(Z=0) \}$$
 
@@ -94,7 +86,7 @@ Many inquiries are averages of individual effects, even if the groups are not kn
 
 -   The RDD estimand is a statement about what effects *would be* at a threshold; it can be defined under a model even if no actual individuals are at the threshold. We imagine average potential outcomes as a function of treatment $Z$ and running variable $X$, $f(z, x)$ and define: $$\tau_{RDD} := f(1, x^*) - f(0, x^*)$$
 
-### Distribution estimands
+### Distribution estimands {.smaller}
 
 Many inquiries are averages of individual effects, even if the groups are not known,
 
@@ -108,7 +100,7 @@ But they do not have to be:
 
 You might even be interested in $\min(Y_i(1) - Y_i(0))$.
 
-### Spillover estimands
+### Spillover estimands {.smaller}
 
 There are lots of interesting "spillover" estimands.
 
@@ -122,11 +114,11 @@ Then three estimands might be:
 
 Interpret these. What others might be of interest?
 
-### Differences in CATEs and interaction estimands
+### Differences in CATEs and interaction estimands {.smaller}
 
 A difference in CATEs is a well defined estimand that might involve interventions on one node only:
 
--   $\mathbb{E}_{\{W=1}\}[Y(X=1) - Y(X=0)] - \mathbb{E}_{\{W=0\}}[Y(X=1) - Y(X=0)]$
+-   $\mathbb{E}_{\{W=1\}}[Y(X=1) - Y(X=0)] - \mathbb{E}_{\{W=0\}}[Y(X=1) - Y(X=0)]$
 
 It captures differences in effects.
 
@@ -136,7 +128,7 @@ An *interaction* is an effect on an effect:
 
 Note in the latter the expectation is taken over the whole population.
 
-### Mediation estimands and complex counterfactuals
+### Mediation estimands and complex counterfactuals {.smaller}
 
 Say $X$ can affect $Y$ directly, or indirectly through $M$. then we can write potential outcomes as:
 
@@ -158,13 +150,13 @@ Again we might imagine that these are defined with respect to some group:
 -   $A = \{i|Y_i(1, M(X=1)) > Y_i(0, M(X=0))\}$
 -   $\frac{1}{|A|} \sum_{i\in A}(Y(1, 1) > Y(0, 1))$
 
-here, among those for whom $X$ has a positive effect on $Y$, for what share would there be a positive effect if $M$ were fixed at 1.
+here, *among those for whom* $X$ has a positive effect on $Y$, for what share would there be a positive effect if $M$ were fixed at 1?
 
 ### Causes of effects and effects of causes
 
 In qualitative research a particularly common inquiry is "did $X=1$ cause $Y=1$?
 
-This is often given as a probability, the "probability of causation" (though at the case level we might better think of this probabiliy as an estimate rather than an estimand):
+This is often given as a probability, the "probability of causation" (though at the case level we might better think of this probability as an estimate rather than an estimand):
 
 $$\Pr(Y_i(0) = 0 | Y_i(1) = 1, X = 1)$$
 
@@ -211,7 +203,45 @@ An inquiry: for what share in a population is a possible cause an actual cause?
 
 ## Pearl's ladder
 
+Pearl (e.g. @pearl2018book) describes three types of inquiry:
+
+| Level  | Activity  | Inquiry  |
+|-----------|-----------|----------------------|
+| Association |"Seeing" | If I see $X=1$ should I expect $Y=1$? |
+| Intervention |"Doing" | If I set $X$ to $1$ should I expect $Y=1$? |
+| Counterfactual |"Imagining"  | If $X$ were $0$ instead of 1, would $Y$ then be $0$ instead of $1$? 
+
+## Pearl's ladder
+
+We can understand these as asking different types of questions about a causal model
+
+| Level  | Activity  | Inquiry  |
+|-----------|-----------|----------------------|
+| Association |"Seeing"| $\Pr(Y=1|X=1)$ |
+| Intervention |"Doing"| $\mathbb{E}[\mathbb{I}(Y(1)=1)]$|
+| Counterfactual |"Imagining" | $\Pr(Y(1)=1 \& Y(0)=0)$ |
+
+The third is qualitatively different because it requires information about two mutually incompatible conditions for units. This is not (generally ) recoverable directly from knowledge of $\Pr(Y(1)=1)$ and $\Pr(Y(0)=0)$.
+
 ## Inquiries as statements about principal strata
+
+Given a causal model over nodes with discrete ranges, inquiries can generally be described as summaries of the distributions of exogenous nodes.
+
+We already saw two instances of this:
+
+-   The probability that $X$ has a positive effect on $Y$ in an $X \rightarrow Y$ model is $\lambda^Y_{01}$ (last lecture)
+-   The share of "compliers" in an IV model $Z \rightarrow X \rightarrow Y \leftrightarrow X$ is $\lambda^X_{01}$
+
+## Pause
+
+Take a short break!
+
+```{r, echo  = FALSE}
+
+knitr::include_graphics("assets/coffee.png")
+
+```
+
 
 ## Identification
 
@@ -221,11 +251,22 @@ An inquiry: for what share in a population is a possible cause an actual cause?
 
 Informally a quantity is "identified" if it can be "recovered" once you have enough data.
 
-Say for example average wage is $x$ in some very large population. If I gather lots and lots of data on the wages of individuals and take the average then then my estimate will ultimately let be figure out $x$. If $x$ is $1$ then by estimate will end up centered on \$1. If it is \$2 it will end up centered on \$2.
+Say for example average wage is $x$ in some very large population. If I gather lots and lots of data on the wages of individuals and take the average then then my estimate will ultimately let be figure out $x$.
 
-**Essentially**: Each underlying value produces a unique data distribution. When you see that distribution you recover the parameter.
+-   If $x$ is \$1 then my estimate will end up centered on \$1.
+-   If it is \$2 it will end up centered on \$2.
 
-### Identification (Example without identification)
+### Identification (Definition)
+
+-   **Identifiability** Let $Q(M)$ be a query defined over a class of models $\mathcal M$, then $Q$ is identifiable if $P(M_1) = P(M_2) \rightarrow Q(M_1) = Q(M_1)$.
+
+-   **Identifiability with constrained data** Let $Q(M)$ be a query defined over a class of models $\mathcal M$, then $Q$ is identifiable from features $F(M)$ if $F(M_1) = F(M_2) \rightarrow Q(M_1) = Q(M_1)$.
+
+Based on Defn 3.2.3 in Pearl.
+
+-   **Essentially**: Each underlying value produces a unique data distribution. When you see that distribution you recover the parameter.
+
+### Identification (Example without identification) {.smaller}
 
 Informally a quantity is "identified" if it can be "recovered" once you have enough data.
 
@@ -233,7 +274,7 @@ Informally a quantity is "identified" if it can be "recovered" once you have eno
 -   If I gather lots and lots of data on the wages of (male and female) couples, e.g. $x^c_i = x^m_i + x^w_i$ then, although this will be informative, it will never be sufficient to recover $x^m$ for men and $x^w$.
 -   I can recover $x^c$, but there are too many combinations of possible values of $x^m$ and $x^w$ consistent with the observed data.
 
-### Identification : Goal
+### Identification : Goal {.smaller}
 
 Our goal in causal inference is to estimate quantities such as:
 
@@ -241,11 +282,11 @@ $$\Pr(Y|\hat{x})$$
 
 where $\hat{x}$ is interpreted as $X$ set to $x$ by "external" control. Equivalently: $do(X=x)$ or sometimes $X \leftarrow x$.
 
-If this quantity is **identifiable** then we can recover it with infinite data.
+-   If this quantity is **identifiable** then we can recover it with infinite data.
 
-If it is not identifiable, then, even in the best case, we are not guaranteed to get the right answer.
+-   If it is not identifiable, then, even in the best case, we are not guaranteed to get the right answer.
 
-Are there general rules for determining whether this quantitiy can be identified? Yes.
+*Are there general rules for determining whether this quantity can be identified?* Yes.
 
 ### Identification : Goal
 
@@ -255,11 +296,11 @@ $$\Pr(Y|x)$$
 
 is easy.
 
-But we are not interested in identifying the distribution of $Y$ given observed values of $x$, but rather, the distribution of $Y$ if $X$ is *set* to $x$.
+But we are not always interested in identifying the distribution of $Y$ given *observed* values of $x$, but rather, the distribution of $Y$ if $X$ is *set* to $x$.
 
 ## Levels and effects
 
-If we can identify the controlled disteribution we can calculate other causal quantities of interest.
+If we can identify the controlled distribution we can calculate other causal quantities of interest.
 
 For example for a binary $X, Y$ the causal effect of $X$ on the probability that $Y=1$ is:
 
@@ -271,7 +312,7 @@ $$\Pr(Y=1|x=1) - \Pr(Y=1|x=0)$$
 
 It's the difference between seeing and doing.
 
-### When to condition? What to condition on?
+### When to condition? What to condition on? {.smaller}
 
 The key idea is that you want to find a set of variables such that when you condition on these you get what you would get if you used a `do` operation.
 
@@ -306,7 +347,7 @@ plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2
 
 ```{r, echo = FALSE}
 m2 <- make_model("M1 -> Y <- M2; X <- Z -> M1")
-plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2, X=1, Y=1), nodecol = c(1,2,1,1,1))
+plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2, X=1, Y=1), nodecol = c(2,1,1, 1,1))
 ```
 
 ### Identification
@@ -317,7 +358,7 @@ plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2
     -   Frontdoor criterion
 -   There are more
 
-### Backdoor Criterion: (Pearl 1995)
+### Backdoor Criterion: (Pearl 1995) {.smaller}
 
 The **backdoor criterion** is satisfied by $Z$ (relative to $X$, $Y$) if:
 
@@ -332,67 +373,88 @@ $$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$ (This is eqn 3.19 in Pearl 
 
 $$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$
 
--   Note notion of a linear control of anything like that; idea really is like blocking: think lots of discrete data and no missing patterns
+-   No notion of a linear control or anything like that; idea really is like blocking: think lots of discrete data and no missing patterns
 -   Note this is a formula for a (possibly counterfactual) *level*; a counterfactual difference would be given in the obvious way by:
 
-$$P(Y=y | \hat{x}) - P(Y=y | \hat{x}') = \sum_z P(Y=y| X = x, Z=z)P(z) - \sum_z P(Y=y| X = x', Z=z)P(z)$$
+$$P(Y=y | \hat{x}) - P(Y=y | \hat{x}')$$
 
-### Backdoor Proof
+### Backdoor Proof {.smaller}
 
-Following Pearl (2009), Chapter 11. Let $T$ denote the set of parents of $X$: $T := pa(X)$, with (possibly vector valued) realizations $t$.
+Following Pearl (2009), Chapter 11. Let $T$ denote the set of parents of $X$: $T := pa(X)$, with (possibly vector valued) realizations $t$. These might not all be observed.
 
 If the backdoor criterion is satisfied, we have:
 
 1.  $Y$ is independent of $T$, given $X$ and observed data, $Z$ (since $Z$ blocks backdoor paths)
 2.  $X$ is independent of $Z$ given $T$. (Since $Z$ includes only nondescendents)
 
--   From the DAG we have: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|\hat{x}, t)$$
+-  The intervention level relates to the observational level as follows: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)$$
+-  Think of this as *fully accounting for the (possibly unobserved) causes of $X$, $T$*
 
-### Backdoor Proof
+### Backdoor Proof {.smaller}
 
--   But we do not observe $T$, rather we observe $Z$. OK, but we can write: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|\hat{x}, t, z)p(z|\hat{x}, pa(X))$$
+-   But of course we do not observe $T$, rather we observe $Z$. So we now need to write everything in terms of $Z$ rather than $T$.
+
+We bring $Z$ into the picture by writing: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|x, t, z)p(z|x, t)$$
 
 -   Then using the two conditions above:
 
-    1.  replace $p(y|\hat{x}, pa(X), z)$ with $p(y, \hat{x}, z)$
-    2.  replace $p(z|\hat{x}, pa(X))$ with $p(z|\hat{x})$
+    1.  replace $p(y|x, t, z)$ with $p(y | x, z)$
+    2.  replace $p(z|x, t)$ with $p(z|t)$
 
-This gives: $$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X)) $$
+This gives: $$p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t) $$
 
-### Now Clean up:
 
-$$p(y|\hat{x}) = \sum_{pa(X)} p(pa(X)) \sum_z p(y|\hat{x}, z)p(z|pa(X))$$ $$\leftrightarrow$$ $$p(y|\hat{x}) =  \sum_z p(y|\hat{x}, z)\sum_{pa(X)} p(pa(X))p(z|pa(X)) = \sum_z p(y|\hat{x})p(z)$$
+So, cleaning up, we can get rid of $T$: 
 
-### Adjustment criterion
+$$p(y|\hat{x}) =  \sum_z p(y|x, z)\sum_{t\in T} p(z|t)p(t) = \sum_z p(y| x, z)p(z)$$
+
+
+### Backdoor proof figure {.smaller}
+
+For intuition: 
+
+```{r, echo = FALSE, fig.height = 4, fig.width = 10}
+
+make_model(" Y <- Z <- T -> X -> Y ") |> plot(x_coord = c(1, 2, 2, 3), y_coord = c(1, 1, 2, 1))
+
+```
+
+We would be happy if we could condition on the parent $T$, but $T$ is not observed. However we can use $Z$ instead making use of the fact that:
+
+1.  $p(y|x, t, z) = p(y | x, z)$ (since $Z$ blocks)
+2.  $p(z|x, t) = p(z|t)$ (since $Z$ is upstream and blocked by parents, $T$)
+
+### Adjustment criterion {.smaller}
 
 See @shpitser2012validity
 
 The adjustment criterion is satisfied by $Z$ (relative to $X$, $Y$) if:
 
-1.  no element of $Z$ is a descendant (in the mutilated graph[^1]) of any variable $W\not\in X$ which lies on a proper causal path from $X$ to $Y$[^2]
+1.  no element of $Z$ is a descendant in the mutilated graph of any variable $W\not\in X$ which lies on a proper causal path from $X$ to $Y$
 2.  $Z$ blocks all **noncausal paths** from $X$ to $Y$
 
-[^1]: remove arrows pointing into $X$
+Note:
 
-[^2]: A *proper* causal pathway nodes in $X$ to nodes in $Y$ only intersects $X$ at the endpoint
+-   mutilated graph: remove arrows pointing into $X$
+-   proper pathway: A *proper* causal pathway from $X$ to $Y$ only intersects $X$ at the endpoint
 
 ### These are different. Simple illustration.
 
 Here $Z$ satisfies the adjustment criterion but not the backdoor criterion:
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 2,  fig.align="center", out.width='.9\\textwidth'}
+```{r, echo = FALSE, fig.width = 8, fig.height = 3,  fig.align="center", out.width='.9\\textwidth'}
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(0,1,1),
        y = c(1,0,2),
        names = c( "X", "Z",  "Y" ),
-       arcs = cbind( c(1, 1),
-                     c(2, 3)),
+       arcs = cbind( c(1, 1), c(2, 3)),
        title = "Controlling for Z is OK",
+       labelparse = FALSE,
        padding = .4, contraction = .15) 
 
 ```
 
-$Z$ is descendant of $X$ but it does not a descendant of a node on a path from $X$ to $Y$. No harm adjusting for $Z$ here, but not necessary either.
+$Z$ is descendant of $X$ but it is not a descendant of a node on a path from $X$ to $Y$. No harm adjusting for $Z$ here, but not necessary either.
 
 <!-- No solution here: -->
 
@@ -402,17 +464,122 @@ $Z$ is descendant of $X$ but it does not a descendant of a node on a path from $
 
 <!-- non-causal paths are back-door" -->
 
-### Frontdoor criterion
+### Frontdoor criterion (Pearl) {.smaller}
 
-### In code: Dagitty
+Consider this DAG:
 
-There is a package for this
+```{r, echo = FALSE, fig.height = 4, fig.width = 10}
+make_model( "Y <-U -> X-> M -> Y") |> plot(x_coord = c(2, 1, 2, 3), y_coord = c(2,1,1,1))
+```
+
+* The relationship between $X$ and $Y$ is confounded by $U$. 
+* However the $X\rightarrow Y$ effect is the product of the $X\rightarrow M$ effect and the $M\rightarrow Y$ effect
+
+Why?
+
+### Identification through the front foor {.smaller}
+
+
+If:
+
+* $M$ (possibly a set) blocks all *directed* paths from $X$ to $Y$
+* there is no backdoor path $X$ to $M$
+* $X$ blocks all backdoor paths from $M$ to $Y$
+and
+* all ($m,z$) combinations arise with positive probability
+
+Then $\Pr(y| \hat x)$ is identifiable and given by:
+
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_{x'}\left(\Pr(y|m,x')\Pr(x')\right)$$
+
+### Frontdoor criterion (Proof) {.smaller}
+
+We want to get $\Pr(y | \hat x)$
+
+From the graph the joint distribution of variables is:
+
+$$\Pr(x,m,y,u)  = \Pr(u)\Pr(x|u)\Pr(m|x)\Pr(y|m,u)$$
+If we intervened on $X$ we would have ($\Pr(X = x |u)=1$):
+
+$$\Pr(m,y,u | \hat x)  = \Pr(u)\Pr(m|x)\Pr(y|m,u)$$
+If we sum up over $u$ and $m$ we get:
+
+$$\Pr(m,y| \hat x)  = \Pr(m|x)\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$$
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$$
+
+The first part is fine; the second part however involves $u$ which is unobserved. So we need to get the $u$ out of $\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$.
+
+### Frontdoor criterion {.smaller}
+
+Now, from the graph:
+
+1. $M$ is d-separated from $U$ by $X$:
+
+$$\Pr(u|m, x) = \Pr(u|x)$$
+2. $X$ is d-separated from $Y$ by $M$, $U$
+
+$$\Pr(y|x, m, u) = \Pr(y|m,u)$$
+That's enough to get $u$ out of $\sum_u\left(\Pr(y|m,u)\Pr(u)\right)$
+
+### Frontdoor criterion {.smaller}
+
+
+$$\sum_u\left(\Pr(y|m,u)\Pr(u)\right) = \sum_x\sum_u\left(\Pr(y|m,u)\Pr(u|x)\Pr(x)\right)$$
+
+Using the 2 equalities we got from the graph:
+
+$$\sum_u\left(\Pr(y|m,u)\Pr(u)\right) = \sum_x\sum_u\left(\Pr(y|x,m,u)\Pr(u|x,m)\Pr(x)\right)$$
+
+So:
+
+$$\sum_u\left(\Pr(y|m,u)\Pr(u)\right) = \sum_x\left(\Pr(y|m,x)\Pr(x)\right)$$
+
+Intuitively: $X$ blocks the back door between $Z$ and $Y$ just as well as $U$ does
+
+### Frontdoor criterion {.smaller}
+
+Substituting we are left with:
+
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_{x'}\left(\Pr(y|m,x')\Pr(x')\right)$$
+
+(The $'$ is to distinguish the $x$ in the summation from the value of $x$ of interest)
+
+It's interesting that $x$ remains in the right hand side in the calculation of the $m \rightarrow y$ effect, but this is because $x$ blocks a backdoor from $m$ to $y$
+
+### Front foor {.smaller}
+
+Bringing all this together into a claim we have:
+
+
+If:
+
+* $M$ (possibly a set) blocks all *directed* paths from $X$ to $Y$
+* there is no backdoor path $X$ to $M$
+* $X$ blocks all backdoor paths from $M$ to $Y$
+and
+* all ($m,z$) combinations arise with positive probability
+
+Then $\Pr(y| \hat x)$ is identifiable and given by:
+
+$$\Pr(y| \hat x)  = \sum_m\Pr(m|x)\sum_{x'}\left(\Pr(y|m,x')\Pr(x')\right)$$
+
+### Front foor
+
+* This is a very elegant and surprising result
+* There are not many obvious applications of it however
+* The conditions would be violated for example if unobserved third things caused both $M$ and $Y$
+
+## In code: Dagitty
+
+There is a package [@dagitty] for figuring out what to condition on.
 
 ```{r}
 library(dagitty)
 ```
 
-Then define a dag using dagitty syntax:
+### In code: Dagitty
+
+Define a dag using dagitty syntax:
 
 ```{r}
 g <- dagitty("dag{X -> M -> Y ; Z -> X ; Z -> R -> Y}")
@@ -437,15 +604,15 @@ adjustmentSets(g, exposure = "X", outcome = "Y")
 
 Example where $Z$ is correlated with $X$ and $Y$ and is a confounder
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 3,  fig.align="center", out.width='.9\\textwidth'}
+```{r, echo = FALSE, fig.width = 8, fig.height = 6,  fig.align="center", out.width='.9\\textwidth'}
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( " ",
-         "Z", " ", "X", "Y" ),
+       names = c( " ", "Z", " ", "X", "Y" ), 
        arcs = cbind( c(2, 2, 4),
                      c(4, 5, 5)),
        title = "Controlling for Z can remove bias",
+       labelparse = FALSE,
        padding = .4, contraction = .15) 
 
 ```
@@ -454,16 +621,17 @@ hj_ggdag(x = c(-1, 0, -1, 1, 3),
 
 Example where $Z$ is correlated with $X$ and $Y$ but it is *not* a confounder
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 3,  fig.align="center", out.width='.9\\textwidth'}
+```{r, echo = FALSE, fig.width = 8, fig.height = 6,  fig.align="center", out.width='.9\\textwidth'}
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( expression(paste(U[2])),
-         "Z", expression(paste(U[1])), "X", "Y" ),
+       names = c("U2",
+         "Z", "U1", "X", "Y" ),
        arcs = cbind( c(1, 3, 1, 3, 4),
                      c(2, 2, 4, 5, 5)),
        title = "Unbiased without controlling for Z",
-       padding = .4, contraction = .15) 
+       padding = .4, contraction = .15,
+       labelparse = FALSE) 
 
 ```
 
@@ -471,21 +639,22 @@ hj_ggdag(x = c(-1, 0, -1, 1, 3),
 
 But controlling can also cause problems. In fact conditioning on a temporally pre-treatment variable could cause problems. Who'd have thunk? Here is an example from Pearl (2005):
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 3,  fig.align="center", out.width='.9\\textwidth'}
+```{r, echo = FALSE, fig.width = 8, fig.height = 6,  fig.align="center", out.width='.9\\textwidth'}
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( expression(paste(U[2])),
-         "Z", expression(paste(U[1])), "X", "Y" ),
+       names = c("U2", "Z", "U1", "X", "Y" ),
        arcs = cbind( c(1, 3, 1, 3, 4),
                      c(2, 2, 4, 5, 5)),
        title = "Controlling for Z can induce bias",
-       padding = .4, contraction = .15) 
+       padding = .4, contraction = .15,
+       labelparse = FALSE) 
 
 ```
 
-### Illustration of identification failure from conditioning on a collider
-:::{.smaller} 
+### Illustration of identification failure from conditioning on a collider {.smaller}
+
+::: smaller
 ```{r}
 #| results: asis
 
@@ -520,22 +689,22 @@ Which means, no need to condition on anything.
 
 A bind: from Pearl 1995.
 
-```{r, echo = FALSE, fig.width = 5, fig.height = 3,  fig.align="center", out.width='.9\\textwidth'}
+```{r, echo = FALSE, fig.width = 8, fig.height = 6,  fig.align="center", out.width='.9\\textwidth'}
 par(mar=c(1,1,1,1))
 hj_ggdag(x = c(-1, 0, -1, 1, 3),
        y = c(0, 2, 4, 1, 2),
-       names = c( expression(paste(U[2])),
-         "Z", expression(paste(U[1])), "X", "Y" ),
+       names = c("U2",
+         "Z", "U1", "X", "Y" ),
        arcs = cbind( c(1, 3, 1, 3, 4, 2),
                      c(2, 2, 4, 5, 5, 4)),
        title = "Z is a confound but controlling for it can induce bias",
-       padding = .4, contraction = .15) 
+       padding = .4, contraction = .15, labelparse = FALSE) 
 
 ```
 
 For a solution for a class of related problems see @robins2000marginal
 
-### Let's look at that in dagitty
+### Let's look at that in dagitty {.smaller}
 
 ```{r, comment = NA}
 g <- dagitty("dag{U1 -> Z  ; U1 -> y ; 
@@ -550,3 +719,7 @@ which means you have to adjust on an unobservable. Here we double check that inc
 isAdjustmentSet(g, "Z", exposure = "x", outcome = "y")
 isAdjustmentSet(g, NULL, exposure = "x", outcome = "y")
 ```
+
+### Collider & Confounder
+
+So we cannot *identify* the effect here. But can we still learn about it?

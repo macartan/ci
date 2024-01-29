@@ -1,0 +1,195 @@
+---
+title: "Group1_week2_exercises"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+pacman::p_load(knitr, tidyverse, CausalQueries, DeclareDesign)
+```
+
+### 2.1 Declare Design 
+
+### False positives and s
+
+* You are not more likely to get a false positive with larger samples. When there is a true effect of some effect power, which is the probability of rejecting the null hypothesis when it is, in fact false, increases, when we have larger samples. If there is no true effect, power is unchanged even as our sample gets larger.
+
+### Assess by generating a simple experimental design from scratch in which we can vary the N and in which there is no true effect of some treatment.
+
+```{r}
+b <-0
+N <- 100
+
+simplest_design <- 
+  declare_model(N = N, U = rnorm(N), potential_outcomes(Y ~ b * Z + U)) + declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+
+designs <- redesign(simplest_design, N = c(100, 200, 300, 400, 500))
+
+simulations_df <- diagnose_design(designs, sims = 100)
+
+head(simulations_df)
+
+N <- simulations_df$diagnosands_df$N
+
+power <- simulations_df$diagnosands_df$power
+
+ggplot(simulations_df$diagnosands_df, aes(x = N, y = power)) + geom_point()
+```
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = p.value)) +
+  geom_histogram(binwidth = 0.01, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of p-values",
+   	x = "p-value",
+   	y = "Frequency")
+```
+
+\# Plot the distribution of p values from the simulations_df. What shape is it and why?
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = p.value)) +
+  geom_histogram(binwidth = 0.01, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of p-values",
+       x = "p-value",
+       y = "Frequency") +
+  facet_wrap(~N, scales = "free")
+```
+
+Uniform distribution because there is no true effect.
+
+estimates vs p.values. More precise estimates with larger N
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = estimate, y = p.value)) +
+  geom_point() +
+  facet_wrap(~N)
+```
+
+### 3.1 Causality 
+
+Potential outcomes
+
+Consider an outcome
+
+that can be affected by two variables and
+
+. All variables are binary. Can you fill in the potential outcomes (rows) for each of the column types?
+
+|          |                                                  |                                    |                                    |                                                               |
+|---------|-----------------|----------------|---------------|----------------|
+|          |                                                  |                                    |                                    |                                                               |
+|          | X1 is a necessary and sufficient condition for Y | X1 is necessary but not sufficient | X1 is sufficient but not necessary | X1 sometimes causes Y but is neither necessary nor sufficient |
+| Y(0,0) = | 0                                                | 0                                  | 0                                  | 0                                                             |
+| Y(1,0) = | 1                                                | 0                                  | 1                                  | 1                                                             |
+| Y(0,1) = | 0                                                | 0                                  | 1                                  | 1                                                             |
+| Y(1,1) = | 1                                                | 1                                  | 1                                  | 0                                                             |
+
+### 4.1 **Collider bias**
+
+Declare a simple design in which (i) X and Y both have a positive effect on K (binary) but X does not cause Y (ii) a researcher conditions on K == 1 when estimating the effect of X on Y.
+
+Show that this can generate biased results. Can you find situations where the bias can be either positive or negative?
+
+```{r}
+
+```
+=======
+---
+title: "Group1_week2_exercises"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+pacman::p_load(knitr, tidyverse, CausalQueries, DeclareDesign)
+```
+
+### 2.1 Declare Design 
+
+### False positives and s
+
+\* You are not more likely to get a false positive with larger samples. When there is a true effect of some effect power, which is the probability of rejecting the null hypothesis when it is, in fact false, increases, when we have larger samples. If there is no true effect, power is unchanged even as our sample gets larger.
+
+### Assess by generating a simple experimental design from scratch in which we can vary the N and in which there is no true effect of some treatment.
+
+```{r}
+b <-0
+N <- 100
+
+simplest_design <- 
+  declare_model(N = N, U = rnorm(N), potential_outcomes(Y ~ b * Z + U)) + declare_assignment(Z = simple_ra(N), Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
+
+designs <- redesign(simplest_design, N = c(100, 200, 300, 400, 500))
+
+simulations_df <- diagnose_design(designs, sims = 100)
+
+head(simulations_df)
+
+N <- simulations_df$diagnosands_df$N
+
+power <- simulations_df$diagnosands_df$power
+
+ggplot(simulations_df$diagnosands_df, aes(x = N, y = power)) + geom_point()
+```
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = p.value)) +
+  geom_histogram(binwidth = 0.01, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of p-values",
+   	x = "p-value",
+   	y = "Frequency")
+```
+
+\# Plot the distribution of p values from the simulations_df. What shape is it and why?
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = p.value)) +
+  geom_histogram(binwidth = 0.01, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of p-values",
+       x = "p-value",
+       y = "Frequency") +
+  facet_wrap(~N, scales = "free")
+```
+
+Uniform distribution because there is no true effect.
+
+estimates vs p.values. More precise estimates with larger N
+
+```{r}
+ggplot(simulations_df$simulations_df, aes(x = estimate, y = p.value)) +
+  geom_point() +
+  facet_wrap(~N)
+```
+
+### 3.1 Causality 
+
+Potential outcomes
+
+Consider an outcome
+
+that can be affected by two variables and
+
+. All variables are binary. Can you fill in the potential outcomes (rows) for each of the column types?
+
+|          |                                                  |                                    |                                    |                                                               |
+|---------|-----------------|----------------|---------------|----------------|
+|          |                                                  |                                    |                                    |                                                               |
+|          | X1 is a necessary and sufficient condition for Y | X1 is necessary but not sufficient | X1 is sufficient but not necessary | X1 sometimes causes Y but is neither necessary nor sufficient |
+| Y(0,0) = | 0                                                | 0                                  | 0                                  | 0                                                             |
+| Y(1,0) = | 1                                                | 0                                  | 1                                  | 1                                                             |
+| Y(0,1) = | 0                                                | 0                                  | 1                                  | 1                                                             |
+| Y(1,1) = | 1                                                | 1                                  | 1                                  | 0                                                             |
+
+### 4.1 **Collider bias**
+
+Declare a simple design in which (i) X and Y both have a positive effect on K (binary) but X does not cause Y (ii) a researcher conditions on K == 1 when estimating the effect of X on Y.
+
+Show that this can generate biased results. Can you find situations where the bias can be either positive or negative?
+
+```{r}
+
+```

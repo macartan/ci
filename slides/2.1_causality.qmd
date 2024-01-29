@@ -1,27 +1,18 @@
 ---
 format: 
-   beamer:
-    theme: "AnnArbor"
-    colortheme: "seahorse"
+   revealjs:
+    embed-resources: true
+    theme: serif
     slide-level: 3
-    keep-tex: true
-    includes:
-      header-includes: include_nav.txt
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
 title: "Causality"
 author: "Macartan Humphreys"
-numbersections: true
-header-includes:
-  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
-  - \hypersetup{colorlinks=true,linkcolor=red}
-  - \usepackage{ulem}
-  - \pdfstringdefDisableCommands{\let\sout\relax}
-fontsize: 11pt  
+bibliography: bib.bib
 ---
 
-<<<<<<< Updated upstream
-  
-=======
->>>>>>> Stashed changes
 ```{r, include = FALSE}
 
 source("setup.R")
@@ -54,7 +45,8 @@ The problem in 2 is that you need to know what would have happened if things wer
  
 
 -   For each unit, we assume that there are two **post-treatment** outcomes: $Y_i(1)$ and $Y_i(0)$.
--   For example, $Y(1)$ is the outcome that *would* obtain *if* the unit received the treatment.
+    -   $Y(1)$ is the outcome that *would* obtain *if* the unit received the treatment.
+    -   $Y(0)$ is the outcome that *would* obtain *if* it did not.
 -   The **causal effect** of Treatment (relative to Control) is: $\tau_i = Y_i(1) - Y_i(0)$
 -   Note:
     -   The causal effect is defined at the *individual level*.
@@ -99,11 +91,10 @@ CONNECTEDNESS Say $A$ causes $B$ --- does that mean that there is a spatiotempor
 
 ### Causal claims: Contribution or attribution?
 
-The counterfactual model is all about contribution, not attribution, except in a very conditional sense.
+The counterfactual model is about contribution and attribution in a very specific sense.
 
--   Focus is on non-rival contributions
--   Not: what caused $Y$ but what is the effect of $X$?
--   At most it provides a conditional account
+-   Focus is on *non-rival* contributions
+-   Focus is on *conditional* attribution. Not: what caused $Y$: but what is the effect of $X$?
 
 ### Causal claims: Contribution or attribution?
 
@@ -118,11 +109,6 @@ What caused $Y$? Which cause was most important?
  
 The counterfactual model is about attribution in a very conditional sense.
 
--   Focus is on non-rival contributions
-
--   Not: what caused $Y$ but what is the effect of $X$?
-
--   At most it provides a conditional account
 
 -   This is problem for research programs that define "explanation" in terms of figuring out the things that cause $Y$
 
@@ -141,7 +127,7 @@ The counterfactual model is about attribution in a very conditional sense.
 -   Some seemingly causal claims not admissible.
 -   To get the definition off the ground, manipulation must be imaginable (whether practical or not)
 -   This renders thinking about effects of race and gender difficult
--   What does it mean to say that Aunt Pat voted for Brexit because she is old?
+  -   What does it mean to say that Aunt Pat voted for Brexit because she is old?
 
 ### Causal claims: No causation without manipulation
 
@@ -149,6 +135,12 @@ The counterfactual model is about attribution in a very conditional sense.
 -   To get the definition off the ground, manipulation must be imaginable (whether practical or not)
 -   This renders thinking about effects of race and gender difficult
 -   **Compare**: What does it mean to say that Southern counties voted for Brexit because they have many old people?
+
+### Causal claims: No causation without manipulation
+
+More uncomfortably:
+
+What does it mean to say that the tides are caused by the moon? What exactly do we have to imagine...
 
 ### Causal claims: Causal claims are everywhere
 
@@ -360,6 +352,16 @@ Consider the following potential outcomes table:
 
 What is the actual treatment effect?
 
+## Pause
+
+Take a short break!
+
+```{r, echo  = FALSE}
+
+knitr::include_graphics("assets/coffee.png")
+
+```
+
 ## Endogeneous subgroups {#subs}
 
 ### Endogeneous Subgroups
@@ -396,11 +398,11 @@ Expected reporting given violence in treatment = 100%
 
 It is possible that in truth no one's reporting behavior has changed, what has changed is the propensity of people with different propensities to report to experience violence:
 
-
-|           | Reporter    | *No Violence* | *Violence*   | % Report                |
-|-----------|-------------|---------------|--------------|-------------------------|
-| Control   | Yes <br> No | 25 <br> 25    | 25 <br> 25   | $\frac{25}{25+25}=50\%$ |
-| Treatment | Yes <br> No | 25 <br> 50    | 25 <br> 0    | $\frac{25}{25+0}=100\%$ |
+ 
+|           | Reporter    | *No Violence*   | *Violence*   | % Report                |
+|-----------|:-----------:|:---------------:|:------------:|:-----------------------:|
+| Control   | Yes <br> No | 25 <br> 25      | 25 <br> 25   | $\frac{25}{25+25}=50\%$ |
+| Treatment | Yes <br> No | 25 <br> 50      | 25 <br> 0    | $\frac{25}{25+0}=100\%$ |
 
 
 ### Heterogeneous Effects with Endogeneous Categories
@@ -408,24 +410,28 @@ It is possible that in truth no one's reporting behavior has changed, what has c
 This problem can arise as easily in seemingly simple field experiments. Example:
 
 -   In one study we provided constituents with information about performance of politicians
--   we told politicians in advance so that they could take action
--   we wanted to see whether voters punished poorly performing politicians
--   what's the problem?
+-   We told politicians in advance so that they could take action
+-   We wanted to see whether voters punished poorly performing politicians
 
-### Heterogeneous Effects with Endogeneous Categories  {.smaller}
+What's the problem?
+
+### Endogeneous Categories: Test yourself
 
 Question for us:
 
 * Quotas for women are randomly placed in a set of constituencies in year 1. All winners in these areas are women; in other areas only some are. 
 * In year 2 these quotas are then lifted. 
 
-**Questions** Which problems face an endogenous subgroup issue?:
+Which problems face an endogenous subgroup issue?:
 
-1.  You want to estimate the likelihood that a woman will stand for reelection in treatment versus control areas in year 2.
-2.  You want to estimate how much incumbents are more likely to be reelected in treatment versus control areas in year 2.
-3.  You want to estimate how much treatment areas have more relected incumbents in elections in year 2 compared to control.
+### Endogeneous Categories: Test yourself
 
-### Heterogeneous Effects with Endogeneous Categories
+Which problems face an endogenous subgroup issue?:
+
+1. You want to estimate the likelihood that a woman will stand for reelection in treatment versus control areas in year 2. You want to estimate how much incumbents are more likely to be reelected in treatment versus control areas in year 
+3. You want to estimate how much treatment areas have more relected incumbents in elections in year 2 compared to control.
+
+### Endogeneous Categories: Responses
 
 In such cases you can:
 
@@ -437,27 +443,24 @@ In such cases you can:
 
 -   It is well known that missing data can undo the magic of random assignment.
 -   One seemingly promising approach is to match into pairs *ex ante* and drop pairs together *ex post*.
--   Say potential outcomes looked like this (four units divided into two pairs):
+-   Say potential outcomes looked like this (2 pairs of 2 units):
 
 | Pair   | I   | I   | II  | II  |         |
-|--------|-----|-----|-----|-----|---------|
+|--------|:----|:---:|:---:|:---:|:-------:|
 | Unit   | 1   | 2   | 3   | 4   | Average |
 | Y(0)   | 0   | 0   | 0   | 0   |         |
 | Y(1)   | -3  | 1   | 1   | 1   |         |
-| $\tau$ | -3  | 1   | 1   | 1   |         |
+| $\tau$ | -3  | 1   | 1   | 1   |  0      |
 
 ### Missing data {.smaller}
 
--   Say though that cases are likely to drop out of the sample if things go badly (eg they get a negative score or die)
-
--   Then you might see no attrition in cases in which people that are likely to drop out if treated do not get treated.
-
+-   Say though that treated cases are likely to drop out of the sample if things go badly (eg they get a negative score or die)
+-   Then you might see no attrition if those would-be attritors are not treated.
 -   You might assume you have no problem (after all, no attrition).
-
 -   No missing data when the normal cases happens to be selected
 
 | Pair         | I   | I   | II  | II  |         |
-|--------------|-----|-----|-----|-----|---------|
+|--------|:----|:---:|:---:|:---:|:-------:|
 | Unit         | 1   | 2   | 3   | 4   | Average |
 | Y(0)         | 0   |     | 0   |     | 0       |
 | Y(1)         |     | 1   |     | 1   | 1       |
@@ -468,11 +471,10 @@ In such cases you can:
 -   But in cases in which you have attrition, dropping the pair doesn't necessarily help.
 -   The problem is potential missingness still depends on potential outcomes
 -   The kicker is that the method can produce bias even if (*in fact*) there is no attrition!
-
-Missing data when the vulnerable cases happens to be selected
+-  But missing data when the vulnerable cases happens to be selected
 
 | Pair         | I      | I     | II  | II  |         |
-|--------------|--------|-------|-----|-----|---------|
+|--------|:----|:---:|:---:|:---:|:-------:|
 | Unit         | 1      | 2     | 3   | 4   | Average |
 | Y(0)         |        | \[0\] | 0   |     | 0       |
 | Y(1)         | \[-3\] |       |     | 1   | 1       |
@@ -480,7 +482,7 @@ Missing data when the vulnerable cases happens to be selected
 
 ### Missing data
 
-Note: The right way to think about this is that bias is a property of the strategy over possible realizations of data and not normally a property of the estimator conditional on the data.
+Note: The right way to think about this is that bias **is a property of the strategy over possible realizations** of data and not normally a property of the estimator conditional on the data.
 
 ### Multistage games
 
@@ -488,7 +490,7 @@ Multistage games can also present an endogenous group problem since collections 
 
 ### Multistage games {.smaller}
 
-Question: Does **visibility** alter the extent to which subjects follow norms to punish antisocial behavior (and reward prosocial behavior)? Consider a trust game in which we are interested in how information on receivers affects their actions
+Question: Does **visibility** alter the extent to which subjects follow norms to punish antisocial behavior (and reward prosocial behavior)? Consider a **trust game** in which we are interested in how information on receivers affects their actions
 
  
 
@@ -498,20 +500,21 @@ Question: Does **visibility** alter the extent to which subjects follow norms to
 #| echo: false
 
 data <- data.frame(
-  treatment = c("Masked information on respondents", "Full information on respondents"),
+  treatment = c("Control: Masked information on respondents", "Treatment: Full information on respondents"),
   pc_invested_avg = c("30%", "30%"),
   pc_returned_10 = c("20%", "0%"),
   pc_returned_10 = c("40%", "60%")
 )
 
 # Custom labels
-custom_labels <- c("Treatment", "% invested (average)", "...when 10% invested", "...when 50% invested")
+custom_labels <- c("Visibility Treatment", "% invested (average)", "...when 10% invested", "...when 50% invested")
 
 # Rename columns before applying column_spec
 colnames(data) <- custom_labels
 
 # Create and print the table
-kable(data, format = "html", booktabs = TRUE, caption = "Return rates given investments under different conditions") %>%
+kable(data, format = "html", align = c("l", "c", "c", "c"), 
+      booktabs = TRUE, caption = "Return rates given investments under different conditions") %>%
   kable_styling(latex_options = c("striped", "hold_position"), font_size = 25, latex_table_env = "scriptsize", full_width = FALSE) %>%
   add_header_above(c("", "", "Average % returned" = 2))  
 
@@ -536,21 +539,23 @@ data <- data.frame(
   nice_1 = c("60%", "60%"),
   nice_2 = c("60%", "60%"),
   nice_3 = c("60%", "60%"),
-  nice_4 = c("0%", "0%"),
-  nice_5 = c("0%", "0%"),
-  nice_6 = c("0%", "0%"),
-  nice_avg = c("30%", "30%")
+  mean_1 = c("0%", "0%"),
+  mean_2 = c("0%", "0%"),
+  mean_3 = c("0%", "0%"),
+  avg = c("30%", "30%")
 )
 
 # Custom labels
-custom_labels <- c("Offered behavior", "Nice\n1", "Nice\n2", "Nice\n3", "Nice\n4", "Nice\n5", "Nice\n6", " ")
+custom_labels <- c("Offered behavior", "Nice\n1", "Nice\n2", "Nice\n3", "Mean\n1", "Mean\n2", "Mean\n3", " ")
 
 # Rename columns before applying column_spec
 colnames(data) <- custom_labels
 
 # Create and print the table
 
-kable(data, format = "html", booktabs = TRUE, caption = "Potential outcomes with (and without) identity protection") %>%
+kable(data, 
+      align = c("l", "c", "c", "c", "c", "c", "c", "c"), 
+      format = "html", booktabs = TRUE, caption = "Potential outcomes with (and without) identity protection") %>%
   kable_styling(latex_options = c("striped", "hold_position"), font_size = 25, latex_table_env = "scriptsize", full_width = FALSE) %>%
   add_header_above(c(" ", "Responder’s return decision (given type)" = 6, "Avg."))  
 
@@ -578,16 +583,15 @@ data <- data.frame(
   nice_avg = c("0%", "60%")
 )
 
-# Custom labels
-custom_labels <- c("Offered behavior", "Nice\n1", "Nice\n2", "Nice\n3", "Nice\n4", "Nice\n5", "Nice\n6", " ")
-
 # Rename columns before applying column_spec
 colnames(data) <- custom_labels
 
 
 # Create and print the table
 
-kable(data, format = "html", booktabs = TRUE, caption = "Outcomes when respondent is visible") %>%
+kable(data, 
+      align = c("l", "c", "c", "c", "c", "c", "c", "c"), 
+      format = "html", booktabs = TRUE, caption = "Outcomes when respondent is visible") %>%
   kable_styling(latex_options = c("striped", "hold_position"), font_size = 25, latex_table_env = "scriptsize", full_width = FALSE) %>%
   add_header_above(c(" ", "Responder’s return decision (given type)" = 6, "Avg.")) 
 
@@ -596,9 +600,11 @@ kable(data, format = "html", booktabs = TRUE, caption = "Outcomes when responden
 
 **False Conclusion**: When not protected, responders condition behavior *strongly* on offers (because offerers can select on type accurately)
 
+**In fact**: The nice types invest more because they are nice. The responders return more to the nice types because they are nice.
+
 ### Multistage games
 
-Unfortunately you only see a sample of the potential outcomes, and that looks like this:
+Unfortunately you only see a (noisier!) sample of the potential outcomes, and that looks like this:
 
 ```{r}
 #| label: tbl-test-6
@@ -616,22 +622,22 @@ data <- data.frame(
   nice_avg = c("20%", "40%")
 )
 
-# Custom labels
-custom_labels <- c("Offered behavior", "Nice\n1", "Nice\n2", "Nice\n3", "Nice\n4", "Nice\n5", "Nice\n6", " ")
-
 # Rename columns before applying column_spec
 colnames(data) <- custom_labels
 
 
 # Create and print the table
 
-kable(data, format = "html", booktabs = TRUE, caption = "Outcomes when respondent is not visible") %>%
+kable(data, 
+      align = c("l", "c", "c", "c", "c", "c", "c", "c"), 
+      format = "html", booktabs = TRUE, caption = "Outcomes when respondent is not visible") %>%
   kable_styling(latex_options = c("striped", "hold_position"), font_size = 25, latex_table_env = "scriptsize", full_width = FALSE) %>%
   add_header_above(c(" ", "Responder’s return decision (given type)" = 6, "Avg."))  
 
 ```
 
-**False Conclusion**: When protected, responders condition behavior less strongly on offers (because offerers can select on type less accurately)
+**False Conclusion**: When protected, responders condition behavior **less strongly** on offers (because offerers can select on type less accurately)
+
 
 ### Multistage games {.smaller}
 
@@ -640,23 +646,39 @@ What to do?
 **Solutions?**
 
 1.  Analysis *could* focus on the effect of treatment on respondent behavior, directly.
-    -   This would get the correct answer but to a different question \[Does information affect the share of contributions returned by subjects on average? No\]
-2.  **Strategy method** can sometimes help address the problem, **but** that is also (a) changing the question and (b) putting demands on respondent imagination and honesty
+    -   This would get the correct answer but to a different question (*Does information affect the share of contributions returned by subjects on average?*)
+2.  **Strategy method** can sometimes help address the problem, **but** note that that is  (a) changing the question and (b) putting demands on respondent imagination and honesty
 3.  First mover action could be **directly manipulated**, but unless deception is used that is also changing the question
 4.  First movers could be **selected** because they act in predictable ways (bordering on deception?)
 
-**Idea**: Proceed with extreme caution when estimating effects beyond the first stage.
+**Take away**: Proceed with extreme caution when estimating effects beyond the first stage.
 
+## Pause
+
+Take a short break!
+
+```{r, echo  = FALSE}
+
+knitr::include_graphics("assets/coffee.png")
+
+```
 ## DAGs
+
+*Directed Acyclic Graphs*
+
+```{r, echo = FALSE}
+make_model("A -> B -> C <- D -> B") |> plot()
+
+```
 
 ### Key insight {.smaller}
 
-The most powerful results from the study of DAGs are procedures for figuring out when conditioning aids or hinders causal identification.
+The most powerful results from the study of DAGs give procedures for figuring out when conditioning aids or hinders causal identification.
 
 -   You can read off a **confounding** variable from a DAG.
-    -   You have to condition on such a variable for causal identification.
+    -   You figure out what to condition on for causal identification.
 -   You can read off **"colliders"** from a DAG
-    -   Sometimes you have *avoid* conditioning on these
+    -   Sometimes you have to *avoid* conditioning on these
 -   Sometimes a variable might be both, so
     -   you have to condition on it
     -   you have to avoid conditioning on it
@@ -697,9 +719,14 @@ Say $Z$ is temporally prior to $X$; it is correlated with $Y$ (because of $U_1$)
 
 **Question:** Would it be useful to "control" for $Z$ when trying to estimate the effect of $X$ on $Y$?
 
-**Answer:** Hopefully by the end of today you should see that that the answer is obviously (or at least, plausibly) "no."
+**Answer:** Hopefully by the end of today you should see that the answer is obviously (or at least, plausibly) "no."
 
 ## Conditional independence and graph structure
+
+* What DAGs do is tell you when one variable is independent of another variable given some third variable.
+* Intuitively:
+  * what variables "shield off" the influence of one variable on another
+  * e.g. If inequality causes revolution *via* discontent, then inequality and  revolution should be related to each other overall, but *not* related to each other *among those* that are content or *among those* that are discontent 
 
 ### Conditional independence
 
@@ -709,19 +736,16 @@ $$\Pr(A = a | C = c) = \Pr(A = a | B = b, C = c)$$
 
 Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 
-## Causal graphs basics 1 
-
-### Conditional distributions 1 {.smaller}
+### Conditional distributions: Factorization {.smaller}
 
 -   Consider a situation with variables $X_1, X_2, \dots X_n$
 -   The probability of outcome $x$ can always be written in the form $P(X_1 = x_1)P(X_2 = x_2|X_1=x_1)(X_3 = x_3|X_1=x_1, X_2 = x_2)\dots$.
 -   This can be done with any ordering of variables.
 -   However the representation can be greatly simplified if you can make use of a set of "parentage" relationships
 -   Given an ordering of variables, the **Markovian parents** of variable $X_j$ are the minimal set of variables such that when you condition on these, $X_j$ is independent of all other prior variables in the ordering
--   In this case we can write: $P(x) = \prod_j(x_j | pa_j)$
--   No graphs yet
+-   We want to get to the point where we can can write: $P(x) = \prod_j(x_j | pa_j)$
 
-### Conditional distributions 2{.smaller}
+### Conditional distributions: Factorization from graphs{.smaller}
 
 -   We want to use causal graphs to represent these relations of conditional independence.
 -   Informally, an arrow, $A \rightarrow B$ means that $A$ is a cause of $B$: that is, under some conditions, a change in $A$ produces a change in $B$.
@@ -729,14 +753,33 @@ Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 -   We say that arrows point from *parents* to *children*, and by extension from *ancestors* to *descendants*.
 -   These are parents *on the graph*; but we will connect them to Markovian parents in a probability distribution $P$.
 
-### Conditional distributions 3{.smaller}
+### Conditional distributions: Markov condition {.smaller}
 
 -   A DAG is just a graph in which some or all nodes are connected by *directed* edges (arrows) and there are no cyclical paths along these directed edges.
 -   Consider a DAG, $G$, and consider the ancestry relations implied by $G$: the distribution $P$ is *Markov relative to the graph* $G$ if every variable is independent of its nondescendants (in $G$) conditional on its parents (in $G$).
-    -   This is the **Markov condition**: conditional on its parents, a variable is independent of its non-descendants.
--   OK now we have a link from probability distributions to graphs. But we have not talked about causality.
+    -   **Markov condition**: conditional on its parents, a variable is independent of its non-descendants.
 
-### Conditional distributions 4 {.smaller}
+Now we have what we need to simplify: **if the Markov condition is satisfied**, then instead of writing the full probability as $P(x) = P(x_1)P(x_2|x_1)P(x_3|x_1, x_2)$ we can write $P(x) = \prod_i P(x_i |pa_i)$.
+
+### Illustration {.smaller}
+
+```{r, echo = FALSE}
+
+make_model("A -> B -> C") |> plot()
+
+```
+
+If $P(a,b,c)$ is Markov relative to this graph then: $C$ is independent of $A$ given $B$
+
+And instead of 
+
+$$\Pr(a,b,c) = \Pr(a)\Pr(a|b)\Pr(c|a, b)$$ 
+
+we could now write:
+
+$$\Pr(a,b,c) = \Pr(a)\Pr(a|b)\Pr(c|b)$$ 
+
+### Conditional distributions and interventions {.smaller}
 
 We want the graphs to be able to represent the effects of interventions.
 
@@ -746,33 +789,45 @@ $$\Pr(X_1, X_2,\dots | do(X_j = x_j))$$ or
 
 $$\Pr(X_1, X_2,\dots | \hat{x}_j)$$
 
-denotes the distribution of $X$ when a particular node (or set of nodes) is intervened upon and forced to a particular level, $x_j$.
+denotes the distribution of $X$ when a particular node (or set of nodes) is *intervened upon* and forced to a particular level, $x_j$.
 
-### Conditional distributions 5  {.smaller}
+### Conditional distributions given `do` operations {.smaller}
 
-Note, in general: $$\Pr(X_1, X_2,\dots | do(X_j = x_j')) \neq \Pr(X_1, X_2,\dots | X_j = x_j')$$ as an example we might imagine a situation where for men binary $X$ always causes $Y=1$ and for women $Y=1$ regardless of $X$. We imagine that $X=1$ for men only.
+Note, in general: $$\Pr(X_1, X_2,\dots | do(X_j = x_j')) \neq \Pr(X_1, X_2,\dots | X_j = x_j')$$ as an example we might imagine a situation where:
+
+* for men, binary $X$ always causes $Y=1$ 
+* for women, $Y=0$ regardless of $X$
+* $X=1$ for men only.
 
 In that case $\Pr(Y=1 | X = 1) = 1$ but $\Pr(Y=1 | do(X = 1)) = .5$
 
-### Conditional distributions 6 {.smaller}
+<!-- ### Conditional distributions 6 {.smaller} -->
 
--   Let $P_{z}$ denote the resulting distribution on all variables that arises when vector $Z$ is "set" (forced, controlled...) to the value $z$. That is when we have `do(Z=z)`.
+<!-- -   Let $P_{z}$ denote the resulting distribution on all variables that arises when vector $Z$ is "set" (forced, controlled...) to the value $z$. That is when we have `do(Z=z)`. -->
 
--   Let $P_*$ denote the set of all such distributions that can result from any set of interventions on variables.
+<!-- -   Let $P_*$ denote the set of all such distributions that can result from any set of interventions on variables. -->
 
--   A DAG, $G$, is a **causal Bayesian network compatible with** $P_*$ if, for all interventions $z$:
+<!-- -   A DAG, $G$, is a **causal Bayesian network compatible with** $P_*$ if, for all interventions $z$: -->
 
-    1.  $P_{z}$ is Markov relative to $G$
-    2.  $P_z(x_i)=1$ for all $x_i$ consistent with $z$
-    3.  $P_z(x_j|pa_j)=P(x_j|pa_j)$ for all $x_j \not\in Z$ when $pa_j$ is consistent with $z$
+<!--     1.  $P_{z}$ is Markov relative to $G$ -->
+<!--     2.  $P_z(x_i)=1$ for all $x_i$ consistent with $z$ -->
+<!--     3.  $P_z(x_j|pa_j)=P(x_j|pa_j)$ for all $x_j \not\in Z$ when $pa_j$ is consistent with $z$ -->
 
-### Conditional distributions 7 {.smaller}
+### Conditional distributions given `do` operations {.smaller}
 
--   That all means that the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
+A DAG is "*causal Bayesian network*" or "*Causal DAG*" if (and only if) the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
 
-$$P_{\hat{x}_i}=P(x_1,x_2,\dots x_n|\hat{x}_i) = \prod_{-i}P(x_j|pa_j)\mathbb{1}(x_i = x_i')$$
+$$P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i')\prod_{-i}P(x_j|pa_j)$$
 
 This means that there is only probability mass on vectors in which $x_i = x_i'$ (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for $x_i$.
+
+### Conditional distributions given `do` operations {.smaller}
+
+Illustration, say we have binary $X$ causes binary $M$ which cases binary $Y$; say we intervene and set $M=1$. Then what is the distribution of $(x,m,y)$?
+
+It is:
+
+$$\Pr(x,m,y) = \Pr(x)\mathbb I(M = 1)\Pr(y|m)$$
 
 ## Graphical reading of Conditional Independence
 
@@ -784,29 +839,28 @@ This means that there is only probability mass on vectors in which $x_i = x_i'$ 
 
 -   We can now start reading off from a graph when there is or is not conditional independence between sets of variables
 
-### Conditional independence on paths
+### Conditional independence  on paths  graphs
 
 ```{r HJ-F-2-4, echo = FALSE, fig.width = 6, fig.height = 4,  fig.align="center", out.width='70%', fig.cap = "Three elemental relations of conditional independence."}
 p1 <- hj_ggdag(x = c(-1, 0, 1), y = c(1,1,1), names = c( "A", "B", "C" ),
        arcs = cbind( c(1, 2),
-                     c(2, 3)),
+                     c(2, 3)), labelparse = FALSE,
        title = "(1) A path of arrows pointing in the same direction", padding = .2)
 p2 <- hj_ggdag(x = c(-1, 0, 1), y = c(1,1,1), names = c( "A", "B", "C" ),
        arcs = cbind( c(2, 2),
-                     c(1, 3)),
+                     c(1, 3)), labelparse = FALSE,
        title = "(2) A forked path", padding = .2) 
 p3 <- hj_ggdag(x = c(-1, 0, 1), y = c(1,1,1), names = c( "A", "B", "C" ),
        arcs = cbind( c(1, 3),
-                     c(2, 2)),
+                     c(2, 2)), labelparse = FALSE,
        title = "(3) An inverted fork (collision)", padding = .2)
 
 plot_grid(plotlist = list(p1,p2,p3),ncol=1)
 
 ```
 
-## Conditional independence
 
-### Conditional independence  ## Causal graphs basics 1 {.smaller}
+### Conditional independence  from graphs {.smaller}
 
 $A$ and $B$ are *conditionally independent*, given $C$ if on *every* path between $A$ and $B$:
 
@@ -822,12 +876,12 @@ Notes:
 -   $A$, $B$, and $C$ can all be sets
 -   Note that a path can involve arrows pointing any direction $\bullet\rightarrow \bullet\rightarrow \bullet\leftarrow \bullet\rightarrow\bullet$
 
-### Test yourself {.smaller
+### Test yourself {.smaller}
 
 ```{r, echo = FALSE, fig.width = 5, fig.height = 2,  fig.align="center", out.width='.9\\textwidth'}
 hj_ggdag(x = 1:4, y = c(1, 1,1,1), names = c( "A", "B", "C", "D" ),
        arcs = cbind( c(1, 3, 3),
-                     c(2, 2, 4)),
+                     c(2, 2, 4)), labelparse = FALSE,
        title = " ", padding = .4, contraction = .15) 
 
 ```
@@ -841,16 +895,26 @@ Are A and D unconditionally independent:
 
 ### Back to this example {.smaller}
 
-```         
 * $Z = f_1(U_1, U_2)$
 * $X = f_2(U_2)$
 * $Y = f_3(X, U_1)$
-```
 
 1.  Let's graph this
 2.  Now: say we removed the arrow from $X$ to $Y$
     -   Would you expect to see a correlation between $X$ and $Y$ if you did not control for $Z$
     -   Would you expect to see a correlation between $X$ and $Y$ if you did control for $Z$
+
+### Back to this example {.smaller}
+
+```{r, echo = FALSE}
+make_model("X -> Y <- U1 -> Z <- U2 -> X") |> plot()
+
+```
+
+Now: say we removed the arrow from $X$ to $Y$
+    -   Would you expect to see a correlation between $X$ and $Y$ if you did not control for $Z$
+    -   Would you expect to see a correlation between $X$ and $Y$ if you did control for $Z$
+
 
 ## Causal models
 
@@ -858,20 +922,29 @@ Are A and D unconditionally independent:
 
 A "**causal model**" is:
 
-1.1: An ordered list of $n$ endogenous nodes, $\mathcal{V}= (V^1, V^2,\dots, V^n)$, with a specification of a range for each of them
+1.Variables
 
-1.2: A list of $n$ exogenous nodes, $\Theta = (\theta^1, \theta^2,\dots , \theta^n)$
+  * An ordered list of $n$ endogenous nodes, $\mathcal{V}= (V^1, V^2,\dots, V^n)$, with a specification of a range for each of them
+  * A list of $n$ exogenous nodes, $\Theta = (\theta^1, \theta^2,\dots , \theta^n)$
 
-2: A list of $n$ functions $\mathcal{F}= (f^1, f^2,\dots, f^n)$, one for each element of $\mathcal{V}$ such that each $f^i$ takes as arguments $\theta^i$ as well as elements of $\mathcal{V}$ that are *prior* to $V^i$ in the ordering
+2. A list of $n$ functions $\mathcal{F}= (f^1, f^2,\dots, f^n)$, one for each element of $\mathcal{V}$ such that each $f^i$ takes as arguments $\theta^i$ as well as elements of $\mathcal{V}$ that are *prior* to $V^i$ in the ordering
 
-and
-
-3: A probability distribution over $\Theta$
+3. A probability distribution over $\Theta$
 
 
 ### From graphs to Causal Models
 
-```{r HJ-F-2-1, echo = FALSE, out.width='60%', fig.width = 7, fig.height = 5,  fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables."}
+```{r HJ-F-2-1, echo = FALSE, out.width='60%', fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables."}
+
+knitr::include_graphics("assets/theta_dag.png")
+
+```
+
+
+```{r HJ-F-2-1x, echo = FALSE, out.width='60%', fig.width = 7, fig.height = 5,  fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables.", eval = FALSE, include = FALSE}
+
+## FLAG-- stopped working
+
 hj_ggdag(x = c(0, 1, 2, 1, 3, 3, 2, 1, 0, 1),
        y = c(2, 2, 2, 0, 2, 3, 3, 3, 3, -1),
        names = c(
@@ -880,16 +953,22 @@ hj_ggdag(x = c(0, 1, 2, 1, 3, 3, 2, 1, 0, 1),
          "M",
          "E", 
          "D", 
-         expression(paste(theta^D)),
-         expression(paste(theta^M)),
-         expression(paste(theta^R)),
-         expression(paste(theta^I)),
-         expression(paste(theta^E)) 
+#         expression(paste(theta^D)),
+#         expression(paste(theta^M)),
+#         expression(paste(theta^R)),
+#         expression(paste(theta^I)),
+#         expression(paste(theta^E)) 
+         "theta^D",
+         "theta^M",
+         "theta^R",
+          "theta^I",
+         "theta^E" 
          ),
        arcs = cbind( c(1, 2, 4, 3, 6, 7, 8, 9, 10),
                      c(2, 3, 3, 5, 5, 3, 2, 1, 4)),
        title = "A model of inequality's effect on democratization",
-       padding = .2, 
+       padding = .2,  labelparse = FALSE,
+
        nodecol = "lightgrey",
        textcol = "black")
 
@@ -897,10 +976,37 @@ hj_ggdag(x = c(0, 1, 2, 1, 3, 3, 2, 1, 0, 1),
 
 ### Effects on a DAG
 
-Learning about effects *given* a model means learning about $F$ and *also* the distribution of shocks ($\Theta$).
+* Learning about effects *given* a model means learning about $F$ and *also* the distribution of shocks ($\Theta$).
 
-For discrete data this can be reduced to a question about learning about the distribution of $\Theta$ only.
+* For discrete data this can be reduced to a question about learning about the distribution of $\Theta$ only.
 
+### Effects on a DAG {.smaller}
+
+For instance the simplest model consistent with $X \rightarrow Y$:
+
+* Endogeneous Nodes = $\{X, Y\}$, both with range $\{0,1\}$
+* Exogeneous Nodes = $\{\theta^X, \theta^Y\}$, with ranges $\{\theta^X_0, \theta^X_1\}$ and $\{\theta^Y_{00}\theta^Y_{01}, \theta^Y_{10}, \theta^Y_{11}\}$
+
+*  Functional equations:
+
+    -   $f_Y$: $\theta^Y =\theta^Y_{ij} \rightarrow \{Y = i \text{ if } X=0; Y = j \text{ if } X=1\}$
+    -   $f_X$: $\theta^X =\theta^X_{i} \rightarrow \{X = i\}$
+
+
+*  Distributions on $\Theta$: $\Pr(\theta^i = \theta^i_k) = \lambda^i_k$
+
+### Effects as statement about exogeneous variables
+
+What is the probability that $X$ has a positive causal effect on $Y$? 
+
+* This is equivalent to: $\Pr(\theta^Y =\theta^Y_{01}) = \lambda^Y_{01}$
+
+* So we want to learn about the distributions of the exogeneous nodes
+
+### Recap: 
+
+* DAGs
+* Causality
 
 ### Recap: Key features of graphs
 
@@ -911,17 +1017,16 @@ For discrete data this can be reduced to a question about learning about the dis
 -   These graphs represent Nonparametric structural equation models NPSEMs
 -   But you cannot read off the size or direction of effects from a DAG
 
-### Recap: Ten things you need to know about causal inference {.smaller}
+### Recap: Things you need to know about causal inference {.smaller}
 
 1.  A causal claim is a statement about what didn't happen.
 2.  There is a fundamental problem of causal inference.
 3.  You can estimate average causal effects even if you cannot observe any individual causal effects.
 4.  If you know that $A$ causes $B$ and that $B$ causes $C$, this does not mean that you know that $A$ causes $C$.
-5.  The counterfactual model is primarily about contribution, and about attribution in a limited sense.
 6.  $X$ can cause $Y$ even if there is no "causal path" connecting $X$ and $Y$.
-7.  Correlation is not causation.
 8.  $X$ can cause $Y$ even if $X$ is not a necessary condition or a sufficient condition for $Y$.
 9.  Estimating average causal effects does not require that treatment and control groups are identical.
 10. There is no causation without manipulation.
 
 <http://egap.org/resources/guides/causality/>
+

@@ -1,0 +1,106 @@
+---
+title: "Exercise 2.1"
+format: html
+author: felix
+---
+
+**False positives and Ns**
+
+Sometimes people worry that with larger samples you are more likely to get a false positive. Is that true?
+
+The concern is related to the concept of Type I error in hypothesis testing. A Type I error occurs when a true null hypothesis is incorrectly rejected. The significance level (often denoted by α) is the probability of making a Type I error.
+
+In traditional hypothesis testing, as sample size increases, the statistical power of the test also increases. Statistical power is the probability of correctly rejecting a false null hypothesis (i.e., avoiding a Type II error). However, an increase in sample size does not directly affect the Type I error rate, which is typically set by the chosen significance level.
+
+If you maintain the same significance level and only increase the sample size, you do not increase the probability of a Type I error. In fact, larger sample sizes generally provide more reliable and precise estimates of population parameters.
+
+##################
+Assess by generating a simple experimental design from scratch in which we can vary the N and in which there is no true effect of some treatment. 
+##################
+
+# Set a seed for reproducibility 
+set.seed(123)
+
+# Function to simulate data with no treatment effect 
+generate_data <- function(N) { 
+  control_group <- rnorm(N, mean = 0, sd = 1) 
+  data <- data.frame(Group = rep("Control", N), Values = control_group) 
+  return(data) 
+}
+
+# Example of data frame creation
+diagnosands_df <- data.frame(
+  N = c(50, 100, 200)
+
+# Generate simulated data for different sample sizes (N)
+sample_sizes <- c(50, 100, 200)  # Choose your desired sample sizes
+simulations_df <- do.call(rbind, lapply(sample_sizes, generate_data))
+
+##################
+-> In this example, generate_data simulates a control group with no treatment effect, and data is generated for different sample sizes (N). The resulting simulations_df data frame contains the simulated data.
+
+##################
+Then: 
+Plot the distribution of values from the simulations_df. What shape is it and why? 
+##################
+# Plot histogram of values
+library(ggplot2)
+ggplot(simulations_df, aes(x = Values)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of Values", x = "Values", y = "Frequency")
+
+##################
+shape is a bell/normal distribution
+##################
+
+Plot the power as increases, using the diagnosands_df 
+
+Assuming you have a diagnosands_df data frame with columns "N," "power," and possibly other relevant columns:
+##################
+
+# Plot power against N using diagnosands_df
+ggplot(diagnosands_df, aes(x = N, y = power)) +
+  geom_line(color = "red") +
+  labs(title = "Power vs. Sample Size (N)", x = "Sample Size (N)", y = "Power")
+
+#################
+Plot the estimates against values for different values of ; what do you see? 
+
+Assuming you have a data frame named estimates_df with columns "values," "estimates," and possibly other relevant columns:
+#################
+# Example of generating estimates_df
+set.seed(123)
+
+# Assuming you have values and estimates calculated
+values <- rnorm(100)
+N <- c(50, 100, 200)
+estimates <- replicate(length(N), rnorm(100))
+
+# Creating estimates_df
+estimates_df <- data.frame(
+  values = values,
+  estimates = c(estimates),
+  N = rep(N, each = length(values))
+)
+
+# Plot estimates against values for different values of N
+ggplot(estimates_df, aes(x = values, y = estimates, color = factor(N))) +
+  geom_point() +
+  labs(title = "Estimates vs. Values for Different N", x = "Values", y = "Estimates", color = "Sample Size (N)") +
+  theme_minimal()
+
+################
+
+Discussion
+1.	Distribution of Values:
+Since we simulated data with no treatment effect and sampled from a normal distribution, you would expect a symmetric bell-shaped distribution.
+
+2.	Power vs. Sample Size:
+Power is often expected to increase as the sample size increases, showing the ability to detect true effects.
+sample size 50 = 0.80
+sample size 100 = 0.85
+sample size 150 = 0.90
+sample size 200 = 0.95
+
+3.	Estimates vs. Values for Different N:
+Depending on the nature of the simulation, the observation of the estimates vary with different sample sizes.

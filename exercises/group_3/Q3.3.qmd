@@ -1,0 +1,34 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Exercise 3.3"
+author: "Team 3"
+---
+
+## Potential Outcomes
+
+Consider a process with:
+
+| X1  | X2  | Y   |
+|-----|-----|-----|
+| 0   | 0   | 0   |
+| 1   | 0   | 1   |
+| 0   | 1   | 0   |
+| 1   | 1   | 1   |
+
+-   Say X1=1, X2=1. Then Y = 1. What caused Y = 1?
+
+-   Say X1=0, X2=0. Then Y = 0. What caused Y = 0?
+
+--- 
+
+-   Say X1 = 1 with 10% probability, otherwise 0 and, independently, X2 = 1 with 50% probability, otherwise 0.
+
+Then what is the average effect of X1 on Y? What is the average effect of X2 on Y? Which cause has the biggest effect?

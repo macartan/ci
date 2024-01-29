@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-<<<<<<< Updated upstream
-.DS_Store
-=======
->>>>>>> Stashed changes
+.Rproj.user/shared/notebooks/paths
+.Rproj.user/shared/notebooks/paths
+._exercises_xref.json
