@@ -30,12 +30,13 @@ n_a <- 750    # Number of subjects assigned to treatment condition A
 
 # Simulation as in Lin 2013, section 4.2.3
 x <- runif(n, -4, 4)
+x_demeaned <- x-mean(x)
 v <- rnorm(n)
 e <- rnorm(n)
 a <- v + .25*( exp(x) + exp(x/2))           
 b <- e + .25*(-exp(x) + exp(x/2))
 
-n_sim <- 10000
+n_sim <- 1000
 ```
 
 ## Design basics
@@ -72,7 +73,15 @@ design <- design_basic +
   
   declare_estimator(
     Y ~ Z + x + Z*x, inquiry = "ate", term = "Z", .method = lm, 
-    label = "OLS with interaction")
+    label = "Lin_original") +
+  
+  declare_estimator(
+    Y ~ Z, covariates = ~ x, inquiry = "ate", term = "Z", .method = lm_lin, 
+    label = "Lin_function") +
+  
+  declare_estimator(
+    Y ~ Z + x_demeaned + Z*x_demeaned, inquiry = "ate", term = "Z", .method = lm, 
+    label = "Lin_demeaned")
 ```
 
 ## Diagnosis {.smaller}
