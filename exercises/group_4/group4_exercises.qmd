@@ -220,16 +220,19 @@ Compare answer strategies in which you:
 p <- 0.5
 
 # Model with standard random assignment
-model_random <-
+model_default <-
   declare_model(
     N = 100,
     b = 0.5,
-    X = rbinom(N, size = 1, prob = 0.5),
+    X = b * rbinom(N, size = 1, prob = 0.5),
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                   sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
                   sample(x = c(0, NA), size = N, prob = c(1-p, p), replace = TRUE)),
-    U = b * X + rnorm(N, mean = 0, sd = 1),
-    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+    Blocks = case_when(X_mi == 1 ~ "one",
+                       X_mi == 0 ~ "zero",
+                       is.na(X_mi) == TRUE ~ "missing"),
+    U = rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + Z * X + X + U, conditions = list(Z = c(0, 1)))
   )
 
 inquiry_ate <- 
@@ -244,69 +247,64 @@ answer_strategy_ra <-
   declare_estimator(Y ~ Z, inquiry = "ATE", label = "X Drop") +
   declare_estimator(Y ~ Z, covariates = ~X_mi, .method = lm_lin, inquiry = "ATE", label = "X Incomplete")
 
-design_54_N_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_N_ra <- model_default + inquiry_ate + data_strategy_ra + answer_strategy_ra
 
-# Model with block random assignment
-model_blocks <-
-  declare_model(
-    N = 100,
-    b = 0.5,
-    X = rbinom(N, size = 1, prob = 0.5),
-    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
-                  sample(x = c(1, NA), size = N, prob = c(1-p, p), replace = TRUE),
-                  sample(x = c(0, NA), size = N, prob = c(1-p, p), replace = TRUE)),
-    Blocks = case_when(X_mi == 1 ~ "one",
-                       X_mi == 0 ~ "zero",
-                       is.na(X_mi) == TRUE ~ "missing"),
-    U = b * X + rnorm(N, mean = 0, sd = 1),
-    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
-  )
-
+# Data and Answer strategies for block random assignment
 data_strategy_bl <-
   declare_assignment(Z = block_ra(blocks = Blocks),
                      Y = reveal_outcomes(Y ~ Z))
   
 answer_strategy_bl <-
-  declare_estimator(Y ~ Z, covariates = ~X_mi, .method = lm_lin, label = "X Blocks") # including fixed effects for blocks by inserting Blocks as a factor
+  declare_estimator(Y ~ Z, covariates = ~X_mi, .method = lm_lin, label = "X Blocks")
 
-design_54_N_bl <- model_blocks + inquiry_ate + data_strategy_bl + answer_strategy_bl
+design_54_N_bl <- model_default + inquiry_ate + data_strategy_bl + answer_strategy_bl
 
 # Varying N
-design_54_N_ra <- redesign(design_54_N_ra, N = c(100, 500, 1000))
-design_54_N_bl <- redesign(design_54_N_bl, N = c(100, 500, 1000))
-
-designs_vary_N <- append(design_54_N_ra,
-                         design_54_N_bl)
-
-names(designs_vary_N) <-
-  list("N = 100 Random",
-       "N = 500 Random",
-       "N = 1000 Random",
-       "N = 100 Blocks",
-       "N = 500 Blocks",
-       "N = 1000 Blocks")
+design_54_N_ra <- redesign(design_54_N_ra, N = c(10, 50, 100, 500, 1000))
+design_54_N_bl <- redesign(design_54_N_bl, N = c(10, 50, 100, 500, 1000))
 ```
 
 ```{r}
-designs_vary_N %>% 
+#| warning: false
+
+df_vary_N_ra <- design_54_N_ra %>% 
   diagnose_design() %>%
-  reshape_diagnosis(exclude = c(
-    "b", "Inquiry", "Outcome", "N Sims", "Mean Estimand", "Bias", "SD Estimate", "Coverage"
-  ))
+  reshape_diagnosis() %>%
+  mutate(N = as.numeric(N))
+
+df_vary_N_bl <- design_54_N_bl %>% 
+  diagnose_design() %>%
+  reshape_diagnosis() %>%
+  mutate(N = as.numeric(N))
+
+df_vary_N <- rbind(df_vary_N_ra, df_vary_N_bl)
+
+df_vary_N_plot <- as.data.frame(df_vary_N) %>%
+  filter(str_detect(Design, "design")) %>%
+  mutate(RMSE = as.numeric(RMSE)) %>%
+  select(Estimator, N, RMSE)
+
+ggplot(df_vary_N_plot, aes(x = N, y = RMSE, color = factor(Estimator))) +
+  geom_line() +
+  labs(title = "Varying N",
+       color = "Estimator") +
+  theme_bw()
 ```
 
 ### Varying p
 
 ```{r echo=TRUE}
 p01 <- 0.1
+p03 <- 0.3
+p07 <- 0.7
 p09 <- 0.9
 
-# Using basic model components with N = 100
-design_54_p05_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strategy_ra
-design_54_p05_bl <- model_blocks + inquiry_ate + data_strategy_bl + answer_strategy_bl
+# Using basic model components with N = 100 and p = 0.5
+design_54_p05_ra <- model_default + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_p05_bl <- model_default + inquiry_ate + data_strategy_bl + answer_strategy_bl
 
 # New models with p = 0.1
-model_random_p01 <- # random assignment
+model_p01 <-
   declare_model(
     N = 100,
     b = 0.5,
@@ -314,31 +312,56 @@ model_random_p01 <- # random assignment
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                   sample(x = c(1, NA), size = N, prob = c(1-p01, p01), replace = TRUE),
                   sample(x = c(0, NA), size = N, prob = c(1-p01, p01), replace = TRUE)),
+    Blocks = case_when(X_mi == 1 ~ "one",
+                       X_mi == 0 ~ "zero",
+                       is.na(X_mi) == TRUE ~ "missing"),
     U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
-design_54_p01_ra <- model_random_p01 + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_p01_ra <- model_p01 + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_p01_bl <- model_p01 + inquiry_ate + data_strategy_bl + answer_strategy_bl
 
-model_blocks_p01 <-
+# New models with p = 0.3
+model_p03 <-
   declare_model(
     N = 100,
     b = 0.5,
     X = rbinom(N, size = 1, prob = 0.5),
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
-                     sample(x = c(1, NA), size = N, prob = c(1-p01, p01), replace = TRUE),
-                     sample(x = c(0, NA), size = N, prob = c(1-p01, p01), replace = TRUE)),
+                  sample(x = c(1, NA), size = N, prob = c(1-p03, p03), replace = TRUE),
+                  sample(x = c(0, NA), size = N, prob = c(1-p03, p03), replace = TRUE)),
     Blocks = case_when(X_mi == 1 ~ "one",
-                         X_mi == 0 ~ "zero",
-                         is.na(X_mi) == TRUE ~ "missing"),
+                       X_mi == 0 ~ "zero",
+                       is.na(X_mi) == TRUE ~ "missing"),
     U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
-design_54_p01_bl <- model_blocks_p01 + inquiry_ate + data_strategy_bl + answer_strategy_bl
+design_54_p03_ra <- model_p03 + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_p03_bl <- model_p03 + inquiry_ate + data_strategy_bl + answer_strategy_bl
+
+# New models with p = 0.7
+model_p07 <- # random assignment
+  declare_model(
+    N = 100,
+    b = 0.5,
+    X = rbinom(N, size = 1, prob = 0.5),
+    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
+                  sample(x = c(1, NA), size = N, prob = c(1-p07, p07), replace = TRUE),
+                  sample(x = c(0, NA), size = N, prob = c(1-p07, p07), replace = TRUE)),
+    Blocks = case_when(X_mi == 1 ~ "one",
+                       X_mi == 0 ~ "zero",
+                       is.na(X_mi) == TRUE ~ "missing"),
+    U = b * X + rnorm(N, mean = 0, sd = 1),
+    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
+  )
+
+design_54_p07_ra <- model_p07 + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_p07_bl <- model_p07 + inquiry_ate + data_strategy_bl + answer_strategy_bl
 
 # New models with p = 0.9
-model_random_p09 <- # random assignment
+model_p09 <- # random assignment
   declare_model(
     N = 100,
     b = 0.5,
@@ -346,76 +369,91 @@ model_random_p09 <- # random assignment
     X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
                   sample(x = c(1, NA), size = N, prob = c(1-p09, p09), replace = TRUE),
                   sample(x = c(0, NA), size = N, prob = c(1-p09, p09), replace = TRUE)),
-    U = b * X + rnorm(N, mean = 0, sd = 1),
-    potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
-  )
-
-design_54_p09_ra <- model_random_p09 + inquiry_ate + data_strategy_ra + answer_strategy_ra
-
-model_blocks_p09 <-
-  declare_model( # block assignment
-    N = 100,
-    b = 0.5,
-    X = rbinom(N, size = 1, prob = 0.5),
-    X_mi = ifelse(X == 1, # New version of X with missings (missing completely at random)
-                     sample(x = c(1, NA), size = N, prob = c(1-p09, p09), replace = TRUE),
-                     sample(x = c(0, NA), size = N, prob = c(1-p09, p09), replace = TRUE)),
     Blocks = case_when(X_mi == 1 ~ "one",
-                         X_mi == 0 ~ "zero",
-                         is.na(X_mi) == TRUE ~ "missing"),
+                       X_mi == 0 ~ "zero",
+                       is.na(X_mi) == TRUE ~ "missing"),
     U = b * X + rnorm(N, mean = 0, sd = 1),
     potential_outcomes(Y ~ Z + b * X + U, conditions = list(Z = c(0, 1)))
   )
 
-design_54_p09_bl <- model_blocks_p09 + inquiry_ate + data_strategy_bl + answer_strategy_bl
+design_54_p09_ra <- model_p09 + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_p09_bl <- model_p09 + inquiry_ate + data_strategy_bl + answer_strategy_bl
 
-designs_vary_p <- list("p = 0.1 random" = design_54_p01_ra,
-                       "p = 0.1 block" = design_54_p01_bl,
-                       "p = 0.5 random" = design_54_p05_ra, 
-                       "p = 0.5 block" = design_54_p05_bl,
-                       "p = 0.9 random" = design_54_p09_ra,
-                       "p = 0.9 block" = design_54_p09_bl)
+designs_vary_p <- list("R 0.1" = design_54_p01_ra,
+                       "B 0.1" = design_54_p01_bl,
+                       "R 0.3" = design_54_p03_ra,
+                       "B 0.3" = design_54_p03_bl,
+                       "R 0.5" = design_54_p05_ra,
+                       "B 0.5" = design_54_p05_bl,
+                       "R 0.7" = design_54_p07_ra,
+                       "B 0.7" = design_54_p07_bl,
+                       "R 0.9" = design_54_p09_ra,
+                       "B 0.9" = design_54_p09_bl)
 ```
 
 ```{r}
 #| warning: false
 
-designs_vary_p %>% 
+df_vary_p <- designs_vary_p %>% 
   diagnose_design() %>%
-  reshape_diagnosis(exclude = c(
-    "b", "Inquiry", "Outcome", "N Sims", "Mean Estimand", "Bias", "SD Estimate", "Coverage"
-  ))
+  reshape_diagnosis()
+
+df_vary_p_plot <- as.data.frame(df_vary_p) %>%
+  filter(str_detect(Design, "0.")) %>%
+  mutate(p = as.numeric(substr(Design, 3, 6))) %>%
+  mutate(RMSE = as.numeric(RMSE)) %>%
+  select(Estimator, p, RMSE)
+
+ggplot(df_vary_p_plot, aes(x = p, y = RMSE, color = factor(Estimator))) +
+  geom_line() +
+  labs(title = "Varying p",
+       color = "Estimator") +
+  theme_bw()
 ```
 
 ### Varying b
 
 ```{r echo=TRUE}
 # Using basic model components with N = 100
-design_54_b_ra <- model_random + inquiry_ate + data_strategy_ra + answer_strategy_ra
-design_54_b_bl <- model_blocks + inquiry_ate + data_strategy_bl + answer_strategy_bl
+design_54_b_ra <- model_default + inquiry_ate + data_strategy_ra + answer_strategy_ra
+design_54_b_bl <- model_default + inquiry_ate + data_strategy_bl + answer_strategy_bl
 
 # Varying b
-design_54_b_ra <- redesign(design_54_b_ra, b = c(0.1, 0.5, 0.9))
-design_54_b_bl <- redesign(design_54_b_bl, b = c(0.1, 0.5, 0.9))
+design_54_b_ra <- redesign(design_54_b_ra, b = c(0.1, 0.3, 0.5, 0.7, 0.9))
+design_54_b_bl <- redesign(design_54_b_bl, b = c(0.1, 0.3, 0.5, 0.7, 0.9))
 
 designs_vary_b <- append(design_54_b_ra,
                          design_54_b_bl)
 
 names(designs_vary_b) <-
   list("b = 0.1 Random",
+       "b = 0.3 Random",
        "b = 0.5 Random",
+       "b = 0.7 Random",
        "b = 0.9 Random",
        "b = 0.1 Blocks",
+       "b = 0.3 Blocks",
        "b = 0.5 Blocks",
+       "b = 0.7 Blocks",
        "b = 0.9 Blocks")
 ```
 
 ```{r}
 #| warning: false
 
-designs_vary_b %>% 
+df_vary_b <- designs_vary_b %>% 
   diagnose_design() %>%
-  reshape_diagnosis(exclude = c(
-    "b", "Inquiry", "Outcome", "N Sims", "Mean Estimand", "Bias", "SD Estimate", "Coverage"
-  ))
+  reshape_diagnosis()
+
+df_vary_b_plot <- as.data.frame(df_vary_b) %>%
+  filter(str_detect(Design, "0.")) %>%
+  mutate(RMSE = as.numeric(RMSE)) %>%
+  mutate(b = as.numeric(b)) %>%
+  select(Estimator, b, RMSE)
+
+ggplot(df_vary_b_plot, aes(x = b, y = RMSE, color = factor(Estimator))) +
+  geom_line() +
+  labs(title = "Varying b",
+       color = "Estimator") +
+  theme_bw()
 ```
