@@ -204,7 +204,7 @@ query_model(
 
 ## Week 2
 
-## Q 5.4
+## Q 5.4 {.smaller}
 
 Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it? Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to b, and so to treatment effects. Say X is missing with probability p.
 
@@ -214,7 +214,7 @@ Compare answer strategies in which you:
 -   do control for but drop whenever is missing and
 -   Treat as a block in your analysis design with three values (0, 1, and missing).
 
-### Varying N
+### Varying N {.smaller}
 
 ```{r echo=TRUE}
 p <- 0.5
@@ -264,7 +264,9 @@ design_54_N_ra <- redesign(design_54_N_ra, N = c(10, 50, 100, 500, 1000))
 design_54_N_bl <- redesign(design_54_N_bl, N = c(10, 50, 100, 500, 1000))
 ```
 
-```{r}
+### Varying N: Graph
+
+```{r echo=FALSE}
 #| warning: false
 
 df_vary_N_ra <- design_54_N_ra %>% 
@@ -291,7 +293,7 @@ ggplot(df_vary_N_plot, aes(x = N, y = RMSE, color = factor(Estimator))) +
   theme_bw()
 ```
 
-### Varying p
+### Varying p {.smaller}
 
 ```{r echo=TRUE}
 p01 <- 0.1
@@ -391,7 +393,9 @@ designs_vary_p <- list("R 0.1" = design_54_p01_ra,
                        "B 0.9" = design_54_p09_bl)
 ```
 
-```{r}
+### Varying p: Graph
+
+```{r echo=FALSE}
 #| warning: false
 
 df_vary_p <- designs_vary_p %>% 
@@ -411,7 +415,7 @@ ggplot(df_vary_p_plot, aes(x = p, y = RMSE, color = factor(Estimator))) +
   theme_bw()
 ```
 
-### Varying b
+### Varying b {.smaller}
 
 ```{r echo=TRUE}
 # Using basic model components with N = 100
@@ -438,7 +442,9 @@ names(designs_vary_b) <-
        "b = 0.9 Blocks")
 ```
 
-```{r}
+### Varying b: Graph
+
+```{r echo=FALSE}
 #| warning: false
 
 df_vary_b <- designs_vary_b %>% 
