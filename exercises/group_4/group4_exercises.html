@@ -811,7 +811,7 @@ Yoanna Yankova
 </section>
 
 <section>
-<section id="q-5.4" class="title-slide slide level2 center">
+<section id="q-5.4" class="title-slide slide level2 smaller center">
 <h2>Q 5.4</h2>
 <p>Say you want to include a control variable. But you have missingness in the control. Should you proceed and what can you do about it? Declare a design for an experiment in which a binary covariate X is related to potential outcomes, according to b, and so to treatment effects. Say X is missing with probability p.</p>
 <p>Compare answer strategies in which you:</p>
@@ -821,272 +821,200 @@ Yoanna Yankova
 <li>Treat as a block in your analysis design with three values (0, 1, and missing).</li>
 </ul>
 </section>
-<section id="varying-n" class="slide level3">
+<section id="varying-n" class="slide level3 smaller">
 <h3>Varying N</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>p <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a></span>
 <span id="cb5-3"><a href="#cb5-3"></a><span class="co"># Model with standard random assignment</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>model_random <span class="ot">&lt;-</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>model_default <span class="ot">&lt;-</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a>  <span class="fu">declare_model</span>(</span>
 <span id="cb5-6"><a href="#cb5-6"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
 <span id="cb5-7"><a href="#cb5-7"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
-<span id="cb5-8"><a href="#cb5-8"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="at">X =</span> b <span class="sc">*</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
 <span id="cb5-9"><a href="#cb5-9"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
 <span id="cb5-10"><a href="#cb5-10"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p, p), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb5-11"><a href="#cb5-11"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p, p), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb5-12"><a href="#cb5-12"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
-<span id="cb5-13"><a href="#cb5-13"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
-<span id="cb5-14"><a href="#cb5-14"></a>  )</span>
-<span id="cb5-15"><a href="#cb5-15"></a></span>
-<span id="cb5-16"><a href="#cb5-16"></a>inquiry_ate <span class="ot">&lt;-</span> </span>
-<span id="cb5-17"><a href="#cb5-17"></a>  <span class="fu">declare_inquiry</span>(<span class="at">ATE =</span> <span class="fu">mean</span>(Y_Z_1 <span class="sc">-</span> Y_Z_0))</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13"></a>                       X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14"></a>                       <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
+<span id="cb5-15"><a href="#cb5-15"></a>    <span class="at">U =</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb5-16"><a href="#cb5-16"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> Z <span class="sc">*</span> X <span class="sc">+</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
+<span id="cb5-17"><a href="#cb5-17"></a>  )</span>
 <span id="cb5-18"><a href="#cb5-18"></a></span>
-<span id="cb5-19"><a href="#cb5-19"></a>data_strategy_ra <span class="ot">&lt;-</span> </span>
-<span id="cb5-20"><a href="#cb5-20"></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">complete_ra</span>(N)) <span class="sc">+</span></span>
-<span id="cb5-21"><a href="#cb5-21"></a>  <span class="fu">declare_measurement</span>(<span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z))</span>
-<span id="cb5-22"><a href="#cb5-22"></a>  </span>
-<span id="cb5-23"><a href="#cb5-23"></a>answer_strategy_ra <span class="ot">&lt;-</span>  </span>
-<span id="cb5-24"><a href="#cb5-24"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">covariates =</span> <span class="sc">~</span>X, <span class="at">.method =</span> lm_lin, <span class="at">inquiry =</span> <span class="st">"ATE"</span>, <span class="at">label =</span> <span class="st">"X Complete"</span>) <span class="sc">+</span></span>
-<span id="cb5-25"><a href="#cb5-25"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">"ATE"</span>, <span class="at">label =</span> <span class="st">"X Drop"</span>) <span class="sc">+</span></span>
-<span id="cb5-26"><a href="#cb5-26"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">covariates =</span> <span class="sc">~</span>X_mi, <span class="at">.method =</span> lm_lin, <span class="at">inquiry =</span> <span class="st">"ATE"</span>, <span class="at">label =</span> <span class="st">"X Incomplete"</span>)</span>
-<span id="cb5-27"><a href="#cb5-27"></a></span>
-<span id="cb5-28"><a href="#cb5-28"></a>design_54_N_ra <span class="ot">&lt;-</span> model_random <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
-<span id="cb5-29"><a href="#cb5-29"></a></span>
-<span id="cb5-30"><a href="#cb5-30"></a><span class="co"># Model with block random assignment</span></span>
-<span id="cb5-31"><a href="#cb5-31"></a>model_blocks <span class="ot">&lt;-</span></span>
-<span id="cb5-32"><a href="#cb5-32"></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb5-33"><a href="#cb5-33"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb5-34"><a href="#cb5-34"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
-<span id="cb5-35"><a href="#cb5-35"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
-<span id="cb5-36"><a href="#cb5-36"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
-<span id="cb5-37"><a href="#cb5-37"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p, p), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb5-38"><a href="#cb5-38"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p, p), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb5-39"><a href="#cb5-39"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
-<span id="cb5-40"><a href="#cb5-40"></a>                       X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
-<span id="cb5-41"><a href="#cb5-41"></a>                       <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
-<span id="cb5-42"><a href="#cb5-42"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
-<span id="cb5-43"><a href="#cb5-43"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
-<span id="cb5-44"><a href="#cb5-44"></a>  )</span>
-<span id="cb5-45"><a href="#cb5-45"></a></span>
-<span id="cb5-46"><a href="#cb5-46"></a>data_strategy_bl <span class="ot">&lt;-</span></span>
-<span id="cb5-47"><a href="#cb5-47"></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">block_ra</span>(<span class="at">blocks =</span> Blocks),</span>
-<span id="cb5-48"><a href="#cb5-48"></a>                     <span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z))</span>
-<span id="cb5-49"><a href="#cb5-49"></a>  </span>
-<span id="cb5-50"><a href="#cb5-50"></a>answer_strategy_bl <span class="ot">&lt;-</span></span>
-<span id="cb5-51"><a href="#cb5-51"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">covariates =</span> <span class="sc">~</span>X_mi, <span class="at">.method =</span> lm_lin, <span class="at">label =</span> <span class="st">"X Blocks"</span>) <span class="co"># including fixed effects for blocks by inserting Blocks as a factor</span></span>
-<span id="cb5-52"><a href="#cb5-52"></a></span>
-<span id="cb5-53"><a href="#cb5-53"></a>design_54_N_bl <span class="ot">&lt;-</span> model_blocks <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
-<span id="cb5-54"><a href="#cb5-54"></a></span>
-<span id="cb5-55"><a href="#cb5-55"></a><span class="co"># Varying N</span></span>
-<span id="cb5-56"><a href="#cb5-56"></a>design_54_N_ra <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_N_ra, <span class="at">N =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>))</span>
-<span id="cb5-57"><a href="#cb5-57"></a>design_54_N_bl <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_N_bl, <span class="at">N =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>))</span>
-<span id="cb5-58"><a href="#cb5-58"></a></span>
-<span id="cb5-59"><a href="#cb5-59"></a>designs_vary_N <span class="ot">&lt;-</span> <span class="fu">append</span>(design_54_N_ra,</span>
-<span id="cb5-60"><a href="#cb5-60"></a>                         design_54_N_bl)</span>
-<span id="cb5-61"><a href="#cb5-61"></a></span>
-<span id="cb5-62"><a href="#cb5-62"></a><span class="fu">names</span>(designs_vary_N) <span class="ot">&lt;-</span></span>
-<span id="cb5-63"><a href="#cb5-63"></a>  <span class="fu">list</span>(<span class="st">"N = 100 Random"</span>,</span>
-<span id="cb5-64"><a href="#cb5-64"></a>       <span class="st">"N = 500 Random"</span>,</span>
-<span id="cb5-65"><a href="#cb5-65"></a>       <span class="st">"N = 1000 Random"</span>,</span>
-<span id="cb5-66"><a href="#cb5-66"></a>       <span class="st">"N = 100 Blocks"</span>,</span>
-<span id="cb5-67"><a href="#cb5-67"></a>       <span class="st">"N = 500 Blocks"</span>,</span>
-<span id="cb5-68"><a href="#cb5-68"></a>       <span class="st">"N = 1000 Blocks"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>            Design    N    Estimator Term Mean Estimate   RMSE  Power
-1   N = 100 Random  100   X Complete    Z          0.99   0.21   1.00
-2                                                (0.01) (0.01) (0.00)
-3   N = 100 Random  100       X Drop    Z          0.99   0.23   0.99
-4                                                (0.01) (0.01) (0.00)
-5   N = 100 Random  100 X Incomplete    Z          0.98   0.30   0.92
-6                                                (0.01) (0.01) (0.01)
-7   N = 500 Random  500   X Complete    Z          0.99   0.21   1.00
-8                                                (0.01) (0.01) (0.00)
-9   N = 500 Random  500       X Drop    Z          0.99   0.23   0.99
-10                                               (0.01) (0.01) (0.00)
-11  N = 500 Random  500 X Incomplete    Z          0.98   0.30   0.92
-12                                               (0.01) (0.01) (0.01)
-13 N = 1000 Random 1000   X Complete    Z          0.99   0.21   1.00
-14                                               (0.01) (0.01) (0.00)
-15 N = 1000 Random 1000       X Drop    Z          0.99   0.23   0.99
-16                                               (0.01) (0.01) (0.00)
-17 N = 1000 Random 1000 X Incomplete    Z          0.98   0.30   0.92
-18                                               (0.01) (0.01) (0.01)
-19  N = 100 Blocks  100     X Blocks    Z          1.00   0.28   0.93
-20                                               (0.01) (0.01) (0.01)
-21  N = 500 Blocks  500     X Blocks    Z          1.00   0.27   0.93
-22                                               (0.01) (0.01) (0.01)
-23 N = 1000 Blocks 1000     X Blocks    Z          1.00   0.27   0.93
-24                                               (0.01) (0.01) (0.01)</code></pre>
-</div>
+<span id="cb5-19"><a href="#cb5-19"></a>inquiry_ate <span class="ot">&lt;-</span> </span>
+<span id="cb5-20"><a href="#cb5-20"></a>  <span class="fu">declare_inquiry</span>(<span class="at">ATE =</span> <span class="fu">mean</span>(Y_Z_1 <span class="sc">-</span> Y_Z_0))</span>
+<span id="cb5-21"><a href="#cb5-21"></a></span>
+<span id="cb5-22"><a href="#cb5-22"></a>data_strategy_ra <span class="ot">&lt;-</span> </span>
+<span id="cb5-23"><a href="#cb5-23"></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">complete_ra</span>(N)) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a>  <span class="fu">declare_measurement</span>(<span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z))</span>
+<span id="cb5-25"><a href="#cb5-25"></a>  </span>
+<span id="cb5-26"><a href="#cb5-26"></a>answer_strategy_ra <span class="ot">&lt;-</span>  </span>
+<span id="cb5-27"><a href="#cb5-27"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">covariates =</span> <span class="sc">~</span>X, <span class="at">.method =</span> lm_lin, <span class="at">inquiry =</span> <span class="st">"ATE"</span>, <span class="at">label =</span> <span class="st">"X Complete"</span>) <span class="sc">+</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">"ATE"</span>, <span class="at">label =</span> <span class="st">"X Drop"</span>) <span class="sc">+</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">covariates =</span> <span class="sc">~</span>X_mi, <span class="at">.method =</span> lm_lin, <span class="at">inquiry =</span> <span class="st">"ATE"</span>, <span class="at">label =</span> <span class="st">"X Incomplete"</span>)</span>
+<span id="cb5-30"><a href="#cb5-30"></a></span>
+<span id="cb5-31"><a href="#cb5-31"></a>design_54_N_ra <span class="ot">&lt;-</span> model_default <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
+<span id="cb5-32"><a href="#cb5-32"></a></span>
+<span id="cb5-33"><a href="#cb5-33"></a><span class="co"># Data and Answer strategies for block random assignment</span></span>
+<span id="cb5-34"><a href="#cb5-34"></a>data_strategy_bl <span class="ot">&lt;-</span></span>
+<span id="cb5-35"><a href="#cb5-35"></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">block_ra</span>(<span class="at">blocks =</span> Blocks),</span>
+<span id="cb5-36"><a href="#cb5-36"></a>                     <span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z))</span>
+<span id="cb5-37"><a href="#cb5-37"></a>  </span>
+<span id="cb5-38"><a href="#cb5-38"></a>answer_strategy_bl <span class="ot">&lt;-</span></span>
+<span id="cb5-39"><a href="#cb5-39"></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">covariates =</span> <span class="sc">~</span>X_mi, <span class="at">.method =</span> lm_lin, <span class="at">label =</span> <span class="st">"X Blocks"</span>)</span>
+<span id="cb5-40"><a href="#cb5-40"></a></span>
+<span id="cb5-41"><a href="#cb5-41"></a>design_54_N_bl <span class="ot">&lt;-</span> model_default <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
+<span id="cb5-42"><a href="#cb5-42"></a></span>
+<span id="cb5-43"><a href="#cb5-43"></a><span class="co"># Varying N</span></span>
+<span id="cb5-44"><a href="#cb5-44"></a>design_54_N_ra <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_N_ra, <span class="at">N =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>))</span>
+<span id="cb5-45"><a href="#cb5-45"></a>design_54_N_bl <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_N_bl, <span class="at">N =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="varying-p" class="slide level3">
+<section id="varying-n-graph" class="slide level3">
+<h3>Varying N: Graph</h3>
+
+<img data-src="group4_exercises_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<section id="varying-p" class="slide level3 smaller">
 <h3>Varying p</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>p01 <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>p09 <span class="ot">&lt;-</span> <span class="fl">0.9</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="co"># Using basic model components with N = 100</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a>design_54_p05_ra <span class="ot">&lt;-</span> model_random <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
-<span id="cb7-6"><a href="#cb7-6"></a>design_54_p05_bl <span class="ot">&lt;-</span> model_blocks <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
-<span id="cb7-7"><a href="#cb7-7"></a></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co"># New models with p = 0.1</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>model_random_p01 <span class="ot">&lt;-</span> <span class="co"># random assignment</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb7-11"><a href="#cb7-11"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb7-12"><a href="#cb7-12"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
-<span id="cb7-13"><a href="#cb7-13"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
-<span id="cb7-14"><a href="#cb7-14"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p01, p01), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-16"><a href="#cb7-16"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p01, p01), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb7-17"><a href="#cb7-17"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
-<span id="cb7-18"><a href="#cb7-18"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
-<span id="cb7-19"><a href="#cb7-19"></a>  )</span>
-<span id="cb7-20"><a href="#cb7-20"></a></span>
-<span id="cb7-21"><a href="#cb7-21"></a>design_54_p01_ra <span class="ot">&lt;-</span> model_random_p01 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
-<span id="cb7-22"><a href="#cb7-22"></a></span>
-<span id="cb7-23"><a href="#cb7-23"></a>model_blocks_p01 <span class="ot">&lt;-</span></span>
-<span id="cb7-24"><a href="#cb7-24"></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb7-25"><a href="#cb7-25"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb7-26"><a href="#cb7-26"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
-<span id="cb7-27"><a href="#cb7-27"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
-<span id="cb7-28"><a href="#cb7-28"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
-<span id="cb7-29"><a href="#cb7-29"></a>                     <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p01, p01), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-30"><a href="#cb7-30"></a>                     <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p01, p01), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb7-31"><a href="#cb7-31"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
-<span id="cb7-32"><a href="#cb7-32"></a>                         X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
-<span id="cb7-33"><a href="#cb7-33"></a>                         <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
-<span id="cb7-34"><a href="#cb7-34"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
-<span id="cb7-35"><a href="#cb7-35"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
-<span id="cb7-36"><a href="#cb7-36"></a>  )</span>
-<span id="cb7-37"><a href="#cb7-37"></a></span>
-<span id="cb7-38"><a href="#cb7-38"></a>design_54_p01_bl <span class="ot">&lt;-</span> model_blocks_p01 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
-<span id="cb7-39"><a href="#cb7-39"></a></span>
-<span id="cb7-40"><a href="#cb7-40"></a><span class="co"># New models with p = 0.9</span></span>
-<span id="cb7-41"><a href="#cb7-41"></a>model_random_p09 <span class="ot">&lt;-</span> <span class="co"># random assignment</span></span>
-<span id="cb7-42"><a href="#cb7-42"></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb7-43"><a href="#cb7-43"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb7-44"><a href="#cb7-44"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
-<span id="cb7-45"><a href="#cb7-45"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
-<span id="cb7-46"><a href="#cb7-46"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
-<span id="cb7-47"><a href="#cb7-47"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p09, p09), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-48"><a href="#cb7-48"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p09, p09), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb7-49"><a href="#cb7-49"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
-<span id="cb7-50"><a href="#cb7-50"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
-<span id="cb7-51"><a href="#cb7-51"></a>  )</span>
-<span id="cb7-52"><a href="#cb7-52"></a></span>
-<span id="cb7-53"><a href="#cb7-53"></a>design_54_p09_ra <span class="ot">&lt;-</span> model_random_p09 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
-<span id="cb7-54"><a href="#cb7-54"></a></span>
-<span id="cb7-55"><a href="#cb7-55"></a>model_blocks_p09 <span class="ot">&lt;-</span></span>
-<span id="cb7-56"><a href="#cb7-56"></a>  <span class="fu">declare_model</span>( <span class="co"># block assignment</span></span>
-<span id="cb7-57"><a href="#cb7-57"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb7-58"><a href="#cb7-58"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
-<span id="cb7-59"><a href="#cb7-59"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
-<span id="cb7-60"><a href="#cb7-60"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
-<span id="cb7-61"><a href="#cb7-61"></a>                     <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p09, p09), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-62"><a href="#cb7-62"></a>                     <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p09, p09), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb7-63"><a href="#cb7-63"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
-<span id="cb7-64"><a href="#cb7-64"></a>                         X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
-<span id="cb7-65"><a href="#cb7-65"></a>                         <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
-<span id="cb7-66"><a href="#cb7-66"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
-<span id="cb7-67"><a href="#cb7-67"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
-<span id="cb7-68"><a href="#cb7-68"></a>  )</span>
-<span id="cb7-69"><a href="#cb7-69"></a></span>
-<span id="cb7-70"><a href="#cb7-70"></a>design_54_p09_bl <span class="ot">&lt;-</span> model_blocks_p09 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
-<span id="cb7-71"><a href="#cb7-71"></a></span>
-<span id="cb7-72"><a href="#cb7-72"></a>designs_vary_p <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"p = 0.1 random"</span> <span class="ot">=</span> design_54_p01_ra,</span>
-<span id="cb7-73"><a href="#cb7-73"></a>                       <span class="st">"p = 0.1 block"</span> <span class="ot">=</span> design_54_p01_bl,</span>
-<span id="cb7-74"><a href="#cb7-74"></a>                       <span class="st">"p = 0.5 random"</span> <span class="ot">=</span> design_54_p05_ra, </span>
-<span id="cb7-75"><a href="#cb7-75"></a>                       <span class="st">"p = 0.5 block"</span> <span class="ot">=</span> design_54_p05_bl,</span>
-<span id="cb7-76"><a href="#cb7-76"></a>                       <span class="st">"p = 0.9 random"</span> <span class="ot">=</span> design_54_p09_ra,</span>
-<span id="cb7-77"><a href="#cb7-77"></a>                       <span class="st">"p = 0.9 block"</span> <span class="ot">=</span> design_54_p09_bl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>           Design    Estimator Term Mean Estimate   RMSE  Power
-1  p = 0.1 random   X Complete    Z          0.99   0.21   1.00
-2                                          (0.01) (0.01) (0.00)
-3  p = 0.1 random       X Drop    Z          0.99   0.23   0.99
-4                                          (0.01) (0.01) (0.00)
-5  p = 0.1 random X Incomplete    Z          0.99   0.22   1.00
-6                                          (0.01) (0.01) (0.00)
-7   p = 0.1 block     X Blocks    Z          0.99   0.22   0.99
-8                                          (0.01) (0.01) (0.01)
-9  p = 0.5 random   X Complete    Z          0.99   0.21   1.00
-10                                         (0.01) (0.01) (0.00)
-11 p = 0.5 random       X Drop    Z          0.99   0.23   0.99
-12                                         (0.01) (0.01) (0.00)
-13 p = 0.5 random X Incomplete    Z          0.98   0.30   0.92
-14                                         (0.01) (0.01) (0.01)
-15  p = 0.5 block     X Blocks    Z          1.00   0.27   0.93
-16                                         (0.01) (0.01) (0.01)
-17 p = 0.9 random   X Complete    Z          0.99   0.21   1.00
-18                                         (0.01) (0.01) (0.00)
-19 p = 0.9 random       X Drop    Z          0.99   0.23   0.99
-20                                         (0.01) (0.01) (0.00)
-21 p = 0.9 random X Incomplete    Z            NA     NA     NA
-22                                             NA     NA     NA
-23  p = 0.9 block     X Blocks    Z          1.05   0.67     NA
-24                                         (0.03) (0.03)     NA</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>p01 <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>p03 <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>p07 <span class="ot">&lt;-</span> <span class="fl">0.7</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>p09 <span class="ot">&lt;-</span> <span class="fl">0.9</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co"># Using basic model components with N = 100 and p = 0.5</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>design_54_p05_ra <span class="ot">&lt;-</span> model_default <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
+<span id="cb6-8"><a href="#cb6-8"></a>design_54_p05_bl <span class="ot">&lt;-</span> model_default <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
+<span id="cb6-9"><a href="#cb6-9"></a></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co"># New models with p = 0.1</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>model_p01 <span class="ot">&lt;-</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb6-13"><a href="#cb6-13"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
+<span id="cb6-14"><a href="#cb6-14"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb6-16"><a href="#cb6-16"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p01, p01), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-18"><a href="#cb6-18"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p01, p01), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb6-19"><a href="#cb6-19"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
+<span id="cb6-20"><a href="#cb6-20"></a>                       X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
+<span id="cb6-21"><a href="#cb6-21"></a>                       <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
+<span id="cb6-22"><a href="#cb6-22"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb6-23"><a href="#cb6-23"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
+<span id="cb6-24"><a href="#cb6-24"></a>  )</span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a>design_54_p01_ra <span class="ot">&lt;-</span> model_p01 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
+<span id="cb6-27"><a href="#cb6-27"></a>design_54_p01_bl <span class="ot">&lt;-</span> model_p01 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
+<span id="cb6-28"><a href="#cb6-28"></a></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co"># New models with p = 0.3</span></span>
+<span id="cb6-30"><a href="#cb6-30"></a>model_p03 <span class="ot">&lt;-</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb6-32"><a href="#cb6-32"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
+<span id="cb6-33"><a href="#cb6-33"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-34"><a href="#cb6-34"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb6-35"><a href="#cb6-35"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p03, p03), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-37"><a href="#cb6-37"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p03, p03), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb6-38"><a href="#cb6-38"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
+<span id="cb6-39"><a href="#cb6-39"></a>                       X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
+<span id="cb6-40"><a href="#cb6-40"></a>                       <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
+<span id="cb6-41"><a href="#cb6-41"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb6-42"><a href="#cb6-42"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
+<span id="cb6-43"><a href="#cb6-43"></a>  )</span>
+<span id="cb6-44"><a href="#cb6-44"></a></span>
+<span id="cb6-45"><a href="#cb6-45"></a>design_54_p03_ra <span class="ot">&lt;-</span> model_p03 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
+<span id="cb6-46"><a href="#cb6-46"></a>design_54_p03_bl <span class="ot">&lt;-</span> model_p03 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
+<span id="cb6-47"><a href="#cb6-47"></a></span>
+<span id="cb6-48"><a href="#cb6-48"></a><span class="co"># New models with p = 0.7</span></span>
+<span id="cb6-49"><a href="#cb6-49"></a>model_p07 <span class="ot">&lt;-</span> <span class="co"># random assignment</span></span>
+<span id="cb6-50"><a href="#cb6-50"></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb6-51"><a href="#cb6-51"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
+<span id="cb6-52"><a href="#cb6-52"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-53"><a href="#cb6-53"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb6-54"><a href="#cb6-54"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
+<span id="cb6-55"><a href="#cb6-55"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p07, p07), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-56"><a href="#cb6-56"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p07, p07), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb6-57"><a href="#cb6-57"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
+<span id="cb6-58"><a href="#cb6-58"></a>                       X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
+<span id="cb6-59"><a href="#cb6-59"></a>                       <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
+<span id="cb6-60"><a href="#cb6-60"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb6-61"><a href="#cb6-61"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
+<span id="cb6-62"><a href="#cb6-62"></a>  )</span>
+<span id="cb6-63"><a href="#cb6-63"></a></span>
+<span id="cb6-64"><a href="#cb6-64"></a>design_54_p07_ra <span class="ot">&lt;-</span> model_p07 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
+<span id="cb6-65"><a href="#cb6-65"></a>design_54_p07_bl <span class="ot">&lt;-</span> model_p07 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
+<span id="cb6-66"><a href="#cb6-66"></a></span>
+<span id="cb6-67"><a href="#cb6-67"></a><span class="co"># New models with p = 0.9</span></span>
+<span id="cb6-68"><a href="#cb6-68"></a>model_p09 <span class="ot">&lt;-</span> <span class="co"># random assignment</span></span>
+<span id="cb6-69"><a href="#cb6-69"></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb6-70"><a href="#cb6-70"></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
+<span id="cb6-71"><a href="#cb6-71"></a>    <span class="at">b =</span> <span class="fl">0.5</span>,</span>
+<span id="cb6-72"><a href="#cb6-72"></a>    <span class="at">X =</span> <span class="fu">rbinom</span>(N, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>),</span>
+<span id="cb6-73"><a href="#cb6-73"></a>    <span class="at">X_mi =</span> <span class="fu">ifelse</span>(X <span class="sc">==</span> <span class="dv">1</span>, <span class="co"># New version of X with missings (missing completely at random)</span></span>
+<span id="cb6-74"><a href="#cb6-74"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p09, p09), <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-75"><a href="#cb6-75"></a>                  <span class="fu">sample</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>), <span class="at">size =</span> N, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>p09, p09), <span class="at">replace =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb6-76"><a href="#cb6-76"></a>    <span class="at">Blocks =</span> <span class="fu">case_when</span>(X_mi <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"one"</span>,</span>
+<span id="cb6-77"><a href="#cb6-77"></a>                       X_mi <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"zero"</span>,</span>
+<span id="cb6-78"><a href="#cb6-78"></a>                       <span class="fu">is.na</span>(X_mi) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"missing"</span>),</span>
+<span id="cb6-79"><a href="#cb6-79"></a>    <span class="at">U =</span> b <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>),</span>
+<span id="cb6-80"><a href="#cb6-80"></a>    <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> Z <span class="sc">+</span> b <span class="sc">*</span> X <span class="sc">+</span> U, <span class="at">conditions =</span> <span class="fu">list</span>(<span class="at">Z =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)))</span>
+<span id="cb6-81"><a href="#cb6-81"></a>  )</span>
+<span id="cb6-82"><a href="#cb6-82"></a></span>
+<span id="cb6-83"><a href="#cb6-83"></a>design_54_p09_ra <span class="ot">&lt;-</span> model_p09 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
+<span id="cb6-84"><a href="#cb6-84"></a>design_54_p09_bl <span class="ot">&lt;-</span> model_p09 <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
+<span id="cb6-85"><a href="#cb6-85"></a></span>
+<span id="cb6-86"><a href="#cb6-86"></a>designs_vary_p <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">"R 0.1"</span> <span class="ot">=</span> design_54_p01_ra,</span>
+<span id="cb6-87"><a href="#cb6-87"></a>                       <span class="st">"B 0.1"</span> <span class="ot">=</span> design_54_p01_bl,</span>
+<span id="cb6-88"><a href="#cb6-88"></a>                       <span class="st">"R 0.3"</span> <span class="ot">=</span> design_54_p03_ra,</span>
+<span id="cb6-89"><a href="#cb6-89"></a>                       <span class="st">"B 0.3"</span> <span class="ot">=</span> design_54_p03_bl,</span>
+<span id="cb6-90"><a href="#cb6-90"></a>                       <span class="st">"R 0.5"</span> <span class="ot">=</span> design_54_p05_ra,</span>
+<span id="cb6-91"><a href="#cb6-91"></a>                       <span class="st">"B 0.5"</span> <span class="ot">=</span> design_54_p05_bl,</span>
+<span id="cb6-92"><a href="#cb6-92"></a>                       <span class="st">"R 0.7"</span> <span class="ot">=</span> design_54_p07_ra,</span>
+<span id="cb6-93"><a href="#cb6-93"></a>                       <span class="st">"B 0.7"</span> <span class="ot">=</span> design_54_p07_bl,</span>
+<span id="cb6-94"><a href="#cb6-94"></a>                       <span class="st">"R 0.9"</span> <span class="ot">=</span> design_54_p09_ra,</span>
+<span id="cb6-95"><a href="#cb6-95"></a>                       <span class="st">"B 0.9"</span> <span class="ot">=</span> design_54_p09_bl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="varying-b" class="slide level3">
+<section id="varying-p-graph" class="slide level3">
+<h3>Varying p: Graph</h3>
+
+<img data-src="group4_exercises_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
+<section id="varying-b" class="slide level3 smaller">
 <h3>Varying b</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># Using basic model components with N = 100</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>design_54_b_ra <span class="ot">&lt;-</span> model_random <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
-<span id="cb9-3"><a href="#cb9-3"></a>design_54_b_bl <span class="ot">&lt;-</span> model_blocks <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
-<span id="cb9-4"><a href="#cb9-4"></a></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co"># Varying b</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a>design_54_b_ra <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_b_ra, <span class="at">b =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>))</span>
-<span id="cb9-7"><a href="#cb9-7"></a>design_54_b_bl <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_b_bl, <span class="at">b =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>))</span>
-<span id="cb9-8"><a href="#cb9-8"></a></span>
-<span id="cb9-9"><a href="#cb9-9"></a>designs_vary_b <span class="ot">&lt;-</span> <span class="fu">append</span>(design_54_b_ra,</span>
-<span id="cb9-10"><a href="#cb9-10"></a>                         design_54_b_bl)</span>
-<span id="cb9-11"><a href="#cb9-11"></a></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="fu">names</span>(designs_vary_b) <span class="ot">&lt;-</span></span>
-<span id="cb9-13"><a href="#cb9-13"></a>  <span class="fu">list</span>(<span class="st">"b = 0.1 Random"</span>,</span>
-<span id="cb9-14"><a href="#cb9-14"></a>       <span class="st">"b = 0.5 Random"</span>,</span>
-<span id="cb9-15"><a href="#cb9-15"></a>       <span class="st">"b = 0.9 Random"</span>,</span>
-<span id="cb9-16"><a href="#cb9-16"></a>       <span class="st">"b = 0.1 Blocks"</span>,</span>
-<span id="cb9-17"><a href="#cb9-17"></a>       <span class="st">"b = 0.5 Blocks"</span>,</span>
-<span id="cb9-18"><a href="#cb9-18"></a>       <span class="st">"b = 0.9 Blocks"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Using basic model components with N = 100</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>design_54_b_ra <span class="ot">&lt;-</span> model_default <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_ra <span class="sc">+</span> answer_strategy_ra</span>
+<span id="cb7-3"><a href="#cb7-3"></a>design_54_b_bl <span class="ot">&lt;-</span> model_default <span class="sc">+</span> inquiry_ate <span class="sc">+</span> data_strategy_bl <span class="sc">+</span> answer_strategy_bl</span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co"># Varying b</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>design_54_b_ra <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_b_ra, <span class="at">b =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>))</span>
+<span id="cb7-7"><a href="#cb7-7"></a>design_54_b_bl <span class="ot">&lt;-</span> <span class="fu">redesign</span>(design_54_b_bl, <span class="at">b =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>))</span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a>designs_vary_b <span class="ot">&lt;-</span> <span class="fu">append</span>(design_54_b_ra,</span>
+<span id="cb7-10"><a href="#cb7-10"></a>                         design_54_b_bl)</span>
+<span id="cb7-11"><a href="#cb7-11"></a></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="fu">names</span>(designs_vary_b) <span class="ot">&lt;-</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="fu">list</span>(<span class="st">"b = 0.1 Random"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14"></a>       <span class="st">"b = 0.3 Random"</span>,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>       <span class="st">"b = 0.5 Random"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16"></a>       <span class="st">"b = 0.7 Random"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17"></a>       <span class="st">"b = 0.9 Random"</span>,</span>
+<span id="cb7-18"><a href="#cb7-18"></a>       <span class="st">"b = 0.1 Blocks"</span>,</span>
+<span id="cb7-19"><a href="#cb7-19"></a>       <span class="st">"b = 0.3 Blocks"</span>,</span>
+<span id="cb7-20"><a href="#cb7-20"></a>       <span class="st">"b = 0.5 Blocks"</span>,</span>
+<span id="cb7-21"><a href="#cb7-21"></a>       <span class="st">"b = 0.7 Blocks"</span>,</span>
+<span id="cb7-22"><a href="#cb7-22"></a>       <span class="st">"b = 0.9 Blocks"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="varying-b-graph" class="slide level3">
+<h3>Varying b: Graph</h3>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>           Design    Estimator Term Mean Estimate   RMSE  Power
-1  b = 0.1 Random   X Complete    Z          0.99   0.21   1.00
-2                                          (0.01) (0.01) (0.00)
-3  b = 0.1 Random       X Drop    Z          0.99   0.23   0.99
-4                                          (0.01) (0.01) (0.00)
-5  b = 0.1 Random X Incomplete    Z          0.98   0.30   0.92
-6                                          (0.01) (0.01) (0.01)
-7  b = 0.5 Random   X Complete    Z          0.99   0.21   1.00
-8                                          (0.01) (0.01) (0.00)
-9  b = 0.5 Random       X Drop    Z          0.99   0.23   0.99
-10                                         (0.01) (0.01) (0.00)
-11 b = 0.5 Random X Incomplete    Z          0.98   0.30   0.92
-12                                         (0.01) (0.01) (0.01)
-13 b = 0.9 Random   X Complete    Z          0.99   0.21   1.00
-14                                         (0.01) (0.01) (0.00)
-15 b = 0.9 Random       X Drop    Z          0.99   0.22   0.99
-16                                         (0.01) (0.01) (0.00)
-17 b = 0.9 Random X Incomplete    Z          0.99   0.30   0.92
-18                                         (0.01) (0.01) (0.01)
-19 b = 0.1 Blocks     X Blocks    Z          1.00   0.27   0.93
-20                                         (0.01) (0.01) (0.01)
-21 b = 0.5 Blocks     X Blocks    Z          1.00   0.27   0.93
-22                                         (0.01) (0.01) (0.01)
-23 b = 0.9 Blocks     X Blocks    Z          1.00   0.27   0.93
-24                                         (0.01) (0.01) (0.01)</code></pre>
+<div class="cell-output-display">
+<p><img data-src="group4_exercises_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
 </div>
 </div>
-
-<img src="hu_siegel-kombi_rgb.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<p><img src="hu_siegel-kombi_rgb.png" class="slide-logo"></p>
+<div class="footer footer-default">
 
 </div>
 </section></section>

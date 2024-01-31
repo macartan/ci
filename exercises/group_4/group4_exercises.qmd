@@ -463,3 +463,6 @@ ggplot(df_vary_b_plot, aes(x = b, y = RMSE, color = factor(Estimator))) +
        color = "Estimator") +
   theme_bw()
 ```
+
+## Week 3
+
