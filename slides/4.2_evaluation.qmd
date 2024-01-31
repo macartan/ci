@@ -1,16 +1,18 @@
 ---
 title: "Design diagnosis"
 subtitle: "Power and more"
-author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
-format:
- revealjs:    
-  embed-resources: true
-  theme: moon
-  highlight: tango
-  slide-number: true
-  preview-links: auto
-  center: true
-  transition: none
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: bib.bib
 ---
 
 
@@ -88,23 +90,6 @@ Then:
 
 
 
-
-
-### Calculate a $p$ value in your head
-
-*   Illustrating $p$ values via "randomization inference"
-*   Say you randomized assignment to treatment and your data looked like this.
-
-
-| Unit         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
-|--------------|---|---|---|---|---|---|---|---|---|----|
-| Treatment    | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0  |
-| Health score | 4 | 2 | 3 | 1 | 2 | 3 | 4 | 8 | 7 | 6  |
-
-Then:
-
-* Does the treatment improve your health?
-* What's the $p$ value for the  null that treatment had no effect on anybody?
 
 
 ## Power
@@ -188,7 +173,7 @@ I can figure out from this that 143 or fewer is really very few and 190 or more 
 c(lower = pbinom(143, 1000, 1/6), upper = 1 - pbinom(189, 1000, 1/6))
 ```
 
-### Step 2: What is the power?
+### Step 2: What is the power? {.smaller}
 
 * Now we need to stipulate some belief about how the world really works---this is not the null hypothesis that we plan to reject, but something that we actually take to be true.
 
@@ -212,7 +197,7 @@ So given I think 6s appear 20% of the time, I think it likely I'll see at least 
 * Are there other tests I could have implemented?
 * Are there other ways to improve this test?
 
-### Last subtleties
+### Subtleties {.smaller}
 
 * Is a significant result from an underpowered study less credible? (only if there is a significance filter)
 * What significance level should you choose for power? (Obviously the stricter the level the lower the power, so use what you will use when you actually implement tests)
@@ -220,7 +205,126 @@ So given I think 6s appear 20% of the time, I think it likely I'll see at least 
 * Power is just one of many possible diagnosands
 * What's power for Bayesians?
 
+
+### Power analytics {.smaller}
+
+Simplest intuition on power:
+
+```{r}
+power <- function(b, alpha = 0.05, critical = qnorm(1-alpha/2))  
+
+  1 - pnorm(critical, mean = abs(b)) + pnorm(-critical, mean = abs(b))
+
+```
+
+What is the probability of getting a significant estimate given the sampling distribution is centered on  $b$ and the *standard error* is 1? 
+
+* Equivalent: priobability of getting an estimate above 1.96 or below -1.96.
+
+```{r}
+power(0)
+power(1.96)
+power(-1.96)
+power(3)
+```
+
+### Power analytics: graphed
+
+This is essentially what is done by `pwrss::power.z.test` -- and it produces nice graphs!
+
+See:
+
+```{r}
+pwrss::power.z.test(ncp = 1.96, alpha = 0.05, alternative = "not equal", plot = TRUE)
+```
+### Power analytics: graphed
+
+Substantively: if in expectation an estimate will be *just* significant, then your power is 50%
+
+
+### Power analytics for a trial: by hand {.smaller}
+
+* Of course the standard error will depend on the number of units and the variance of outcomes in treatment and control. 
+
+* Say $N$ subject are divided into two groups and potential outcomes have standard deviation $\sigma$ in treatment and control. Then the conservative variance of  the treatment effect is (approx / conservatively):
+
+$$Var(\tau)=\frac{\sigma^2}{N/2} + \frac{\sigma^2}{N/2} = 4\frac{\sigma^2}{N}$$
+
+and so the (conservative / approx) standard error is:
+
+$$\sigma_\tau=\frac{2\sigma}{\sqrt{N}}$$
+
+### Power analytics for a trial: by hand {.smaller}
+
+Note here we seem to be using the actual standard error but of course the tests we actually run will use an *estimate* of the standard error...
+
+
+### Power analytics for a trial: by hand {.smaller}
+
+```{r, echo = TRUE}
+
+se <- function(sd, N) (N/(N-1))^.5*2*sd/(N^.5)
+
+
+power_2 <- function(b, alpha = .05, sd = 1, N = 100, critical = qnorm(1-alpha/2), se = 2*sd/N^.5)  
+
+  1 - pnorm(critical, mean = abs(b)/se(sd, N)) + pnorm(-critical, mean = abs(b)/se(sd, N))
+
+power_2(0)
+power_2(.56)
+
+```
+
+### Power analytics for a trial: flexible
+
+This can be done e.g. with `pwrss` like this:
+
+```{r}
+pwrss::pwrss.t.2means(mu1 = .2, mu2 = .1, sd1 = 1, sd2 = 1, 
+               n2 = 50, alpha = 0.05,
+               alternative = "not equal")
+
+power_2(.50, N = 100)
+```
+
+
+### Equivalence
+
+```{r, eval = FALSE}
+powers <- sapply(seq(0, 1, .05), function(j)
+  c(pwrss::pwrss.t.2means(mu1 = j, n2 = 50)$power, 
+    power_2(j, N = 100))) |> t() |> 
+  data.frame() 
+plot(powers)
+
+```
+
+```{r, include  = FALSE}
+powers <- sapply(seq(0, 1, .05), function(j)
+  c(pwrss::pwrss.t.2means(mu1 = j, n2 = 50)$power, 
+    power_2(j, N = 100))) |> t() |> 
+  data.frame() 
+```
+```{r, echo = FALSE}
+plot(powers)
+```
+
+### Power for more complex trials: Analytics
+
+Mostly involve figuring out the standard error.
+
+Consider a cluster randomized trial, with each unit having a cluster level shock $\epsilon_k$ and an individual shock $\nu_i$. Say these have variances $\sigma^2_k$, $\sigma^2_i$.
+
+The standard error is:
+
+$$ $$
+
+Define $\rho = \frac{\sigma^2_k}{\sigma^2_k + \sigma^2_i}$
+
 ### Power via design diagnosis
+
+*Is arbitrarily flexible*
+
 
 ```{r}
 N <- 100
