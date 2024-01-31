@@ -288,7 +288,7 @@ power_2(.50, N = 100)
 ```
 
 
-### Equivalence
+### Equivalence check
 
 ```{r, eval = FALSE}
 powers <- sapply(seq(0, 1, .05), function(j)
@@ -317,9 +317,16 @@ Consider a cluster randomized trial, with each unit having a cluster level shock
 
 The standard error is:
 
-$$ $$
+$$\sqrt{\frac{4\sigma^2_k}{K} + \frac{4\sigma^2_i}{nK}}$$
 
 Define $\rho = \frac{\sigma^2_k}{\sigma^2_k + \sigma^2_i}$
+
+$$\sqrt{\rho \frac{4\sigma^2}{K} + (1- \rho)\frac{4\sigma^2}{nK}}$$
+
+$$\sqrt{((n - 1)\rho + 1)\frac{4\sigma^2}{nK}}$$
+
+where $((n - 1)\rho + 1)$ is the "design effect": $\frac{nK}{((n - 1)\rho + 1)}$ is the "effective sample size"
+
 
 ### Power via design diagnosis
 
