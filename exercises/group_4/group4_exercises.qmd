@@ -33,7 +33,8 @@ pacman::p_load(tidyverse,
                DeclareDesign,
                CausalQueries,
                knitr,
-               kableExtra)
+               kableExtra,
+               rstan)
 ```
 
 ## Week 1
@@ -465,4 +466,49 @@ ggplot(df_vary_b_plot, aes(x = b, y = RMSE, color = factor(Estimator))) +
 ```
 
 ## Week 3
+
+## Q 6.4  {.smaller}
+
+Hierarchical
+
+Generate a simple multilevel experimental design (e.g 20 children each in 20 schools). Assume that the treatment effect in each schools is drawn from a normal distribution with a given variance
+
+Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover
+
+Bonus: Are estimates of treatment effects more or less reliable than what you would get from a frequentist approach that interacts school IDs with treatment?
+
+## Solution
+
+```{r}
+#| output: false
+#| echo: true
+
+set.seed(123)
+stan_model <- stan_model(file = "multilevel_model.stan")
+
+# Generate data
+N <- 400
+school <- rep(1:20, each = 20)
+school_b <- 1 + rnorm(20)
+X <- rep(0:1, times = N / 2)  # Ensure X has length 400
+Y <- school_b[school] * X + rnorm(N)
+
+# Prepare data list
+ml_data <- list(
+  N = N,
+  school = school,
+  X = X,
+  Y = Y
+)
+
+# Fit the Bayesian multilevel hierarchical model
+fit <- sampling(stan_model, data = ml_data, iter = 2000, chains = 4)
+```
+
+## Solution
+
+```{r}
+#| echo: false
+print(fit, pars = c("sigma[1]", "sigma[2]", "sigma[3]", "mu_a", "mu_b"))
+```
 

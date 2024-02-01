@@ -1008,16 +1008,73 @@ Yoanna Yankova
 </section>
 <section id="varying-b-graph" class="slide level3">
 <h3>Varying b: Graph</h3>
+
+<img data-src="group4_exercises_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section></section>
+<section id="week-3" class="title-slide slide level2 center">
+<h2>Week 3</h2>
+
+</section>
+
+<section id="q-6.4" class="title-slide slide level2 smaller center">
+<h2>Q 6.4</h2>
+<p>Hierarchical</p>
+<p>Generate a simple multilevel experimental design (e.g 20 children each in 20 schools). Assume that the treatment effect in each schools is drawn from a normal distribution with a given variance</p>
+<p>Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover</p>
+<p>Bonus: Are estimates of treatment effects more or less reliable than what you would get from a frequentist approach that interacts school IDs with treatment?</p>
+</section>
+
+<section id="solution" class="title-slide slide level2 center">
+<h2>Solution</h2>
 <div class="cell">
-<div class="cell-output-display">
-<p><img data-src="group4_exercises_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>stan_model <span class="ot">&lt;-</span> <span class="fu">stan_model</span>(<span class="at">file =</span> <span class="st">"multilevel_model.stan"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co"># Generate data</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>N <span class="ot">&lt;-</span> <span class="dv">400</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>school <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">each =</span> <span class="dv">20</span>)</span>
+<span id="cb8-7"><a href="#cb8-7"></a>school_b <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">20</span>)</span>
+<span id="cb8-8"><a href="#cb8-8"></a>X <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">times =</span> N <span class="sc">/</span> <span class="dv">2</span>)  <span class="co"># Ensure X has length 400</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>Y <span class="ot">&lt;-</span> school_b[school] <span class="sc">*</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co"># Prepare data list</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>ml_data <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-13"><a href="#cb8-13"></a>  <span class="at">N =</span> N,</span>
+<span id="cb8-14"><a href="#cb8-14"></a>  <span class="at">school =</span> school,</span>
+<span id="cb8-15"><a href="#cb8-15"></a>  <span class="at">X =</span> X,</span>
+<span id="cb8-16"><a href="#cb8-16"></a>  <span class="at">Y =</span> Y</span>
+<span id="cb8-17"><a href="#cb8-17"></a>)</span>
+<span id="cb8-18"><a href="#cb8-18"></a></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="co"># Fit the Bayesian multilevel hierarchical model</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a>fit <span class="ot">&lt;-</span> <span class="fu">sampling</span>(stan_model, <span class="at">data =</span> ml_data, <span class="at">iter =</span> <span class="dv">2000</span>, <span class="at">chains =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+
+<section id="solution-1" class="title-slide slide level2 center">
+<h2>Solution</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Inference for Stan model: anon_model.
+4 chains, each with iter=2000; warmup=1000; thin=1; 
+post-warmup draws per chain=1000, total post-warmup draws=4000.
+
+         mean se_mean   sd  2.5%  25%  50%  75% 97.5% n_eff Rhat
+sigma[1] 0.10    0.01 0.07  0.03 0.05 0.09 0.14  0.26   146 1.01
+sigma[2] 0.98    0.00 0.19  0.67 0.85 0.96 1.09  1.42  2286 1.00
+sigma[3] 0.97    0.00 0.04  0.91 0.95 0.97 1.00  1.05  1993 1.00
+mu_a     0.05    0.00 0.07 -0.10 0.00 0.05 0.10  0.20   610 1.01
+mu_b     1.03    0.01 0.24  0.56 0.87 1.03 1.19  1.49  1503 1.01
+
+Samples were drawn using NUTS(diag_e) at Wed Jan 31 22:28:17 2024.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
 </div>
 </div>
-<p><img src="hu_siegel-kombi_rgb.png" class="slide-logo"></p>
-<div class="footer footer-default">
+
+<img src="hu_siegel-kombi_rgb.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
