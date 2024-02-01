@@ -1,0 +1,124 @@
+---
+title: "Group 1 - Week 4"
+subtitle: "7 Experimental Design"
+date: "1 Feburary, 2024"
+date-format: "long"
+author: Ziyu, Nora, Elias, Felix, Anton 
+
+format:
+  revealjs: 
+  theme: white
+logo: hu_siegel-kombi_rgb.png
+css: logo.css
+mbed-resources: true
+slide-level: 3
+slide-number: true
+show-slide-number: all
+preview-links: auto
+number-sections: false
+scrollable: true
+chalkboard: true
+---
+
+  
+```{r packages, echo=FALSE}
+# packages
+pacman::p_load(tidyverse,
+               rstan,
+               DeclareDesign,
+               dagitty,
+               CausalQueries,
+               ri2,
+               knitr,
+               kableExtra)
+```
+
+
+ 
+# excercise 7.1
+  ## Randomization
+# DAG
+## F: facilitators(treatment), G: Gender(Confounder?), Y: Social Trust(Outcome)
+```{r}
+dagitty("dag {F -> Y G ->Y}") %>%
+  plot()
+```
+
+
+
+
+
+------------------Question 1------------------- 
+  ##1. Sampling
+  ###*100 students* sign up to take part in an experiment. 
+  ###Half your subjects are men and half are women and you believe gender is very predictive of social trust.
+
+```{r}
+set.seed(123) #set seed for reproducibility
+n <- 100 ##100 Students
+g <- sample(c("male", "female"), n, replace = TRUE, prob = c(0.5, 0.5)) ##gender
+
+
+
+
+```
+
+  ##2.Model&Inquiry
+  ###You want to measure the effect of immigration on social trust. 
+```{r}
+design <- 
+  declare_model(N=n,
+                G=g,
+                F=rnorm(n, 0, 1), ##??
+                Y=) +             ##??
+  declare_inquiry(ATE=mean(Y_F_1-Y_F_0)) +##effect of facilitator/immigration
+  declare_potential_outcomes(Y~F)+
+  declare_sampling()
+  declare_assignment(F=block_ra(block = G, block_prob = c(0.5, 0.5)))+##using 'gender' as block and assign them to facilitator
+  declare_measurement(Y= reveal_outcomes(Y~F))
+```
+
+
+```{r}
+```
+
+  ##3. Data Strategy
+  ###Your experiment involves varying whether a “native” or an “immigrant” facilitator instructs players in how to play a trust game. 
+  ###You have five native and five immigrant facilitators and you want them each to conduct one session with 10 subjects.
+  ###You are free to assign both subjects and facilitators to sessions. 
+```{r}
+f <- 10 ##Facilitators
+f_per_f <- 5 ##female per facilitator
+m_per_f <- 5 ##male per facilitator
+g_vector<- rep(c("male","female"), each = n/2) ##generate a vector indicating the gender of each student
+shuffled_g_vector <- sample(g_vector) ##shuffled the gender to randomize the assignment to facilitators
+assign_students <- function(g, n_per_f){
+  grouped_
+}
+
+
+
+
+
+```
+#Question 1:
+##Propose an appropriate randomization strategy. 
+##Is it blocked? Clustered? Both?
+```{r}
+```  
+#Answer1: It is blocked, as we assigned in each block(facilitator) specific number of female and male students, to root out the potential influence from the gender dynamic. 
+
+
+-----------------------------------------------
+------------------Question 2-------------------
+#Question2: Say now that subjects have already signed up for sessions. 
+##You can only assign facilitators to sessions, 
+##but you have access to the subject lists before you do so. 
+##Describe your optimal randomization strategy. 
+##Is it blocked? Clustered? Both?
+
+```{r}
+```
+
+-----------------------------------------------
+  
