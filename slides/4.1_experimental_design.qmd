@@ -1,23 +1,18 @@
 ---
+title: "Design"
+subtitle: "Assignment schemes"
 format: 
-   beamer:
-    theme: "AnnArbor"
-    colortheme: "seahorse"
+   revealjs:
+    embed-resources: true
+    theme: serif
     slide-level: 3
-    keep-tex: true
-    includes:
-      header-includes: include_nav.txt
-title: "Lectures on causal inference and experimental methods"
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
 author: "Macartan Humphreys"
-numbersections: true
-header-includes:
-  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
-  - \newcommand\E{\mathbb{E}}
-  - \newcommand\V{\mathbb{V}}
-  - \hypersetup{colorlinks=true,linkcolor=red}
-  - \usepackage{ulem}
-  - \pdfstringdefDisableCommands{\let\sout\relax}
-fontsize: 11pt  
+bibliography: bib.bib
 ---
 
 ```{r, include = FALSE}
@@ -28,21 +23,20 @@ source("setup.R")
 
 # Design
 
-## Topics
+*Focus on randomization schemes*
 
--   Sampling schemes
--   Randomization schemes
+## Aims and practice
 
-### Experiments
+
+### Experiments {.smaller}
 
 -   Experiments are investigations in which an intervention, in all its essential elements, is under the control of the investigator. (Cox & Reid)
 
 -   Two major types of control:
 
-    ```         
-          1. control over assignment to treatment -- this is at the heart of many field experiments 
-          2. control over the treatment itself -- this is at the heart of many lab experiments
-    ```
+   1. control over assignment to treatment -- this is at the heart of many field experiments 
+   2. control over the treatment itself -- this is at the heart of many lab experiments
+
 
 -   Main focus today is on 1 and on the question: *how does control over assignment to treatment allow you to make reasonable statements about causal effects?*
 
@@ -52,7 +46,7 @@ source("setup.R")
 knitr::include_graphics("figs/labfield.jpg")
 ```
 
-### Basic randomization {#schemes}
+### Basic randomization {.smaller}
 
 -   Basic randomization is very simple. For example, say you want to assign 5 of 10 units to treatment. Here is simple code:
 
@@ -67,12 +61,16 @@ In general you might want to set things up so that your randomization is **repli
 ```{r}
 set.seed(20111112)
 1:10 %in% sample(1:10, 5) 
+```
 
+and again:
+
+```{r}
 set.seed(20111112)
 1:10 %in% sample(1:10, 5) 
 ```
 
-### Basic randomization
+### Basic randomization  {.smaller}
 
 Even better is to set it up so that it can reproduce **lots of possible draws** so that you can check the propensities for each unit.
 
@@ -97,9 +95,11 @@ knitr::include_graphics("figs/dictionary.png")
 
 ### Did the randomization ''work''?
 
-[People often wonder: did randomization work? Common practice is to implement a set of $t$-tests to see if there is balance. This makes no sense.]{style="font-size: 80%;"}
+* People often wonder: did randomization work? Common practice is to implement a set of $t$-tests to see if there is balance. This makes no sense.
 
-[If you doubt whether it was **implemented** properly do an $F$ test. If you worry about **variance** specify controls in advance as a function of relation with outcomes (more on this later). If you worry about **conditional bias** then look at substantive differences between groups, not $t$--tests]{style="font-size: 80%;"}
+* If you doubt whether it was **implemented** properly do an $F$ test. If you worry about **variance**, specify controls in advance as a function of relation with outcomes (more on this later). If you worry about **conditional bias** then look at substantive differences between groups, not $t$--tests
+
+* If you want realizations to have particular properties: *build it into the scheme in advance*.
 
 ## Cluster Randomization
 
@@ -110,25 +110,25 @@ knitr::include_graphics("figs/dictionary.png")
 
 **Note:** clusters are part of your design, not part of the world.
 
-### Cluster Randomization
+### Cluster Randomization  {.smaller}
 
 -   Often used if intervention has to function at the cluster level *or* if outcome defined at the cluster level.
 
--   \*\*Disadvantage:\*\* loss of statistical power
+-   *Disadvantage:* loss of statistical power
 
 -   However: perfectly possible to assign *some* treatments at cluster level and then *other* treatments at the individual level
 
-[- **Principle:** (unless you are worried about spillovers) generally make clusters as small as possible]{style="font-size: 80%;"}
+- **Principle:** (unless you are worried about spillovers) generally make clusters as small as possible
 
-[- **Principle:** Surprisingly, variability in cluster size makes analysis harder. (See analysis section)]{style="font-size: 80%;"}
+- **Principle:** Surprisingly, variability in cluster size makes analysis harder. Try to control assignment so that cluster sizes are similar in treatment and in control.
 
-[- **Be clear** about whether you believe effects are operating at the cluster level or at the individual level. This matters for power calculations.]{style="font-size: 80%;"}
+- **Be clear** about whether you believe effects are operating at the cluster level or at the individual level. This matters for power calculations.
 
-[- **Be clear** about whether spillover effects operate only within clusters or also across them. If within only you might be able to interpret treatment as the effect of being in a treated cluster...]{style="font-size: 80%;"}
+- **Be clear** about whether spillover effects operate only within clusters or also across them. If within only you might be able to interpret treatment as the effect of being in a treated cluster...
 
-### Cluster Randomization: Block by cluster size
+### Cluster Randomization: Block by cluster size {.smaller}
 
-[Surprisingly, if clusters are of different sizes the difference in means estimator is *not* unbiased, even if all units are assigned to treatment with the same probability.]{style="font-size: 80%;"}
+Surprisingly, if clusters are of different sizes the difference in means estimator is *not* unbiased, even if all units are assigned to treatment with the same probability.
 
 **Here's the intuition.**Say there are two clusters each with homogeneous treatment effects:
 
@@ -137,19 +137,23 @@ knitr::include_graphics("figs/dictionary.png")
 | 1       | 1000000 | 0   | 1   |
 | 2       | 1       | 0   | 0   |
 
-Then: **\* What is the true average treatment effect?\*** What do you expect to estimate from cluster random assignment?
+Then: *What is the true average treatment effect?* What do you expect to estimate from cluster random assignment?
 
 The solution is to block by cluster size. For more see: <http://gking.harvard.edu/files/cluster.pdf>
 
-## Blocked assignments and other restricted randomizations {#blocked}
+## Blocked assignments and other restricted randomizations {.smaller}
 
-### Blocking
+### Blocking   {.smaller}
 
 There are more or less **efficient** ways to randomize.
 
 -   Randomization helps ensure good balance on all covariates (observed and unobserved) *in expectation*.
 -   But balance may not be so great *in realization*
 -   Blocking can help ensure balance ex post on observables
+
+
+### Blocking   {.smaller}
+
 
 Consider a case with four units and two strata. There are 6 possible assignments of 2 units to treatment:
 
@@ -169,12 +173,12 @@ Even with a constant treatment effect and everything uniform within blocks, ther
 Simple blocking in R (5 pairs):
 
 ```{r, eval = FALSE}
-sapply(1:5, function(i) rank(runif(2))==1)
+sapply(1:5, function(i) sample(0:1))
 ```
 
 ```{r, echo = FALSE}
 kable(
-  sapply(1:5, function(i) rank(runif(2))==1), col.names = 1:5)
+  sapply(1:5, function(i) sample(0:1)), col.names = 1:5)
 ```
 
 ### Of blocks and clusters
@@ -183,7 +187,7 @@ kable(
 knitr::include_graphics("figs/bf.png")
 ```
 
-### Blocking
+### Blocking {.smaller}
 
 -   Blocking is a case of **restricted randomization**. Although each unit is sampled with equal probability, the *profiles* of possible assignments are not.
 -   You have to take account of this when doing analysis
@@ -192,7 +196,7 @@ knitr::include_graphics("figs/bf.png")
     -   You could also randomize and then **replace the randomization** if you do not like the balance. This sounds tricky (and it is) but it is OK as long as you understand the true lottery process you are employing and incorporate that into analysis
     -   It is even possible to block on **covariates for which you don't have data** ex ante, by using methods in which you allocate treatment over time as a function of features of your sample (also tricky)
 
-### Other types of restricted randomization
+### Other types of restricted randomization  {.smaller}
 
 -   Really you can set whatever criterion you want for your set of treated units to have (eg no treated unit beside another treated unit; at least 5 from the north, 10 from the south, guaranteed balance by some continuous variable etc)
 -   You just have to be sure that you understand the random process that was used and that you can use it in the analysis stage
@@ -201,6 +205,12 @@ knitr::include_graphics("figs/bf.png")
     -   General injunction [http://www.ncbi.nlm.nih.gov/pubmed/15580598](Senn%202004) \`\`as ye randomize so shall ye analyze'')
     -   In general you should make sure that a given randomization procedure coupled with a given estimation procedure will produce an unbiased estimate. `DeclareDesign` can help with this.
 
+### Challenges with re-randomization
+
+* We can see that blocked and clustered assignments are actually types of restricted randomizations: they limit the set of acceptable randomizations to those with good properties
+* You could therefore implement the *equivalent* distribution of assignments y specifying an acceptable rule and then re-randomizing when the rule is met
+* That's fine *but* you would then have to take account of clustering and blocking just as you do when you actually cluster or block
+
 ## Factorial Designs
 
 ### Factorial Designs
@@ -208,36 +218,79 @@ knitr::include_graphics("figs/bf.png")
 -   Often when you set up an experiment you want to look at more than one treatment.
 -   Should you do this or not? How should you use your power?
 
-### Factorial Designs
+### Factorial Designs {.smaller}
 
 -   Often when you set up an experiment you want to look at more than one treatment.
 -   Should you do this or not? How should you use your power?
+
+Load up:
 
 |        | $T2=0$ | $T2=1$ |
 |--------|--------|--------|
 | T1 = 0 | $50\%$ | $0\%$  |
 | T1 = 1 | $50\%$ | $0\%$  |
 
+
+Spread out:
+
 |        | $T2=0$ | $T2=1$ |
 |--------|--------|--------|
 | T1 = 0 | $25\%$ | $25\%$ |
 | T1 = 1 | $25\%$ | $25\%$ |
+
+
+
+### Factorial Designs {.smaller}
+
+-   Often when you set up an experiment you want to look at more than one treatment.
+-   Should you do this or not? How should you use your power?
+
+
+
+Three arm it?:
 
 |        | $T2=0$   | $T2=1$   |
 |--------|----------|----------|
 | T1 = 0 | $33.3\%$ | $33.3\%$ |
 | T1 = 1 | $33.3\%$ | $0\%$    |
 
-### Factorial Designs
 
--   Surprisingly adding multiple treatments does not eat into your power (unless you are decomposing a complex treatment -- then it can. Why?)
+Bunch it?:
+
+|        | $T2=0$   | $T2=1$   |
+|--------|----------|----------|
+| T1 = 0 | $40\%$ | $20\%$ |
+| T1 = 1 | $20\%$ | $20\%$    |
+
+### Factorial Designs {.smaller}
+
+-   Surprisingly, adding multiple treatments does not generally eat into your power (unless you are *decomposing* a complex treatment -- then it can. Why?)
 -   Especially when you use a fully crossed design like the middle one above.
 -   Fisher: "No aphorism is more frequently repeated in connection with field trials, than that we must ask Nature few questions, or, ideally, one question, at a time. The writer is convinced that this view is wholly mistaken."
--   However -- adding multiple treatments *does* alter the **interpretation** of your treatment effects. If T2 is an unusual treatment for example, then half the T1 effect is measured for unusual situations.
+-   However -- adding multiple treatments *does* alter the **interpretation** of your *average* treatment effects. If T2 is an unusual treatment for example, then half the T1 effect is measured for unusual situations.
 
-### Factorial Designs: In practice
 
--   In practice if you have a lot of treatments it can be hard to do full factorial designs -- there may be too many combinations.\
+This speaks to "spreading out."  Note: the "bunching" example may not pay off and has undesireable feature of introducing a correlation between treatment assignments.
+
+### Factorial Designs {.smaller}
+
+Two ways to do favtial assignments in `DeclareDesign`:
+
+```{r, eval = FALSE}
+# Block the second assignment
+declare_assignment(Z1 = complete_ra(N)) +
+declare_assignment(Z2 = block_ra(blocks = Z1)) +
+  
+# Recode four arms  
+declare_assignment(Z = complete_ra(N, num_arms = 4)) +
+declare_measurement(Z1 = (Z == "T2" | Z == "T4"),
+                      Z2 = (Z == "T3" | Z == "T4"))
+  
+
+```
+### Factorial Designs: In practice {.smaller}
+
+-   In practice if you have a lot of treatments it can be hard to do full factorial designs -- there may be too many combinations.
 
 -   In such cases people use **fractional factorial designs**, like the one below (5 treatments but only 8 units!)
 
@@ -252,11 +305,13 @@ knitr::include_graphics("figs/bf.png")
 | 7         | 1   | 1   | 0   | 0   | 0   |
 | 8         | 1   | 1   | 1   | 1   | 1   |
 
+### Factorial Designs: In practice {.smaller}
+
 -   Then randomly assign units to rows. Note columns might also be blocking covariates.
 
 -   In R, look at `library(survey)`
 
-### Factorial Designs: In practice
+### Factorial Designs: In practice {.smaller}
 
 -   But be careful: you have to be comfortable with possibly not having any simple counterfactual unit for any unit (invoke sparsity-of-effects principle).
 
@@ -273,19 +328,26 @@ knitr::include_graphics("figs/bf.png")
 
 -   In R, look at `library(survey)`
 
+### Controversy? {.smaller}
+
+
+@muralidharan2023factorial [write](https://econweb.ucsd.edu/~kamurali/papers/Working%20Papers/CrossCuts%20(Current%20WP).pdf): 
+
+> Factorial designs are widely used to study multiple treatments in one experiment. While t-tests using a fully-saturated “long” model provide valid inferences, “short” model t-tests (that ignore interactions) yield higher power if interactions are zero, but incorrect inferences otherwise. Of 27 factorial experiments published in top-5 journals (2007–2017), 19 use the short model. After including interactions, over half of their results lose significance. [...]
+
 ## External Validity: Can randomization strategies help?
 
-### Principle: Address **external validity** at the design stage
+### Principle: Address **external validity** at the design stage {.smaller}
 
 Anything to be done on randomization to address external validity concerns?
 
--   **Note 1**: There is little or nothing about field experiments that makes the external validity problem greater for these than for other ''sample based'' research
+-   **Note 1**: There is little or nothing about field experiments that makes the external validity problem greater for these than for other forms of ''sample based'' research
 -   **Note 2**: Studies that use up the available universe (cross national studies) actually have a distinct external validity problem
 -   Two ways to think about external validity issues:
     1.  Are things likely to operate in other units like they operate in these units? (even with the same intervention)
     2.  Are the processes in operation in this treatment likely to operate in other treatments? (even in this population)
 
-### Principle: Address **external validity** at the design stage
+### Principle: Address **external validity** at the design stage  {.smaller}
 
 -   Two ways to think about external validity issues:
     1.  Are things likely to operate in other units like they operate in these units? (even with the same intervention) 2.Are the processes in operation in this treatment likely to operate in other treatments? (even in this population)
@@ -294,7 +356,7 @@ Anything to be done on randomization to address external validity concerns?
     -   Exploit internal variation: block on features that make the case unusal and assess importance of these (eg is unit poor? assess how effects differ in poor and wealthy components)
 -   2 is harder and requires a sharp identification of context free primitives, if there are such things.
 
-## Assignments with \`\`DeclareDesign\`\`
+## Assignments with `DeclareDesign`
 
 ### A design: Multilevel data
 
@@ -320,7 +382,7 @@ design <-
 
 ```
 
-### Sample data {#simpleAass}
+### Sample data  {.smaller}
 
 Here are the first couple of rows and columns of the resulting data frame.
 
@@ -329,7 +391,7 @@ my_data <- draw_data(design)
 kable(head(my_data), digits = 2)
 ```
 
-### Sample data
+### Sample data  {.smaller}
 
 Here is the distribution between treatment and control:
 
@@ -338,7 +400,7 @@ kable(t(as.matrix(table(my_data$Z))),
       col.names = c("control", "treatment"))
 ```
 
-### Complete Random Assignment using the built in function {#completeAss}
+### Complete Random Assignment using the built in function  {.smaller}
 
 ```{r, echo = TRUE}
 assignment_complete <-   declare_assignment(Z = complete_ra(N))  
@@ -348,7 +410,7 @@ design_complete <-
 
 ```
 
-### Data from complete assignment
+### Data from complete assignment  {.smaller}
 
 We can draw a new set of data and look at the number of subjects in the treatment and control groups.
 
@@ -359,7 +421,7 @@ data_complete <- draw_data(design_complete)
 kable(t(as.matrix(table(data_complete$Z))))
 ```
 
-### Plotted
+### Plotted  {.smaller}
 
 ```{r, warning = F, message = F, echo = F, fig.width = 7, fig.height= 2.2}
 
@@ -474,7 +536,7 @@ design_clustered_blocked <-
 tile_design(design_clustered_blocked)
 ```
 
-### Illustration of efficiency gains from blocking
+### Illustration of efficiency gains from blocking  {.smaller}
 
 ```{r, warning = F, message = F}
 designs <- 
@@ -490,7 +552,7 @@ designs <-
 diagnoses <- diagnose_design(designs)
 ```
 
-### Illustration of efficiency gains from blocking
+### Illustration of efficiency gains from blocking {.smaller}
 
 ```{r, echo = FALSE}
 if(run)
@@ -516,4 +578,174 @@ diagnoses$simulations_df |>
 
 ```
 
-### Nasty integer issues
+### Nasty integer issues {.smaller}
+
+* In many designs you seek to assign an integer number of subjects to treatment from some set.
+
+* Sometimes however your assignment targets are not integers.
+
+Example:
+
+* I have 12 subjects in four blocks of 3 and I want to assign each subject to treatment with a 50% probability.
+
+Two strategies:
+
+1. I randomly set a target of either 1 or 2 for each block and then do complete assignment in each block. This can result in the numbers treated varying from 4 to 8 
+2. I randomly assign a target of 1 for two blocks and 2 for the other two blocks: **Intuition**--set a floor for the minimal target and then distribue the residual probability across blocks
+
+### Nasty integer issues  {.smaller}
+
+```{r}
+# remotes::install_github("macartan/probra")
+library(probra)
+set.seed(1)
+
+blocks <- rep(1:4, each = 3)
+
+table(blocks, prob_ra(blocks = blocks))
+
+table(blocks, block_ra(blocks = blocks))
+
+```
+
+### Nasty integer issues  {.smaller}
+
+Can also be used to set targets
+
+```{r}
+# remotes::install_github("macartan/probra")
+library(probra)
+set.seed(1)
+
+fabricate(N = 4,  size = c(47, 53, 87, 25), n_treated = prob_ra(.5*size)) %>%
+  janitor::adorn_totals("row") |> 
+  kable(caption = "Setting targets to get 50% targets with minimal variance")
+
+
+```
+
+
+### Nasty integer issues  {.smaller}
+
+Can also be used to set for complete assignment with heterogeneous propensities
+
+```{r, fig.height = 2, fig.width = 8}
+set.seed(1)
+
+df <- fabricate(N = 100,  p = seq(.1, .9, length = 100), Z = prob_ra(p)) 
+
+mean(df$Z)
+
+df |> ggplot(aes(p, Z)) + geom_point() + theme_bw()
+ 
+```
+
+
+## Indirect assignments
+
+*Indirect control*
+
+### Indirect assignments {.smaller}
+
+Indirect assignments are generally generated by applying a direct assignment and then figuring our an implied indirect assignment
+
+```{r}
+set.seed(1)
+
+df <-
+  fabricate(
+    N = 100, 
+    latitude = runif(N),
+    longitude = runif(N))
+
+adjacency <- 
+  sapply(1:nrow(df), function(i) 
+    1*((df$latitude[i] - df$latitude)^2 + (df$longitude[i] - df$longitude)^2)^.5 < .1)
+
+diag(adjacency) <- 0
+```
+
+### Indirect assignments {.smaller}
+
+```{r}
+adjacency |>  
+  reshape2::melt(c("x", "y"), value.name = "z") |> mutate(z = factor(z)) |>
+  ggplot(aes(x=x,y=y,fill=z))+
+  geom_tile()
+```
+
+
+### Indirect assignments  {.smaller}
+
+```{r}
+n_assigned <- 50
+
+design <-
+  declare_model(data = df) + 
+  declare_assignment(
+    direct = complete_ra(N, m = n_assigned),
+    indirect = 1*(as.vector(as.vector(direct) %*% adjacency) >= 1))
+
+draw_data(design) |> with(table(direct, indirect))
+
+```
+
+### Indirect assignments: Properties
+
+```{r, eval = FALSE}
+indirect_propensities <- replicate(5000, draw_data(design)$indirect) |> 
+  apply(1, mean) 
+```
+
+```{r, echo = FALSE}
+
+if(run) 
+  replicate(5000, draw_data(design)$indirect) |> 
+  apply(1, mean) |>
+  write_rds("saved/wild_1.rds")
+
+indirect_propensities_1 <-  read_rds("saved/wild_1.rds")
+
+indirect_propensities_1 |>   
+  hist(xlab = paste("Indirect propensities: mean = ", indirect_propensities_1 |> mean()))
+```
+
+### Indirect assignments: Properties
+
+```{r}
+df |> ggplot(aes(latitude, longitude, label = round(indirect_propensities_1, 2))) + geom_text()
+```
+
+
+### Indirect assignments: Redesign
+
+```{r, eval = FALSE}
+replicate(5000, draw_data(design |> redesign(n_assigned = 25))$indirect) |> 
+  apply(1, mean) 
+```
+
+```{r, echo = FALSE}
+
+if(run) 
+  replicate(5000, draw_data(design |> redesign(n_assigned = 25))$indirect) |> 
+  apply(1, mean) |>
+  write_rds("saved/wild_2.rds")
+
+indirect_propensities_2 <-  read_rds("saved/wild_2.rds")
+
+indirect_propensities_2 |>   
+  hist(xlab = paste("Indirect propensities: mean = ", indirect_propensities_2 |> mean()))
+```
+
+### Indirect assignments: Redesign
+
+```{r}
+
+df |> ggplot(aes(latitude, longitude, label = round(indirect_propensities_2, 2))) + 
+  geom_text()
+```
+
+Looks better: *but there are trade offs between the direct and indirect distributions*
+
+Figuring out the optimal procedure requires full diagnosis
+

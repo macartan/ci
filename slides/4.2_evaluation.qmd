@@ -24,6 +24,8 @@ run <- FALSE
 
 # Design diagnosis {#secdiagnosis}
 
+*A focus on power*
+
 ## Outline
 
 1. Tests review
@@ -45,7 +47,7 @@ In the classical approach to testing a hypothesis we ask:
 
 How unlikely is "not very likely"?
 
-### Weighing Evidence
+### Weighing Evidence  {.smaller}
 
 When we test a hypothesis we decide first on what sort of evidence we need to see in order to decide that the hypothesis is not reliable.
 
@@ -57,7 +59,7 @@ When we test a hypothesis we decide first on what sort of evidence we need to se
   * ... would he have her handkerchief if she were innocent?
   * Othello, the chances of all of these things arising if she were innocent is surely less than 5%
 
-### Hypotheses are often rejected, sometimes maintained, but  rarely accepted
+### Hypotheses are often rejected, sometimes maintained, but  rarely accepted {.smaller}
 
 
 * Note that Othello is focused on the probability of the events if she were innocent but not the probability of the events if Iago were trying to trick him.
@@ -71,7 +73,7 @@ So:
 
 
 
-### Recap: Calculate a $p$ value in your head
+### Recap: Calculate a $p$ value in your head  {.smaller}
 
 *   Illustrating $p$ values via "randomization inference"
 
@@ -210,6 +212,16 @@ So given I think 6s appear 20% of the time, I think it likely I'll see at least 
 
 Simplest intuition on power:
 
+
+
+What is the probability of getting a significant estimate given the sampling distribution is centered on  $b$ and the *standard error* is 1? 
+
+
+* Probability below -1.96:  $F(-1.96 | \tau))$
+* Probability above -1.96:  $1-F(1.96 | \tau)$
+
+Add these together: probability of getting an estimate above 1.96 or below -1.96.
+
 ```{r}
 power <- function(b, alpha = 0.05, critical = qnorm(1-alpha/2))  
 
@@ -217,9 +229,7 @@ power <- function(b, alpha = 0.05, critical = qnorm(1-alpha/2))
 
 ```
 
-What is the probability of getting a significant estimate given the sampling distribution is centered on  $b$ and the *standard error* is 1? 
 
-* Equivalent: priobability of getting an estimate above 1.96 or below -1.96.
 
 ```{r}
 power(0)
@@ -242,6 +252,28 @@ pwrss::power.z.test(ncp = 1.96, alpha = 0.05, alternative = "not equal", plot = 
 Substantively: if in expectation an estimate will be *just* significant, then your power is 50%
 
 
+### Equivalent
+
+
+```{r}
+
+power <- function(b, alpha = 0.05, critical = qnorm(1-alpha/2))  
+
+  1 - pnorm(critical - b) + pnorm(-critical - b)
+
+power(1.96)
+```
+
+Intuition:
+
+```{r}
+x <- seq(-3, 3, .01)
+plot(x, dnorm(x), main = "power associated with effect of 1 se")
+abline(v = 1.96 - 1)
+abline(v = -1.96 - 1)
+
+```
+
 ### Power analytics for a trial: by hand {.smaller}
 
 * Of course the standard error will depend on the number of units and the variance of outcomes in treatment and control. 
@@ -254,7 +286,6 @@ and so the (conservative / approx) standard error is:
 
 $$\sigma_\tau=\frac{2\sigma}{\sqrt{N}}$$
 
-### Power analytics for a trial: by hand {.smaller}
 
 Note here we seem to be using the actual standard error but of course the tests we actually run will use an *estimate* of the standard error...
 
@@ -271,7 +302,7 @@ power_2 <- function(b, alpha = .05, sd = 1, N = 100, critical = qnorm(1-alpha/2)
   1 - pnorm(critical, mean = abs(b)/se(sd, N)) + pnorm(-critical, mean = abs(b)/se(sd, N))
 
 power_2(0)
-power_2(.56)
+power_2(.5)
 
 ```
 
@@ -288,9 +319,10 @@ power_2(.50, N = 100)
 ```
 
 
+
+```{r, eval = FALSE, include = FALSE}
 ### Equivalence check
 
-```{r, eval = FALSE}
 powers <- sapply(seq(0, 1, .05), function(j)
   c(pwrss::pwrss.t.2means(mu1 = j, n2 = 50)$power, 
     power_2(j, N = 100))) |> t() |> 
@@ -325,8 +357,12 @@ $$\sqrt{\rho \frac{4\sigma^2}{K} + (1- \rho)\frac{4\sigma^2}{nK}}$$
 
 $$\sqrt{((n - 1)\rho + 1)\frac{4\sigma^2}{nK}}$$
 
-where $((n - 1)\rho + 1)$ is the "design effect": $\frac{nK}{((n - 1)\rho + 1)}$ is the "effective sample size"
+where 
 
+* $((n - 1)\rho + 1)$ is the "design effect"
+* $\frac{nK}{((n - 1)\rho + 1)}$ is the "effective sample size"
+
+Plug in these standard errors and proceed as before
 
 ### Power via design diagnosis
 
@@ -347,20 +383,6 @@ design <-
   declare_estimator(Y ~ Z, inquiry = "ate", .method = lm_robust)
 ```
 
-### "Run" the design once
-
-
-```{r, eval = FALSE}
-run_design(design)
-```
-
-
-```{r, echo = FALSE}
-run_design(design) |>
-  
-  kable(digits = 2, caption = "Summary of a single 'run' of the design")
-
-```
 
 ### Run it many times
 
@@ -445,7 +467,7 @@ sims_2 |>
 
 ```
 
-### Design diagnosis does it all (over multiple designs)
+### Design diagnosis does it all (over multiple designs) {.smaller}
 
 
 ```{r, eval  = FALSE}
@@ -466,7 +488,7 @@ read_rds("saved/simple_diagnosis_1") |>
 
 ```
 
-### Design diagnosis does it all
+### Design diagnosis does it all  {.smaller}
 
 ```{r, eval = FALSE}
 design |>
@@ -590,8 +612,63 @@ Power also depends on
 * the assignments and specifics of sampling strategies
 * estimation procedures
 
+### Power from  a lag?
 
-### Power when estimates are biased
+
+Say we have access to a "pre" measure of  outcome `Y_now`; call it `Y_base`. `Y_base` is informative about potential outcomes. We are considering using `Y_now - Y_base` as the outcome instead of `Y_now`.
+
+```{r}
+
+N <- 100
+rho <- .5
+
+design <- 
+  declare_model(N,
+                 Y_base = rnorm(N),
+                 Y_Z_0 = 1 + correlate(rnorm, given = Y_base, rho = rho),
+                 Y_Z_1 = correlate(rnorm, given = Y_base, rho = rho),
+                 Z = complete_ra(N),
+                 Y_now = Z*Y_Z_1 + (1-Z)*Y_Z_0,
+                 Y_change = Y_now - Y_base) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y_now ~ Z, label = "level") +
+  declare_estimator(Y_change ~ Z, label = "change")+
+  declare_estimator(Y_now ~ Z + Y_base, label = "RHS")
+```
+
+### Power from  a lag?
+
+
+```{r, eval = FALSE}
+
+design |> redesign(N = c(10, 100, 1000, 10000), rho = c(.1, .5, .9)) |>
+  diagnose_design() 
+```
+
+
+```{r, echo = FALSE, fig.height = 2, fig.width = 8}
+
+if(run)
+design |> redesign(N = c(10, 100, 1000, 10000), rho = c(.1, .5, .9)) |>
+  diagnose_design(sims = 1000) |>
+  write_rds("saved/tolag.rds")
+
+read_rds("saved/tolag.rds") |>
+  tidy() |> filter(diagnosand == "rmse") |> 
+  ggplot(aes(N, estimate, color = estimator)) + facet_grid(~rho, labeller = label_both) + geom_line() + ylab("rmse") + 
+  theme_bw()   + scale_x_continuous(trans='log2')
+
+```
+
+### Power from  a lag?
+
+Punchline: 
+
+* if you difference: *the lag has to be sufficiently information to pay its way* (the $\rho = .5$ equivalent between level and change follows from @gerber2012field equation 4.6)
+* The right hand side is your friend, at least for experiments ([@ding2019bracketing](https://arxiv.org/abs/1903.06286)) 
+* As $N$ grows the stakes fall
+
+### Power when estimates are biased  {.smaller}
 
 ```{r}
 bad_design <- 
@@ -608,7 +685,7 @@ bad_design <-
   declare_estimator(Y ~ X, inquiry = "ate", .method = lm_robust)
 ```
 
-### Power when estimates are biased
+### Power when estimates are biased  {.smaller}
 
 You can see from the null design that power is great but bias is terrible and coverage is way off.
 
@@ -632,7 +709,7 @@ read_rds("saved/bad_design_diagnosis.rds") |>
 
 Power without unbiasedness corrupts, absolutely 
 
-### Power with a more subtly biased experimental design
+### Power with a more subtly biased experimental design  {.smaller}
 
 ```{r}
 another_bad_design <- 
@@ -657,7 +734,7 @@ another_bad_design <-
   diagnose_design(another_bad_design)
 ```
 
-### Power with a more subtly biased experimental design
+### Power with a more subtly biased experimental design  {.smaller}
 
 You can see from the null design that power is great but bias is terrible and coverage is way off.
 
@@ -676,7 +753,7 @@ read_rds("saved/bad_design_diagnosis_2.rds") |>
 
 ```
 
-### Power with the wrong standard errors
+### Power with the wrong standard errors  {.smaller}
 
 ```{r}
 clustered_design <-
@@ -747,7 +824,7 @@ draw_estimands(design_uncertain)
 
 
 
-### Multiple comparisons correction (complex code)
+### Multiple comparisons correction (complex code)  {.smaller}
 
 Say I run two tests and want to correct for multiple comparisons. 
 
@@ -764,7 +841,7 @@ design_mc <-
   declare_estimator(Y ~ factor(Z), term = TRUE)
 ```
 
-### Multiple comparisons correction (complex code)
+### Multiple comparisons correction (complex code)  {.smaller}
 
 
 ```{r, eval = FALSE}
@@ -807,7 +884,7 @@ read_rds("saved/multiple_comparisons.rds")  |>
 ```
 
 
-### Multiple comparisons correction (approach 2)
+### Multiple comparisons correction (approach 2)  {.smaller}
 
 The alternative approach (generally better!) is to design with  a custom estimator that includes your corrections.
 
@@ -832,7 +909,7 @@ run_design(design_mc_2) |>
 
 
 
-### Multiple comparisons correction (Null model case)
+### Multiple comparisons correction (Null model case)  {.smaller}
 
 Lets try same thing for a null model (using `redesign(design_mc_2, b = 0)`)
 
@@ -842,11 +919,11 @@ design_mc_3 <-
   design_mc_2 |> 
   redesign(b = 0) 
 
-run_design(design_mc_3) |> select(estimate, p.value, p.naive) |> kable()
+run_design(design_mc_3) |> select(estimate, p.value, p.naive) |> kable(digits = 3)
 
 ```
 
-### Multiple comparisons correction (Null model case)
+### Multiple comparisons correction (Null model case)  {.smaller}
 
 ...and power: 
 
@@ -873,13 +950,12 @@ bothered?
 
 * Power for an interaction (in a factorial design)
 * Power for a binary variable (versus a continuous variable?)
-* Power from adding covariates in the analysis stage
 * Power gains from blocked randomization
 * Power losses from clustering at different levels
 * Controlling the ICC directly? (see book cluster designs section)
 
 
-### Big takeaways
+### Big takeaways  {.smaller}
 
 * Power is affected not just by sample size, variability and effect size but also by you data and analysis strategies.
 * Try to estimate power under multiple scenarios

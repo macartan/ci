@@ -1,32 +1,148 @@
 ---
+title: "Causal Inference"
+subtitle: "Topics"
 format: 
-   beamer:
-    theme: "AnnArbor"
-    colortheme: "seahorse"
+   revealjs:
+    embed-resources: true
+    theme: serif
     slide-level: 3
-    keep-tex: true
-    includes:
-      header-includes: include_nav.txt
-title: "Lectures on causal inference and experimental methods"
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
 author: "Macartan Humphreys"
-numbersections: true
-header-includes:
-  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
-  - \newcommand\E{\mathbb{E}}
-  - \newcommand\V{\mathbb{V}}
-  - \hypersetup{colorlinks=true,linkcolor=red}
-  - \usepackage{ulem}
-  - \pdfstringdefDisableCommands{\let\sout\relax}
-fontsize: 11pt  
+bibliography: bib.bib
 ---
 
 ```{r, include = FALSE}
 source("setup.R")
 ```
 
+# Topics
+
+* Diff in Diff
+* RDD
+* Survey experiments
+* LATE
+* Spillovers
+* Mediation
+
+
+## The list experiment
+
+* Survey experiments are used to *measure* things: nothing (except answers) should be *changed*!
+* If the experiment in the survey is changing things then it is a field experiment in a survey, not a survey experiment
+
+### Design
+
+```{r}
+
+declaration_17.3 <-
+  declare_model(
+    N = 500,
+    control_count = rbinom(N, size = 3, prob = 0.5),
+    Y_star = rbinom(N, size = 1, prob = 0.3),
+    potential_outcomes(Y_list ~ Y_star * Z + control_count) 
+  ) +
+  declare_inquiry(prevalence_rate = mean(Y_star)) +
+  declare_assignment(Z = complete_ra(N)) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z)) +
+  declare_estimator(Y_list ~ Z, .method = difference_in_means, 
+                    inquiry = "prevalence_rate")
+
+diagnosands <- declare_diagnosands(
+  bias = mean(estimate - estimand),
+  mean_CI_width = mean(conf.high - conf.low)
+)
+```
+
+### Negatively correlated items
+
+* How would estimates be affected if the items selected for the list were *negatively* correlated?
+* How would subject protection be affected?
+
+### Diagnosis
+
+```{r, eval = FALSE}
+diagnose_design(declaration_17.3, diagnosands = diagnosands)
+```
+
+```{r, echo = FALSE}
+if(run)
+  diagnose_design(declaration_17.3, diagnosands = diagnosands) |>
+  write_rds("saved/list1.rds")
+
+read_rds("saved/list1.rds") |>
+  reshape_diagnosis() |> select("Design", "Inquiry", "Bias", "Mean CI Width") |> kable()
+  
+
+```
+
+### Tradeoffs: is the question really sensitive?
+
+
+```{r}
+declaration_17.4 <- 
+  declare_model(
+    N = N,
+    U = rnorm(N),
+    control_count = rbinom(N, size = 3, prob = 0.5),
+    Y_star = rbinom(N, size = 1, prob = 0.3),
+    W = case_when(Y_star == 0 ~ 0L,
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = proportion_hiding)),
+    potential_outcomes(Y_list ~ Y_star * Z + control_count)
+  ) +
+  declare_inquiry(prevalence_rate = mean(Y_star)) +
+  declare_assignment(Z = complete_ra(N)) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z),
+                      Y_direct = Y_star - W) +
+  declare_estimator(Y_list ~ Z, inquiry = "prevalence_rate", label = "list") + 
+  declare_estimator(Y_direct ~ 1, inquiry = "prevalence_rate", label = "direct")
+
+```
+
+### Diagnosis
+
+```{r, eval = FALSE}
+declaration_17.4 |> 
+  redesign(proportion_hiding = seq(from = 0, to = 0.3, by = 0.1), 
+           N = seq(from = 500, to = 2500, by = 500)) |> 
+  diagnose_design()
+```
+
+```{r, echo = FALSE, fig.height = 2.5, fig.width = 10}
+if(run)
+declaration_17.4 |> 
+  redesign(proportion_hiding = seq(from = 0, to = 0.3, by = 0.1), 
+           N = seq(from = 500, to = 2500, by = 500)) |> 
+  diagnose_design() |>
+  write_rds("saved/list2.rds")
+
+read_rds("saved/list2.rds") |>
+  tidy() |>  filter(diagnosand == "rmse") |>
+  ggplot(aes(N, estimate, color = estimator)) + geom_line() + facet_grid(~proportion_hiding, labeller = label_both) + theme_bw()
+
+```
+
+### Hiders and liars
+
+* Note that here we looked at "hiders" -- people not answering the direct question truthfull
+
+* See @li2019relaxing on bounds when the "no liars" assumption is threatened --- this is about whether people respond truthfully to the list experimental question
+
+## Differences in differences
+
+New challenges, new developments
+
+## Regression discontintuity
+
+Errors and diagnostics
+
+
 ## Noncompliance and the LATE estimand {#LATE}
 
-### LATE---Local Average Treatment Effects
+### LATE---Local Average Treatment Effects {.smaller}
 
 Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
 
@@ -41,7 +157,7 @@ Say that people are one of 3 types:
 2.  $n_n$ never takers have $X=0$ no matter what with outcome $\overline{y}_n$
 3.  $n_c$ compliers have $X=T$ and average outcomes $\overline{y}^1_c$ if treated and $\overline{y}^0_c$ if not.
 
-### LATE---Local Average Treatment Effects
+### LATE---Local Average Treatment Effects  {.smaller}
 
 Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
 
@@ -57,7 +173,7 @@ We can figure something about types:
 | $T=0$ | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}^0_{c}+\frac{\frac{1}{2}n_n}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}_{n}$ | $\overline{y}_{a}$                                                                                                                                  |
 | $T=1$ | $\overline{y}_{n}$                                                                                                                                  | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}^1_{c}+\frac{\frac{1}{2}n_a}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}_{a}$ |
 
-### LATE---Local Average Treatment Effects
+### LATE---Local Average Treatment Effects  {.smaller}
 
 You give a medicine to 50% but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
 
@@ -77,7 +193,7 @@ Difference: $ITT = ({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n}$
 
 So: $LATE = ITT\times\frac{n}{n_c}$
 
-### The good and the bad of LATE
+### The good and the bad of LATE  {.smaller}
 
 -   You get a well-defined estimate even when there is non-random take-up
 -   May sometimes be used to assess mediation or knock-on effects
@@ -102,7 +218,7 @@ arrows(2,3,.75,2, lwd=2)
 
 The key problem is that $Y(1)$ and $Y(0)$ are not sufficient to describe potential outcomes
 
-### SUTVA violations
+### SUTVA violations  {.smaller}
 
 More completely specified potential outcomes (and estimands)
 
@@ -110,12 +226,10 @@ More completely specified potential outcomes (and estimands)
 |------|------|------|------|------|------|------|------|------|------|------|------|
 |                               |                           |               | **0**             |        | **1**             |        | **2**             |        | **3**             |        | **4**             |
 | Unit                          | Location                  | $D_\emptyset$ | $y(D_\emptyset)$  | $D_1$  | $y(D_1)$          | $D_2$  | $y(D_2)$          | $D_3$  | $y(D_3)$          | $D_4$  | $y(D_4)$          |
-| -----                         | -----------               | ---------     | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- |
 | A                             | 1                         | 0             | 0                 | 1      | 3                 | 0      | 1                 | 0      | 0                 | 0      | 0                 |
 | B                             | 2                         | 0             | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 | 0      | 0                 |
 | C                             | 3                         | 0             | 0                 | 0      | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 |
 | D                             | 4                         | 0             | 0                 | 0      | 0                 | 0      | 0                 | 0      | 1                 | 1      | 3                 |
-| -----                         | -----------               | ---------     | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- |
 |                               | **Average**               |               |                   |        |                   |        |                   |        |                   |        |                   |
 | $\bar{y}_\text{treated}$      |                           |               | \-                |        |                   | 3      |                   | 3      |                   | 3      |                   |
 | $\bar{y}_\text{untreated}$    |                           |               | 0                 |        |                   | 1      |                   | 4/3    |                   | 4/3    |                   |
@@ -127,7 +241,7 @@ More completely specified potential outcomes (and estimands)
 
 *Table: Potential outcomes for four units for different treatment profiles,* $D_1$-$D_4$. $D_i$ represents an allocation to treatment and $y_j(D_i)$ is the potential outcome for (row) unit $j$ given (column) allocation $i$.
 
-### SUTVA violations
+### SUTVA violations  {.smaller}
 
 | Unit | Location | $D_\emptyset$ | $y(D_\emptyset)$ | $D_1$ | $y(D_1)$ | $D_2$ | $y(D_2)$ | $D_3$ | $y(D_3)$ | $D_4$ | $y(D_4)$ |
 |------|------|------|------|------|------|------|------|------|------|------|------|
@@ -162,11 +276,13 @@ But NB: Estimates of treatment effects are sensitive to assumptions of spillover
 -   But unfortunately, if there are multiple mediators, the effect of M1 (or M2) on Y is not identified.
 -   The 'exclusion restriction' is obviously violated when there are multiple mediators (unless you can account for them all).
 
+### The problem of unidentified mediators {.smaller}
+
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/med1.png")
 ```
 
-### The problem of unidentified mediators
+### The problem of unidentified mediators  {.smaller}
 
 An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. But **both of these average effects may be positive (for example) even if there is no effect of X on Y through M1**.
 
@@ -184,13 +300,15 @@ knitr::include_graphics("figs/med2.png")
 
 ### The problem of unidentified mediators
 
-Another somewhat obvious approach is see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. But this common strategy is also not guaranteed to produce reliable results. See [Imai](http://imai.princeton.edu/projects/mechanisms.html) on better ways to think about this problem and designs to address it.
+Another somewhat obvious approach is to see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. But this common strategy is also not guaranteed to produce reliable results. 
+
+* See [Imai](http://imai.princeton.edu/projects/mechanisms.html) on better ways to think about this problem and designs to address it.
 
 ```{r, echo = FALSE, include = FALSE}
-knitr::include_graphics("figs/med3.png")
+knitr::include_graphics("figs/collider.png")
 ```
 
-### The problem of unidentified mediators: Quantities
+### The problem of unidentified mediators: Quantities  {.smaller}
 
 -   In the potential outcomes framework we can describe a **mediation effect** as (see Imai et al): $$\delta_i(t) = Y_i(t, M_i(1)) - Y_i(t, M_i(0)) \textbf{ for } t = 0,1$$
 -   The **direct effect** is: $$\psi_i(t) = Y_i(1, M_i(t)) - Y_i(0, M_i(t)) \textbf{ for } t = 0,1$$
@@ -198,7 +316,7 @@ knitr::include_graphics("figs/med3.png")
 -   If (and a big if), there are no interaction effects---ie $\delta_i(1) = \delta_i(0), \psi_i(1) = \psi_i(0)$, then $$Y_i(1, M_i(1))  - Y_1(0, M_i(0)) = \delta_i  + \psi_i$$
 -   The bad news is that although a single experiment might identify the total effect, it can not identify these elements of the direct effect.
 
-### The problem of unidentified mediators: Solutions?
+### The problem of unidentified mediators: Solutions?  {.smaller}
 
 -   Check **formal requirement** for identification under single experiment design ("sequential ignorability"---that, conditional on actual treatment, it is as if the value of the mediation variable is randomly assigned relative to potential outcomes). But this is strong (and in fact unverifiable) and if it does not hold, bounds on effects always include zero (Imai et al)
 -   You can use **interactions** with covariates **if you are willing to make assumptions on no heterogeneity of direct treatment effects** over covariates. eg you think that money makes people get to work faster because they can buy better cars; you look at the marginal effect of more money on time to work for people with and without cars and find it higher for the latter. This might imply mediation through transport but only if there is no direct effect heterogeneity (eg people with cars are less motivated by money).
@@ -209,12 +327,5 @@ knitr::include_graphics("figs/med3.png")
     -   Group A: $T$ is randomly assigned, $M$ left free.
     -   Group B: divided into four groups $T\times M$ (requires two more assumptions (1) that the **manipulation** of the mediator only affects outcomes through the mediator (2) **no interaction**, for each unit, $Y(1,m)-Y(0,m) = Y(1,m')-Y(0,m')$.)
 
-**Idea 5**: Understanding mechanisms is harder than you think. Figure out what assumptions fly.
+**Takeaway**: Understanding mechanisms is harder than you think. Figure out what assumptions fly.
 
-## Differences in differences
-
-New challenges, new developments
-
-## Regression discontintuity
-
-Errors and diagnostics
