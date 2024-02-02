@@ -116,7 +116,7 @@ $$\text{Prob You have the Disease | Pos} = \frac{\text{How many have the disease
 
 ### Two Child Problem {.smaller}
 
-Consider last an old puzzle found described @gardner1961second.
+Consider last an old puzzle described in @gardner1961second.
 
 -   Mr Smith has two children, $A$ and $B$.
 -   At least one of them is a boy.
@@ -314,7 +314,7 @@ The key features here are (read from bottom up!):
 -   $Y$ is assumed to be normally distributed with mean `a + bX` and standard deviation `sigma`.
 -   There are then three parameters: `a`, `b`, `sigma`.
 -   There are no priors placed on these but sigma is constrained to be positive. Without priors improper flat priors are assumed.
--   Stan expects a data set that contains three things: a scalar, `N` and `X1,`Y\` data
+-   Stan expects a data set that contains three things: a scalar, `N` and `X1,`Y` data
 
 ### Simple model: Data
 
@@ -488,7 +488,7 @@ Note that we get a much lower estimate for `b` with the same data.
 
 * Now imagine a setting in which there are 10 villages, each with 10 respondents. Half in each village are assigned to treatment $X=1$, and half to control $X=0$.
 
-* Say that there is possible a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each draw from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
+* Say that there is possibley a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each drawn from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
 
 * This all implies a multilevel structure.
 
@@ -588,13 +588,15 @@ We will capture some of this intuition with a behavioral type model in which
 -   each player has a "rationality" propensity of $r_i$ -- this is the probability with which they choose to do the rational thing, rather than the generous thing
 -   $r_i \sim U[0, \theta]$ for $\theta > .5$.
 -   A player with rationality propensity of $r_i$ believes $r_j \sim [0, r_i]$. So everyone assumes that they are the most rational people in the room...
--   The game is such that: \* second mover: a second mover with rationality propensity $r_i$ will cooperate with probability $1-r_i$ if the first mover cooperated; otherwise they defect \* first mover: a first mover with $r_i$ will cooperate nonstrategically with probability $(1-r_i)$; however with probability $r_i$ they will also cooperate *strategically* if they think that the second mover has $r_j<.25$.
+-   The game is such that: 
+  * second mover: a second mover with rationality propensity $r_i$ will cooperate with probability $1-r_i$ if the first mover cooperated; otherwise they defect 
+  * first mover: a first mover with $r_i$ will cooperate nonstrategically with probability $(1-r_i)$; however with probability $r_i$ they will also cooperate *strategically* if they think that the second mover has $r_j<.25$.
 
 ### Expectations from model
 
-In all, this means that a player with propensity $r_i>.5$ will cooperate with probability $1-r_i$; a player with propensity $r_i<.5$ will cooperate with probability $1$.
+* In all, this means that a player with propensity $r_i>.5$ will cooperate with probability $1-r_i$; a player with propensity $r_i<.5$ will cooperate with probability $1$.
 
-Interestingly the not-very-rational people sometimes cooperate strategically but the really rational people never cooperate strategically because they think it won't work.
+* Interestingly the not-very-rational people sometimes cooperate strategically but the really rational people never cooperate strategically because they think it won't work.
 
 ### Event Probabilities  {.smaller}
 
@@ -716,7 +718,7 @@ hist(.125/extract(M4)$theta, xlab = "Posterior on .125/theta", main = "", xlim =
 2. Provide data to the DAG:  `CausalQueries`  writes a stand model and updates on all parameters
 3. Query model: `CausalQueries` figures out which parameters correspond to a given causal query
 
-### Illustration: "Lipids" data
+### Illustration: "Lipids" data {.smaller}
 
 ```{r}
 #| echo: true
@@ -742,7 +744,7 @@ model |> plot()
 ```
 
 
-### Updating and querying
+### Updating and querying  {.smaller}
 
 ```{r}
 #| echo: true
