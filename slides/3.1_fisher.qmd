@@ -1278,6 +1278,7 @@ Introducing controls can create complications
 
 $^*$ though note that the precision concern does not hold when treatment and control groups are equally sized
 
+
 ### To control or not {.smaller}
 
 We will illustrate by comparing:
