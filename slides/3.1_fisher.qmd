@@ -418,7 +418,7 @@ where the final term is positive
 
 Note:
 
--   With more than two units we  cannow  use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
+-   With more than two units we  cannot  use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
 -   But $C_{01}$ still cannot be estimated from data.
 -   The **Neyman estimator** ignores the second part (and so is conservative).
 -   Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
@@ -1249,26 +1249,41 @@ You cannot (reliably):
 1.  Ignore the groups
 2.  Include them in a regression (without interactions)
 
-### Covariate Adjustment: Wilder covariates {#CA}  {.smaller}
+## To control or not control
+
+*When does controlling for covariates improve things and when does it make it worse*
+
+### Considerations  {.smaller}
 
 - Even though randomization ensures no bias, you may sometimes **want** to "**control**" for covariates in order to improve efficiency (see the discussion of blocking above).
 - Or you may **have** to take account of the fact that the assignment to treatment is correlated with a covariate (as above).
 - In observational work you might also figure out you have to control for a covariate to justify inferences (Refer to our discussion of the backdoor criteria)
 
-### Conditional Bias and Precision Gains from Controls
+### Observational work {.smaller}
+
+
+* Observational motivation: Controls can provide grounds for identification
+* But recall -- they can also destroy identification
+
+For a great walk through of what you can draw from graphical models for the decision to control see:
+
+[A Crash Course in Good and Bad Controls](https://ftp.cs.ucla.edu/pub/stat_ser/r493.pdf) by @cinelli2022crash
+
+**Aside**: these implications generally refer to use controls as covariates -- e.g. by implementing blocked differences in means or similar.  For a Bayesian model of the form used in `CausalQueries` the information from "bad controls" is used wisely.
+
+
+
+
+### Experimental work
+
+* Conditional Bias and Precision Gains from Controls
 
 * Experimental motivation: Controls can  reduce noise and improve precision. This is an argument for using variables that are correlated with the output (not with the treatment).
-* Observational motivation: Controls can provide grounds for identification
 
-### How much gain from controls?
-
-```{r, echo = FALSE, fig.cap = "Gains as a function of the correlation of a control and an outcome"}
-knitr::include_graphics("figs/n.png")
-```
 
 ### Precision Gains from Controls  {.smaller}
 
-Introducing controls can create complications
+However: Introducing controls can create complications
 
 * As argued by Freedman (summary from @lin2012agnostic), we can get: "worsened asymptotic precision, invalid measures of precision, and small-sample bias"$^*$
 
@@ -1369,12 +1384,101 @@ read_rds("saved/freedman18.3.rds")$diagnosands_df |>
 
 ### Conditional Bias and Precision Gains from Controls
 
-Treatment  correlated with covariates can induce "conditional bias." Including controls can change your estimates so be sure not to fish!
+* Treatment correlated with covariates can induce "conditional bias." 
+* Including controls that are correlated with treatment can introduce inefficiencies
+* Including controls can change your estimates so be sure not to fish!
 
-```{r, echo = FALSE, fig.cap = "Advantages of controlling for vars that are correlated with outcomes"}
-knitr::include_graphics("figs/cb.jpg")
+###  Declaration
+
+```{r}
+a <- 0
+b <- 0
+
+design <- 
+  declare_model(N = 100,
+                        X = rnorm(N),
+                        Z = complete_ra(N),
+                        Y_Z_0 = a*X + rnorm(N),
+                        Y_Z_1 = a*X + correlate(given = X, rho = b, rnorm) + 1,
+                        Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z, covariates = ~X, .method = lm_lin, label = "Lin") +
+  declare_estimator(Y ~ Z,  label = "No controls") +
+  declare_estimator(Z ~ X,  label = "Condition")
 ```
 
+The design implements estimation controlling and not controlling for $X$  and also keeps track of the results of a test for the relation between $Z$ and $X$. 
+
+### Simulations
+
+We simulate with many simulations over a range of designs
+
+```{r, eval = FALSE}
+simulations <- 
+  list(design |> redesign(a = 0, b = 0),  design |> redesign(a = 1, b = 0),  design |> redesign(a = 0, b = 1)) |>
+  simulate_design(sims = 20000) 
+```
+
+```{r bigsimsmutz, echo = FALSE}
+
+if(run)
+  list(design |> redesign(a= 0, b = 0),  design |> redesign(a = 1, b = 0),  design |> redesign(a = 0, b = .8)) |>
+  simulate_design(sims = 20000)|>
+  mutate(design = paste("a =", a, ", b =", b))  |>
+  write_rds("saved/tocontrolornot.rds")
+
+simulations <-  read_rds("saved/tocontrolornot.rds") |>
+  mutate(design_label = factor(design, c("a = 0 , b = 0",    "a = 1 , b = 0", "a = 0 , b = 0.8"), c("X unrelated", "X also causes Y", "X moderates Z")))
+
+```
+
+
+### Standard errors {.smaller}
+
+We see the standard errors are larger when you control in cases in which the control is *not* predictive of the outcome *and* it *is* correlated with the treatment. Otherwise they can be smaller.
+
+```{r mutz, echo = FALSE}
+
+simulations |> group_by(a, b, sim_ID) |> 
+  mutate(correlation = mean(statistic[estimator == "Condition"])) |> 
+  ungroup() |>
+  mutate(error = estimate - estimand,
+        unbalanced = abs(correlation) >= 1.96) |>
+  filter(estimator != "Condition") |>
+
+  ggplot(aes(correlation, std.error, color = estimator)) + facet_grid(design_label~., scales = "free")+   
+  theme_bw() +  geom_smooth() + xlab("imbalance between covariate, X,  and treatment, Z (z stat)") + xlim(-4, 4)
+
+
+```
+
+
+See [Mutz et al](https://www.asc.upenn.edu/sites/default/files/2021-03/The%20perils%20of%20balance%20testing%20in%20experimental%20design-%20Messy%20analyses%20of%20clean%20data.pdf)
+
+### Errors 
+
+We also see "conditional bias" when we do not control: where the distribution of errors depends on the correlation with the covariate.
+
+```{r, echo = FALSE, fig.cap = "Errors"}
+
+simulations |> group_by(a, b, sim_ID) |> 
+  mutate(correlation = mean(statistic[estimator == "Condition"])) |> 
+  ungroup() |>
+  mutate(error = estimate - estimand,
+        unbalanced = abs(correlation) >= 1.96) |>
+  filter(estimator != "Condition") |>
+
+  ggplot(aes(correlation, error)) + facet_grid(design_label~estimator)+  theme_bw() + geom_point(alpha = .2) + geom_smooth()  + 
+  xlab("imbalance between covariate, X,  and treatment, Z (z stat)")
+
+
+```
+
+
+
+### Estimands
+
+Puzzle: Does the sample average treatment effect on the treated depend on the covariate balance?
 
 
 ## Doubly robust estimation
