@@ -1064,12 +1064,90 @@ sigma[3] 0.99    0.00 0.04  0.91 0.96 0.99 1.01  1.06   471 1.01
 mu_a     0.09    0.00 0.07 -0.06 0.04 0.09 0.13  0.24   666 1.01
 mu_b     0.73    0.02 0.26  0.24 0.53 0.73 0.90  1.25   221 1.01
 
-Samples were drawn using NUTS(diag_e) at Thu Feb  1 14:40:32 2024.
+Samples were drawn using NUTS(diag_e) at Wed Feb  7 17:10:35 2024.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
 </div>
 </div>
+</section>
+
+<section id="week-4" class="title-slide slide level2 center">
+<h2>Week 4</h2>
+
+</section>
+
+<section id="q-9.4" class="title-slide slide level2 smaller center">
+<h2>Q 9.4</h2>
+<p>Which of these problems could be addressed using instrumental variables? In each case, what kinds of concern might you have about the IV strategy?</p>
+</section>
+
+<section id="instrumental-variables" class="title-slide slide level2 center">
+<h2>Instrumental Variables</h2>
+<ol type="1">
+<li>We observe a variable, the <strong>instrument</strong>, that is correlated with the outcome</li>
+<li>The <strong>instrument</strong> has no causal effect on the outcome.</li>
+<li>The <strong>instrument</strong> has a causal effect on the treatment.</li>
+<li>We assume random assignment of the <strong>instrument</strong>.</li>
+<li>The causal effect of the <strong>instrument</strong> on the treatment is their correlation in the data.</li>
+<li>Since the <strong>instrument</strong> is randomly assigned, it is not correlated with any other confounders except the treatment.</li>
+</ol>
+</section>
+
+<section id="instrumental-variables-dag" class="title-slide slide level2 center">
+<h2>Instrumental Variables: DAG</h2>
+<p>Example: The colonial origins of comparative development: An empirical investigation</p>
+
+<img data-src="group4_exercises_files/figure-revealjs/iv_dag-1.png" width="960" class="r-stretch"></section>
+
+<section id="scenario-1-1" class="title-slide slide level2 center">
+<h2>Scenario 1</h2>
+<p><em>Experimenters introduce a unconditional cash transfers into a set of villages in 2012 and use it to measure access school attendance in 2015. You come on the scene later and are interested in whether the transfer could have led to greater political participation in 2017.</em></p>
+<p><strong>IV applicability</strong>: This scenario does not lend itself for the IV-Strategy since the interest is in the effect of a random treatment (cash transfers) directly on the outcome (political participation)</p>
+</section>
+
+<section id="scenario-2-1" class="title-slide slide level2 center">
+<h2>Scenario 2</h2>
+<p><em>Experimenters introduce an unconditional cash transfers into a set of villages in 2012 and use it to measure access school attendance in 2015. You come on the scene later and are interested in whether the increased school attendance could have led to greater political participation in 2017.</em></p>
+<p><strong>IV applicability</strong>: Yes, if the cash transfers are assumed to only affect political participation through increased school attendance.</p>
+<p><strong>IV concerns</strong>: This is a very strong (implausible) assumption.</p>
+</section>
+
+<section id="scenario-3" class="title-slide slide level2 center">
+<h2>Scenario 3</h2>
+<p><em>You want to understand the effects of attending a rally on subsequent support for a candidate. You send a random set of voters a flyer about an upcoming demonstration.</em></p>
+<p><strong>IV applicability</strong>: Yes</p>
+<p><strong>IV concerns</strong>:</p>
+<ul>
+<li>Flyer should not effect outcome (e.g.&nbsp;by providing informmation or framing a candidate)</li>
+<li>Non-Compliance
+<ul>
+<li>People who receive the flyer and do not attend the rally</li>
+<li>People who do not receive the flyer and attend the rally</li>
+</ul></li>
+</ul>
+</section>
+
+<section id="scneario-4" class="title-slide slide level2 center">
+<h2>Scneario 4</h2>
+<p><em>You want to understand the effects of attending a rally on subsequent support for a candidate. You send a random set of voters a flyer about an upcoming demonstration but you find out later that your enumerators did not deliver the flyers in a bunch of areas.</em></p>
+<p><strong>IV concerns</strong>:</p>
+<ul>
+<li>Violations of the assumption that the instrument is randomly assigned
+<ul>
+<li>non-delivery might be correlated with characteristics of the areas which also influence candidate support</li>
+</ul></li>
+</ul>
+</section>
+
+<section id="scneario-5" class="title-slide slide level2 center">
+<h2>Scneario 5</h2>
+<p><em>You want to understand the effects sending flyers about an upcoming demonstration but you find out later that your computer code used incomplete data when making assignments and so failed to assign treatment to a whole bunch of regions.</em></p>
+</section>
+
+<section id="scenario-6" class="title-slide slide level2 center">
+<h2>Scenario 6</h2>
+<p><em>You want to understand whether sending flyers increases participation because people actually go to the rallies or because people’s general level awareness of the election increases, whether or not they go.</em></p>
 
 <img src="hu_siegel-kombi_rgb.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
