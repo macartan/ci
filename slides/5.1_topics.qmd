@@ -28,13 +28,450 @@ source("setup.R")
 * Spillovers
 * Mediation
 
+## Diff in diff
 
-## The list experiment
+Key idea: the evolution of units in the control group allow you to impute what the evolution of units in the treatment group *would have been* had they not been treated
+
+
+### Logic {.smaller}
+
+We have group $A$ that enters treatment at some point and group $B$ that never does
+
+The estimate:
+
+$$\hat\tau = (\mathbb{E}[Y^A | post] - \mathbb{E}[Y^A | pre]) -(\mathbb{E}[Y^B | post] - \mathbb{E}[Y^B | pre])$$
+(how different is the change in $A$ compared to the change in $B$?)
+
+can be written:
+
+$$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre])$$
+
+### Logic {.smaller}
+Cleaning up
+
+$$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre])$$
+
+$$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | post]) + ((\mathbb{E}[Y_0^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre]))$$
+
+$$\hat\tau_{ATT} = \tau_{ATT} + \text{Difference in trends}$$
+
+
+
+### Simplest case
+
+```{r}
+n_units <- 2
+design <- 
+  declare_model(
+    unit = add_level(N = n_units, I = 1:N),
+    time = add_level(N = 6, T = 1:N, nest = FALSE),
+    obs = cross_levels(by = join_using(unit, time))) +
+  declare_model(potential_outcomes(Y ~ I + T^.5 + Z*T)) +
+  declare_assignment(Z = 1*(I>(n_units/2))*(T>3)) +
+  declare_measurement(Y = reveal_outcomes(Y~Z)) + 
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0),
+                  ATT = mean(Y_Z_1[Z==1] - Y_Z_0[Z==1])) +
+  declare_estimator(Y ~ Z, label = "naive") + 
+  declare_estimator(Y ~ Z + I, label = "FE1") + 
+  declare_estimator(Y ~ Z + as.factor(T), label = "FE2") + 
+  declare_estimator(Y ~ Z + I + as.factor(T), label = "FE3")  
+
+
+```
+
+### Diagnosis {.smaller}
+
+Here only the two way fixed effects is unbiased and only for the ATT.
+
+The ATT here is averaging over effects for treated units (later periods only). We *know nothing* about the size of effects in earlier periods when all units are in control!
+
+
+
+```{r, warning = FALSE, eval = FALSE}
+design |> 
+  diagnose_design() 
+```
+
+```{r, warning = FALSE, echo = FALSE}
+if(run)
+  design |> 
+  redesign(n_units = 10) |>  
+  diagnose_design()  |>
+  write_rds("saved/dd1.rds") |> kable()
+
+read_rds("saved/dd1.rds") |>
+  reshape_diagnosis() |> select(Inquiry, Estimator, Bias) |> kable()
+
+```
+
+### The classic graph
+
+```{r}
+design |> 
+  draw_data() |>
+  ggplot(aes(T, Y, color = unit)) + geom_line() +
+       geom_point(aes(T, Y_Z_0)) + theme_bw()
+```
+
+
+### Extends to multiple units easily {.smaller}
+
+
+```{r, warning = FALSE, eval = FALSE}
+design |> redesign(n_units = 10) |> diagnose_design() 
+```
+
+```{r, warning = FALSE, echo = FALSE}
+if(run)
+  design |> 
+  redesign(n_units = 10) |>  
+  diagnose_design()  |>
+  write_rds("saved/dd10.rds")
+
+read_rds("saved/dd10.rds") |>
+  reshape_diagnosis() |> select(Inquiry, Estimator, Bias) |> kable()
+
+```
+
+### Extends to multipe units easily
+
+
+```{r}
+design |> 
+  redesign(n_units = 10) |>  
+  draw_data() |> 
+  ggplot(aes(T, Y, color = unit)) + geom_line() +
+       geom_point(aes(T, Y_Z_0)) + theme_bw()
+```
+
+### In practice
+
+* Need to defend parallel trends
+* Most typically using an *event study*
+* Sometimes: report balance between treatment and control groups in covariates
+* Placebo leads and lags
+
+
+### Heterogeneity {.smaller}
+
+* Things get much more complicated when there is (a) heterogeneous timing in treatment take up and (b) heterogeneous effects
+
+
+*  It's only recently been appreciated how tricky things can get
+
+*  But we already have an intuition from our analysis of trials with heterogeneous assignment and heterogeneous effects: 
+
+  * in such cases fixed effects analysis weights stratum level treatment effects by the variance in assignment to treatment
+  * something similar here 
+
+### Staggared assignments {.smaller}
+
+Just two units assigned at different times:
+
+```{r}
+trend = 0
+
+design <- 
+  declare_model(
+    unit = add_level(N = 2, ui = rnorm(N), I = 1:N),
+    time = add_level(N = 6, ut = rnorm(N), T = 1:N, nest = FALSE),
+    obs = cross_levels(by = join_using(unit, time))) +
+  declare_model(
+    potential_outcomes(Y ~ trend*T + (1+Z)*(I == 2))) +
+  declare_assignment(Z = 1*((I == 1) * (T>3) + (I == 2) * (T>5))) +
+  declare_measurement(Y = reveal_outcomes(Y~Z), 
+                      I_c = I - mean(I)) +
+  declare_inquiry(mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z, label = "1. naive") + 
+  declare_estimator(Y ~ Z + I, label = "2. FE1") + 
+  declare_estimator(Y ~ Z + as.factor(T), label = "3. FE2") + 
+  declare_estimator(Y ~ Z + I + as.factor(T), label = "4. FE3") + 
+  declare_estimator(Y ~ Z*I_c + as.factor(T), label = "5. Sat")  
+```
+
+
+### Staggared assignments diagnosis {.smaller}
+
+
+```{r, message = FALSE, echo = FALSE}
+diagnose_design(design, sims = 1) |>
+  reshape_diagnosis() |> select(Estimator, 'Mean Estimand', 'Mean Estimate') |> kable()
+```
+
+
+### Where do these numbers come?
+
+
+* The estimand is .5 -- this comes from weighting the effect for unit 1 (0) and the effect for unit 2 (1) equally
+
+* The naive estimate is wildly off because it does not take into account that units with different treatment shares have different average levels in outcomes
+
+### Where do these numbers come?
+
+
+* The estimate when we control for unit is 0.36: this comes from weighting the unit-stratum level effects according to the variance of assignment to each stratum:
+
+```{r}
+design |> draw_data() |> group_by(unit) |> summarize(var = mean(Z)*(1-mean(Z))) |>
+  mutate(weight = var/sum(var)) |> kable()
+```
+
+### Where do these numbers come? {.smaller}
+
+
+* The estimate when we control for time  is -1: this comes from weighting the time-stratum level effects according to the variance of assignment to each stratum
+* it weights periods 4 and 5 only and equally, yielding  the difference in outcomes for unit 1 in treatment (0) and group 2 in control (1)
+  
+```{r}
+design |> draw_data()  |> group_by(time) |> summarize(var = mean(Z)*(1-mean(Z))) |>
+  mutate(weight = var/sum(var)) |> kable()
+```
+
+### Where do these numbers come?
+
+* The estimate when we control for time  *and* unit is 0.25
+* This is actually a lot harder to interpret:
+  
+*  We can figure out what it is from the "Goodman-Bacon decomposition" in [@goodman2021difference](https://www.nber.org/system/files/working_papers/w25018/w25018.pdf)
+
+
+### Where do these numbers come?
+
+```{r, echo = FALSE}
+include_graphics("assets/Goodman-Bacon.png")
+```
+
+### Where do these numbers come?
+
+In this case we can think of our data having the following structure:
+
+| |	y1	 |y2 |
+|----|----|---|
+|pre	|0	|1 |
+|mid	|0	|1|
+|post	|0	|2|
+
+* the mid to pre diff in diff is (0-0) - (1-1) = 0  (group 2 serves as control)
+* the post to mid diff in diff is (2-1) - (0-0) = 1 (group 1 serves as control though already in treatment!)
+
+TWFE gives a weighted average of these two, putting a 3/4 weight on the first and a 1/4 weight on the second
+
+### Two way fixed effects
+
+Specifically:
+
+$$\hat\beta^{DD} = \mu_{12}\hat\beta^{2 \times 2, 1}_{12} +  (1-\mu_{12})\hat\beta^{2 \times 2, 2}_{12}$$
+  
+where   $\mu_{12} = \frac{1-\overline{Z_1}}{1-(\overline{Z_1}-\overline{Z_2})} =  \frac{1-\frac36}{1-\left(\frac36-\frac16\right)} = \frac34$
+  
+$$\frac34\hat\beta^{2 \times 2, 1}_{12} +   \frac14 \hat\beta^{2 \times 2, 2}_{12}$$
+(weights formula from [WP version](https://www.nber.org/system/files/working_papers/w25018/w25018.pdf))
+
+### Two way fixed effects
+
+And:
+
+* $\hat\beta^{2 \times 2, 1}_{12}$ is $(\overline{y}_1^{MID(1,2)} - \overline{y}_1^{PRE(1)}) - (\overline{y}_2^{MID(1,2)} - \overline{y}_2^{PRE(1)})$ 
+
+which in the simple example without time trends is $(0 - 0) - (1-1) = 0$ 
+
+
+* $\hat\beta^{2 \times 2, 2}_{12}$ is $(\overline{y}_2^{POST(2)} - \overline{y}_2^{MID(1,2)}) - (\overline{y}_1^{POST(2)} - \overline{y}_1^{MID(1,2)})$ 
+
+which is $(2 - 1) - (0 - 0) = 1$
+
+### A problem
+
+So *quite* complex weighting of different comparisons
+
+* Units effectively get counted as both treatment and control units for different comparisons
+* Treated units counted as control units
+* Effectively negative weights on some quantities
+* Possible to have very poorly performing estimates
+
+### Solutions
+
+* Involve better specification of estimands
+* Use of comparisons directly relevant for the estimands
+* Particular solution: focus on the effect of treatment *at the time of first treatment*
+
+
+### Chaisemartin and d’Haultfoeuille (2020).
+
+```{r, message = FALSE}
+library(DIDmultiplegt)
+library(rdss)
+design <- 
+  declare_model(
+    unit = add_level(N = 4, I = 1:N),
+    time = add_level(N = 8, T = 1:N, nest = FALSE),
+    obs = cross_levels(by = join_using(unit, time),
+                       potential_outcomes(Y ~ T + (1 + Z)*I))) +
+  declare_assignment(Z = 1*(T > (I + 4))) +
+  declare_measurement(
+    Y = reveal_outcomes(Y~Z),
+    Z_lag = lag_by_group(Z, groups = unit, n = 1, order_by = T)) +
+  declare_inquiry(
+    ATT_switchers = mean(Y_Z_1 - Y_Z_0), 
+    subset = Z == 1 & Z_lag == 0 & !is.na(Z_lag)) +
+  declare_estimator(
+    Y = "Y",  G = "unit",  T = "T",  D = "Z",
+    handler = label_estimator(rdss::did_multiplegt_tidy),
+    inquiry = c("ATT_switchers"),
+    label = "chaisemartin"
+  ) 
+```
+
+### Chaisemartin and d’Haultfoeuille (2020).
+
+Note the inquiry
+
+```{r}
+run_design(design) |> kable()
+```
+
+
+### Triple differencing
+
+* A response to concerns that double differencing is not enough is to *triple* difference
+
+
+* When you think that there may be a violation of parallel tends but you have other outcomes that would pick up the same *difference in trends*
+
+* See @olden2022triple
+
+### Triple differencing {.smaller}
+
+You are interested in the effects of influx of refugees on right wing voting 
+
+* You have (say more conservative) states with no refugees at any period
+* You have (say more liberal) states with refugees post 2016 only 
+
+You want to do differences in differences comparing these states before and after
+
+* However you worry that things change differntially in the conservative and liberal states: *no parallel trends*
+
+* but you can identify areas *within* states that are more or less likely to be exposed and compare differnces in differences in the exposed and unexposed groups.
+
+### Triple differencing {.smaller}
+
+So:
+
+* Two types of states: $L \in \{0,1\}$, only $L=1$ types get refugee influx
+* Two time periods: $Post \in \{0,1\}$, refugee influx occurs in period $Post = 1$
+* Two groups: $B \in \{0,1\}$, $B=1$ types affected by refugee influx
+
+$$Y = \beta_0 + \beta_1 L + \beta_2 B + \beta_3 Post + \beta_4 LB + \beta_5 L Post + \beta_6 B Post + \beta_7L B Post + \epsilon$$
+
+
+### Triple differencing
+
+$$\frac{\partial ^3Y}{\partial L \partial B \partial Post} = \beta_7$$
+
+
+### Can we not just condition on the $B=1$ types?
+
+The level among the $B=1$ types is: 
+
+$$Y = \beta_0 + \beta_1 L + \beta_2  + \beta_3 Post + \beta_4 L + \beta_5 L Post + \beta_6  Post + \beta_7L  Post + \epsilon$$
+If you did simple before / after differences among the $B$ types you would get
+
+$$\Delta Y| L = 1, B = 1 = \beta_3  + \beta_5   + \beta_6   + \beta_7$$
+$$\Delta Y| L = 0, B = 1 = \beta_3   + \beta_6$$
+
+### Can we not just condition on the $B=1$ types?
+
+And so if you differenced again you would get:
+
+$$\Delta^2 Y| B = 1 = \beta_5   + \beta_7$$
+So the problem is that you have $\beta^5$ in here which corresponds exactly to how $L$ states change over time.
+
+### Triple
+
+But we can figure out $\beta_5$ by doing a diff in diff among the $B$'s.
+
+
+
+$$Y|B = 0 = \beta_0 + \beta_1 L +   \beta_3 Post  + \beta_5 L Post$$
+
+
+$$\Delta^2 Y| B = 0 = \beta_5$$
+
+
+### Easier to swallow?
+
+* The identifying assumption is that absent treatment the differences in trends between $L=0$ and $L=1$  would be the same for units with $B=0$ and $B=1$.
+
+* In a sense this is *one* parallel trends assumption, not two
+
+* See equation 5.4 in @olden2022triple
+
+**Puzzle**: Is it possible to have an effect identified by a difference in difference  but  incorrectly by a triple difference design? 
+
+## Survey experiments
+
 
 * Survey experiments are used to *measure* things: nothing (except answers) should be *changed*!
 * If the experiment in the survey is changing things then it is a field experiment in a survey, not a survey experiment
 
-### Design
+
+### The list experiment: Motivation
+
+Multiple survey experimental designs have been generated to make it easier for subjects to answer **sensitive questions**
+
+The key idea is to use inference rather than measurement.
+
+Subjects are placed in different conditions and the conditions *affect* the **answers** that are given in such a way that you can infer some underlying quantity of interest
+
+### The list experiment: Motivation
+
+```{r, echo = FALSE, caption = "Questions and values collide in an answer"}
+make_model("Z -> Question -> Answer <- Value") |> plot(textcol = "black", nodecol = "lightgrey")
+
+```
+This is an obvious DAG but the main point is to be clear that the *Value* is the quantity of interest and the value is not affect by the treatment, *Z*.
+
+### The list experiment: Motivation
+
+The list experiment supposes that:
+
+1. Subjects do not want to give a direct answer to a question
+2. They nevertheless are willing to truthfully answer an indirect question
+
+**In other words**: sensitivities notwithstanding, *they are happy for the research to make correct inferences*
+
+
+### The list experiment: Strategy {.smaller}
+
+* Respondents are given a short list and a long list.
+
+* The long list differs from the short list in having *one extra item*---the sensitive item
+
+* We ask how many items in each list does a respondent agree with: 
+
+  * $Y_i(0)$ is the number of elements on a short list that a respondent agrees with
+  * $Y_i(1)$ is the number of elements on a long list that a respondent agrees with
+  * $Y_i(1) - Y_i(0)$ is an indicator for whether an individual agrees with the sensitive item
+  * $\mathbb{E}[Y_i(1) - Y_i(0)]$ is the share of people agreeing with sensitive item
+
+
+
+### The list experiment: Simplified example {.smaller}
+
+How many of these do you agree with:
+
+|        | Short list       | Long list          | "Effect"  |
+|------|------------------|----------------|--------|
+|        | "2+2 = 4"    | "2+2 = 4"                |   |
+|        | "2*3 = 6"    | "2*3 = 6"                |   |
+|        | "3+6 = 8"    | "Climate change is real" |   |
+|        |            | "3+6 = 8"                |   |
+| Answer | Y(0) = 2   | Y(1) = 4    |  Y(1) - Y(0) = 0 |
+
+
+[NOte: this is obviously not a good list. Why not?]
+
+### The list experiment: Design
 
 ```{r}
 
@@ -57,10 +494,6 @@ diagnosands <- declare_diagnosands(
 )
 ```
 
-### Negatively correlated items
-
-* How would estimates be affected if the items selected for the list were *negatively* correlated?
-* How would subject protection be affected?
 
 ### Diagnosis
 
@@ -125,37 +558,201 @@ read_rds("saved/list2.rds") |>
 
 ```
 
+
+
+### Negatively correlated items
+
+* How would estimates be affected if the items selected for the list were *negatively* correlated?
+* How would subject protection be affected?
+
+
+### Negatively correlated items
+
+```{r}
+rho <- -.8 
+
+correlated_lists <- 
+  declare_model(
+    N = 500,
+    U = rnorm(N),
+    control_1 = rbinom(N, size = 1, prob = 0.5),
+    control_2 = correlate(given = control_1, rho = rho, draw_binary, prob = 0.5),
+    control_count = control_1 + control_2,
+    Y_star = rbinom(N, size = 1, prob = 0.3),
+    potential_outcomes(Y_list ~ Y_star * Z + control_count)
+  ) +
+  declare_inquiry(prevalence_rate = mean(Y_star)) +
+  declare_assignment(Z = complete_ra(N)) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z)) +
+  declare_estimator(Y_list ~ Z) 
+```
+
+### Negatively correlated items
+
+```{r}
+draw_data(correlated_lists) |> ggplot(aes(control_count)) + 
+  geom_histogram() + theme_bw()
+```
+
+### Negatively correlated items
+
+```{r, eval = FALSE}
+correlated_lists |> redesign(rho = c(-.8, 0, .8)) |> diagnose_design()
+```
+
+```{r, echo = FALSE, height = 2, width = 8}
+if(run)
+correlated_lists |> redesign(rho = c(-.8, 0, .8)) |> diagnose_design() |>
+  write_rds("saved/correlated_list.rds")
+
+read_rds("saved/correlated_list.rds") |> tidy() |> filter(diagnosand == "rmse") |> ggplot(aes(rho, estimate)) + geom_line() + ylim(0, NA) + theme_bw() + ylab("rmse")
+
+```
+
+* These trade-off against each other: the more accuracy you have the less protection you have
+
+### Individual or group effects? {.smaller}
+
+* This is typically used to estimate average *levels*
+
+* However you *can* use it in the obvious way to get average levels for groups: this is equivalent to calculating group level heterogeneous effects
+
+* Extending the idea you can even get *individual level* estimates: for instance you might use causal forests
+
+* You can also use this to estimate the *effect* of an experimental treatment on an item that's measured using a list, without requiring individual level estimates:
+
+$$Y_i = \beta_0 + \beta_1Z_i  + \beta_2Long_i + \beta_3Z_iLong_i$$
+
+
+
 ### Hiders and liars
 
-* Note that here we looked at "hiders" -- people not answering the direct question truthfull
+* Note that here we looked at "hiders" -- people not answering the direct question truthfully
 
 * See @li2019relaxing on bounds when the "no liars" assumption is threatened --- this is about whether people respond truthfully to the list experimental question
 
-## Differences in differences
-
-New challenges, new developments
 
 ## Regression discontintuity
 
 Errors and diagnostics
 
 
+### Design
+
+```{r}
+library(rdss) # for helper functions
+library(rdrobust)
+
+cutoff <- 0.5
+bandwidth <- 0.5
+
+control <- function(X) {
+  as.vector(poly(X, 4, raw = TRUE) %*% c(.7, -.8, .5, 1))}
+treatment <- function(X) {
+  as.vector(poly(X, 4, raw = TRUE) %*% c(0, -1.5, .5, .8)) + .25}
+
+rdd_design <-
+  declare_model(
+    N = 1000,
+    U = rnorm(N, 0, 0.1),
+    X = runif(N, 0, 1) + U - cutoff,
+    D = 1 * (X > 0),
+    Y_D_0 = control(X) + U,
+    Y_D_1 = treatment(X) + U
+  ) +
+  declare_inquiry(LATE = treatment(0) - control(0)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ D)) + 
+  declare_sampling(S = X > -bandwidth & X < bandwidth) +
+  declare_estimator(Y ~ D*X, term = "D", label = "lm") + 
+  declare_estimator(
+    Y, X, 
+    term = "Bias-Corrected",
+    .method = rdrobust_helper,
+    label = "optimal"
+  )
+
+```
+
+### RDD Data plotted
+
+Note `rdrobust` implements:
+
+* local polynomial Regression Discontinuity (RD) point estimators
+* robust bias-corrected confidence intervals 
+
+See  Calonico, Cattaneo and Titiunik (2014) and related papers `? rdrobust::rdrobust`
+
+### RDD Data plotted
+
+```{r}
+rdd_design  |> draw_data() |> ggplot(aes(X, Y, color = factor(D))) + 
+  geom_point(alpha = .3) + theme_bw() +
+  geom_smooth(aes(X, Y_D_0)) + geom_smooth(aes(X, Y_D_1))
+
+```
+
+### RDD diagnosis
+
+```{r, eval = FALSE, echo = TRUE}
+rdd_design |> diagnose_design()
+```
+
+
+```{r, echo = FALSE, eval = TRUE}
+if(run)
+  rdd_design |> diagnose_design() |> write_rds("saved/rdd_diagnosis.rds")
+
+read_rds("saved/rdd_diagnosis.rds") |> reshape_diagnosis() |> 
+  select(Estimator, 'Mean Estimate', 'Bias', 'SD Estimate', 'Coverage')
+```
+
+### Bandwidth tradeoff
+
+```{r, echo = TRUE, eval = FALSE}
+rdd_design |> 
+  redesign(bandwidth = seq(from = 0.05, to = 0.5, by = 0.05)) |> 
+  diagnose_designs()
+```
+
+```{r, echo = FALSE, eval = TRUE, fig.height = 2, fig.width = 8}
+
+if(run)
+rdd_design |> 
+  redesign(bandwidth = seq(from = 0.1, to = 0.5, by = 0.05)) |> 
+  diagnose_designs() |>
+  write_rds("saved/rddbandwidth.rds")
+
+read_rds("saved/rddbandwidth.rds")|>  tidy() |>
+  filter(diagnosand %in% c("bias", "rmse", "sd_estimate")) |>
+  ggplot(aes(bandwidth, estimate, color = diagnosand)) + geom_line()  + theme_bw() +
+  facet_grid(~estimator)
+
+```
+* As we increase the bandwidth, the lm bias gets worse, but slowly, while the error falls. 
+* The best bandwidth is relatively wide. 
+* This is more true for the optimal estimator.
+
 ## Noncompliance and the LATE estimand {#LATE}
+
+```{r, echo = FALSE}
+model <- make_model("Z -> X -> Y; X <-> Y") 
+model |> plot()
+```
 
 ### LATE---Local Average Treatment Effects {.smaller}
 
-Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
+Sometimes you give a medicine but only a nonrandom sample of people actually try to use it. Can you still estimate the medicine's effect?
 
 |     | X=0                           | X=1                           |
 |-----|-------------------------------|-------------------------------|
-| T=0 | $\overline{y}_{00}$ (n\_{00}) | $\overline{y}_{01}$ (n\_{01}) |
-| T=1 | $\overline{y}_{10}$ (n\_{10}) | $\overline{y}_{11}$ (n\_{11}) |
+| Z=0 | $\overline{y}_{00}$ ($n_{00}$) | $\overline{y}_{01}$ ($n_{01}$) |
+| Z=1 | $\overline{y}_{10}$ ($n_{10}$) | $\overline{y}_{11}$ ($n_{11}$) |
 
 Say that people are one of 3 types:
 
-1.  $n_a$ \`\`always takers'' have $X=1$ no matter what and have average outcome $\overline{y}_a$
-2.  $n_n$ never takers have $X=0$ no matter what with outcome $\overline{y}_n$
-3.  $n_c$ compliers have $X=T$ and average outcomes $\overline{y}^1_c$ if treated and $\overline{y}^0_c$ if not.
+1.  $n_a$ "always takers" have $X=1$ no matter what and have average outcome $\overline{y}_a$
+2.  $n_n$ "never takers" have $X=0$ no matter what with outcome $\overline{y}_n$
+3.  $n_c$ "compliers have" $X=Z$ and average outcomes $\overline{y}^1_c$ if treated and $\overline{y}^0_c$ if not.
 
 ### LATE---Local Average Treatment Effects  {.smaller}
 
@@ -163,31 +760,30 @@ Sometimes you give a medicine but only a non random sample of people actually tr
 
 |     | X=0                           | X=1                           |
 |-----|-------------------------------|-------------------------------|
-| T=0 | $\overline{y}_{00}$ (n\_{00}) | $\overline{y}_{01}$ (n\_{01}) |
-| T=1 | $\overline{y}_{10}$ (n\_{10}) | $\overline{y}_{11}$ (n\_{11}) |
+| Z=0 | $\overline{y}_{00}$ (n\_{00}) | $\overline{y}_{01}$ (n\_{01}) |
+| Z=1 | $\overline{y}_{10}$ (n\_{10}) | $\overline{y}_{11}$ (n\_{11}) |
 
 We can figure something about types:
 
-|       | $X=0$                                                                                                                                               | $X=1$                                                                                                                                               |
-|------------------------|------------------------|------------------------|
-| $T=0$ | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}^0_{c}+\frac{\frac{1}{2}n_n}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}_{n}$ | $\overline{y}_{a}$                                                                                                                                  |
-| $T=1$ | $\overline{y}_{n}$                                                                                                                                  | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}^1_{c}+\frac{\frac{1}{2}n_a}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}_{a}$ |
+|          | $X=0$                  | $X=1$                  |                                                                                                        |
+|----------|:----------------------:|:----------------------:|
+| $Z=0$ | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}^0_{c}+\frac{\frac{1}{2}n_n}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}_{n}$ | $\overline{y}_{a}$                                                                                                                                  |
+| $Z=1$ | $\overline{y}_{n}$                                                                                                                                  | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}^1_{c}+\frac{\frac{1}{2}n_a}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}_{a}$ |
 
 ### LATE---Local Average Treatment Effects  {.smaller}
 
 You give a medicine to 50% but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
 
-|       | $X=0$                                                                           | $X=1$                                                                             |
-|--------------------------|-----------------------|-----------------------|
-| $T=0$ | $\frac{n_c}{n_c + n_n} \overline{y}^0_{c}+\frac{n_n}{n_c + n_n} \overline{y}_n$ | $\overline{y}_{a}$                                                                |
-| \(n\) | ($\frac{1}{2}(n_c + n_n)$)                                                      | ($\frac{1}{2}n_a$)                                                                |
-|       |                                                                                 |                                                                                   |
-| $T=1$ | $\overline{y}_{n}$                                                              | $\frac{n_c}{n_c + n_a} \overline{y}^1_{c}+\frac{n_a}{n_c + n_a} \overline{y}_{a}$ |
-| \(n\) | ($\frac{1}{2}n_n$)                                                              | ($\frac{1}{2}(n_a+n_c)$)                                                          |
+|         | $X=0$                                                                           | $X=1$                                                                             |
+|---------|:---------------------:|:---------------------:|
+| $Z=0$ | $\frac{n_c}{n_c + n_n} \overline{y}^0_{c}+\frac{n_n}{n_c + n_n} \overline{y}_n$ | $\overline{y}_{a}$ |
+| \(n\) | ($\frac{1}{2}(n_c + n_n)$)                                                      | ($\frac{1}{2}n_a$)  |
+| $Z=1$ | $\overline{y}_{n}$                  | $\frac{n_c}{n_c + n_a} \overline{y}^1_{c}+\frac{n_a}{n_c + n_a} \overline{y}_{a}$ |
+| \(n\) | ($\frac{1}{2}n_n$)                                                              | ($\frac{1}{2}(n_a+n_c)$) |                 
 
-Average in $T=0$ group: $\frac{{n_c} \overline{y}^0_{c}+ \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a\right)}{n_a+n_c+n_n}$
+Average in $Z=0$ group: $\frac{{n_c} \overline{y}^0_{c}+ \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a\right)}{n_a+n_c+n_n}$
 
-Average in $T=1$ group: $\frac{{n_c} \overline{y}^1_{c} + \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a \right)}{n_a+n_c+n_n}$
+Average in $Z=1$ group: $\frac{{n_c} \overline{y}^1_{c} + \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a \right)}{n_a+n_c+n_n}$
 
 Difference: $ITT = ({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n}$
 
@@ -202,6 +798,57 @@ So: $LATE = ITT\times\frac{n}{n_c}$
     -   Your estimate is only for a subpopulation
     -   The subpopulation is not chosen by you and is unknown
     -   Different encouragements may yield different estimates since they may encourage different subgroups
+
+
+### Pearl and Chickering again
+
+With and without an imposition of monotonicity
+
+```{r}
+#| echo: true
+#| eval: false
+
+data("lipids_data")
+
+models <- 
+  list(unrestricted =  make_model("Z -> X -> Y; X <-> Y"),
+       restricted =  make_model("Z -> X -> Y; X <-> Y") |>
+         set_restrictions("X[Z=1] < X[Z=0]")) |> 
+  lapply(update_model,  data = lipids_data, refresh = 0) 
+
+models |>
+  query_model(query = list(CATE = "Y[X=1] - Y[X=0]", Nonmonotonic = "X[Z=1] < X[Z=0]"),
+              given = list("X[Z=1] > X[Z=0]", TRUE),
+              using = "posteriors") 
+```
+
+
+### Pearl and Chickering again
+
+With and without an imposition of monotonicity:
+
+```{r}
+#| echo: false
+#| eval: true
+
+data("lipids_data")
+
+if(run)
+  list(unrestricted =  make_model("Z -> X -> Y; X <-> Y"),
+       restricted =  make_model("Z -> X -> Y; X <-> Y") |>
+         set_restrictions("X[Z=1] < X[Z=0]")) |> 
+  lapply(update_model,  data = lipids_data, refresh = 0) |>
+  query_model(query = list(CATE = "Y[X=1] - Y[X=0]", Nonmonotonic = "X[Z=1] < X[Z=0]"),
+              given = list("X[Z=1] > X[Z=0]", TRUE),
+              using = "posteriors") |>
+    write_rds("saved/lipids_again.rds")
+
+read_rds("saved/lipids_again.rds") |> select(model, query, mean, sd) |> arrange(query) |> kable(digits = 2)
+```
+
+
+In one case we *assume* monotonicty, in the other we **update** on it (easy in this case because of the empirically verifiable nature of one sided non compliance)
+
 
 ## Spillovers {#SUTVA}
 
@@ -223,7 +870,7 @@ The key problem is that $Y(1)$ and $Y(0)$ are not sufficient to describe potenti
 More completely specified potential outcomes (and estimands)
 
 |                               |                           |               |                   |        |                   |        |                   |        |                   |        |                   |
-|------|------|------|------|------|------|------|------|------|------|------|------|
+|----|------|----|----|----|----|----|----|----|----|----|----|
 |                               |                           |               | **0**             |        | **1**             |        | **2**             |        | **3**             |        | **4**             |
 | Unit                          | Location                  | $D_\emptyset$ | $y(D_\emptyset)$  | $D_1$  | $y(D_1)$          | $D_2$  | $y(D_2)$          | $D_3$  | $y(D_3)$          | $D_4$  | $y(D_4)$          |
 | A                             | 1                         | 0             | 0                 | 1      | 3                 | 0      | 1                 | 0      | 0                 | 0      | 0                 |
@@ -235,7 +882,6 @@ More completely specified potential outcomes (and estimands)
 | $\bar{y}_\text{untreated}$    |                           |               | 0                 |        |                   | 1      |                   | 4/3    |                   | 4/3    |                   |
 | $\bar{y}_\text{neighbors}$    |                           |               | \-                |        |                   | 3      |                   | 2      |                   | 2      |                   |
 | $\bar{y}_\text{pure control}$ |                           |               | 0                 |        |                   | 0      |                   | 0      |                   | 0      |                   |
-| -----                         | -----------               | ---------     | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- | ------ | ----------------- |
 |                               | **ATT (direct effect)**   |               | \-                |        |                   | 3      |                   | 3      |                   | 3      |                   |
 |                               | **ATT (indirect effect)** |               | \-                |        |                   | 3      |                   | 2      |                   | 2      |                   |
 
@@ -257,15 +903,109 @@ More completely specified potential outcomes (and estimands)
 
 **Idea**: You can use the design to get a handle on spillovers
 
-### SUTVA violations
 
-Even still, to estimate effects you need some SUTVA like assumption.
+### Design
+
+```{r}
+dgp <- function(i, Z, G) Z[i]/3 + sum(Z[G == G[i]])^2/5 + rnorm(1)
+
+spillover_design <- 
+
+  declare_model(G = add_level(N = 80), 
+                     j = add_level(N = 3, zeros = 0, ones = 1)) +
+  
+  declare_inquiry(direct = mean(sapply(1:240,  # just i treated v no one treated 
+    function(i) { Z_i <- (1:240) == i
+                  dgp(i, Z_i, G) - dgp(i, zeros, G)}))) +
+  
+  declare_inquiry(indirect = mean(sapply(1:240, 
+    function(i) { Z_i <- (1:240) == i           # all but i treated v no one treated   
+                  dgp(i, ones - Z_i, G) - dgp(i, zeros, G)}))) +
+  
+  declare_assignment(Z = complete_ra(N)) + 
+  
+  declare_measurement(
+    neighbors_treated = sapply(1:N, function(i) sum(Z[-i][G[-i] == G[i]])),
+    one_neighbor  = as.numeric(neighbors_treated == 1),
+    two_neighbors = as.numeric(neighbors_treated == 2),
+    Y = sapply(1:N, function(i) dgp(i, Z, G))
+  ) +
+  
+  declare_estimator(Y ~ Z, 
+                    inquiry = "direct", 
+                    model = lm_robust, 
+                    label = "naive") +
+  
+  declare_estimator(Y ~ Z * one_neighbor + Z * two_neighbors,
+                    term = c("Z", "two_neighbors"),
+                    inquiry = c("direct", "indirect"), 
+                    label = "saturated", 
+                    model = lm_robust)
+```                    
+
+### Spillovers: direct and indirect treatments
+
+```{r,echo = FALSE, fig.align="center"}
+draw_data(spillover_design) %>%
+  filter(G %in% 10:30) %>% 
+  ggplot(aes(x = 0, y = j, color = as.factor(Z))) +
+  geom_point(size = 5) +
+  geom_text(aes(label = neighbors_treated), color = "white") +
+  facet_wrap(~ paste0("Group ",G),scales = "free_y",nrow = 3) +
+  scale_color_brewer("Treatment Assignment\n(Number = neighbors treated)",
+                     palette = "Set1",labels = c("Control", "Treatment")) +
+   theme_bw() +
+  theme(axis.text = element_blank(), axis.title = element_blank()) 
+```
+
+
+### Spillovers: Simulated estimates
+
+```{r, eval = TRUE, echo=FALSE}
+
+if(run)
+  diagnose_design(spillover_design) |>
+  write_rds(file = "saved/11_model_spillovers_1.rds")
+diagnosis <- read_rds("saved/11_model_spillovers_1.rds")
+get_simulations(diagnosis) %>% 
+  group_by(estimator, inquiry) %>% 
+  mutate(
+    mean_estimate = mean(estimate),
+    mean_estimand = mean(estimand)) %>% 
+  ungroup() %>% 
+  mutate(estimator =
+           factor(estimator, levels = c("naive","saturated"),
+                  ordered = TRUE)) %>%
+  ggplot(aes(estimate)) +
+  geom_histogram(bins = 30) +
+  facet_wrap( ~ inquiry + estimator) + 
+  
+  geom_vline(aes(xintercept = mean_estimate), linetype = "dashed", color = "blue") +
+  geom_vline(aes(xintercept = mean_estimand), color = "red") +
+  theme_bw() +
+  theme(strip.background = element_blank())
+```
+
+
+### Spillovers: Opportunities and Warnings
+
+You can in principle:
+
+* debias estimates
+* learn about interesting processes
+* optimize design parameters
+
+But  to estimate effects you still need *some* SUTVA like assumption.
+
+### Spillovers: Opportunities and Warnings
 
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/neelan.png")
 ```
 
-But NB: Estimates of treatment effects are sensitive to assumptions of spillover structures. In this example if one compared the outcome between treated units and all control units that are at least $n$ positions away from a treated unit you will get the wrong answer unless $n \geq 7$.
+In this example if one compared the outcome between treated units and all control units that are at least $n$ positions away from a treated unit you will get the wrong answer unless $n \geq 7$.
+
+
 
 ## Mediation {#mediation}
 
@@ -284,23 +1024,29 @@ knitr::include_graphics("figs/med1.png")
 
 ### The problem of unidentified mediators  {.smaller}
 
-An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. But **both of these average effects may be positive (for example) even if there is no effect of X on Y through M1**.
+An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. 
+
+* But **both of these average effects may be positive (for example) even if there is no effect of X on Y through M1**.
 
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/med2.png")
 ```
 
-### The problem of unidentified mediators
+### The problem of unidentified mediators {.smaller}
 
-An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. Similarly **both of these average effects may be zero even if X affects on Y through M1 for every unit!**.
+An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. 
+
+* Similarly **both of these average effects may be zero even if X affects on Y through M1 for every unit!**
 
 ```{r, echo = FALSE}
 knitr::include_graphics("figs/med2.png")
 ```
 
-### The problem of unidentified mediators
+### The problem of unidentified mediators  {.smaller}
 
-Another somewhat obvious approach is to see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. But this common strategy is also not guaranteed to produce reliable results. 
+Another somewhat obvious approach is to see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. 
+
+* But this common strategy is also not guaranteed to produce reliable results. 
 
 * See [Imai](http://imai.princeton.edu/projects/mechanisms.html) on better ways to think about this problem and designs to address it.
 
@@ -329,3 +1075,62 @@ knitr::include_graphics("figs/collider.png")
 
 **Takeaway**: Understanding mechanisms is harder than you think. Figure out what assumptions fly.
 
+
+### In `CausalQueries`
+
+Lets imagine that sequential ignorability does not hold. What are our posteriors on mediation quantities when in fact all effects are mediated?
+
+```{r}
+model <- make_model("X -> M ->Y <- X; M <-> Y")
+
+plot(model)
+
+```
+
+
+### In `CausalQueries`
+
+We imagine a true model and consider estimands:
+
+```{r}
+truth <- make_model("X -> M ->Y") |> 
+  set_parameters(c(.5, .5, .25, 0, .5, .25, .25, 0, .5, .25))
+
+queries  <- 
+  list(
+      indirect = "Y[X = 1, M = M[X=1]] - Y[X = 1, M = M[X=0]]",
+      direct = "Y[X = 1, M = M[X=0]] - Y[X = 0, M = M[X=0]]"
+      )
+
+truth |> query_model(queries)
+```
+
+### In `CausalQueries`
+
+```{r, eval = FALSE, echo = TRUE}
+Ns <- c(100, 1000, 10000)
+
+Ns |> 
+  lapply(function(n)
+    model |> update_model(data = truth |> make_data(n = n))) |>
+  query_model(queries = queries)
+  
+```
+
+
+```{r, eval = TRUE, echo = FALSE}
+Ns <- c(100, 1000, 10000)
+
+if(run)
+  Ns |> 
+  lapply(function(n)
+    model |> update_model(data = truth |> make_data(n = n))) |>
+  query_model(queries = queries, using = "posteriors") |>
+  write_rds("saved/cq-mediation.rds")
+
+read_rds("saved/cq-mediation.rds") |> kable()
+  
+  
+```
+
+Punchline: you can learn something from the structure of the data
