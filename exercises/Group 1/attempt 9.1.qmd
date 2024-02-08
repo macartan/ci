@@ -1,0 +1,50 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+**9.1 Spillovers**
+
+Imagine a study with three subjects. Each subject’s potential outcomes are as follows:
+
+-   0 if in control
+
+-   n if in treatment when n subjects are assigned to treatment
+
+So for example if one unit is in treatment that unit has outcome Y=1, and the others have Y = 0; if all 3 are in treatment they all have Y=3.
+
+1.  Write down the potential outcomes for all possible assignments, including all and none assigned o treatment
+
+2.  Write down the difference in means calculation for each possible assignment
+
+3.  Define two estimands of interest.
+
+4.  Define a randomization scheme and answer strategy that will return an unbiased estimate of each estimand.
+
+| Treatment Assignments | Subject 1 | Subject 2 | Subject 3 | Diff in Means   |
+|-----------------------|-----------|-----------|-----------|-----------------|
+| **Y_0_0_0**           | 0         | 0         | 0         | (Control Group) |
+| **Y_0_0_1**           | 0         | 0         | 1         | 1/3             |
+| **Y_0_1_0**           | 0         | 1         | 0         | 1/3             |
+| **Y_0_1_1**           | 0         | 2         | 2         | 4/3             |
+| **Y_1_0_0**           | 1         | 0         | 0         | 1/3             |
+| **Y_1_0_1**           | 2         | 0         | 2         | 4/3             |
+| **Y_1_1_0**           | 2         | 2         | 0         | 4/3             |
+| **Y_1_1_1**           | 3         | 3         | 3         | 3               |
+
+One of these is the direct average treatment effect:
+
+\[Y_1_0_0 + Y_1_0_1 + Y_1_1_0 + Y_1_1_1\]/4 - \[Y_0_0_0 + Y_0_0_1 + Y_0_1_0 + Y_0_1_1\]/4
+
+= 10/4 - 3/4 = 7/4 = 1.75
+
+\[Y_1_0_0 + Y_1_0_1 + Y_1_1_0 + Y_1_1_1\]/4 - \[Y_0_0_0\]
+
+= 10/4 - 0 = 2.5
+
+ATT might also be an estimand of interest...?
+
+1.  Define a randomization scheme and answer strategy that will return an unbiased estimate of each estimand.
+
+Not sure.
