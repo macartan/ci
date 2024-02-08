@@ -14,6 +14,9 @@ library(ggdag)
 library(ggtext)
 library(latex2exp)
 library(cowplot)
+library(pwrss)
+
+options(mc.cores = parallel::detectCores())
 
 knitr::opts_chunk$set(echo = TRUE)
 ## library(rdddr)

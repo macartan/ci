@@ -1,23 +1,16 @@
 ---
 format: 
-   beamer:
-    theme: "AnnArbor"
-    colortheme: "seahorse"
+   revealjs:
+    embed-resources: true
+    theme: serif
     slide-level: 3
-    keep-tex: true
-    includes:
-      header-includes: include_nav.txt
-title: "Open science"
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Experiments workflow considerations"
 author: "Macartan Humphreys"
-numbersections: true
-header-includes:
-  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
-  - \newcommand\E{\mathbb{E}}
-  - \newcommand\V{\mathbb{V}}
-  - \hypersetup{colorlinks=true,linkcolor=red}
-  - \usepackage{ulem}
-  - \pdfstringdefDisableCommands{\let\sout\relax}
-fontsize: 11pt  
+bibliography: bib.bib
 ---
 
   
@@ -64,7 +57,7 @@ source("setup.R")
 
 ## Ethics {#ethics}
 
-### Constraint: Is it ethical to manipulate subjects for research purposes?
+### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
 
 * There is no foundationless answer to this question. So let's take some foundations from the Belmont report and seek to ensure:
   1. Respect for persons
@@ -79,7 +72,7 @@ source("setup.R")
 
 
 
-### Is it ethical to manipulate subjects for research purposes?
+### Is it ethical to manipulate subjects for research purposes? {.smaller}
 
 * The problem is that many (many) field experiments have nothing like informed consent.
 * For example, whether the government builds a school in your village, whether an ad appears on your favorite radio show, and so on.
@@ -90,7 +83,8 @@ source("setup.R")
   3. The British government asks you to work on figuring out how the use of water cannons helps stop **rioters** rioting
 
 
-### Is it ethical to manipulate subjects for research purposes?
+### Is it ethical to manipulate subjects for research purposes? {.smaller}
+
 * Consider three cases:
 
   * You work with a nonprofit to post (true?) posters about the crimes of politicians on billboards to see effects on **voters**
@@ -103,7 +97,7 @@ source("setup.R")
 
 
 
-### Constraint: Is it ethical to manipulate subjects for research purposes?
+### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
 
 * Sometimes it is possible to use this point of difference to make a "spheres of ethics" argument for "embedded experimentation."
 * **Spheres of Ethics Argument**: Experimental research that involves manipulations that are not normally appropriate for researchers may nevertheless be ethical if:
@@ -112,6 +106,8 @@ source("setup.R")
   * Implementers have **legitimacy** to make these decisions within the sphere of the intervention
   * Implementers are indeed **materially independent** of researchers (no swapping hats)
 
+### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
+
 * Difficulty with this argument:
   * **Question begging**: How to determine the legitimacy of the implementer? (Can we rule out Nazi doctors?)
 
@@ -119,16 +115,14 @@ Otherwise keep focus on consent and desist if this is not possible
 
 ## Transparency & Experimentation {#registeration}
 
-### Contentious Issues
+### Transparent workflows
 
 Experimental researchers are deeply engaged in the movement towards more transparency social science research. 
 
-Contentious issues (mostly):
-
-* **Analytic replication.** This should be a no brainer. Set everything up so that replication is easy. Use rmarkdown, or knitr or sweave. Or produce your replication code as a package.
+* **Analytic replication.** This should be a no brainer. Set everything up so that replication is easy. Use quarto rmarkdown, or similar. Or produce your replication code as a package.
 
 
-### Contentious Issues
+### Contentious Issues {.smaller}
 
 Experimental researchers are deeply engaged in the movement towards more transparency social science research. 
 
@@ -142,29 +136,16 @@ Contentious issues (mostly):
 * **What data should you make available?** Disagreement is over how raw your data should be. **My view**: as raw as you can but at least post cleaning and pre-manipulation.
 
 
-### Contentious Issues
+### Open science checklist  {.smaller}
 
 Experimental researchers are deeply engaged in the movement towards more transparency social science research. 
 
-Contentious issues (mostly):
 
 * **Should you register?**: Hard to find reasons against. But case strongest in testing phase rather than exploratory phase.
 
 * **Registration**: When should you register? **My view:** Before treatment assignment. (Not just before analysis, mea culpa)
 
-* **Registration**: Should you deviate from an preanalysis plan if you change your mind about optimal estimation strategies. **My view:** Yes, but make the case and describe both sets of results. 
-
-
-
-### Contentious Issues
-
-Experimental researchers are deeply engaged in the movement towards more transparency social science research. 
-
-Contentious issues (mostly):
-
-* **Registration**: When should you register? **My view:** Before treatment assignment. (Not just before analysis, mea culpa)
-
-* **Registration**: Should you deviate from an preanalysis plan if you change your mind about optimal estimation strategies. **My view:** Yes, but make the case and describe both sets of results. 
+* **Registration**: Should you deviate from a preanalysis plan if you change your mind about optimal estimation strategies. **My view:** Yes, but make the case and describe both sets of results. 
 
 
 
@@ -279,58 +260,58 @@ df |> mutate(result = "pos") |> ggplot(aes(x, y, color = result)) + geom_point(s
 *  Knowing the mapping from data to inference in advance gives a handle on the false positive rate. 
 
 
-### Evidence Proofing: Bayesian Illustration
+<!-- ### Evidence Proofing: Bayesian Illustration -->
 
-* Say choice of two pieces of evidence to bring to bear, $K1$ or $K2$
-
-
-```{r, echo = FALSE}
-
-two_by_two <- function(vals = c(.9, .05, .95, .05, 0, .05, .95, .05, 1),
-                       A = matrix(vals, 3, 3), 
-                       colnames = c("", "$K_1$ = No", "$K_1$ = Yes", "All"),
-                       rownames = c("$K_2$ = No", "$K_2$ = Yes", "All"))
-  cbind(rownames, A) |>
-  kable(col.names = colnames, align = "c", escape = TRUE) |>
-  kableExtra::column_spec(1, bold = TRUE)
-```
+<!-- * Say choice of two pieces of evidence to bring to bear, $K1$ or $K2$ -->
 
 
-```{r}
-#| tbl-cap: Likelihoods
-#| tbl-subcap: ["If TRUE", "If FALSE"]
-#| layout-ncol: 2
-#| echo: false
+<!-- ```{r, echo = FALSE} -->
 
-two_by_two()
-
-two_by_two(vals = c(0, .05, .05, .05, .9, .95, .05, .95, 1))
-```
-
-
-
-* 	Posterior | K1 = Posterior | K2 = 95% 
-* 	Probability positive claim | H is false;  evidence randomly selected  (p) = 5%
-* 	Probability positive claim | H is false; evidence is fished (p) = 10%
-
-### Evidence Proofing: Bayesian Illustration
-
-* Say choice of two pieces of evidence to bring to bear, $K1$ or $K2$
+<!-- two_by_two <- function(vals = c(.9, .05, .95, .05, 0, .05, .95, .05, 1), -->
+<!--                        A = matrix(vals, 3, 3),  -->
+<!--                        colnames = c("", "$K_1$ = No", "$K_1$ = Yes", "All"), -->
+<!--                        rownames = c("$K_2$ = No", "$K_2$ = Yes", "All")) -->
+<!--   cbind(rownames, A) |> -->
+<!--   kable(col.names = colnames, align = "c", escape = TRUE) |> -->
+<!--   kableExtra::column_spec(1, bold = TRUE) -->
+<!-- ``` -->
 
 
-```{r}
-#| tbl-cap: Likelihoods
-#| tbl-subcap: ["If TRUE", "If FALSE"]
-#| layout-ncol: 2
-#| echo: FALSE
+<!-- ```{r} -->
+<!-- #| tbl-cap: Likelihoods -->
+<!-- #| tbl-subcap: ["If TRUE", "If FALSE"] -->
+<!-- #| layout-ncol: 2 -->
+<!-- #| echo: false -->
 
-two_by_two()
+<!-- two_by_two() -->
 
-two_by_two(vals = c(0, .05, .05, .05, .9, .95, .05, .95, 1))
-```
+<!-- two_by_two(vals = c(0, .05, .05, .05, .9, .95, .05, .95, 1)) -->
+<!-- ``` -->
 
-* 	What’s the truly correct inference if you KNOW that researcher is a fisher?
-* 	Depends: say you thought K1 and K2 were sought in order. Then if K2 evidence is presented this means K1 not found. So posterior |K2 only = 50%. 
+
+
+<!-- * 	Posterior | K1 = Posterior | K2 = 95%  -->
+<!-- * 	Probability positive claim | H is false;  evidence randomly selected  (p) = 5% -->
+<!-- * 	Probability positive claim | H is false; evidence is fished (p) = 10% -->
+
+<!-- ### Evidence Proofing: Bayesian Illustration -->
+
+<!-- * Say choice of two pieces of evidence to bring to bear, $K1$ or $K2$ -->
+
+
+<!-- ```{r} -->
+<!-- #| tbl-cap: Likelihoods -->
+<!-- #| tbl-subcap: ["If TRUE", "If FALSE"] -->
+<!-- #| layout-ncol: 2 -->
+<!-- #| echo: FALSE -->
+
+<!-- two_by_two() -->
+
+<!-- two_by_two(vals = c(0, .05, .05, .05, .9, .95, .05, .95, 1)) -->
+<!-- ``` -->
+
+<!-- * 	What’s the truly correct inference if you KNOW that researcher is a fisher? -->
+<!-- * 	Depends: say you thought K1 and K2 were sought in order. Then if K2 evidence is presented this means K1 not found. So posterior |K2 only = 50%.  -->
 
 ### The scope for fishing
 
@@ -453,15 +434,15 @@ But even the simple idea is not everywhere welcome. There are many worries and s
 
 ## Worries and Myths around registration
 
-### Myth: Concerns about fishing presuppose researcher dishonesty
+### Myth: Concerns about fishing presuppose researcher dishonesty {.smaller}
 
 * Fishing can happen in very subtle ways, and may seem natural and justifiable.
 
 * Example: 
 
-–	I am interested in whether more democratic institutions result in better educational outcomes.
-–	I examine the relationship between institutions and literacy and between institutions and school attendance. 
-–	The attendance measure is significant and the literacy one is not. Puzzled, I look more carefully at the literacy measure and see various outliers and indications of measurement error. As I think more I realize too that literacy is a slow moving variable and may not be the best measure anyhow. I move forward and start to analyze the attendance measure only, perhaps conducting new tests, albeit with the same data. 
+  *	I am interested in whether more democratic institutions result in better educational outcomes.
+  *	I examine the relationship between institutions and literacy and between institutions and school attendance. 
+  *	The attendance measure is significant and the literacy one is not. Puzzled, I look more carefully at the literacy measure and see various outliers and indications of measurement error. As I think more I realize too that literacy is a slow moving variable and may not be the best measure anyhow. I move forward and start to analyze the attendance measure only, perhaps conducting new tests, albeit with the same data. 
 
 ### 	Structural challenge
 
@@ -484,7 +465,7 @@ adjust analysis in light of findings in the data.
 *	You can do it when studying mechanisms
 *	You can do it when estimating counts
 
-### Myth: Registration only makes sense for experimental studies, not for observational studies
+### Myth: Registration only makes sense for experimental studies, not for observational studies  {.smaller}
 
 *	The key distinction is between prospective and retrospective studies.
 
@@ -535,108 +516,108 @@ adjust analysis in light of findings in the data.
 *	Registration communicates when researchers are angage in exploration or not. We love exploration and should be proud of it.
 
 
-### The challenge of historical data
+<!-- ### The challenge of historical data -->
 
-*	Does registering analyses of historical data make sense?
+<!-- *	Does registering analyses of historical data make sense? -->
 
-*	The problem is not just that researchers might have already seen the testing data; but that they have seen data that is correlated with it.
+<!-- *	The problem is not just that researchers might have already seen the testing data; but that they have seen data that is correlated with it. -->
 
-### Historical data: Illustration
+<!-- ### Historical data: Illustration -->
 
-* Consider historical proposition H.
-–	Say we start with a prior of .5 that H is true.
-–	Say that if H is true then we observe K1 with probability 0.8 but if it is false we observe K1 with probability 0.2 (“double decisiveness”)
-–	Similarly if H is true then we observe K2 with probability 0.8 but if it is false we observe K2 with probability 0.2  (“double decisiveness” again)
+<!-- * Consider historical proposition H. -->
+<!-- –	Say we start with a prior of .5 that H is true. -->
+<!-- –	Say that if H is true then we observe K1 with probability 0.8 but if it is false we observe K1 with probability 0.2 (“double decisiveness”) -->
+<!-- –	Similarly if H is true then we observe K2 with probability 0.8 but if it is false we observe K2 with probability 0.2  (“double decisiveness” again) -->
 
-*	Say we observe K1 (some collection of facts)
-*	We then update our belief in H…
-
-
-
-### Historical data: Illustration
-
-*	Our updated belief is: 
-$$\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = \frac{.8*.5}{.8*.5+.2*.5}  = 80\%$$
-
-*	We are now 80% confident in proposition H. 
-
-*	We decide to look for evidence K2. And we find it! 
-*	Our posterior is now:
-$$\Pr(H|K2) = \Pr(K2|H)\Pr(H)/\Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94\%$$
-*	Or is it?
-
-
-### Historical data: Illustration
-*	Our updated belief is: 
-
-$$\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = .8*.5/(.8*.5+.2*.5)  = 80\%$$
-
-*	We are now 80% confident in proposition H. 
-
-*	We decide to look for evidence K2. And we find it! 
-*	Our posterior is now:
-
-$$Pr(H|K2) = Pr(K2|H)Pr(H)/Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94%$$
-
-*	Or is it?
-
-
-### Historical data: Illustration
-
-* 	What if there are correlated probabilities?
+<!-- *	Say we observe K1 (some collection of facts) -->
+<!-- *	We then update our belief in H… -->
 
 
 
-*	Then 
+<!-- ### Historical data: Illustration -->
 
-$$\Pr(H | K1 \& K2) = .76 \times .5/(.76 \times .5 + .16 \times .5) = 83\%$$
+<!-- *	Our updated belief is:  -->
+<!-- $$\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = \frac{.8*.5}{.8*.5+.2*.5}  = 80\%$$ -->
 
-### Historical data: Illustration
-*	In a sense the fishing has already happened. 
-*	How so?
+<!-- *	We are now 80% confident in proposition H.  -->
 
-
-*	Say the proposition is FALSE but K1 is still observed 
-*	A decision is then made to seek “new data” K2
-*	Now K2 will be observed with 80% probability even though H is false
-
-### Historical data: Illustration
-
-* 	Naïve inference (using a prior of 80% due to K1): 
-94% if K2; 50% if not K2
-* 	Inference if K1 used to decide on search for K2 but prior is “reset” to .5 
-80%  if K2; 20% if not K2
-* 	Sophisticated inference:
-83% if K2; 50% if not K2
-* 	This sophisticated inference is unchanged if you take explicit account of the fact that searching for K2 was conditional on K1; either way it is still $\Pr(H | K1, K2)$. 
-
-* 	*It requires assessing the probability of knowing what you know now and finding out what you will find, if the proposition is true or false.* 
+<!-- *	We decide to look for evidence K2. And we find it!  -->
+<!-- *	Our posterior is now: -->
+<!-- $$\Pr(H|K2) = \Pr(K2|H)\Pr(H)/\Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94\%$$ -->
+<!-- *	Or is it? -->
 
 
-### Historical data: Illustration
+<!-- ### Historical data: Illustration -->
+<!-- *	Our updated belief is:  -->
 
-* 	Naïve inference (using a prior of 80% due to K1): 
-94% if K2; 50% if not K2
+<!-- $$\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = .8*.5/(.8*.5+.2*.5)  = 80\%$$ -->
 
-* 	Inference if K1 used to decide on search for K2 but prior is “reset” to .5 
-80%  if K2; 20% if not K2
+<!-- *	We are now 80% confident in proposition H.  -->
 
-* 	Sophisticated inference:
-83% if K2; 50% if not K2
+<!-- *	We decide to look for evidence K2. And we find it!  -->
+<!-- *	Our posterior is now: -->
 
-* 	This sophisticated inference is unchanged if you take explicit account of the fact that searching for K2 was conditional on K1; either way it is still Pr(H | K1, K2). 
+<!-- $$Pr(H|K2) = Pr(K2|H)Pr(H)/Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94%$$ -->
 
-* 	*Can such beliefs be elicited?* Perhaps. 
+<!-- *	Or is it? -->
 
 
-### Will it make a difference?
+<!-- ### Historical data: Illustration -->
 
-* 	Striking paucity of evidence. 
+<!-- * 	What if there are correlated probabilities? -->
 
-### How to?
 
-* 	Let’s look at an example
-* 	Design declaration idea
+
+<!-- *	Then  -->
+
+<!-- $$\Pr(H | K1 \& K2) = .76 \times .5/(.76 \times .5 + .16 \times .5) = 83\%$$ -->
+
+<!-- ### Historical data: Illustration -->
+<!-- *	In a sense the fishing has already happened.  -->
+<!-- *	How so? -->
+
+
+<!-- *	Say the proposition is FALSE but K1 is still observed  -->
+<!-- *	A decision is then made to seek “new data” K2 -->
+<!-- *	Now K2 will be observed with 80% probability even though H is false -->
+
+<!-- ### Historical data: Illustration -->
+
+<!-- * 	Naïve inference (using a prior of 80% due to K1):  -->
+<!-- 94% if K2; 50% if not K2 -->
+<!-- * 	Inference if K1 used to decide on search for K2 but prior is “reset” to .5  -->
+<!-- 80%  if K2; 20% if not K2 -->
+<!-- * 	Sophisticated inference: -->
+<!-- 83% if K2; 50% if not K2 -->
+<!-- * 	This sophisticated inference is unchanged if you take explicit account of the fact that searching for K2 was conditional on K1; either way it is still $\Pr(H | K1, K2)$.  -->
+
+<!-- * 	*It requires assessing the probability of knowing what you know now and finding out what you will find, if the proposition is true or false.*  -->
+
+
+<!-- ### Historical data: Illustration -->
+
+<!-- * 	Naïve inference (using a prior of 80% due to K1):  -->
+<!-- 94% if K2; 50% if not K2 -->
+
+<!-- * 	Inference if K1 used to decide on search for K2 but prior is “reset” to .5  -->
+<!-- 80%  if K2; 20% if not K2 -->
+
+<!-- * 	Sophisticated inference: -->
+<!-- 83% if K2; 50% if not K2 -->
+
+<!-- * 	This sophisticated inference is unchanged if you take explicit account of the fact that searching for K2 was conditional on K1; either way it is still Pr(H | K1, K2).  -->
+
+<!-- * 	*Can such beliefs be elicited?* Perhaps.  -->
+
+
+<!-- ### Will it make a difference? -->
+
+<!-- * 	Striking paucity of evidence.  -->
+
+<!-- ### How to? -->
+
+<!-- * 	Let’s look at an example -->
+<!-- * 	Design declaration idea -->
 
 
 
@@ -650,8 +631,3 @@ Incentives and strategies
 ```{r, echo = FALSE}
 knitr::include_graphics("assets/reconciliation.png")
 ```
-
-### Reconciliation
-
-## Replication files
-

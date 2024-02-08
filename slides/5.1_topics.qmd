@@ -19,7 +19,7 @@ bibliography: bib.bib
 source("setup.R")
 ```
 
-# Topics
+# Topics {#citopics}
 
 * Diff in Diff
 * RDD
@@ -88,8 +88,7 @@ The ATT here is averaging over effects for treated units (later periods only). W
 
 
 ```{r, warning = FALSE, eval = FALSE}
-design |> 
-  diagnose_design() 
+design |> diagnose_design() 
 ```
 
 ```{r, warning = FALSE, echo = FALSE}
@@ -417,11 +416,11 @@ $$\Delta^2 Y| B = 0 = \beta_5$$
 
 ### The list experiment: Motivation
 
-Multiple survey experimental designs have been generated to make it easier for subjects to answer **sensitive questions**
+* Multiple survey experimental designs have been generated to make it easier for subjects to answer **sensitive questions**
 
-The key idea is to use inference rather than measurement.
+* The key idea is to use inference rather than measurement.
 
-Subjects are placed in different conditions and the conditions *affect* the **answers** that are given in such a way that you can infer some underlying quantity of interest
+* Subjects are placed in different conditions and the conditions *affect* the **answers** that are given in such a way that you can infer some underlying quantity of interest
 
 ### The list experiment: Motivation
 
@@ -429,7 +428,7 @@ Subjects are placed in different conditions and the conditions *affect* the **an
 make_model("Z -> Question -> Answer <- Value") |> plot(textcol = "black", nodecol = "lightgrey")
 
 ```
-This is an obvious DAG but the main point is to be clear that the *Value* is the quantity of interest and the value is not affect by the treatment, *Z*.
+This is an obvious DAG but the main point is to be clear that the *Value* is the quantity of interest and the value is not affected by the treatment, *Z*.
 
 ### The list experiment: Motivation
 
@@ -438,7 +437,7 @@ The list experiment supposes that:
 1. Subjects do not want to give a direct answer to a question
 2. They nevertheless are willing to truthfully answer an indirect question
 
-**In other words**: sensitivities notwithstanding, *they are happy for the research to make correct inferences*
+**In other words**: sensitivities notwithstanding, *they are happy for the researcher to make correct inferences about them or their group*
 
 
 ### The list experiment: Strategy {.smaller}
@@ -463,13 +462,13 @@ How many of these do you agree with:
 |        | Short list       | Long list          | "Effect"  |
 |------|------------------|----------------|--------|
 |        | "2+2 = 4"    | "2+2 = 4"                |   |
-|        | "2*3 = 6"    | "2*3 = 6"                |   |
+|        | "2$\times$3 = 6"    | "2$\times$3 = 6"                |   |
 |        | "3+6 = 8"    | "Climate change is real" |   |
 |        |            | "3+6 = 8"                |   |
 | Answer | Y(0) = 2   | Y(1) = 4    |  Y(1) - Y(0) = 0 |
 
 
-[NOte: this is obviously not a good list. Why not?]
+[Note: this is obviously not a good list. Why not?]
 
 ### The list experiment: Design
 
@@ -687,7 +686,7 @@ See  Calonico, Cattaneo and Titiunik (2014) and related papers `? rdrobust::rdro
 ```{r}
 rdd_design  |> draw_data() |> ggplot(aes(X, Y, color = factor(D))) + 
   geom_point(alpha = .3) + theme_bw() +
-  geom_smooth(aes(X, Y_D_0)) + geom_smooth(aes(X, Y_D_1))
+  geom_smooth(aes(X, Y_D_0)) + geom_smooth(aes(X, Y_D_1)) + theme(legend.position = "none")
 
 ```
 
@@ -703,10 +702,10 @@ if(run)
   rdd_design |> diagnose_design() |> write_rds("saved/rdd_diagnosis.rds")
 
 read_rds("saved/rdd_diagnosis.rds") |> reshape_diagnosis() |> 
-  select(Estimator, 'Mean Estimate', 'Bias', 'SD Estimate', 'Coverage')
+  select(Estimator, 'Mean Estimate', 'Bias', 'SD Estimate', 'Coverage') |> kable()
 ```
 
-### Bandwidth tradeoff
+### Bandwidth tradeoff {.smaller}
 
 ```{r, echo = TRUE, eval = FALSE}
 rdd_design |> 
@@ -728,6 +727,7 @@ read_rds("saved/rddbandwidth.rds")|>  tidy() |>
   facet_grid(~estimator)
 
 ```
+
 * As we increase the bandwidth, the lm bias gets worse, but slowly, while the error falls. 
 * The best bandwidth is relatively wide. 
 * This is more true for the optimal estimator.
@@ -785,9 +785,7 @@ Average in $Z=0$ group: $\frac{{n_c} \overline{y}^0_{c}+ \left(n_{n}\overline{y}
 
 Average in $Z=1$ group: $\frac{{n_c} \overline{y}^1_{c} + \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a \right)}{n_a+n_c+n_n}$
 
-Difference: $ITT = ({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n}$
-
-So: $LATE = ITT\times\frac{n}{n_c}$
+Difference: $ITT = ({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n} \rightarrow LATE = ITT\times\frac{n}{n_c}$
 
 ### The good and the bad of LATE  {.smaller}
 
@@ -817,7 +815,8 @@ models <-
   lapply(update_model,  data = lipids_data, refresh = 0) 
 
 models |>
-  query_model(query = list(CATE = "Y[X=1] - Y[X=0]", Nonmonotonic = "X[Z=1] < X[Z=0]"),
+  query_model(query = list(CATE = "Y[X=1] - Y[X=0]", 
+                           Nonmonotonic = "X[Z=1] < X[Z=0]"),
               given = list("X[Z=1] > X[Z=0]", TRUE),
               using = "posteriors") 
 ```
@@ -870,14 +869,14 @@ The key problem is that $Y(1)$ and $Y(0)$ are not sufficient to describe potenti
 More completely specified potential outcomes (and estimands)
 
 |                               |                           |               |                   |        |                   |        |                   |        |                   |        |                   |
-|----|------|----|----|----|----|----|----|----|----|----|----|
+|---|---------|----|----|----|----|----|----|----|----|----|----|
 |                               |                           |               | **0**             |        | **1**             |        | **2**             |        | **3**             |        | **4**             |
 | Unit                          | Location                  | $D_\emptyset$ | $y(D_\emptyset)$  | $D_1$  | $y(D_1)$          | $D_2$  | $y(D_2)$          | $D_3$  | $y(D_3)$          | $D_4$  | $y(D_4)$          |
 | A                             | 1                         | 0             | 0                 | 1      | 3                 | 0      | 1                 | 0      | 0                 | 0      | 0                 |
 | B                             | 2                         | 0             | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 | 0      | 0                 |
 | C                             | 3                         | 0             | 0                 | 0      | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 |
 | D                             | 4                         | 0             | 0                 | 0      | 0                 | 0      | 0                 | 0      | 1                 | 1      | 3                 |
-|                               | **Average**               |               |                   |        |                   |        |                   |        |                   |        |                   |
+ |        |                   |
 | $\bar{y}_\text{treated}$      |                           |               | \-                |        |                   | 3      |                   | 3      |                   | 3      |                   |
 | $\bar{y}_\text{untreated}$    |                           |               | 0                 |        |                   | 1      |                   | 4/3    |                   | 4/3    |                   |
 | $\bar{y}_\text{neighbors}$    |                           |               | \-                |        |                   | 3      |                   | 2      |                   | 2      |                   |
@@ -1044,13 +1043,34 @@ knitr::include_graphics("figs/med2.png")
 
 ### The problem of unidentified mediators  {.smaller}
 
-Another somewhat obvious approach is to see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. 
+* Another somewhat obvious approach is to see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. 
 
-* But this common strategy is also not guaranteed to produce reliable results. 
+* If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. 
+
+* This common strategy associated with @baron1986moderator is also not guaranteed to produce reliable results. See for instance @green2010enough
+
+### Baron Kenny issues  {.smaller}
+
+```{r, results = "asis"}
+df <- 
+  fabricate(N = 1000,
+            U = rbinom(N, 1, .5),
+            X = rbinom(N, 1, .5),
+            M = ifelse(U==1, X, 1-X),
+            Y = ifelse(U==1, M, 1-M)) 
+            
+list(lm(Y ~ X, data = df), 
+     lm(Y ~ X + M, data = df)) |> texreg::htmlreg()
+                
+                
+
+```
+
+### The problem of unidentified mediators  {.smaller}
 
 * See [Imai](http://imai.princeton.edu/projects/mechanisms.html) on better ways to think about this problem and designs to address it.
 
-```{r, echo = FALSE, include = FALSE}
+```{r, echo = FALSE, include = TRUE}
 knitr::include_graphics("figs/collider.png")
 ```
 
@@ -1078,7 +1098,7 @@ knitr::include_graphics("figs/collider.png")
 
 ### In `CausalQueries`
 
-Lets imagine that sequential ignorability does not hold. What are our posteriors on mediation quantities when in fact all effects are mediated?
+Lets imagine that sequential ignorability does not hold. What are our posteriors on mediation quantities when in fact all effects are mediated, effects are strong, and we have  lots of data?
 
 ```{r}
 model <- make_model("X -> M ->Y <- X; M <-> Y")
@@ -1094,7 +1114,7 @@ We imagine a true model and consider estimands:
 
 ```{r}
 truth <- make_model("X -> M ->Y") |> 
-  set_parameters(c(.5, .5, .25, 0, .5, .25, .25, 0, .5, .25))
+  set_parameters(c(.5, .5, .1, 0, .8, .1, .1, 0, .8, .1))
 
 queries  <- 
   list(
@@ -1102,35 +1122,42 @@ queries  <-
       direct = "Y[X = 1, M = M[X=0]] - Y[X = 0, M = M[X=0]]"
       )
 
-truth |> query_model(queries)
+truth |> query_model(queries) |> kable()
 ```
 
-### In `CausalQueries`
+### In `CausalQueries` {.smaller}
 
 ```{r, eval = FALSE, echo = TRUE}
-Ns <- c(100, 1000, 10000)
-
-Ns |> 
-  lapply(function(n)
-    model |> update_model(data = truth |> make_data(n = n))) |>
-  query_model(queries = queries)
+model |> update_model(data = truth |> make_data(n = 1000)) |>
+  query_distribution(queries = queries, using = "posteriors") 
   
 ```
-
 
 ```{r, eval = TRUE, echo = FALSE}
-Ns <- c(100, 1000, 10000)
 
 if(run)
-  Ns |> 
-  lapply(function(n)
-    model |> update_model(data = truth |> make_data(n = n))) |>
-  query_model(queries = queries, using = "posteriors") |>
+model |> update_model(data = truth |> make_data(n = 1000), iter = 5000) |>
   write_rds("saved/cq-mediation.rds")
 
-read_rds("saved/cq-mediation.rds") |> kable()
-  
-  
+read_rds("saved/cq-mediation.rds") |> 
+    query_distribution(queries = queries, using = "posteriors") |>
+  gather(var, val) |> 
+  ggplot(aes(val)) + geom_histogram() + facet_grid(~var)  + xlab("posterior")
 ```
 
-Punchline: you can learn something from the structure of the data
+Why such poor behavior? Why isn't weight going onto indirect effects?
+
+Turns out the data *is* consistent with direct effects only: specifically that whenever $M$ is responsive to $X$, $Y$ is responsive to $X$.
+
+```{r, include = FALSE}
+read_rds("saved/cq-mediation.rds")$posterior_distribution |> apply(2, mean)
+```
+
+### In `CausalQueries` {.smaller}
+
+```{r, echo = FALSE}
+read_rds("saved/cq-mediation.rds") |> 
+    query_distribution(queries = queries, using = "posteriors") |>
+    ggplot(aes(direct, indirect)) + geom_point()
+```
+
