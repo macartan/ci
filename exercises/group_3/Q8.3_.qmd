@@ -1,0 +1,161 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Exercise 8.3"
+author: "Team 3"
+---
+
+```{r, include=FALSE}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  DeclareDesign,
+  fabricatr,
+  ggdag,
+  ggplot2,
+  magrittr,
+  SuperLearner,
+  drtmle,
+  quadprog,
+  dplyr
+)
+```
+
+## Recreating Data from the slides
+
+
+```{r, echo = TRUE}
+n <- 5000
+
+design <- 
+  # Model
+  declare_model(
+      N = n,
+      class = sample(1:3, n, replace = TRUE),
+      race = rbinom(N, 1, .5),
+      potential_outcomes(Y ~ .5*Z + race*Z + class + rnorm(N)),
+      prob = .2 + .3*race
+  ) + 
+  # Inquiry
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) + 
+  
+  # Data strategy
+  declare_assignment(Z = rbinom(N, 1, .2 + .3*race),
+                      ip = 1/(Z*prob + (1-Z)*(1-prob))) + # Prospensity weight?!
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  
+  # Answer strategy
+    
+    # Naive
+    declare_estimator(
+      Y ~ Z,
+      .method = lm_robust,
+      .summary = tidy,
+      term = "Z",
+      inquiry = "ATE",
+      label = "NAIV"
+    ) +
+  
+    # OLS with controls
+     declare_estimator(
+      Y ~ Z + class + race,
+      .method = lm_robust,
+      .summary = tidy,
+      term = "Z",
+      inquiry = "ATE",
+      label = "CONTROLS"
+    ) +
+  
+    # Lin
+     declare_estimator(
+      Y ~ Z,
+      ~ class + race,
+      .method = lm_lin,
+      .summary = tidy,
+      term = "Z",
+      inquiry = "ATE",
+      label = "LIN"
+    ) +
+  
+    # Inverse Propability Weighting
+    declare_estimator(
+      Y ~ Z,
+      weights = ip,
+      .method = lm_robust,
+      .summary = tidy,
+      term = "Z",
+      inquiry = "ATE",
+      label = "IPW"
+    ) +
+  
+  # IPW + ControlS (= Doubly Robust Estimation?!)
+   declare_estimator(
+      Y ~ Z + class + race,
+      weights = ip,
+      .method = lm_robust,
+      .summary = tidy,
+      term = "Z",
+      inquiry = "ATE",
+      label = "DOUBLY_ROBUST"
+    )
+
+
+```
+## Comparing the estimators
+
+```{r, include= FALSE}
+diagnosis <-
+  diagnose_design(design,
+                  sims = 1000,
+                  bootstrap_sims = 100)
+reshape_diagnosis(diagnosis)
+
+simulations_df <- get_simulations(diagnosis)
+
+simulations_df |> 
+  group_by(design, inquiry, estimator, term, outcome) |>
+  summarize(
+    bias = mean(estimate - estimand),
+    rmse = sqrt(mean((estimate - estimand)^2)),
+    power = mean(p.value <= 0.05),
+    coverage = mean(estimand <= conf.high & estimand >= conf.low)
+  )
+
+summary_df <- 
+  simulations_df |> 
+  group_by(estimator) |> 
+  summarize(estimand = mean(estimand))
+```
+
+```{r, include= TRUE}
+# then plot simulations
+ggplot(simulations_df) +
+  geom_histogram(aes(estimate),
+                 bins = 40, fill = "#72B4F3") +
+  geom_vline(data = summary_df,
+             aes(xintercept = estimand),
+             lty = "dashed", color = "#C6227F") +
+  facet_wrap(~ estimator) +
+  labs(x = "Estimate", y = "Count of simulations") +
+  theme_minimal()
+
+```
+
+## Comparing the std errors
+```{r, include= TRUE}
+# then plot simulations
+ggplot(simulations_df) +
+  geom_histogram(aes(std.error, color=estimator),
+                 bins = 100, position="identity", alpha=0.5) +
+  labs(x = "Estimate", y = "Count of simulations") +
+  theme_minimal()
+
+```
+
+
