@@ -1,0 +1,41 @@
+---
+title: "9.1"
+format: html
+editor: felix
+---
+
+#Define potential outcomes for each subject
+
+```{r}
+potential_outcomes <- matrix(c(0,0,0,1,0,0,2,0,0), nrow = 3, byrow = TRUE) rownames(potential_outcomes) <- c("Subject 1", "Subject 2", "Subject 3") colnames(potential_outcomes) <- c("Control", "Treatment", "All Treatment")
+```
+
+#Print potential outcomes for all possible assignments
+
+```{r}
+print("Potential Outcomes for All Possible Assignments:") print(potential_outcomes)
+```
+
+#Calculate difference in means for each possible assignment
+
+```{r}
+diff_means <- apply(potential_outcomes, 2, mean) - potential_outcomes[, "Control"] print("Difference in Means for Each Possible Assignment:") print(diff_means)
+```
+
+#Define two estimands of interest
+
+```{r}
+estimand_1 <- "Average Treatment Effect (ATE)" estimand_2 <- "Average Treatment Effect on the Treated (ATT)" print("Estimands of Interest:") print(estimand_1) print(estimand_2)
+```
+
+#Define randomization scheme and answer strategy
+
+```{r}
+randomization_scheme <- "Simple Randomization" answer_strategy <- "Intention-to-Treat (ITT) analysis"
+```
+
+#Print unbiased estimate of each estimand
+
+```{r}
+print("Randomization Scheme and Answer Strategy:") print(randomization_scheme) print(answer_strategy)
+```
