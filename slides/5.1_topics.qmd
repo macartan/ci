@@ -292,8 +292,16 @@ So *quite* complex weighting of different comparisons
 
 * Involve better specification of estimands
 * Use of comparisons directly relevant for the estimands
-* Particular solution: focus on the effect of treatment *at the time of first treatment*
+* *Imputation* of control outcomes in treated units using data from appropriate control units only and then targetting estimands directly [@borusyak2021revisiting]
+* Particular solution: focus on the effect of treatment *at the time of first treatment* / or *time of switching*: this usually involves a no carryover assumption [@de2020two] also @imai2021use
 
+### Solutions
+
+See excellent review by @roth2023s 
+
+```{r}
+knitr::include_graphics("assets/didtools.jpg")
+```
 
 ### Chaisemartin and d’Haultfoeuille (2020).
 
@@ -321,12 +329,12 @@ design <-
   ) 
 ```
 
-### Chaisemartin and d’Haultfoeuille (2020).
+### Chaisemartin and d’Haultfoeuille (2020) {.smaller}
 
 Note the inquiry
 
 ```{r}
-run_design(design) |> kable()
+run_design(design) |> kable(digits = 2)
 ```
 
 
@@ -397,13 +405,27 @@ $$Y|B = 0 = \beta_0 + \beta_1 L +   \beta_3 Post  + \beta_5 L Post$$
 $$\Delta^2 Y| B = 0 = \beta_5$$
 
 
+
+
 ### Easier to swallow?
 
 * The identifying assumption is that absent treatment the differences in trends between $L=0$ and $L=1$  would be the same for units with $B=0$ and $B=1$.
 
-* In a sense this is *one* parallel trends assumption, not two
 
 * See equation 5.4 in @olden2022triple
+
+$$ \left(E[Y_0|L=1, B=1, {\textit {Post}}=1] - E[Y_0|L=1, B=1, {\textit {Post}}=0]\right)  \\
+ \quad - \ \left(E[Y_0|L=1, B=0, {\textit {Post}}=1] - E[Y_0|L=1, B=0, {\textit {Post}}=0]\right)  \\
+ = \nonumber \\
+ \left(E[Y_0|L=0, B=1, {\textit {Post}}=1] - E[Y_0|L=0, B=1, {\textit {Post}}=0]\right)  \\
+ \quad - \ \left(E[Y_0|L=0, B=0, {\textit {Post}}=1] - E[Y_0|L=0, B=0, {\textit {Post}}=0]\right)$$
+
+
+### Easier to swallow?
+
+* In a sense this is *one* parallel trends assumption, not two
+
+* But there are four counterfactual quantities in this expression.
 
 **Puzzle**: Is it possible to have an effect identified by a difference in difference  but  incorrectly by a triple difference design? 
 
@@ -636,6 +658,73 @@ $$Y_i = \beta_0 + \beta_1Z_i  + \beta_2Long_i + \beta_3Z_iLong_i$$
 Errors and diagnostics
 
 
+
+### Intuition
+
+* The core idea in an RDD design is that if a decision rule assigns units that are *almost identical* to each other to treatment and control conditions then we can infer effects *for those cases* by looking *at those cases*.
+
+
+See excellent introduction:  @lee2010regression
+
+### Intuition
+
+
+* Kids born on 31 August start school a year younger than kids born on 1 September: does starting younger help or hurt?
+
+* Kids born on 12 September 1983 are more likely to register Republican than kids born on  10 September 1983: can this identify the effects of registration on long term voting? 
+
+* A district in which Republicans got 50.1% of the vote get a Republican representative while districts in which Republicans got 49.9% of the vote do not: does having a Republican representative make a difference for these districts?
+
+
+
+### Argument for identification
+
+Setting:
+
+* Typically the decision is based on a value on a "running variable", $X$. e.g. Treatment if $X > 0$
+* The estimand is $\mathbb{E}[Y(1) - Y(0)|X=x]$
+
+Two arguments:
+
+1. Continuity: $\mathbb{E}[Y(1)|X=x]$ and $\mathbb{E}[Y(0)|X=x]$ are continuous at ($x=0$) in $x$: so  $\lim_{\hat x \rightarrow 0}\mathbb{E}[Y(0)|X=\hat x] = \mathbb{E}[Y(0)|X=\hat 0]$
+
+2. Local randomization: tiny things that determine exact values of $x$ are *as if* random and so we can think of a local experiment around $X=0$.
+
+
+### Argument for identification
+
+Note: 
+
+* continuity argument requires continuous $x$: granularity
+* also builds off a conditional expectation function defined at $X=0$
+
+Exclusion restriction is  *implicit* in continuity: If *something else* happens at the threshold then the conditional expectation functions jump at the thresholds
+
+Implicit: $X$ is exogenous in the sense that units  cannot adjust $X$ in order to be on one or the other side of the threshold 
+
+### Evidence
+
+Typically researchers show:
+
+1. "First stage" results: assignment to treatment does indeed jump at the threshold
+2. "ITT": outcomes jump at the threshold
+3.  LATE (if fuzzy / imperfect compliance) using IV
+
+### Evidence
+
+Typically researchers show:
+
+In addition:
+
+1. Arguments for no other treatments at the threshold
+2. Arguments for no "sorting" at the threshold
+3. Evidence for no "heaping" at the threshold (McCrary density test)
+
+Sometimes: 
+
+* argue for why estimates extend beyond the threshold
+* exclude points *at* the threshold (!)
+
 ### Design
 
 ```{r}
@@ -731,6 +820,19 @@ read_rds("saved/rddbandwidth.rds")|>  tidy() |>
 * As we increase the bandwidth, the lm bias gets worse, but slowly, while the error falls. 
 * The best bandwidth is relatively wide. 
 * This is more true for the optimal estimator.
+
+
+### Geographic RDs {.smaller}
+
+Are popular in political science:
+
+* Put a lot of pressure on assumption of no alternative treatment---including "random" country level shocks!
+* Put a lot of pressure on no sorting assumptions (why was the border put where it was; why did units settle here or there?)
+* Put a lot of pressure on SUTVA: people on one side are literally proximate to people on another
+
+
+See @keele2015geographic
+
 
 ## Noncompliance and the LATE estimand {#LATE}
 
