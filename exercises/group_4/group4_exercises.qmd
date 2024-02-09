@@ -512,3 +512,77 @@ fit <- sampling(stan_model, data = ml_data, iter = 2000, chains = 4)
 print(fit, pars = c("sigma[1]", "sigma[2]", "sigma[3]", "mu_a", "mu_b"))
 ```
 
+## Week 4
+
+## Q 9.4  {.smaller}
+
+Which of these problems could be addressed using instrumental variables? In each case, what kinds of concern might you have about the IV strategy?
+
+## Instrumental Variables
+
+1. We observe a variable, the **instrument**, that is correlated with the outcome
+2. The **instrument** has no causal effect on the outcome.
+3. The **instrument** has a causal effect on the treatment.
+4. We assume random assignment of the **instrument**.
+5. The causal effect of the **instrument** on the treatment is their correlation in the data.
+6. Since the **instrument** is randomly assigned, it is not correlated with any other confounders except the treatment.
+
+## Instrumental Variables: DAG
+Example: The colonial origins of comparative development: An empirical investigation
+
+```{r iv_dag}
+
+smoking_ca_dag <- ggdag::dagify(outcome ~ treatment,
+                                outcome ~ U,
+                                treatment ~ U,
+                                treatment ~ instrument,
+                                labels = c("outcome" = "Y (GDP)", 
+                                           "instrument" = "Z (Settler Mortality)",
+                                           "treatment" = "X (Institutions)",
+                                           "U" = "U")
+                                )
+
+ggdag::ggdag(smoking_ca_dag, 
+             text = FALSE, 
+             use_labels = "label") +
+  theme_void()
+```
+
+## Scenario 1
+*Experimenters introduce a unconditional cash transfers into a set of villages in 2012 and use it to measure access school attendance in 2015. You come on the scene later and are interested in whether the transfer could have led to greater political participation in 2017.*
+
+**IV applicability**: This scenario does not lend itself for the IV-Strategy since the interest is in the effect of a random treatment (cash transfers) directly on the outcome (political participation)
+
+## Scenario 2
+*Experimenters introduce an unconditional cash transfers into a set of villages in 2012 and use it to measure access school attendance in 2015. You come on the scene later and are interested in whether the increased school attendance could have led to greater political participation in 2017.*
+
+**IV applicability**: Yes, if the cash transfers are assumed to only affect political participation through increased school attendance.
+
+**IV concerns**: This is a very strong (implausible) assumption.
+
+## Scenario 3
+*You want to understand the effects of attending a rally on subsequent support for a candidate. You send a random set of voters a flyer about an upcoming demonstration.*
+
+**IV applicability**: Yes
+
+**IV concerns**:
+
+* Flyer should not effect outcome (e.g. by providing informmation or framing a candidate)
+* Non-Compliance
+  + People who receive the flyer and do not attend the rally
+  + People who do not receive the flyer and attend the rally 
+
+## Scneario 4
+*You want to understand the effects of attending a rally on subsequent support for a candidate. You send a random set of voters a flyer about an upcoming demonstration but you find out later that your enumerators did not deliver the flyers in a bunch of areas.*
+
+**IV concerns**:
+
+* Violations of the assumption that the instrument is randomly assigned
+  + non-delivery might be correlated with characteristics of the areas which also influence candidate support
+
+## Scneario 5
+*You want to understand the effects sending flyers about an upcoming demonstration but you find out later that your computer code used incomplete data when making assignments and so failed to assign treatment to a whole bunch of regions.*
+
+## Scenario 6 
+*You want to understand whether sending flyers increases participation because people actually go to the rallies or because people’s general level awareness of the election increases, whether or not they go.*
+
