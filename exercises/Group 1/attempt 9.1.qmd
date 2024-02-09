@@ -48,3 +48,39 @@ ATT might also be an estimand of interest...?
 1.  Define a randomization scheme and answer strategy that will return an unbiased estimate of each estimand.
 
 Not sure.
+
+#3.  Define two estimands of interest.
+
+
+
+```{r}
+library(DeclareDesign)
+model<- declare_model(N<-3,
+                      U = rnorm(N),
+                      n<- sample(Z=1),
+                      spillover<- sample(n=3)
+                      potential_outcomes(Y~b*spillover +runif(1, 0, 0.5)*Z +rnorm(N)))
+# 1. interest of estimands: ATE
+inquiry_ate <- declare_inquiry(ATE = mean(Y_Z_1)-mean(Y_Z_0))
+  
+  
+# 2. insterest of estimands:
+inquiry_att <- declare_inquiry(ATT = mean(Y_Z_1)-mean(Y_Z_0), if Z=1)
+    
+  
+```
+#4.  Define a randomization scheme and answer strategy that will return an unbiased estimate of each estimand.
+
+```{r}
+data_strategy <- 
+  declare_sampling(S=complete_rs(N=N, n=3), filter =S ==1)+
+  declare_assignment(Z=complete_ra(N))+
+  declare_measurement(Y=reveal_outcomes(Y~Z))
+
+
+answer_strategy_ate <- declare_estimator(Y~Z, .method = difference_in_means, inquiry="ATE")
+answer_strategy_att <- declare_estimator(Y~Z, .method = difference_in_means, inquiry="ATT")
+
+declaration <- model + inquiry_ate + inquiry_att + data_strategy + answer_strategy_ate+ answer_strategy_att
+diagnose_design(declaration, diagnosands = diagnosands)
+```
