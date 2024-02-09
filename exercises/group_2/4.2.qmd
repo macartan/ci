@@ -46,21 +46,28 @@ here::i_am("4.2.qmd")
 ## Define causal paths between variables
 
 ```{r}
-dag <- dagitty("dag { X -> M -> Y C -> X C -> M D -> M }")
+m <- dagitty(
+  "dag {
+    X -> M -> Y;
+    X <- C -> M;
+    M <- D -> Y
+  }
+  "
+)
 ```
 
 
 ## DAG
 
 ```{r}
-plot(dag)
+m |> plot()
 ```
 
 
 ## Find adjustment set
 
 ```{r}
-adjustment_set <- adjustmentSets(dag, exposure = "X", outcome = "Y")
+adjustment_set <- adjustmentSets(m, exposure = "X", outcome = "Y")
 adjustment_set
 ```
 
@@ -74,9 +81,9 @@ design_4_2 <-
     U = rnorm(N),
     C = rnorm(N),
     D = rnorm(N),
-    M = rnorm(N) + 0.5 * C + 0.2 + D,
+    M = rnorm(N) + 0.5 * C + 0.7 * D,
     X = rbinom(N, 1, prob = pnorm(0.8 * C)),
-    Y_X_0 = X * M + D + U,
+    Y_X_0 = X * M + U,
     Y_X_1 = Y_X_0 + 0.5
   )  +
   declare_inquiry(ATE = mean(Y_X_1 - Y_X_0)) +

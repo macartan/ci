@@ -144,7 +144,7 @@ ri_dat |>
 ### Null: constant effects
 
 ```{r}
-(ate_hat <- coef(lm(Y ~ Z1, data = ri_dat))[2])
+(ate_hat <- coef(lm(Y ~ Z1 + Z2, data = ri_dat))[2])
 ```
 
 
