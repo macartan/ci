@@ -6,7 +6,7 @@ editor: visual
 
 **9.1 Spillovers**
 
-Imagine a study with three subjects. Each subject’s potential outcomes are as follows:
+Imagine a study with three subjects. Each subject's potential outcomes are as follows:
 
 -   0 if in control
 
@@ -49,25 +49,9 @@ ATT might also be an estimand of interest...?
 
 Not sure.
 
+#1. & 2. : another understanding \| Treatment Assignments \| Subject 1 \| Subject 2 \| Subject 3 \| Diff in Means \| \|-----------------------\|-----------\|-----------\|-----------\|-----------------\| \| **Y_0_0_0** \| 0 \| 0 \| 0 \| 0 \| \| **Y_0_0_1** \| 0 \| 0 \| 1 \| 1 \| \| **Y_0_1_0** \| 0 \| 1 \| 0 \| 1 \| \| **Y_0_1_1** \| 0 \| 1 \| 1 \| 1/2 \| \| **Y_1_0_0** \| 1 \| 0 \| 0 \| 1 \| \| **Y_1_0_1** \| 1 \| 0 \| 1 \| 1/2 \| \| **Y_1_1_0** \| 1 \| 1 \| 0 \| 1/2 \| \| **Y_1_1_1** \| 3 \| 3 \| 3 \| 3 \|
 
-#1. & 2. : another understanding
-| Treatment Assignments | Subject 1 | Subject 2 | Subject 3 | Diff in Means   |
-  |-----------------------|-----------|-----------|-----------|-----------------|
-  | **Y_0_0_0**           | 0         | 0         | 0         | 0               |
-  | **Y_0_0_1**           | 0         | 0         | 1         | 1               |
-  | **Y_0_1_0**           | 0         | 1         | 0         | 1               |
-  | **Y_0_1_1**           | 0         | 1         | 1         | 1/2             |
-  | **Y_1_0_0**           | 1         | 0         | 0         | 1               |
-  | **Y_1_0_1**           | 1         | 0         | 1         | 1/2             |
-  | **Y_1_1_0**           | 1         | 1         | 0         | 1/2             |
-  | **Y_1_1_1**           | 3         | 3         | 3         | 3               |
-
-
-
-
-#3.  Define two estimands of interest.
-
-
+#3. Define two estimands of interest.
 
 ```{r}
 library(DeclareDesign)
@@ -85,7 +69,8 @@ inquiry_att <- declare_inquiry(ATT = mean(Y_Z_1)-mean(Y_Z_0), if Z=1)
     
   
 ```
-#4.  Define a randomization scheme and answer strategy that will return an unbiased estimate of each estimand.
+
+#4. Define a randomization scheme and answer strategy that will return an unbiased estimate of each estimand.
 
 ```{r}
 data_strategy <- 

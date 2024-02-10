@@ -633,7 +633,7 @@ There are a few ways to do this:
 
 we will focus on the third approach
 
-### Redesign
+### Redesign {.smaller}
 
 * A design parameter is a modifiable quantity of a design. 
 * These quantities are objects that were in your global environment when you made your design, get referred to explicitly in your design, and got scooped up when the design was formed.
@@ -1052,11 +1052,18 @@ sims_1 |>  select(sim_ID, estimate, p.value) |> head() |> kable(digits = 2) |>
 ```{r, message = FALSE, fig.height = 1.5, fig.width = 6}
 sims_1 |>
   ggplot(aes(p.value)) + 
-  geom_histogram() +
+  geom_histogram(boundary = 0) +
   geom_vline(xintercept = .05, color = "red")
 
 ```
 
+
+### Power is mass of the sampling distribution *of decisions* under the model
+
+```{r, echo = TRUE, eval = FALSE}
+redesign(design, b = 0) |> 
+  simulate_design(sims = 10000) 
+```
 
 ```{r, echo = FALSE}
 if(run)
@@ -1073,7 +1080,7 @@ sims_2 <-
 ```{r, echo = TRUE, message = FALSE, echo = FALSE, fig.height = 1.5, fig.width = 6}
 sims_2 |>
   ggplot(aes(p.value)) + 
-  geom_histogram() +
+  geom_histogram(boundary = 0) +
   geom_vline(xintercept = .05, color = "red")
 
 ```
@@ -1160,7 +1167,7 @@ A few new elements here:
 * the `potential_outcomes` function is a special function that creates potential outcome columns
 * when you assign a treatment that affects an outcome you can use `reveal_outcome` to reveal the outcome; `Z` and `Y` are  default
 
-### Steps: A simple experimental design
+### Steps: A simple experimental design  {.smaller}
 
 
 ```{r}
@@ -1239,7 +1246,7 @@ You can generate hierarchical data like this:
 M() |> head() |> kable(digits = 2) |> kable_styling(font_size = 20)
 ```
 
-### M: Key extensions to model declaration
+### M: Key extensions to model declaration  {.smaller}
 
 You can generate panel data like this:
 
@@ -1458,7 +1465,7 @@ design <-
 design  |> run_design()  |> kable(digits = 2) |> kable_styling(font_size = 20)
 ```
 
-### A: Answers: terms
+### A: Answers: terms  {.smaller}
 
 Sometimes it can be confusing what the names of a term is but you can figure this by running the estimation strategy directly. Here's an example where the names of a term might be confusing.
 
@@ -1473,7 +1480,7 @@ lm_robust(Y ~ A*B,
 The names are they appear in the output here is the name of the term that `declare_estimator` will look for.
 
 
-### A: Answers: other packages
+### A: Answers: other packages  {.smaller}
 
 `DeclareDesign` works natively with `estimatr` but you you can use whatever packages you like. You do have to make sure though that estimatr gets as input a nice tidy dataframe of estimates, and that might require some tidying.
 

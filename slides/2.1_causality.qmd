@@ -179,13 +179,13 @@ In `DeclareDesign` $Y$ is realised from potential outcomes and assignment in thi
 
 ### Causal claims: The rub and the solution {.smaller}
 
- 
-
--   Now for some magic. We really want to estimate: $$ \tau_i = Y_i(1) - Y_i(0)$$
+ -   Now for some magic. We really want to estimate: $$ \tau_i = Y_i(1) - Y_i(0)$$
 
 -   BUT: We never can observe both $Y_i(1)$ and $Y_i(0)$
 
 -   Say we lower our sights and try to estimate an *average* treatment effect: $$ \tau = \mathbb{E} [Y(1)-Y(0)]$$
+
+### Causal claims: The rub and the solution {.smaller}
 
 -   Now make use of the fact that $$\mathbb E[Y(1)-Y(0)]  = \mathbb E[Y(1)]- \mathbb E [Y(0)] $$
 
@@ -201,11 +201,13 @@ In `DeclareDesign` $Y$ is realised from potential outcomes and assignment in thi
 -   We know that we can estimate averages of a quantity by taking the average value from a random sample of units
 -   To do this here we need to select a random sample of the $Y(1)$ values and a random sample of the $Y(0)$ values, in other words, we **randomly assign** subjects to treatment and control conditions.
 -   When we do that we can in fact estimate: $$ \mathbb {E}_N[Y_i(1) | Z_i = 1) - \mathbb {E}_N(Y_i(0) | Z_i = 0]$$ which in expectation equals: $$ \mathbb{E} [Y_i(1) | Z_i = 1 \text{ or } Z_i = 0] - \mathbb{E} [Y_i(0) | Z_i = 1 \text{ or } Z_i = 0]$$
--   This highlights a deep connection between **random assignment** and **random sampling**: when we do random assignment *we are in fact randomly sampling from different possible worlds*.
 
-### Causal claims: The rub and the solution
+### Causal claims: The rub and the solution  {.smaller}
 
-This provides a **positive argument** for causal inference from randomization, rather than simply saying with randomization "everything else is controlled for"
+This
+
+* highlights a deep connection between **random assignment** and **random sampling**: when we do random assignment *we are in fact randomly sampling from different possible worlds*.
+* provides a **positive argument** for causal inference from randomization, rather than simply saying with randomization "everything else is controlled for"
 
 **Let's discuss:**
 
@@ -213,7 +215,7 @@ This provides a **positive argument** for causal inference from randomization, r
 -   *Can a randomization "fail"?*
 -   *Where are the covariates?*
 
-### Causal claims: The rub and the solution
+### Causal claims: The rub and the solution {.smaller}
 
 **Idea**: random assignment is random sampling from potential worlds: to understand anything you find, you need to know the sampling weights
 

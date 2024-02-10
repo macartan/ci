@@ -28,8 +28,6 @@ run <- FALSE
 
 ## Getting started {#secoutline}
 
-### Plan for today
-
 * General aims and structure
 * Expectations
 * Pointers for exercises
@@ -50,7 +48,7 @@ run <- FALSE
 * Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci)
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j): Please fill this out today.
 
-### The topics
+### The topics {.smaller}
 
 Day 1: Intro
 
@@ -63,7 +61,7 @@ Day 2: Causality
 * [2.2	Inquiries and identification](#secestimands) 
 
 
-### The topics
+### The topics  {.smaller}
 
 
 Day 3: Estimation and Inference
@@ -115,7 +113,7 @@ Teams should prepare 15 - 20 minute presentations on set puzzles. Typically the 
 * [https://bookdown.org/content/d1e53ac9-28ce-472f-bc2c-f499f18264a3/code.html](https://bookdown.org/content/d1e53ac9-28ce-472f-bc2c-f499f18264a3/code.html)
 * [https://www.r-bloggers.com/2018/09/r-code-best-practices/](https://www.r-bloggers.com/2018/09/r-code-best-practices/)
 
-### Good coding rules 
+### Good coding rules   {.smaller}
 
 * Metadata first
 * Call packages at the beginning: use `pacman` 
@@ -134,7 +132,7 @@ Teams should prepare 15 - 20 minute presentations on set puzzles. Typically the 
 *  But: often you need ancillary files for data and code. That's OK but aims should still be that with a self contained folder someone can open a `main.Rmd` file, hit compile and get everything. I usually have an `input` and an `output` subfolder.
 
 
-### Collaborative coding / writing
+### Collaborative coding / writing  {.smaller}
 
 * Do not get in the business of passing attachments around
 * Documents in some cloud: `git`, osf, Dropbox, Drive, Nextcloud

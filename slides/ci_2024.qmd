@@ -16,8 +16,6 @@ bibliography: bib.bib
 
 # Roadmap
 
-## Road Map 
-
 1. Intro | [Course outline, tools](#secoutline) |  [`DeclareDesign`](#secdd)
 2. Causality | [Fundamental problems and solutions](#seccausality) | [Inquiries and identification](#secestimands) 
 3. Estimation and Inference |  [Frequentist](#secfisher) | [Bayesian](#secbayes)

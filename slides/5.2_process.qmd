@@ -8,7 +8,7 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
-title: "Experiments workflow considerations"
+title: "Experiments workflow"
 author: "Macartan Humphreys"
 bibliography: bib.bib
 ---
@@ -22,7 +22,7 @@ source("setup.R")
 
   
 
-# Experimentation: Processes and Workflows {#openscience}
+# Experimentation: Workflows {#openscience}
 
 * Scope for experimentation
 * Ethics of experiments
@@ -45,7 +45,7 @@ source("setup.R")
 
 
 
-### Prospects \& Potential
+### Innovative designs {.smaller}
 
 * Randomization of where police are stationed (India)
 * Randomization of how government tax collectors get paid (do they get a share?) (Pakistan)
@@ -347,88 +347,85 @@ Implications are:
 
 Simple idea: 
 
-–	It’s about communication:
-–	just say what you are planning on doing before you do it
-–	if you don’t have a plan, say that
-–	If you do things differently from what you were planning to do, say that
-
-Bells and whistles
-
-–	To be really useful a registry would have to have some credibility, some searchability, and some consistency in fields. 
-
-### Registration as a possible solution
-
-Elements: 
-
-*	Make it a facility
-*	Non-mandatory
-*	Non-binding
-*	But comprehensive
-
-*	Report whether registered or not
-*	Report changes in plans
-
-### What’s the Right Scope:
-
-For discussion: but claims of “tests” seem like a good start
-
-### Bells and Whistles: Certificaton?
-
-Center for Open Science Badges
-
-*	A public date-time stamped registration is in an institutional registration system (e.g., ClinicalTrials.gov, Open Science Framework)
-* Registration pre-dates realization of the outcomes
-* Registered design and analysis plan corresponds directly to reported design and analysis
-* Full disclosure of results following the registered plan
-
-Notations PR (peer review certified), DE (data exist), and TC (transparent changes)
+*	It’s about communication:
+*	just say what you are planning on doing before you do it
+*	if you don’t have a plan, say that
+*	If you do things differently from what you were planning to do, say that
 
 
-```{r, fig.height  = 1, echo = FALSE}
-knitr::include_graphics("assets/badge.png")
-```
+<!-- ### Registration as a possible solution -->
 
-[https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/](https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/)
+<!-- Elements:  -->
 
-### Bells and Whistles: Certificaton?
+<!-- *	Make it a facility -->
+<!-- *	Non-mandatory -->
+<!-- *	Non-binding -->
+<!-- *	But comprehensive -->
 
-Center for Open Science Badges
+<!-- *	Report whether registered or not -->
+<!-- *	Report changes in plans -->
 
-* 	Requires validating body (eg journal or registry)
-* 	Validation on process not on quality
-* 	Emphasis on transparency
+<!-- ### What’s the Right Scope: -->
 
-### Possible Cycle
+<!-- For discussion: but claims of “tests” seem like a good start -->
+
+<!-- ### Bells and Whistles: Certificaton? -->
+
+<!-- Center for Open Science Badges -->
+
+<!-- *	A public date-time stamped registration is in an institutional registration system (e.g., ClinicalTrials.gov, Open Science Framework) -->
+<!-- * Registration pre-dates realization of the outcomes -->
+<!-- * Registered design and analysis plan corresponds directly to reported design and analysis -->
+<!-- * Full disclosure of results following the registered plan -->
+
+<!-- Notations PR (peer review certified), DE (data exist), and TC (transparent changes) -->
 
 
-```{r, echo = FALSE}
-knitr::include_graphics("assets/cycle.png")
-```
+<!-- ```{r, fig.height  = 1, echo = FALSE} -->
+<!-- knitr::include_graphics("assets/badge.png") -->
+<!-- ``` -->
+
+<!-- [https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/](https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/) -->
+
+<!-- ### Bells and Whistles: Certificaton? -->
+
+<!-- Center for Open Science Badges -->
+
+<!-- * 	Requires validating body (eg journal or registry) -->
+<!-- * 	Validation on process not on quality -->
+<!-- * 	Emphasis on transparency -->
+
+<!-- ### Possible Cycle -->
 
 
-### Possible  Models
+<!-- ```{r, echo = FALSE} -->
+<!-- knitr::include_graphics("assets/cycle.png") -->
+<!-- ``` -->
 
-*	Journal-led model: let the registry follow
 
-–	Hard form – Medical sciences for RCTs
-–	Soft form  -- Medical sciences for observational studies
+<!-- ### Possible  Models -->
 
-* 	Professional Association led model
+<!-- *	Journal-led model: let the registry follow -->
 
-–	AEA for RCTs
-–	APSA?
+<!-- –	Hard form – Medical sciences for RCTs -->
+<!-- –	Soft form  -- Medical sciences for observational studies -->
+
+<!-- * 	Professional Association led model -->
+
+<!-- –	AEA for RCTs -->
+<!-- –	APSA? -->
 
 
 
-*	Funder led model (more mandatory)
-–	RIDIE, NSF?
+<!-- *	Funder led model (more mandatory) -->
+<!-- –	RIDIE, NSF? -->
 
-*	Bottom up model?
-–	Eg established by APSA sections; CQRM, PolMeth, Experiments? No formal journal recognition.
+<!-- *	Bottom up model? -->
+<!-- –	Eg established by APSA sections; CQRM, PolMeth, Experiments? No formal journal recognition. -->
 
 
 
-But even the simple idea is not everywhere welcome. There are many worries and some myths.
+<!-- But even the simple idea is not everywhere welcome. There are many worries and some myths. -->
 
 
 
@@ -479,8 +476,8 @@ adjust analysis in light of findings in the data.
 
 *	Registration will produce some burden but does not require the creation of content that is not needed anyway
 
-–	It does shift preparation of analyses forward
-–	And it also can increase the burden of developing analyses plans even for projects that don’t work. But that is in part, the point.
+  *	It does shift preparation of analyses forward
+  *	And it also can increase the burden of developing analyses plans even for projects that don’t work. But that is in part, the point.
 
 *	Upside is that ultimate analyses  may be much easier.
 
@@ -620,6 +617,12 @@ adjust analysis in light of findings in the data.
 <!-- * 	Design declaration idea -->
 
 
+### Punchline
+
+* Do it!
+* But if you have reasons to deviate, deviate *transparently*
+* Don't implement bad analysis just because you pre-registered
+* Instead: reconcile
 
 
 ## Reconciliation
@@ -628,6 +631,19 @@ Incentives and strategies
 
 ### Reconciliation
 
-```{r, echo = FALSE}
-knitr::include_graphics("assets/reconciliation.png")
-```
+| Inquiry        | In the preanalysis plan | In the paper  | In the appendix |
+|:--------------:|:-----------------------:|:-------------:|:---------------:|
+| Gender effect  | X                       |       X       |                 |
+| Age effect     |                         |               |        X        |
+
+: Illustration of an inquiry reconciliation table. {#tbl-reconciliation1} 
+
+
+### Reconciliation
+
+
+| Inquiry       | Following *A* from the PAP | Following *A* from the paper     | Notes                                                                                         |
+|:-------------:|:--------------------------:|:--------------------------------:|:---------------------------------------------------------------------------------------------:|
+| Gender effect | estimate = 0.6, s.e = 0.31 | estimate = 0.6, s.e = 0.25       | Difference due to change in control variables [provide cross references to tables and code]   |
+
+: Illustration of an answer strategy reconciliation table. {#tbl-reconciliation2} 
