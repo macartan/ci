@@ -8,6 +8,7 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
+    link-color: orange
 title: "Causality"
 author: "Macartan Humphreys"
 bibliography: bib.bib
@@ -19,7 +20,15 @@ source("setup.R")
 
 ```
 
-# Causality. What's a cause? {#seccausality}
+# Causality. {#seccausality}
+
+What's a cause? What's an explanation?
+
+## Outline
+
+1. Potential outcomes
+2. Endogenous subgroups
+3. DAGs and causal models 
 
 ## Potential outcomes and the counterfactual approach
 
@@ -354,15 +363,6 @@ Consider the following potential outcomes table:
 
 What is the actual treatment effect?
 
-## Pause
-
-Take a short break!
-
-```{r, echo  = FALSE}
-
-knitr::include_graphics("assets/coffee.png")
-
-```
 
 ## Endogeneous subgroups {#subs}
 
@@ -709,7 +709,7 @@ Say $Z$ is temporally prior to $X$; it is correlated with $Y$ (because of $U_1$)
 **Question:** Would it be useful to "control" for $Z$ when trying to estimate the effect of $X$ on $Y$?
  
  
-## Challenge for us
+### Challenge for us
 
 -   Say you don't like graphs. Fine.\
 

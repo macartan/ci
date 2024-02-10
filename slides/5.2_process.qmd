@@ -24,12 +24,18 @@ source("setup.R")
 
 # Experimentation: Workflows {#openscience}
 
+*Good questions studied well*
+
+## Outline
+
 * Scope for experimentation
 * Ethics of experiments
 * Open science workflows
 
 
 ## When to experiment {#L_prospects}
+
+Prospects and priorities
 
 ### Prospects 
 
@@ -42,8 +48,6 @@ source("setup.R")
 * **Advice**: If you can, **start from theory** and find an intervention, rather than the other way around.
 * **Advice**: If you can, go for *structure* rather than *gimmicks*
 * **Advice**: In attempts to parse, beware of generating unnatural interventions (how should a voter think of a politician that describes his policy towards Korea in detail but does not mention the economy? Is not mentioning the economy sending an unintended message?)
-
-
 
 ### Innovative designs {.smaller}
 

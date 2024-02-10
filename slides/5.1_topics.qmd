@@ -21,6 +21,10 @@ source("setup.R")
 
 # Topics {#citopics}
 
+*Introduction to observational strategies and more advanced  topics*
+
+## Outline
+
 * LATE
 * Diff in Diff
 * RDD
@@ -1194,11 +1198,11 @@ How many of these do you agree with:
 
 |        | Short list       | Long list          | "Effect"  |
 |------|------------------|----------------|--------|
-|        | "2+2 = 4"    | "2+2 = 4"                |   |
-|        | $2\\times3 = 6$    | $2$\times3 = 6$                |   |
-|        | "3+6 = 8"    | "Climate change is real" |   |
-|        |            | "3+6 = 8"                |   |
-| Answer | Y(0) = 2   | Y(1) = 4    |  Y(1) - Y(0) = 0 |
+|        | "2 + 2 = 4"    | "2 + 2 = 4"                |   |
+|        | "2 * 3 = 6"    | "2 * 3 = 6"  |   |
+|        | "3 + 6 = 8"    | "Climate change is real" |   |
+|        |            | "3 + 6 = 8"                |   |
+| Answer | Y(0) = 2   | Y(1) = 4    |  Y(1) - Y(0) = 2 |
 
 
 [Note: this is obviously not a good list. Why not?]

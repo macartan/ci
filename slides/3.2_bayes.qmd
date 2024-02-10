@@ -19,21 +19,33 @@ bibliography: bib.bib
 
 source("setup.R")
 
-run <- FALSE
+# run <- FALSE
 
 ```
 
 # Bayesian approaches {#secbayes}
 
-## Bayes Basics
+*Updating on causal quantitis*
 
-### Bayes Rule {.smaller}
+## Outline
+
+1. Bayesian reasoning
+2.  Bayesian calculations by hand
+3. `stan`
+4. A simple structural model with `stan`
+5. `CausalQueries`
+
+## Bayes reasoning
+
 
 -   Bayesian methods are just sets of procedures to figure out how to update beliefs in light of new information.
 
 -   We begin with a prior belief about the probability that a hypothesis is true.
 
 -   New data then allow us to form a posterior belief about the probability of the hypothesis.
+
+
+### Bayes Rule {.smaller}
 
 Bayesian inference takes into account:
 
@@ -161,6 +173,8 @@ $$p(\theta|\mathcal{D})=\frac{p(\mathcal{D}|\theta)p(\theta)}{\int_{\theta'}p(\m
 -   Sometimes however it can be useful to make use of "off the shelf" distributions.
 
 Consider **the share of people in a population that voted**. This is a quantity between 0 and 1.
+
+### Useful Distributions: Beta and Dirichlet Distributions {.smaller}
 
 -   Two people might may both believe that the turnout was around 50% but differ in how certain they are about this claim.
 -   One might claim to have no information and to believe any turnout rate between 0 and 100% is equally likely; another might be completely confident that the number if 50%.

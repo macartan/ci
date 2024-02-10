@@ -24,6 +24,8 @@ source("assets/ggplot_dd_theme.R")
 set.seed(343)
 run <- FALSE
 
+theme_set(theme_light())
+
 bs_style <- c("striped", "hover", "condensed", "responsive")
 options(kable_styling_bootstrap_options = bs_style)
 

@@ -24,13 +24,15 @@ source("setup.R")
 
 # Frequentist Analysis {#secfisher}
 
-## Basic Analysis {#nools}
+*Estimation and testing*
+
+## Outline {#nools}
 
 -   Simple estimates from experimental data
 -   Weighting, blocking
 -   Design-based variance estimates
 -   Design-based $p$ values
--   Controls and Doubly robust estimation
+-   Controls and doubly robust estimation
 -   Reporting
 
 ### ATE: DIM

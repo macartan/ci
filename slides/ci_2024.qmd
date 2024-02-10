@@ -8,6 +8,7 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
+    link-color: orange
 title: "Lectures on causal inference and experimental methods"
 author: "Macartan Humphreys"
 bibliography: bib.bib
@@ -72,7 +73,7 @@ source("setup.R")
 ```
 
 
-```{r, child = "4.1_experimental_design.qmd"}
+```{r, child = "4.1_design.qmd"}
 
 ```
 

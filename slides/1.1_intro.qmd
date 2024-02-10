@@ -1,23 +1,17 @@
 ---
 format: 
-   beamer:
-    theme: "AnnArbor"
-    colortheme: "seahorse"
+   revealjs:
+    embed-resources: true
+    theme: serif
     slide-level: 3
-    keep-tex: true
-    includes:
-      header-includes: include_nav.txt
-title: "Lectures on causal inference and experimental methods"
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Causal Inference and Experimentation"
+subtitle: "Introduction to the class"
 author: "Macartan Humphreys"
-numbersections: true
-header-includes:
-  - \usepackage{amsmath, amssymb, bbm, amstext, array, listings, mathtools, caption, color, graphics, ulem, caption, changepage, atbegshi, soul}
-  - \newcommand\E{\mathbb{E}}
-  - \newcommand\V{\mathbb{V}}
-  - \hypersetup{colorlinks=true,linkcolor=red}
-  - \usepackage{ulem}
-  - \pdfstringdefDisableCommands{\let\sout\relax}
-fontsize: 11pt  
+bibliography: bib.bib
 ---
 
 
@@ -60,9 +54,7 @@ Day 2: Causality
 * [2.1	Fundamental problems and solutions](#seccausality)
 * [2.2	Inquiries and identification](#secestimands) 
 
-
 ### The topics  {.smaller}
-
 
 Day 3: Estimation and Inference
 

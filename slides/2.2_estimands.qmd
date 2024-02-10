@@ -8,7 +8,8 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
-title: "Inquiries"
+    link-color: orange
+title: "Inquiries and identification"
 author: "Macartan Humphreys"
 bibliography: bib.bib
 ---
@@ -20,6 +21,19 @@ source("setup.R")
 ```
 
 # Inquiries {#secestimands}
+
+*Well posed questions*
+
+
+## Outline
+
+* Types of estimands
+* Principal strata
+* Identification
+* Backdoor
+* Frontdoor
+* `dagitty`
+
 
 ## Estimands and inquiries
 
@@ -201,7 +215,7 @@ Actual Causation:
 
 An inquiry: for what share in a population is a possible cause an actual cause?
 
-## Pearl's ladder
+### Pearl's ladder
 
 Pearl (e.g. @pearl2018book) describes three types of inquiry:
 
@@ -211,7 +225,7 @@ Pearl (e.g. @pearl2018book) describes three types of inquiry:
 | Intervention |"Doing" | If I set $X$ to $1$ should I expect $Y=1$? |
 | Counterfactual |"Imagining"  | If $X$ were $0$ instead of 1, would $Y$ then be $0$ instead of $1$? 
 
-## Pearl's ladder
+### Pearl's ladder
 
 We can understand these as asking different types of questions about a causal model
 
@@ -232,15 +246,6 @@ We already saw two instances of this:
 -   The probability that $X$ has a positive effect on $Y$ in an $X \rightarrow Y$ model is $\lambda^Y_{01}$ (last lecture)
 -   The share of "compliers" in an IV model $Z \rightarrow X \rightarrow Y \leftrightarrow X$ is $\lambda^X_{01}$
 
-## Pause
-
-Take a short break!
-
-```{r, echo  = FALSE}
-
-knitr::include_graphics("assets/coffee.png")
-
-```
 
 
 ## Identification
@@ -256,7 +261,7 @@ Say for example average wage is $x$ in some very large population. If I gather l
 -   If $x$ is \$1 then my estimate will end up centered on \$1.
 -   If it is \$2 it will end up centered on \$2.
 
-### Identification (Definition)
+### Identification (Definition) {.smaller}
 
 -   **Identifiability** Let $Q(M)$ be a query defined over a class of models $\mathcal M$, then $Q$ is identifiable if $P(M_1) = P(M_2) \rightarrow Q(M_1) = Q(M_1)$.
 
@@ -403,6 +408,7 @@ We bring $Z$ into the picture by writing: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \s
 
 This gives: $$p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t) $$
 
+### Backdoor Proof {.smaller}
 
 So, cleaning up, we can get rid of $T$: 
 
@@ -477,7 +483,7 @@ make_model( "Y <-U -> X-> M -> Y") |> plot(x_coord = c(2, 1, 2, 3), y_coord = c(
 
 Why?
 
-### Identification through the front foor {.smaller}
+### Identification through the front door {.smaller}
 
 
 If:

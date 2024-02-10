@@ -99,7 +99,7 @@ source("setup.R")
 ```
 
 
-```{r, child = "4.1_experimental_design.qmd"}
+```{r, child = "4.1_design.qmd"}
 
 ```
 

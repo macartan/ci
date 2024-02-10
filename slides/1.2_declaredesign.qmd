@@ -2,16 +2,22 @@
 format: 
    revealjs:
     embed-resources: true
-    theme: simple
+    theme: serif
     slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
     number-sections: true
+    link-color: orange
 title: "Design declaration, diagnosis, and redesign "
 subtitle: "MIDA and more"
 author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
+bibliography: bib.bib
 ---
 
-
 # `DeclareDesign` {#secdd}
+
+*How to define and assess research designs* 
 
 ## Roadmap
 
@@ -20,8 +26,8 @@ author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
 3. The Declare-Diagnose-Redesign life cycle
 4. Using designs
 5. Hands-on declaration and diagnosis
-6. An illustration of power
-7. A deeper dive into declaration functionality (time permitting)
+6. Illustration using power calculations
+7. A deeper dive into declaration functionality 
 
 
 ```{r, include=FALSE}
@@ -31,7 +37,7 @@ run <- FALSE
 
 
 
-## The MIDA Framework
+## The MIDA Framework {#MIDAframework}
 
 ### Four elements of any research design
 
