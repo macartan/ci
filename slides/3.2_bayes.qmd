@@ -25,7 +25,7 @@ source("setup.R")
 
 # Bayesian approaches {#secbayes}
 
-*Updating on causal quantitis*
+*Updating on causal quantities*
 
 ## Outline
 
@@ -63,7 +63,7 @@ Now I tell you that the card is indeed a spade. What would you guess?
 
 -   1 in 13
 
-What if told you it was a heart?
+What if I told you it was a heart?
 
 -   No chance it is the Jack of Spades
 
@@ -96,7 +96,7 @@ The test result says that you have the disease. What are the chances you have it
 
 -   e.g. if there were 10,000 people, then 100 would have the disease and 99 of these would test positive. But 9,900 would not have the disease and 99 of these would test positive. So the people with the disease that test positive are half of the total number testing positive.
 
-### Illustration 2. An illustration {.smaller}
+### Illustration 2. A picture {.smaller}
 
 ```{r, out.width="70%", fig.width=12, fig.height=6.5, fig.align='center', echo = FALSE}
   p=.9    ## power of test and prior prob healthy
@@ -502,7 +502,7 @@ Note that we get a much lower estimate for `b` with the same data.
 
 * Now imagine a setting in which there are 10 villages, each with 10 respondents. Half in each village are assigned to treatment $X=1$, and half to control $X=0$.
 
-* Say that there is possibley a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each drawn from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
+* Say that there is possibly a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each drawn from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
 
 * This all implies a multilevel structure.
 
