@@ -3,15 +3,33 @@ format:
    revealjs:
     embed-resources: true
     theme: serif
+    toc: true
+    toc-depth: 2
+    toc-title: outline
     slide-level: 3
     slide-number: true
     show-slide-number: all
     preview-links: auto
     number-sections: true
+    css: styles.css
+    plugins:
+      - menu
 title: "Causal Inference and Experimentation"
 subtitle: "Introduction to the class"
 author: "Macartan Humphreys"
 bibliography: bib.bib
+include-before-body:
+  text: |
+    <script src="plugins/menu/menu.js"></script>
+    <script>
+      Reveal.initialize({
+        plugins: [ RevealMenu ]
+        menu: {
+    // Specifies which side of the presentation the menu will
+    // be shown. Use 'left' or 'right'.
+    side: 'right'}
+      });
+    </script>
 ---
 
 
@@ -20,6 +38,7 @@ source("setup.R")
 run <- FALSE
 ```
 
+
 ## Getting started {#secoutline}
 
 * General aims and structure
@@ -27,7 +46,7 @@ run <- FALSE
 * Pointers for exercises
 * Quick `DeclareDesign` intro
 
-### Aims
+## Aims and items
 
 * Deep understanding of key ideas in causal inference 
 * Transportable tools for understanding how to evaluate and improve design
@@ -72,7 +91,7 @@ Day 5:
 * [5.2	Open science](#openscience)
 
 
-
+## Responsibilities
 
 ### Expectations {.smaller}
 
@@ -99,6 +118,8 @@ Teams should prepare 15 - 20 minute presentations on set puzzles. Typically the 
 
 * Share a report with the class. Best in self-contained documents for easy third party viewing. e.g. `.html` via `.qmd` or `.Rmd`
 * Presentations should be about 10 minutes for a given puzzle.
+
+## Tips
 
 ### Good coding rules 
 

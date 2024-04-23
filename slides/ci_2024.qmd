@@ -5,6 +5,7 @@ format:
     theme: serif
     slide-level: 3
     slide-number: true
+    toc-depth: 2
     show-slide-number: all
     preview-links: auto
     number-sections: true
