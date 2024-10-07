@@ -34,7 +34,7 @@ knitr::opts_chunk$set(echo = TRUE)
 | 10 Jan 2025    | 10 - 12 | WZB B002/003 | Intro                          |
 | 17 Jan  2025  | 9 - 1   | WZB B002/003 | Causality and causal inquiries  |
 | 24 Jan 2025    | 9 - 1   | WZB B002/003 | Frequentist answer strategies   |
-| 31 Jan 2025    | 9 - 1   | WZB B002/003 | Experimental answer strategies  |
+| 31 Jan 2025    | 9 - 1   | WZB B002/003 | Bayesian answer strategies  |
 | 14 Feb 2025   | 9 - 1   | WZB B002/003 | Design and evaluation           |
 | 21 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 1                       |
 | 28 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 2                       |
