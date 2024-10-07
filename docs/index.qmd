@@ -1,10 +1,26 @@
 ---
 title: "Causal inference and experimental design"
+author: Macartan Humphreys 
 format: 
   html:
-    theme: slate
     embed-resources: true
 ---
+
+::: {.panel-tabset}
+
+## Times and places
+
+| Date     | Time    | Location     | Topic                          |
+|----------|---------|--------------|--------------------------------|
+| 10 Jan 2025    | 10 - 12 | WZB B002/003 | Intro                          |
+| 17 Jan  2025  | 9 - 1   | WZB B002/003 | Causality and causal inquiries  |
+| 24 Jan 2025    | 9 - 1   | WZB B002/003 | Frequentist answer strategies   |
+| 31 Jan 2025    | 9 - 1   | WZB B002/003 | Experimental answer strategies  |
+| 14 Feb 2025   | 9 - 1   | WZB B002/003 | Design and evaluation           |
+| 21 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 1                       |
+| 28 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 2                       |
+
+## Resources
 
 * This syllabus: [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
 
@@ -24,3 +40,5 @@ format:
 * Puzzles: [https://macartan.github.io/ci/exercises.html](https://macartan.github.io/ci/exercises.html)
 
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
+
+:::
