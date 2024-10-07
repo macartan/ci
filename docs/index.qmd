@@ -20,6 +20,8 @@ format:
 | 21 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 1                       |
 | 28 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 2                       |
 
+[AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&vmfile=no&publishid=224623&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
+
 ## Resources
 
 * This syllabus: [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)

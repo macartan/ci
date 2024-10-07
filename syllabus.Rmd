@@ -99,7 +99,7 @@ In addition you should know some `R`. Really, the more you can invest on getting
 
 * Resources for learning `R`: http://www.r-bloggers.com/how-to-learn-r-2/
 
-before teh first class please make sure your `R` is up-to-date and that you are working in `R studio`. Then make sure you have the following packages installed.
+before the first class please make sure your `R` is up-to-date and that you are working in `R studio`. Then make sure you have the following packages installed.
 
 ```{r, eval = FALSE}
 pacman::p_load(
