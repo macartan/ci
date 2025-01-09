@@ -10,18 +10,6 @@ format:
       preview-links: auto
       number-sections: true
       link-color: orange
-      menu:
-         themes: false
-         transitions: false
-         hideMissingTitles: true
-         markers: true
-         openButton: true
-         custom:
-            - title: "Table of Contents"
-              icon: toc
-              content:
-                 toc: true
-                 depth: 2
 title: "Lectures on causal inference and experimental methods"
 author: "Macartan Humphreys"
 bibliography: bib.bib
