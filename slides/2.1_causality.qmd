@@ -721,7 +721,7 @@ Say $Z$ is temporally prior to $X$; it is correlated with $Y$ (because of $U_1$)
 
 **Answer:** Hopefully by the end of today you should see that the answer is obviously (or at least, plausibly) "no."
 
-## Conditional independence and graph structure
+## Conditional independence and graph structure {.smaller}
 
 * What DAGs do is tell you when one variable is independent of another variable given some third variable.
 * Intuitively:

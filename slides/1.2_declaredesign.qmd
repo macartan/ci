@@ -128,6 +128,7 @@ knitr::include_graphics("assets/cheat_sheet.png")
 
 ### Other resources
 
+* Full slide deck: https://macartan.github.io/dd_bootcamp/
 * The website: https://declaredesign.org/
 * The book: https://book.declaredesign.org
 * The console: `?DeclareDesign`

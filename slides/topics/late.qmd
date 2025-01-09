@@ -1,0 +1,152 @@
+---
+title: "Topics"
+subtitle: "LATE"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+```{r, include = FALSE}
+source("setup.R")
+```
+
+
+## Noncompliance and the LATE estimand {#LATE}
+
+```{r, echo = FALSE}
+model <- make_model("Z -> X -> Y; X <-> Y") 
+model |> plot()
+```
+
+### Local Average Treatment Effects {.smaller}
+
+Sometimes you give a medicine but only a nonrandom sample of people actually try to use it. Can you still estimate the medicine's effect?
+
+|     | X=0                           | X=1                           |
+|-----|-------------------------------|-------------------------------|
+| Z=0 | $\overline{y}_{00}$ ($n_{00}$) | $\overline{y}_{01}$ ($n_{01}$) |
+| Z=1 | $\overline{y}_{10}$ ($n_{10}$) | $\overline{y}_{11}$ ($n_{11}$) |
+
+Say that people are one of 3 types:
+
+1.  $n_a$ "always takers" have $X=1$ no matter what and have average outcome $\overline{y}_a$
+2.  $n_n$ "never takers" have $X=0$ no matter what with outcome $\overline{y}_n$
+3.  $n_c$ "compliers have" $X=Z$ and average outcomes $\overline{y}^1_c$ if treated and $\overline{y}^0_c$ if not.
+
+### Local Average Treatment Effects  {.smaller}
+
+Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
+
+|     | X=0                           | X=1                           |
+|-----|-------------------------------|-------------------------------|
+| Z=0 | $\overline{y}_{00}$ ($n_{00}$) | $\overline{y}_{01}$ ($n_{01}$) |
+| Z=1 | $\overline{y}_{10}$ ($n_{10}$) | $\overline{y}_{11}$ ($n_{11}$) |
+
+We can figure something about types:
+
+|          | $X=0$                  | $X=1$                  |                                                                                                        |
+|----------|:----------------------:|:----------------------:|
+| $Z=0$ | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}^0_{c}+\frac{\frac{1}{2}n_n}{\frac{1}{2}n_c + \frac{1}{2}n_n} \overline{y}_{n}$ | $\overline{y}_{a}$                                                                                                                                  |
+| $Z=1$ | $\overline{y}_{n}$                                                                                                                                  | $\frac{\frac{1}{2}n_c}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}^1_{c}+\frac{\frac{1}{2}n_a}{\frac{1}{2}n_c + \frac{1}{2}n_a} \overline{y}_{a}$ |
+
+### Local Average Treatment Effects  {.smaller}
+
+You give a medicine to 50% but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
+
+|         | $X=0$                                                                           | $X=1$                                                                             |
+|---------|:---------------------:|:---------------------:|
+| $Z=0$ | $\frac{n_c}{n_c + n_n} \overline{y}^0_{c}+\frac{n_n}{n_c + n_n} \overline{y}_n$ | $\overline{y}_{a}$ |
+| \(n\) | ($\frac{1}{2}(n_c + n_n)$)                                                      | ($\frac{1}{2}n_a$)  |
+| $Z=1$ | $\overline{y}_{n}$                  | $\frac{n_c}{n_c + n_a} \overline{y}^1_{c}+\frac{n_a}{n_c + n_a} \overline{y}_{a}$ |
+| \(n\) | ($\frac{1}{2}n_n$)                                                              | ($\frac{1}{2}(n_a+n_c)$) |                 
+
+Key insight: the contributions of the $a$s and $n$s  are the *same* in the $Z=0$ and $Z=1$ groups so if you difference you are left with the *changes* in the contributions of the $c$s. 
+
+
+### Local Average Treatment Effects  {.smaller}
+
+Average in $Z=0$ group: $\frac{{n_c} \overline{y}^0_{c}+ \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a\right)}{n_a+n_c+n_n}$
+
+Average in $Z=1$ group: $\frac{{n_c} \overline{y}^1_{c} + \left(n_{n}\overline{y}_{n} +{n_a} \overline{y}_a \right)}{n_a+n_c+n_n}$
+
+So, the *difference* is the ITT:  $({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n}$
+
+Last step:
+
+$$ITT = ({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n}$$
+
+$$\leftrightarrow$$ 
+
+$$LATE = \frac{ITT}{\frac{n_c}{n}}= \frac{\text{Intent to treat effect}}{\text{First stage effect}}$$
+
+
+### The good and the bad of LATE  {.smaller}
+
+-   You get a well-defined estimate even when there is non-random take-up
+-   May sometimes be used to assess mediation or knock-on effects
+-   But:
+    -   You need assumptions (monotonicity and the exclusion restriction -- *where were these used above*?)
+    -   Your estimate is only for a subpopulation
+    -   The subpopulation is not chosen by you and is unknown
+    -   Different encouragements may yield different estimates since they may encourage different subgroups
+
+
+### Pearl and Chickering again
+
+With and without an imposition of monotonicity
+
+```{r}
+#| echo: true
+#| eval: false
+
+data("lipids_data")
+
+models <- 
+  list(unrestricted =  make_model("Z -> X -> Y; X <-> Y"),
+       restricted =  make_model("Z -> X -> Y; X <-> Y") |>
+         set_restrictions("X[Z=1] < X[Z=0]")) |> 
+  lapply(update_model,  data = lipids_data, refresh = 0) 
+
+models |>
+  query_model(query = list(CATE = "Y[X=1] - Y[X=0]", 
+                           Nonmonotonic = "X[Z=1] < X[Z=0]"),
+              given = list("X[Z=1] > X[Z=0]", TRUE),
+              using = "posteriors") 
+```
+
+
+### Pearl and Chickering again
+
+With and without an imposition of monotonicity:
+
+```{r}
+#| echo: false
+#| eval: true
+
+data("lipids_data")
+
+if(run)
+  list(unrestricted =  make_model("Z -> X -> Y; X <-> Y"),
+       restricted =  make_model("Z -> X -> Y; X <-> Y") |>
+         set_restrictions("X[Z=1] < X[Z=0]")) |> 
+  lapply(update_model,  data = lipids_data, refresh = 0) |>
+  query_model(query = list(CATE = "Y[X=1] - Y[X=0]", Nonmonotonic = "X[Z=1] < X[Z=0]"),
+              given = list("X[Z=1] > X[Z=0]", TRUE),
+              using = "posteriors") |>
+    write_rds("saved/lipids_again.rds")
+
+read_rds("saved/lipids_again.rds") |> select(model, query, mean, sd) |> arrange(query) |> kable(digits = 2)
+```
+
+
+In one case we *assume* monotonicity, in the other we **update** on it (easy in this case because of the empirically verifiable nature of one sided non compliance)
+

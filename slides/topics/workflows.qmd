@@ -8,9 +8,10 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
-title: "Experiments workflow"
+title: "Topics"
+subtitle: "workflows"
 author: "Macartan Humphreys"
-bibliography: bib.bib
+bibliography: ../bib.bib
 ---
 
   
@@ -20,20 +21,20 @@ source("setup.R")
 
 ```
 
-  
 
-# Experimentation: Workflows {#openscience}
+
+## Experimentation: Workflows {#openscience}
 
 *Good questions studied well*
 
-## Outline
+### Outline
 
 * Scope for experimentation
 * Ethics of experiments
 * Open science workflows
 
 
-## When to experiment {#L_prospects}
+### When to experiment {#L_prospects}
 
 Prospects and priorities
 
@@ -264,58 +265,6 @@ df |> mutate(result = "pos") |> ggplot(aes(x, y, color = result)) + geom_point(s
 *  Knowing the mapping from data to inference in advance gives a handle on the false positive rate. 
 
 
-<!-- ### Evidence Proofing: Bayesian Illustration -->
-
-<!-- * Say choice of two pieces of evidence to bring to bear, $K1$ or $K2$ -->
-
-
-<!-- ```{r, echo = FALSE} -->
-
-<!-- two_by_two <- function(vals = c(.9, .05, .95, .05, 0, .05, .95, .05, 1), -->
-<!--                        A = matrix(vals, 3, 3),  -->
-<!--                        colnames = c("", "$K_1$ = No", "$K_1$ = Yes", "All"), -->
-<!--                        rownames = c("$K_2$ = No", "$K_2$ = Yes", "All")) -->
-<!--   cbind(rownames, A) |> -->
-<!--   kable(col.names = colnames, align = "c", escape = TRUE) |> -->
-<!--   kableExtra::column_spec(1, bold = TRUE) -->
-<!-- ``` -->
-
-
-<!-- ```{r} -->
-<!-- #| tbl-cap: Likelihoods -->
-<!-- #| tbl-subcap: ["If TRUE", "If FALSE"] -->
-<!-- #| layout-ncol: 2 -->
-<!-- #| echo: false -->
-
-<!-- two_by_two() -->
-
-<!-- two_by_two(vals = c(0, .05, .05, .05, .9, .95, .05, .95, 1)) -->
-<!-- ``` -->
-
-
-
-<!-- * 	Posterior | K1 = Posterior | K2 = 95%  -->
-<!-- * 	Probability positive claim | H is false;  evidence randomly selected  (p) = 5% -->
-<!-- * 	Probability positive claim | H is false; evidence is fished (p) = 10% -->
-
-<!-- ### Evidence Proofing: Bayesian Illustration -->
-
-<!-- * Say choice of two pieces of evidence to bring to bear, $K1$ or $K2$ -->
-
-
-<!-- ```{r} -->
-<!-- #| tbl-cap: Likelihoods -->
-<!-- #| tbl-subcap: ["If TRUE", "If FALSE"] -->
-<!-- #| layout-ncol: 2 -->
-<!-- #| echo: FALSE -->
-
-<!-- two_by_two() -->
-
-<!-- two_by_two(vals = c(0, .05, .05, .05, .9, .95, .05, .95, 1)) -->
-<!-- ``` -->
-
-<!-- * 	What’s the truly correct inference if you KNOW that researcher is a fisher? -->
-<!-- * 	Depends: say you thought K1 and K2 were sought in order. Then if K2 evidence is presented this means K1 not found. So posterior |K2 only = 50%.  -->
 
 ### The scope for fishing
 
@@ -356,80 +305,6 @@ Simple idea:
 *	if you don’t have a plan, say that
 *	If you do things differently from what you were planning to do, say that
 
-
-<!-- ### Registration as a possible solution -->
-
-<!-- Elements:  -->
-
-<!-- *	Make it a facility -->
-<!-- *	Non-mandatory -->
-<!-- *	Non-binding -->
-<!-- *	But comprehensive -->
-
-<!-- *	Report whether registered or not -->
-<!-- *	Report changes in plans -->
-
-<!-- ### What’s the Right Scope: -->
-
-<!-- For discussion: but claims of “tests” seem like a good start -->
-
-<!-- ### Bells and Whistles: Certificaton? -->
-
-<!-- Center for Open Science Badges -->
-
-<!-- *	A public date-time stamped registration is in an institutional registration system (e.g., ClinicalTrials.gov, Open Science Framework) -->
-<!-- * Registration pre-dates realization of the outcomes -->
-<!-- * Registered design and analysis plan corresponds directly to reported design and analysis -->
-<!-- * Full disclosure of results following the registered plan -->
-
-<!-- Notations PR (peer review certified), DE (data exist), and TC (transparent changes) -->
-
-
-<!-- ```{r, fig.height  = 1, echo = FALSE} -->
-<!-- knitr::include_graphics("assets/badge.png") -->
-<!-- ``` -->
-
-<!-- [https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/](https://osf.io/tvyxz/wiki/1.%20View%20the%20Badges/) -->
-
-<!-- ### Bells and Whistles: Certificaton? -->
-
-<!-- Center for Open Science Badges -->
-
-<!-- * 	Requires validating body (eg journal or registry) -->
-<!-- * 	Validation on process not on quality -->
-<!-- * 	Emphasis on transparency -->
-
-<!-- ### Possible Cycle -->
-
-
-<!-- ```{r, echo = FALSE} -->
-<!-- knitr::include_graphics("assets/cycle.png") -->
-<!-- ``` -->
-
-
-<!-- ### Possible  Models -->
-
-<!-- *	Journal-led model: let the registry follow -->
-
-<!-- –	Hard form – Medical sciences for RCTs -->
-<!-- –	Soft form  -- Medical sciences for observational studies -->
-
-<!-- * 	Professional Association led model -->
-
-<!-- –	AEA for RCTs -->
-<!-- –	APSA? -->
-
-
-
-<!-- *	Funder led model (more mandatory) -->
-<!-- –	RIDIE, NSF? -->
-
-<!-- *	Bottom up model? -->
-<!-- –	Eg established by APSA sections; CQRM, PolMeth, Experiments? No formal journal recognition. -->
-
-
-
-<!-- But even the simple idea is not everywhere welcome. There are many worries and some myths. -->
 
 
 
@@ -516,109 +391,6 @@ adjust analysis in light of findings in the data.
 
 *	Registration communicates when researchers are angage in exploration or not. We love exploration and should be proud of it.
 
-
-<!-- ### The challenge of historical data -->
-
-<!-- *	Does registering analyses of historical data make sense? -->
-
-<!-- *	The problem is not just that researchers might have already seen the testing data; but that they have seen data that is correlated with it. -->
-
-<!-- ### Historical data: Illustration -->
-
-<!-- * Consider historical proposition H. -->
-<!-- –	Say we start with a prior of .5 that H is true. -->
-<!-- –	Say that if H is true then we observe K1 with probability 0.8 but if it is false we observe K1 with probability 0.2 (“double decisiveness”) -->
-<!-- –	Similarly if H is true then we observe K2 with probability 0.8 but if it is false we observe K2 with probability 0.2  (“double decisiveness” again) -->
-
-<!-- *	Say we observe K1 (some collection of facts) -->
-<!-- *	We then update our belief in H… -->
-
-
-
-<!-- ### Historical data: Illustration -->
-
-<!-- *	Our updated belief is:  -->
-<!-- $$\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = \frac{.8*.5}{.8*.5+.2*.5}  = 80\%$$ -->
-
-<!-- *	We are now 80% confident in proposition H.  -->
-
-<!-- *	We decide to look for evidence K2. And we find it!  -->
-<!-- *	Our posterior is now: -->
-<!-- $$\Pr(H|K2) = \Pr(K2|H)\Pr(H)/\Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94\%$$ -->
-<!-- *	Or is it? -->
-
-
-<!-- ### Historical data: Illustration -->
-<!-- *	Our updated belief is:  -->
-
-<!-- $$\Pr(H|K1) = \Pr(K1|H)\Pr(H)/\Pr(K1) = .8*.5/(.8*.5+.2*.5)  = 80\%$$ -->
-
-<!-- *	We are now 80% confident in proposition H.  -->
-
-<!-- *	We decide to look for evidence K2. And we find it!  -->
-<!-- *	Our posterior is now: -->
-
-<!-- $$Pr(H|K2) = Pr(K2|H)Pr(H)/Pr(K2) =.8*.8/(.8*.8+.2*.2)  = 94%$$ -->
-
-<!-- *	Or is it? -->
-
-
-<!-- ### Historical data: Illustration -->
-
-<!-- * 	What if there are correlated probabilities? -->
-
-
-
-<!-- *	Then  -->
-
-<!-- $$\Pr(H | K1 \& K2) = .76 \times .5/(.76 \times .5 + .16 \times .5) = 83\%$$ -->
-
-<!-- ### Historical data: Illustration -->
-<!-- *	In a sense the fishing has already happened.  -->
-<!-- *	How so? -->
-
-
-<!-- *	Say the proposition is FALSE but K1 is still observed  -->
-<!-- *	A decision is then made to seek “new data” K2 -->
-<!-- *	Now K2 will be observed with 80% probability even though H is false -->
-
-<!-- ### Historical data: Illustration -->
-
-<!-- * 	Naïve inference (using a prior of 80% due to K1):  -->
-<!-- 94% if K2; 50% if not K2 -->
-<!-- * 	Inference if K1 used to decide on search for K2 but prior is “reset” to .5  -->
-<!-- 80%  if K2; 20% if not K2 -->
-<!-- * 	Sophisticated inference: -->
-<!-- 83% if K2; 50% if not K2 -->
-<!-- * 	This sophisticated inference is unchanged if you take explicit account of the fact that searching for K2 was conditional on K1; either way it is still $\Pr(H | K1, K2)$.  -->
-
-<!-- * 	*It requires assessing the probability of knowing what you know now and finding out what you will find, if the proposition is true or false.*  -->
-
-
-<!-- ### Historical data: Illustration -->
-
-<!-- * 	Naïve inference (using a prior of 80% due to K1):  -->
-<!-- 94% if K2; 50% if not K2 -->
-
-<!-- * 	Inference if K1 used to decide on search for K2 but prior is “reset” to .5  -->
-<!-- 80%  if K2; 20% if not K2 -->
-
-<!-- * 	Sophisticated inference: -->
-<!-- 83% if K2; 50% if not K2 -->
-
-<!-- * 	This sophisticated inference is unchanged if you take explicit account of the fact that searching for K2 was conditional on K1; either way it is still Pr(H | K1, K2).  -->
-
-<!-- * 	*Can such beliefs be elicited?* Perhaps.  -->
-
-
-<!-- ### Will it make a difference? -->
-
-<!-- * 	Striking paucity of evidence.  -->
-
-<!-- ### How to? -->
-
-<!-- * 	Let’s look at an example -->
-<!-- * 	Design declaration idea -->
 
 
 ### Punchline

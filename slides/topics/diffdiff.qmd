@@ -1,0 +1,423 @@
+---
+title: "Topics"
+subtitle: "Difference in differences"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+```{r, include = FALSE}
+source("setup.R")
+```
+
+
+## Diff in diff {#diffdiff}
+
+Key idea: the evolution of units in the control group allow you to impute what the evolution of units in the treatment group *would have been* had they not been treated
+
+
+### Logic {.smaller}
+
+We have group $A$ that enters treatment at some point and group $B$ that never does
+
+The estimate:
+
+$$\hat\tau = (\mathbb{E}[Y^A | post] - \mathbb{E}[Y^A | pre]) -(\mathbb{E}[Y^B | post] - \mathbb{E}[Y^B | pre])$$
+(how different is the change in $A$ compared to the change in $B$?)
+
+can be written:
+
+$$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre])$$
+
+### Logic {.smaller}
+Cleaning up
+
+$$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre])$$
+
+$$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | post]) + ((\mathbb{E}[Y_0^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre]))$$
+
+$$\hat\tau_{ATT} = \tau_{ATT} + \text{Difference in trends}$$
+
+
+
+### Simplest case
+
+```{r}
+n_units <- 2
+design <- 
+  declare_model(
+    unit = add_level(N = n_units, I = 1:N),
+    time = add_level(N = 6, T = 1:N, nest = FALSE),
+    obs = cross_levels(by = join_using(unit, time))) +
+  declare_model(potential_outcomes(Y ~ I + T^.5 + Z*T)) +
+  declare_assignment(Z = 1*(I>(n_units/2))*(T>3)) +
+  declare_measurement(Y = reveal_outcomes(Y~Z)) + 
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0),
+                  ATT = mean(Y_Z_1[Z==1] - Y_Z_0[Z==1])) +
+  declare_estimator(Y ~ Z, label = "naive") + 
+  declare_estimator(Y ~ Z + I, label = "FE1") + 
+  declare_estimator(Y ~ Z + as.factor(T), label = "FE2") + 
+  declare_estimator(Y ~ Z + I + as.factor(T), label = "FE3")  
+
+
+```
+
+### Diagnosis {.smaller}
+
+Here only the two way fixed effects is unbiased and only for the ATT.
+
+The ATT here is averaging over effects for treated units (later periods only). We *know nothing* about the size of effects in earlier periods when all units are in control!
+
+
+
+```{r, warning = FALSE, eval = FALSE}
+design |> diagnose_design() 
+```
+
+```{r, warning = FALSE, echo = FALSE}
+if(run)
+  design |> 
+  redesign(n_units = 10) |>  
+  diagnose_design(bootstrap_sims = 0)  |>
+  write_rds("saved/dd1.rds") 
+
+read_rds("saved/dd1.rds") |>
+  reshape_diagnosis() |> select(Inquiry, Estimator, Bias) |> kable()
+
+```
+
+### The classic graph
+
+```{r}
+design |> 
+  draw_data() |>
+  ggplot(aes(T, Y, color = unit)) + geom_line() +
+       geom_point(aes(T, Y_Z_0)) + theme_bw()
+```
+
+
+### Extends to multiple units easily {.smaller}
+
+
+```{r, warning = FALSE, eval = FALSE}
+design |> redesign(n_units = 10) |> diagnose_design() 
+```
+
+```{r, warning = FALSE, echo = FALSE}
+if(run)
+  design |> 
+  redesign(n_units = 10) |>  
+  diagnose_design(bootstrap_sims = 0)  |>
+  write_rds("saved/dd10.rds")
+
+read_rds("saved/dd10.rds") |>
+  reshape_diagnosis() |> select(Inquiry, Estimator, Bias) |> kable()
+
+```
+
+### Extends to multipe units easily
+
+
+```{r}
+design |> 
+  redesign(n_units = 10) |>  
+  draw_data() |> 
+  ggplot(aes(T, Y, color = unit)) + geom_line() +
+       geom_point(aes(T, Y_Z_0)) + theme_bw()
+```
+
+### In practice
+
+* Need to defend parallel trends
+* Most typically using an *event study*
+* Sometimes: report balance between treatment and control groups in covariates
+* Placebo leads and lags
+
+
+### Heterogeneity {.smaller}
+
+* Things get much more complicated when there is (a) heterogeneous timing in treatment take up and (b) heterogeneous effects
+
+
+*  It's only recently been appreciated how tricky things can get
+
+*  But we already have an intuition from our analysis of trials with heterogeneous assignment and heterogeneous effects: 
+
+  * in such cases fixed effects analysis weights stratum level treatment effects by the variance in assignment to treatment
+  * something similar here 
+
+### Staggared assignments {.smaller}
+
+Just two units assigned at different times:
+
+```{r}
+trend = 0
+
+design <- 
+  declare_model(
+    unit = add_level(N = 2, ui = rnorm(N), I = 1:N),
+    time = add_level(N = 6, ut = rnorm(N), T = 1:N, nest = FALSE),
+    obs = cross_levels(by = join_using(unit, time))) +
+  declare_model(
+    potential_outcomes(Y ~ trend*T + (1+Z)*(I == 2))) +
+  declare_assignment(Z = 1*((I == 1) * (T>3) + (I == 2) * (T>5))) +
+  declare_measurement(Y = reveal_outcomes(Y~Z), 
+                      I_c = I - mean(I)) +
+  declare_inquiry(mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z, label = "1. naive") + 
+  declare_estimator(Y ~ Z + I, label = "2. FE1") + 
+  declare_estimator(Y ~ Z + as.factor(T), label = "3. FE2") + 
+  declare_estimator(Y ~ Z + I + as.factor(T), label = "4. FE3") + 
+  declare_estimator(Y ~ Z*I_c + as.factor(T), label = "5. Sat")  
+```
+
+
+### Staggared assignments diagnosis {.smaller}
+
+
+```{r, message = FALSE, echo = FALSE}
+diagnose_design(design, sims = 1) |>
+  reshape_diagnosis() |> select(Estimator, 'Mean Estimand', 'Mean Estimate') |> kable()
+```
+
+
+### Where do these numbers come?
+
+
+* The estimand is .5 -- this comes from weighting the effect for unit 1 (0) and the effect for unit 2 (1) equally
+
+* The naive estimate is wildly off because it does not take into account that units with different treatment shares have different average levels in outcomes
+
+### Where do these numbers come?
+
+
+* The estimate when we control for unit is 0.36: this comes from weighting the unit-stratum level effects according to the variance of assignment to each stratum:
+
+```{r}
+design |> draw_data() |> group_by(unit) |> summarize(var = mean(Z)*(1-mean(Z))) |>
+  mutate(weight = var/sum(var)) |> kable(digits = 2)
+```
+
+### Where do these numbers come? {.smaller}
+
+
+* The estimate when we control for time  is -1: this comes from weighting the time-stratum level effects according to the variance of assignment to each stratum
+* it weights periods 4 and 5 only and equally, yielding  the difference in outcomes for unit 1 in treatment (0) and group 2 in control (1)
+  
+```{r}
+design |> draw_data()  |> group_by(time) |> summarize(var = mean(Z)*(1-mean(Z))) |>
+  mutate(weight = var/sum(var)) |> kable(digits = 2)
+```
+
+### Where do these numbers come?
+
+* The estimate when we control for time  *and* unit is 0.25
+* This is actually a lot harder to interpret:
+  
+*  We can figure out what it is from the "Goodman-Bacon decomposition" in [@goodman2021difference](https://www.nber.org/system/files/working_papers/w25018/w25018.pdf)
+
+
+### Where do these numbers come?
+
+```{r, echo = FALSE}
+include_graphics("assets/Goodman-Bacon.png")
+```
+
+### Where do these numbers come?
+
+In this case we can think of our data having the following structure:
+
+| |	y1	 |y2 |
+|----|----|---|
+|pre	|0	|1 |
+|mid	|0	|1|
+|post	|0	|2|
+
+* the mid to pre diff in diff is (0-0) - (1-1) = 0  (group 2 serves as control)
+* the post to mid diff in diff is (2-1) - (0-0) = 1 (group 1 serves as control though already in treatment!)
+
+TWFE gives a weighted average of these two, putting a 3/4 weight on the first and a 1/4 weight on the second
+
+### Two way fixed effects
+
+Specifically:
+
+$$\hat\beta^{DD} = \mu_{12}\hat\beta^{2 \times 2, 1}_{12} +  (1-\mu_{12})\hat\beta^{2 \times 2, 2}_{12}$$
+  
+where   $\mu_{12} = \frac{1-\overline{Z_1}}{1-(\overline{Z_1}-\overline{Z_2})} =  \frac{1-\frac36}{1-\left(\frac36-\frac16\right)} = \frac34$
+  
+$$\frac34\hat\beta^{2 \times 2, 1}_{12} +   \frac14 \hat\beta^{2 \times 2, 2}_{12}$$
+(weights formula from [WP version](https://www.nber.org/system/files/working_papers/w25018/w25018.pdf))
+
+### Two way fixed effects
+
+And:
+
+* $\hat\beta^{2 \times 2, 1}_{12}$ is $(\overline{y}_1^{MID(1,2)} - \overline{y}_1^{PRE(1)}) - (\overline{y}_2^{MID(1,2)} - \overline{y}_2^{PRE(1)})$ 
+
+which in the simple example without time trends is $(0 - 0) - (1-1) = 0$ 
+
+
+* $\hat\beta^{2 \times 2, 2}_{12}$ is $(\overline{y}_2^{POST(2)} - \overline{y}_2^{MID(1,2)}) - (\overline{y}_1^{POST(2)} - \overline{y}_1^{MID(1,2)})$ 
+
+which is $(2 - 1) - (0 - 0) = 1$
+
+### A problem
+
+So *quite* complex weighting of different comparisons
+
+* Units effectively get counted as both treatment and control units for different comparisons
+* Treated units counted as control units
+* Effectively negative weights on some quantities
+* Possible to have very poorly performing estimates
+
+### Solutions
+
+* Involve better specification of estimands
+* Use of comparisons directly relevant for the estimands
+* *Imputation* of control outcomes in treated units using data from appropriate control units only and then targetting estimands directly [@borusyak2021revisiting]
+* Particular solution: focus on the effect of treatment *at the time of first treatment* / or *time of switching*: this usually involves a no carryover assumption [@de2020two] also @imai2021use
+
+### Solutions
+
+See excellent review by @roth2023s 
+
+```{r}
+knitr::include_graphics("assets/didtools.jpg")
+```
+
+### Chaisemartin and d’Haultfoeuille (2020).
+
+```{r, message = FALSE}
+library(DIDmultiplegt)
+library(rdss)
+design <- 
+  declare_model(
+    unit = add_level(N = 4, I = 1:N),
+    time = add_level(N = 8, T = 1:N, nest = FALSE),
+    obs = cross_levels(by = join_using(unit, time),
+                       potential_outcomes(Y ~ T + (1 + Z)*I))) +
+  declare_assignment(Z = 1*(T > (I + 4))) +
+  declare_measurement(
+    Y = reveal_outcomes(Y~Z),
+    Z_lag = lag_by_group(Z, groups = unit, n = 1, order_by = T)) +
+  declare_inquiry(
+    ATT_switchers = mean(Y_Z_1 - Y_Z_0), 
+    subset = Z == 1 & Z_lag == 0 & !is.na(Z_lag)) +
+  declare_estimator(
+    Y = "Y",  G = "unit",  T = "T",  D = "Z",
+    handler = label_estimator(rdss::did_multiplegt_tidy),
+    inquiry = c("ATT_switchers"),
+    label = "chaisemartin"
+  ) 
+```
+
+### Chaisemartin and d’Haultfoeuille (2020) {.smaller}
+
+Note the inquiry
+
+```{r}
+run_design(design) |> kable(digits = 2)
+```
+
+
+### Triple differencing
+
+* A response to concerns that double differencing is not enough is to *triple* difference
+
+
+* When you think that there may be a violation of parallel tends but you have other outcomes that would pick up the same *difference in trends*
+
+* See @olden2022triple
+
+### Triple differencing {.smaller}
+
+You are interested in the effects of influx of refugees on right wing voting 
+
+* You have (say more conservative) states with no refugees at any period
+* You have (say more liberal) states with refugees post 2016 only 
+
+You want to do differences in differences comparing these states before and after
+
+* However you worry that things change differntially in the conservative and liberal states: *no parallel trends*
+
+* but you can identify areas *within* states that are more or less likely to be exposed and compare differnces in differences in the exposed and unexposed groups.
+
+### Triple differencing {.smaller}
+
+So:
+
+* Two types of states: $L \in \{0,1\}$, only $L=1$ types get refugee influx
+* Two time periods: $Post \in \{0,1\}$, refugee influx occurs in period $Post = 1$
+* Two groups: $B \in \{0,1\}$, $B=1$ types affected by refugee influx
+
+$$Y = \beta_0 + \beta_1 L + \beta_2 B + \beta_3 Post + \beta_4 LB + \beta_5 L Post + \beta_6 B Post + \beta_7L B Post + \epsilon$$
+
+
+### Triple differencing
+
+$$\frac{\partial ^3Y}{\partial L \partial B \partial Post} = \beta_7$$
+
+
+### Can we not just condition on the $B=1$ types?
+
+The level among the $B=1$ types is: 
+
+$$Y = \beta_0 + \beta_1 L + \beta_2  + \beta_3 Post + \beta_4 L + \beta_5 L Post + \beta_6  Post + \beta_7L  Post + \epsilon$$
+If you did simple before / after differences among the $B$ types you would get
+
+$$\Delta Y| L = 1, B = 1 = \beta_3  + \beta_5   + \beta_6   + \beta_7$$
+$$\Delta Y| L = 0, B = 1 = \beta_3   + \beta_6$$
+
+### Can we not just condition on the $B=1$ types?
+
+And so if you differenced again you would get:
+
+$$\Delta^2 Y| B = 1 = \beta_5   + \beta_7$$
+So the problem is that you have $\beta^5$ in here which corresponds exactly to how $L$ states change over time.
+
+### Triple
+
+But we can figure out $\beta_5$ by doing a diff in diff among the $B$'s.
+
+
+
+$$Y|B = 0 = \beta_0 + \beta_1 L +   \beta_3 Post  + \beta_5 L Post$$
+
+
+$$\Delta^2 Y| B = 0 = \beta_5$$
+
+
+
+
+### Easier to swallow?
+
+* The identifying assumption is that absent treatment the differences in trends between $L=0$ and $L=1$  would be the same for units with $B=0$ and $B=1$.
+
+
+* See equation 5.4 in @olden2022triple
+
+$$ \left(E[Y_0|L=1, B=1, {\textit {Post}}=1] - E[Y_0|L=1, B=1, {\textit {Post}}=0]\right)  \\
+ \quad - \ \left(E[Y_0|L=1, B=0, {\textit {Post}}=1] - E[Y_0|L=1, B=0, {\textit {Post}}=0]\right)  \\
+ = \nonumber \\
+ \left(E[Y_0|L=0, B=1, {\textit {Post}}=1] - E[Y_0|L=0, B=1, {\textit {Post}}=0]\right)  \\
+ \quad - \ \left(E[Y_0|L=0, B=0, {\textit {Post}}=1] - E[Y_0|L=0, B=0, {\textit {Post}}=0]\right)$$
+
+
+### Easier to swallow?
+
+* In a sense this is *one* parallel trends assumption, not two
+
+* But there are four counterfactual quantities in this expression.
+
+**Puzzle**: Is it possible to have an effect identified by a difference in difference  but  incorrectly by a triple difference design? 
+

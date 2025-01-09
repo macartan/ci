@@ -1,0 +1,251 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Topics"
+subtitle: "survey experiments"
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+  
+```{r, include = FALSE}
+
+source("setup.R")
+
+```
+
+
+## Survey experiments {#survey-experiments}
+
+
+* Survey experiments are used to *measure* things: nothing (except answers) should be *changed*!
+* If the experiment in the survey is changing things then it is a field experiment in a survey, not a survey experiment
+
+
+### The list experiment: Motivation
+
+* Multiple survey experimental designs have been generated to make it easier for subjects to answer **sensitive questions**
+
+* The key idea is to use inference rather than measurement.
+
+* Subjects are placed in different conditions and the conditions *affect* the **answers** that are given in such a way that you can infer some underlying quantity of interest
+
+### The list experiment: Motivation
+
+```{r, echo = FALSE, caption = "Questions and values collide in an answer"}
+make_model("Z -> Question -> Answer <- Value") |> plot(textcol = "black", nodecol = "lightgrey")
+
+```
+
+This is an obvious DAG but the main point is to be clear that the *Value* is the quantity of interest and the value is not affected by the treatment, *Z*.
+
+### The list experiment: Motivation
+
+The list experiment supposes that:
+
+1. Subjects do not want to give a direct answer to a question
+2. They nevertheless are willing to truthfully answer an indirect question
+
+**In other words**: sensitivities notwithstanding, *they are happy for the researcher to make correct inferences about them or their group*
+
+
+### The list experiment: Strategy {.smaller}
+
+* Respondents are given a short list and a long list.
+
+* The long list differs from the short list in having *one extra item*---the sensitive item
+
+* We ask how many items in each list does a respondent agree with: 
+
+  * $Y_i(0)$ is the number of elements on a short list that a respondent agrees with
+  * $Y_i(1)$ is the number of elements on a long list that a respondent agrees with
+  * $Y_i(1) - Y_i(0)$ is an indicator for whether an individual agrees with the sensitive item
+  * $\mathbb{E}[Y_i(1) - Y_i(0)]$ is the share of people agreeing with sensitive item
+
+
+
+### The list experiment: Simplified example {.smaller}
+
+How many of these do you agree with:
+
+|        | Short list       | Long list          | "Effect"  |
+|------|------------------|----------------|--------|
+|        | "2 + 2 = 4"    | "2 + 2 = 4"                |   |
+|        | "2 * 3 = 6"    | "2 * 3 = 6"  |   |
+|        | "3 + 6 = 8"    | "Climate change is real" |   |
+|        |            | "3 + 6 = 8"                |   |
+| Answer | Y(0) = 2   | Y(1) = 4    |  Y(1) - Y(0) = 2 |
+
+
+[Note: this is obviously not a good list. Why not?]
+
+### The list experiment: Design
+
+```{r}
+
+declaration_17.3 <-
+  declare_model(
+    N = 500,
+    control_count = rbinom(N, size = 3, prob = 0.5),
+    Y_star = rbinom(N, size = 1, prob = 0.3),
+    potential_outcomes(Y_list ~ Y_star * Z + control_count) 
+  ) +
+  declare_inquiry(prevalence_rate = mean(Y_star)) +
+  declare_assignment(Z = complete_ra(N)) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z)) +
+  declare_estimator(Y_list ~ Z, .method = difference_in_means, 
+                    inquiry = "prevalence_rate")
+
+diagnosands <- declare_diagnosands(
+  bias = mean(estimate - estimand),
+  mean_CI_width = mean(conf.high - conf.low)
+)
+```
+
+
+### Diagnosis
+
+```{r, eval = FALSE}
+diagnose_design(declaration_17.3, diagnosands = diagnosands)
+```
+
+```{r, echo = FALSE}
+if(run)
+  diagnose_design(declaration_17.3, diagnosands = diagnosands) |>
+  write_rds("saved/list1.rds")
+
+read_rds("saved/list1.rds") |>
+  reshape_diagnosis() |> select("Design", "Inquiry", "Bias", "Mean CI Width") |> kable()
+  
+
+```
+
+### Tradeoffs: is the question really sensitive?
+
+
+```{r}
+declaration_17.4 <- 
+  declare_model(
+    N = N,
+    U = rnorm(N),
+    control_count = rbinom(N, size = 3, prob = 0.5),
+    Y_star = rbinom(N, size = 1, prob = 0.3),
+    W = case_when(Y_star == 0 ~ 0L,
+                  Y_star == 1 ~ rbinom(N, size = 1, prob = proportion_hiding)),
+    potential_outcomes(Y_list ~ Y_star * Z + control_count)
+  ) +
+  declare_inquiry(prevalence_rate = mean(Y_star)) +
+  declare_assignment(Z = complete_ra(N)) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z),
+                      Y_direct = Y_star - W) +
+  declare_estimator(Y_list ~ Z, inquiry = "prevalence_rate", label = "list") + 
+  declare_estimator(Y_direct ~ 1, inquiry = "prevalence_rate", label = "direct")
+
+```
+
+### Diagnosis
+
+```{r, eval = FALSE}
+declaration_17.4 |> 
+  redesign(proportion_hiding = seq(from = 0, to = 0.3, by = 0.1), 
+           N = seq(from = 500, to = 2500, by = 500)) |> 
+  diagnose_design()
+```
+
+```{r, echo = FALSE, fig.height = 2.5, fig.width = 10}
+if(run)
+declaration_17.4 |> 
+  redesign(proportion_hiding = seq(from = 0, to = 0.3, by = 0.1), 
+           N = seq(from = 500, to = 2500, by = 500)) |> 
+  diagnose_design() |>
+  write_rds("saved/list2.rds")
+
+read_rds("saved/list2.rds") |>
+  tidy() |>  filter(diagnosand == "rmse") |>
+  ggplot(aes(N, estimate, color = estimator)) + geom_line() + facet_grid(~proportion_hiding, labeller = label_both) + theme_bw()
+
+```
+
+
+
+### Negatively correlated items
+
+* How would estimates be affected if the items selected for the list were *negatively* correlated?
+* How would subject protection be affected?
+
+
+### Negatively correlated items
+
+```{r}
+rho <- -.8 
+
+correlated_lists <- 
+  declare_model(
+    N = 500,
+    U = rnorm(N),
+    control_1 = rbinom(N, size = 1, prob = 0.5),
+    control_2 = correlate(given = control_1, rho = rho, draw_binary, prob = 0.5),
+    control_count = control_1 + control_2,
+    Y_star = rbinom(N, size = 1, prob = 0.3),
+    potential_outcomes(Y_list ~ Y_star * Z + control_count)
+  ) +
+  declare_inquiry(prevalence_rate = mean(Y_star)) +
+  declare_assignment(Z = complete_ra(N)) + 
+  declare_measurement(Y_list = reveal_outcomes(Y_list ~ Z)) +
+  declare_estimator(Y_list ~ Z) 
+```
+
+### Negatively correlated items
+
+```{r}
+draw_data(correlated_lists) |> ggplot(aes(control_count)) + 
+  geom_histogram() + theme_bw()
+```
+
+### Negatively correlated items
+
+```{r, eval = FALSE}
+correlated_lists |> redesign(rho = c(-.8, 0, .8)) |> diagnose_design()
+```
+
+```{r, echo = FALSE, height = 2, width = 8}
+if(run)
+correlated_lists |> redesign(rho = c(-.8, 0, .8)) |> diagnose_design() |>
+  write_rds("saved/correlated_list.rds")
+
+read_rds("saved/correlated_list.rds") |> tidy() |> filter(diagnosand == "rmse") |> ggplot(aes(rho, estimate)) + geom_line() + ylim(0, NA) + theme_bw() + ylab("rmse")
+
+```
+
+* These trade-off against each other: the more accuracy you have the less protection you have
+
+### Individual or group effects? {.smaller}
+
+* This is typically used to estimate average *levels*
+
+* However you *can* use it in the obvious way to get average levels for groups: this is equivalent to calculating group level heterogeneous effects
+
+* Extending the idea you can even get *individual level* estimates: for instance you might use causal forests
+
+* You can also use this to estimate the *effect* of an experimental treatment on an item that's measured using a list, without requiring individual level estimates:
+
+$$Y_i = \beta_0 + \beta_1Z_i  + \beta_2Long_i + \beta_3Z_iLong_i$$
+
+
+
+### Hiders and liars
+
+* Note that here we looked at "hiders" -- people not answering the direct question truthfully
+
+* See @li2019relaxing on bounds when the "no liars" assumption is threatened --- this is about whether people respond truthfully to the list experimental question
+
+
+  
+

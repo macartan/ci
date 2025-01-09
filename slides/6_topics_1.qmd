@@ -1,0 +1,48 @@
+---
+title: "Causal Inference"
+subtitle: "Topics I"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: bib.bib
+---
+
+```{r, include = FALSE}
+source("setup.R")
+```
+
+
+## Topics 1 {#topics_1}
+
+
+```{r, child = "topics/late.qmd"}
+
+```
+
+
+
+```{r, child = "topics/diffdiff.qmd"}
+
+```
+
+
+
+```{r, child = "topics/RDD.qmd"}
+
+```
+
+
+
+```{r, child = "topics/mediation.qmd"}
+
+```
+
+

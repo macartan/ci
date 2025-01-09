@@ -1,0 +1,176 @@
+---
+title: "Topics"
+subtitle: "Spillovers"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+```{r, include = FALSE}
+source("setup.R")
+```
+
+
+## Spillovers {#SUTVA}
+
+### SUTVA violations (Spillovers)
+
+Spillovers can result in the estimation of weaker effects when effects are actually stronger.
+
+```{r, echo = FALSE, fig.width = 11, fig.height = 6}
+par(mfrow=c(2,1)); X=c("Control", "Treatment")
+barplot(c(0,4), names.arg=X, main="No spillovers. Total effect = 4, Estimated Effect = 4");  
+barplot(c(3,4), names.arg=X, main="With spillovers. Total effect = 7, Estimated Effect = 1")
+arrows(2,3,.75,2, lwd=2)
+```
+
+The key problem is that $Y(1)$ and $Y(0)$ are not sufficient to describe potential outcomes
+
+
+### SUTVA violations  {.smaller}
+
+| Unit | Location | $D_\emptyset$ | $y(D_\emptyset)$ | $D_1$ | $y(D_1)$ | $D_2$ | $y(D_2)$ | $D_3$ | $y(D_3)$ | $D_4$ | $y(D_4)$ |
+|------|------|------|------|------|------|------|------|------|------|------|------|
+| A    | 1        | 0             | 0                | 1     | 3        | 0     | 1        | 0     | 0        | 0     | 0        |
+| B    | 2        | 0             | 0                | 0     | 3        | 1     | 3        | 0     | 3        | 0     | 0        |
+| C    | 3        | 0             | 0                | 0     | 0        | 0     | 3        | 1     | 3        | 0     | 3        |
+| D    | 4        | 0             | 0                | 0     | 0        | 0     | 0        | 0     | 1        | 1     | 3        |
+
+*Table: Potential outcomes for four units for different treatment profiles*. $D_i$ is an allocation  and $y_j(D_i)$ is the potential outcome for (row) unit $j$ given (column)  $D_i$.
+
+-   The key is to think through the structure of spillovers.
+-   Here immediate neighbors are exposed
+-   In this case we can **define a direct treatment** (being exposed) and **an indirect treatment** (having a neighbor exposed) and we can work out *the* ***propensity*** *for each unit of receiving each type of treatment*
+-   These may be non uniform (here central types are more likely to have teated neighbors); but we can still use the randomization to assess effects
+
+### SUTVA violations  {.smaller}
+
+
+|                               |                           |               |                   |        |                   |        |                   |        |                   |        |                   |
+|----------|-------|----|----|----|----|----|----|----|----|----|----|
+|                               |                           |               | **0**             |        | **1**             |        | **2**             |        | **3**             |        | **4**             |
+| Unit                          | Location                  | $D_\emptyset$ | $y(D_\emptyset)$  | $D_1$  | $y(D_1)$          | $D_2$  | $y(D_2)$          | $D_3$  | $y(D_3)$          | $D_4$  | $y(D_4)$          |
+| A                             | 1                         | 0             | 0                 | 1      | 3                 | 0      | 1                 | 0      | 0                 | 0      | 0                 |
+| B                             | 2                         | 0             | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 | 0      | 0                 |
+| C                             | 3                         | 0             | 0                 | 0      | 0                 | 0      | 3                 | 1      | 3                 | 0      | 3                 |
+| D                             | 4                         | 0             | 0                 | 0      | 0                 | 0      | 0                 | 0      | 1                 | 1      | 3                 |
+| $\bar{y}_\text{treated}$      |                           |               | \-                |        |                   | 3      |                   | 3      |                   | 3      |                   |
+| $\bar{y}_\text{untreated}$    |                           |               | 0                 |        |                   | 1      |                   | 4/3    |                   | 4/3    |                   |
+| $\bar{y}_\text{neighbors}$    |                           |               | \-                |        |                   | 3      |                   | 2      |                   | 2      |                   |
+| $\bar{y}_\text{pure control}$ |                           |               | 0                 |        |                   | 0      |                   | 0      |                   | 0      |                   |
+| *ATT-direct*                              |    |               | \-                |        |                   | 3      |                   | 3      |                   | 3      |                   |
+| *ATT-indirect*                             |  |               | \-                |        |                   | 3      |                   | 2      |                   | 2      |                   |
+
+
+### Design {.smaller}
+
+```{r}
+dgp <- function(i, Z, G) Z[i]/3 + sum(Z[G == G[i]])^2/5 + rnorm(1)
+
+spillover_design <- 
+
+  declare_model(G = add_level(N = 80), 
+                     j = add_level(N = 3, zeros = 0, ones = 1)) +
+  
+  declare_inquiry(direct = mean(sapply(1:240,  # just i treated v no one treated 
+    function(i) { Z_i <- (1:240) == i
+                  dgp(i, Z_i, G) - dgp(i, zeros, G)}))) +
+  
+  declare_inquiry(indirect = mean(sapply(1:240, 
+    function(i) { Z_i <- (1:240) == i           # all but i treated v no one treated   
+                  dgp(i, ones - Z_i, G) - dgp(i, zeros, G)}))) +
+  
+  declare_assignment(Z = complete_ra(N)) + 
+  
+  declare_measurement(
+    neighbors_treated = sapply(1:N, function(i) sum(Z[-i][G[-i] == G[i]])),
+    one_neighbor  = as.numeric(neighbors_treated == 1),
+    two_neighbors = as.numeric(neighbors_treated == 2),
+    Y = sapply(1:N, function(i) dgp(i, Z, G))
+  ) +
+  
+  declare_estimator(Y ~ Z, 
+                    inquiry = "direct", 
+                    model = lm_robust, 
+                    label = "naive") +
+  
+  declare_estimator(Y ~ Z * one_neighbor + Z * two_neighbors,
+                    term = c("Z", "two_neighbors"),
+                    inquiry = c("direct", "indirect"), 
+                    label = "saturated", 
+                    model = lm_robust)
+```                    
+
+### Spillovers: direct and indirect treatments
+
+```{r,echo = FALSE, fig.align="center"}
+draw_data(spillover_design) %>%
+  filter(G %in% 10:30) %>% 
+  ggplot(aes(x = 0, y = j, color = as.factor(Z))) +
+  geom_point(size = 5) +
+  geom_text(aes(label = neighbors_treated), color = "white") +
+  facet_wrap(~ paste0("Group ",G),scales = "free_y",nrow = 3) +
+  scale_color_brewer("Treatment Assignment\n(Number = neighbors treated)",
+                     palette = "Set1",labels = c("Control", "Treatment")) +
+   theme_bw() +
+  theme(axis.text = element_blank(), axis.title = element_blank()) 
+```
+
+
+### Spillovers: Simulated estimates
+
+```{r, eval = TRUE, echo=FALSE}
+
+if(run)
+  diagnose_design(spillover_design) |>
+  write_rds(file = "saved/11_model_spillovers_1.rds")
+diagnosis <- read_rds("saved/11_model_spillovers_1.rds")
+get_simulations(diagnosis) %>% 
+  group_by(estimator, inquiry) %>% 
+  mutate(
+    mean_estimate = mean(estimate),
+    mean_estimand = mean(estimand)) %>% 
+  ungroup() %>% 
+  mutate(estimator =
+           factor(estimator, levels = c("naive","saturated"),
+                  ordered = TRUE)) %>%
+  ggplot(aes(estimate)) +
+  geom_histogram(bins = 30) +
+  facet_wrap( ~ inquiry + estimator) + 
+  
+  geom_vline(aes(xintercept = mean_estimate), linetype = "dashed", color = "blue") +
+  geom_vline(aes(xintercept = mean_estimand), color = "red") +
+  theme_bw() +
+  theme(strip.background = element_blank())
+```
+
+
+### Spillovers: Opportunities and Warnings
+
+You can in principle:
+
+* debias estimates
+* learn about interesting processes
+* optimize design parameters
+
+But  to estimate effects you still need *some* SUTVA like assumption.
+
+### Spillovers: Opportunities and Warnings
+
+```{r, echo = FALSE}
+knitr::include_graphics("../figs/neelan.png")
+```
+
+In this example if one compared the outcome between treated units and all control units that are at least $n$ positions away from a treated unit you will get the wrong answer unless $n \geq 7$.
+
+
+

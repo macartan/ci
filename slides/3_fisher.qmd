@@ -17,6 +17,10 @@ bibliography: bib.bib
 ```{r, include = FALSE}
 
 source("setup.R")
+library(ri2)
+library(future)
+library(SuperLearner)
+library(drtmle)
 
 # run <- TRUE
 

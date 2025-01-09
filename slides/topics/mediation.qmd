@@ -1,0 +1,268 @@
+---
+title: "Topics"
+subtitle: "Mediation"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+```{r, include = FALSE}
+source("setup.R")
+```
+
+
+
+
+
+## Mediation {#mediation}
+
+### The problem of unidentified mediators
+
+-   Consider a causal system like the below.
+-   The effect of X on M1 and M2 can be measured in the usual way.
+-   But unfortunately, if there are multiple mediators, the effect of M1 (or M2) on Y is not identified.
+-   The 'exclusion restriction' is obviously violated when there are multiple mediators (unless you can account for them all).
+
+### The problem of unidentified mediators {.smaller}
+
+```{r, echo = FALSE}
+make_model("X -> M1 -> Y <- M2 <- X") |> plot(x_coord = c(1, 2, 2, 3), y_coord = c(1, 0, 2, 1))
+```
+
+Which effects are identified by the random assignment of $X$?
+
+
+### The problem of unidentified mediators  {.smaller}
+
+An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. 
+
+* But **both of these average effects may be positive (for example) even if there is no effect of X on Y through M1**.
+
+```{r, echo = FALSE}
+
+
+
+plot(0:1,0:1, type="n", axes=F, xlab="", ylab="")
+offset = .05
+
+text (.5, .85, "Type 1")
+text (.5, .35, "Type 2")
+
+text (0, .75, "X")
+text (0, .25, "X")
+text (.5, .75, "M")
+text (.5, .25, "M")
+text (1, .25, "Y")
+text (1, .75, "Y")
+
+text (.25, .7, "+")
+text (.75, .7, "0")
+text (.25, .2, "0")
+text (.75, .2, "+")
+
+
+# text(.1, .75, "Z")
+
+arrows(0+offset, .75, .5-offset, .75)
+arrows(0+offset, .25, .5-offset, .25)
+
+arrows(.5+offset, .75, 1-offset, .75)
+arrows(.5+offset, .25, 1-offset, .25)
+
+
+```
+
+### The problem of unidentified mediators {.smaller}
+
+An obvious approach is to first examine the (average) effect of X on M1 and then use another manipulation to examine the (average) effect of M1 on Y. 
+
+* Similarly **both of these average effects may be zero even if X affects on Y through M1 for every unit!**
+
+
+```{r, echo = FALSE}
+
+
+
+plot(0:1,0:1, type="n", axes=F, xlab="", ylab="")
+offset = .05
+
+text (.5, .85, "Type 1")
+text (.5, .35, "Type 2")
+
+text (0, .75, "X")
+text (0, .25, "X")
+text (.5, .75, "M")
+text (.5, .25, "M")
+text (1, .25, "Y")
+text (1, .75, "Y")
+
+text (.25, .7, "+")
+text (.75, .7, "+")
+text (.25, .2, "-")
+text (.75, .2, "-")
+
+
+# text(.1, .75, "Z")
+
+arrows(0+offset, .75, .5-offset, .75)
+arrows(0+offset, .25, .5-offset, .25)
+
+arrows(.5+offset, .75, 1-offset, .75)
+arrows(.5+offset, .25, 1-offset, .25)
+
+
+```
+
+
+### The problem of unidentified mediators {.smaller}
+
+Both instances of unobserved confounding between $M$ and $Y$:
+
+```{r, echo = FALSE, fig.height = 3.5, fig.width = 9}
+make_model("X -> M -> Y <-> M") |> plot(x_coord = 1:3, y_coord = c(1,1,1))
+```
+
+### The problem of unidentified mediators {.smaller}
+
+Both instances of unobserved confounding between $M$ and $Y$:
+
+```{r, echo = FALSE, fig.height = 3.5, fig.width = 9}
+make_model("Y <- X -> M -> Y <-> M") |> plot(x_coord = 1:3, y_coord = c(1,2,1))
+```
+
+### The problem of unidentified mediators  {.smaller}
+
+* Another somewhat obvious approach is to see how the effect of $X$ on $Y$ in a regression is reduced when you control for $M$. 
+
+* If the effect of $X$ on $Y$ passes through $M$ then surely there should be no effect of $X$ on $Y$ after you control for $M$. 
+
+* This common strategy associated with @baron1986moderator is also not guaranteed to produce reliable results. See for instance @green2010enough
+
+### Baron Kenny issues  {.smaller}
+
+```{r, results = "asis"}
+df <- fabricate(N = 1000, 
+                U = rbinom(N, 1, .5),     X = rbinom(N, 1, .5),
+                M = ifelse(U==1, X, 1-X), Y = ifelse(U==1, M, 1-M)) 
+            
+list(lm(Y ~ X, data = df), 
+     lm(Y ~ X + M, data = df)) |> texreg::htmlreg() 
+```
+
+### The problem of unidentified mediators  {.smaller}
+
+* See [Imai](http://imai.princeton.edu/projects/mechanisms.html) on better ways to think about this problem and designs to address it.
+
+```{r, echo = FALSE, include = TRUE}
+knitr::include_graphics("figs/collider.png")
+```
+
+### The problem of unidentified mediators: Quantities  {.smaller}
+
+-   Using potential outcomeswe can describe a **mediation effect** as (see Imai et al): $$\delta_i(t) = Y_i(t, M_i(1)) - Y_i(t, M_i(0)) \textbf{ for } t = 0,1$$
+-   The **direct effect** is: $$\psi_i(t) = Y_i(1, M_i(t)) - Y_i(0, M_i(t)) \textbf{ for } t = 0,1$$
+-   This is a **decomposition**, since: $$Y_i(1, M_i(1))  - Y_1(0, M_i(0)) = \frac{1}{2}(\delta_i(1) + \delta_i(0) + \psi_i(1) + \psi_i(0))  $$
+-   If there are no interaction effects---ie $\delta_i(1) = \delta_i(0), \psi_i(1) = \psi_i(0)$, then $$Y_i(1, M_i(1))  - Y_1(0, M_i(0)) = \delta_i  + \psi_i$$
+
+### The problem of unidentified mediators: Solutions?  {.smaller}
+
+The bad news is that although a single experiment might identify the total effect, it can not identify these elements of the direct effect.
+
+So:
+
+* Check **formal requirement** for identification under single experiment design ("sequential ignorability"---that, conditional on actual treatment, it is as if the value of the mediation variable is randomly assigned relative to potential outcomes). But this is strong (and in fact unverifiable) and if it does not hold, bounds on effects always include zero (Imai et al)
+
+* Consider sensitivity analyses
+
+### **Implicit mediation** {.smaller}
+
+You can use **interactions** with covariates **if you are willing to make assumptions on no heterogeneity of direct treatment effects** over covariates. 
+
+eg you think that money makes people get to work faster because they can buy better cars; you look at the marginal effect of more money on time to work for people with and without cars and find it higher for the latter. 
+
+This might imply mediation through transport but only if there is no direct effect heterogeneity (eg people with cars are less motivated by money).
+
+### The problem of unidentified mediators: Solutions?
+
+Weaker assumptions justify **parallel design**
+
+  * Group A: $T$ is randomly assigned, $M$ left free.
+  * Group B: divided into four groups $T\times M$ (requires two more assumptions (1) that the **manipulation** of the mediator only affects outcomes through the mediator (2) **no interaction**, for each unit, $Y(1,m)-Y(0,m) = Y(1,m')-Y(0,m')$.)
+
+**Takeaway**: Understanding mechanisms is harder than you think. Figure out what assumptions fly.
+
+
+### In `CausalQueries`
+
+Lets imagine that sequential ignorability does not hold. What are our posteriors on mediation quantities when in fact all effects are mediated, effects are strong, and we have  lots of data?
+
+```{r}
+model <- make_model("X -> M ->Y <- X; M <-> Y")
+
+plot(model)
+
+```
+
+
+### In `CausalQueries`
+
+We imagine a true model and consider estimands:
+
+```{r}
+truth <- make_model("X -> M ->Y") |> 
+  set_parameters(c(.5, .5, .1, 0, .8, .1, .1, 0, .8, .1))
+
+queries  <- 
+  list(
+      indirect = "Y[X = 1, M = M[X=1]] - Y[X = 1, M = M[X=0]]",
+      direct = "Y[X = 1, M = M[X=0]] - Y[X = 0, M = M[X=0]]"
+      )
+
+truth |> query_model(queries) |> kable()
+```
+
+### In `CausalQueries` {.smaller}
+
+```{r, eval = FALSE, echo = TRUE}
+model |> update_model(data = truth |> make_data(n = 1000)) |>
+  query_distribution(queries = queries, using = "posteriors") 
+  
+```
+
+```{r, eval = TRUE, echo = FALSE}
+
+if(run)
+model |> update_model(data = truth |> make_data(n = 1000), iter = 5000) |>
+  write_rds("saved/cq-mediation.rds")
+
+read_rds("saved/cq-mediation.rds") |> 
+    query_distribution(queries = queries, using = "posteriors") |>
+  gather(var, val) |> 
+  ggplot(aes(val)) + geom_histogram() + facet_grid(~var)  + xlab("posterior")
+```
+
+Why such poor behavior? Why isn't weight going onto indirect effects?
+
+Turns out the data *is* consistent with direct effects only: specifically that whenever $M$ is responsive to $X$, $Y$ is responsive to $X$.
+
+```{r, include = FALSE}
+read_rds("saved/cq-mediation.rds")$posterior_distribution |> apply(2, mean)
+```
+
+### In `CausalQueries` {.smaller}
+
+```{r, echo = FALSE}
+read_rds("saved/cq-mediation.rds") |> 
+    query_distribution(queries = queries, using = "posteriors") |>
+    ggplot(aes(direct, indirect)) + geom_point()
+```
+

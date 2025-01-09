@@ -61,7 +61,7 @@ run <- FALSE
 * Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci)
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j): Please fill this out today.
 
-### The topics {.smaller}
+### The topics: Fundamentals {.smaller}
 
 Day 1: Intro
 
@@ -73,22 +73,36 @@ Day 2: Causality
 * [2.1	Fundamental problems and solutions](#seccausality)
 * [2.2	Inquiries and identification](#secestimands) 
 
-### The topics  {.smaller}
+### Estimation, Inference, and Design  {.smaller}
 
-Day 3: Estimation and Inference
+Day 3: Estimation and Inference 1
 
 * [3.1	Frequentist](#secfisher)
+
+Day 4: Estimation and Inference 2
+
 * [3.2	Bayesian](#secbayes)
 
-Day 4:
+Day 5: Design
 
 * [4.1	Experimental Design (esp. assignment)](#secdesign)
 * [4.2	Design evaluation (esp. power)](#secdiagnosis)
 
-Day 5: 
+### Topics  {.smaller}
 
-* [5.1	Topics and techniques](#citopics)
-* [5.2	Open science](#openscience)
+Day 6: [Topics 1](#topics_1)
+
+* [Difference in differences](#diffdiff)
+* [IV](#LATE)
+* [RDD](#rdd)
+* [mediation](#mediation)
+
+Day 7: Topics 2
+
+
+* [Spillovers](#SUTVA)
+* [Survey experiments](#survey-experiments)
+* [Workflows: Open science, ethics](#workflows)
 
 
 ## Responsibilities
