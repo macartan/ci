@@ -6,7 +6,15 @@ bibliography: ../slides/bib.bib
 format: 
   pdf:
     number-sections: true
+    # Adjust text size and margins
+    documentclass: extarticle
+    classoption: a4paper,10pt
+    margin-left: 1in
+    margin-right: 1in
+    margin-top: 0.8in
+    margin-bottom: 0.8in
 urlcolor: orange
+fontsize: 10pt
 ---
 
 ```{r setup, include=FALSE}

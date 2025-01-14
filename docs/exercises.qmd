@@ -22,11 +22,15 @@ custom-numbered-blocks:
 
 
 ```{r setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
+
 library(knitr)
 library(tidyverse)
 library(CausalQueries)
 library(DeclareDesign)
+show_answer <- FALSE
+
 ```
 
 Class: [https://macartan.github.io/ci/](https://macartan.github.io/ci/)
@@ -36,6 +40,186 @@ For each puzzle: explore the issues raised by the puzzle and generate a self con
 
 
 # Familiarity with `DeclareDesign`
+
+
+
+::: {.Q #q-ddstartup0}
+
+**Basic manipulations**
+
+Consider the following design:
+
+```{r}
+design <- 
+  declare_model(
+     N = 1000, 
+     U = rnorm(N),
+     potential_outcomes(Y ~ (1-Z)*rnorm(N) + Z*rnorm(N, 1))) +
+  declare_inquiry(PATE = mean(Y_Z_1 - Y_Z_0)) 
+
+```
+
+1. What do each of these two steps do?  
+2. Draw data from this design. What are the dimensions of the data set? Is this what you would expect? Can you describe what each of the columns in this dataset are?
+3. Calculate the population  average treatment effect for this dataset using `Y_Z_1` and `Y_Z_0` columns. Is this what you would expect from the potential outcomes function? 
+4. Diagnose this design. Why so many NAs?
+
+Now extend the design as follows:
+
+```{r}
+
+design <- 
+  design + 
+  declare_sampling(S = complete_rs(N = N, n = 20)) +
+  declare_assignment(Z = complete_ra(N)) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) + 
+  declare_inquiry(SATE = mean(Y_Z_1 - Y_Z_0)) + 
+  declare_estimator(Y ~ Z, .method = lm)
+
+```
+
+1. What do each of the new steps do?   What is the difference between the two inquiries? Explain how they are different.
+2. Draw data from this design. What are the dimensions of the data set? Is this what you would expect?
+3. Diagnose the design using `diagnose_design`. Use a large number of simulations, e.g. setting `sims = 2000`. Why is there a difference in the RMSE for the two estimands?  Why is the power the same? Why is there a difference in coverage?
+
+```{r, eval = show_answer, include = show_answer}
+diagnosis_0 <- diagnose_design(design, sims = 2000)
+
+diagnosis_0 |> reshape_diagnosis() |> kable()
+
+
+```
+
+:::
+
+
+::: {.Q #q-ddstartup2}
+
+[From DeclareDesign instructor material] In this exercise, you will conduct a power analysis for a two-arm trial with 100 units using `DeclareDesign`. Start with the following model, which defines 100 units to be studied, a variable `U` representing (unknown) unit characteristics, and two potential outcomes (for treatment and for control) that depend on the expected effect size, the treatment variable `Z`, and the variable `U`.
+
+You can find help with the conceptual material in this exercise in Chapters 10 and 11 and help with coding in Chapter 13.
+
+```{r}
+expected_effect_size <- 0.1
+
+two_arm_trial_model <- 
+  declare_model(
+    N = 100,
+    U = rnorm(N), # unknown heterogeneity
+    potential_outcomes(Y ~ expected_effect_size * Z + U)
+  )
+```
+
+1. Add an inquiry declaration, which should be the average treatment effect, or average difference between the treated and control potential outcomes.
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+
+design <- 
+  two_arm_trial_model +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0))
+```
+
+2. Add a data strategy declaration, including an assignment step that creates a variable `Z` using simple random assignment with probability 0.5, and a measurement step in which you reveal the observed outcomes `Y` using the `reveal_outcomes` function.
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+design <- 
+  design +
+  declare_assignment(Z = simple_ra(N = N, prob = 0.5)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z))
+```
+
+3. Add an answer strategy declaration, which uses the `difference_in_means` function (pass it to the `.method` argument of `declare_estimator`) and calculates the difference in mean observed outcomes between the treatment and control groups. Link the estimator to the inquiry. 
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+design <- 
+  design +
+  declare_estimator(Y ~ Z, 
+                    .method = difference_in_means, 
+                    inquiry = "ATE")
+```
+
+4. Draw data from the design, and confirm that the variables you expect are present, including unit characteristics, two potential outcomes, the treatment variable, and the observed outcome. 
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+dat <-
+  design |> 
+  draw_data()
+
+head(dat)
+```
+
+
+5. Run the design once using `run_design` to confirm that the estimand and estimate columns are present. What do these columns refer to?
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+run_design(design)
+```
+
+
+6. Diagnose the design with 1000 simulations and calculate its statistical power. What is the power?
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+diagnosis <- diagnose_design(design, sims = 1000)
+
+diagnosis |> 
+  tidy() |> 
+  filter(diagnosand == "power")
+```
+
+
+7. Calculate the minimum detectable effect size of the design, which means the smallest expected effect size for which the statistical power of the design reaches the common threshold of 80%. Use the `redesign` function to redesign over `expected_effect_size`'s between 0.1 and 1 by steps of 0.1 and then `diagnose` the resulting list of designs. Find the smallest expected effect size where the diagnosis reports the power is at least 0.8.
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+designs <- 
+  redesign(design, expected_effect_size = seq(0.1, 1, 0.1))
+
+diagnoses <- diagnose_designs(designs, sims = 1000)
+
+diagnoses |> 
+  tidy() |> 
+  filter(diagnosand == "power")
+```
+
+
+8. Bonus: What is the smallest sample size would you need to obtain 80% power for an expected effect size of 0.3? You can estimate power in sample size steps of 100 and report the smallest size that exceeds 80% power.
+
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+expected_effect_size <- 0.3
+
+bonus_design <-
+  declare_model(N = N,
+                U = rnorm(N),
+                # unknown heterogeneity
+                potential_outcomes(Y ~ expected_effect_size * Z + U)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = simple_ra(N = N, prob = 0.5)) +
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z,
+                    .method = difference_in_means,
+                    inquiry = "ATE")
+
+bonus_designs <- redesign(bonus_design, N = seq(100, 500, 100))
+
+bonus_diagnosis <- diagnose_designs(bonus_designs, sims = 1000)
+
+bonus_diagnosis |>
+  tidy() |>
+  filter(diagnosand == "power")
+```
+
+
+:::
+
+
 
 ::: {.Q #q-ddstartup}
 
@@ -55,8 +239,6 @@ Then:
 **Hint**: the  slides contain code for a simple experimental design
 
 :::
-
-
 
 
 
