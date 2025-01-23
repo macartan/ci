@@ -94,7 +94,7 @@ CONNECTEDNESS Say $A$ causes $B$ --- does that mean that there is a spatiotempor
 The counterfactual model is about contribution and attribution in a very specific sense.
 
 -   Focus is on *non-rival* contributions
--   Focus is on *conditional* attribution. Not: what caused $Y$: but what is the effect of $X$?
+-   Focus is on *conditional* attribution. Not: "what caused $Y$?" or "What is *the* cause of $Y$?", but "did $X$ cause $Y$ given all other factors were what they were?"
 
 ### Causal claims: Contribution or attribution?
 
@@ -108,7 +108,6 @@ What caused $Y$? Which cause was most important?
 
  
 The counterfactual model is about attribution in a very conditional sense.
-
 
 -   This is problem for research programs that define "explanation" in terms of figuring out the things that cause $Y$
 
@@ -179,8 +178,6 @@ In `DeclareDesign` $Y$ is realised from potential outcomes and assignment in thi
 
 ### Causal claims: The rub and the solution {.smaller}
 
- 
-
 -   Now for some magic. We really want to estimate: $$ \tau_i = Y_i(1) - Y_i(0)$$
 
 -   BUT: We never can observe both $Y_i(1)$ and $Y_i(0)$
@@ -189,7 +186,7 @@ In `DeclareDesign` $Y$ is realised from potential outcomes and assignment in thi
 
 -   Now make use of the fact that $$\mathbb E[Y(1)-Y(0)]  = \mathbb E[Y(1)]- \mathbb E [Y(0)] $$
 
--   In words: *The average of differences is equal to the difference of averages*; here, the average treatment effect is equal to the difference in average outcomes in treatment and control units.
+-   In words: *The average of differences is equal to the difference of averages*.
 
 -   The magic is that *while we can't hope to measure the differences; we are good at measuring averages*.
 
@@ -201,6 +198,10 @@ In `DeclareDesign` $Y$ is realised from potential outcomes and assignment in thi
 -   We know that we can estimate averages of a quantity by taking the average value from a random sample of units
 -   To do this here we need to select a random sample of the $Y(1)$ values and a random sample of the $Y(0)$ values, in other words, we **randomly assign** subjects to treatment and control conditions.
 -   When we do that we can in fact estimate: $$ \mathbb {E}_N[Y_i(1) | Z_i = 1) - \mathbb {E}_N(Y_i(0) | Z_i = 0]$$ which in expectation equals: $$ \mathbb{E} [Y_i(1) | Z_i = 1 \text{ or } Z_i = 0] - \mathbb{E} [Y_i(0) | Z_i = 1 \text{ or } Z_i = 0]$$
+
+
+### Causal claims: The rub and the solution {.smaller}
+
 -   This highlights a deep connection between **random assignment** and **random sampling**: when we do random assignment *we are in fact randomly sampling from different possible worlds*.
 
 ### Causal claims: The rub and the solution
@@ -380,17 +381,19 @@ Experiments often give rise to endogenous subgroups. The potential outcomes fram
 
 ### Heterogeneous Effects with Endogeneous Categories {.smaller}
 
--   **Violence(Treatment)**
--   **Reporting(Treatment, Violence)**
+-   V(t): **Violence(Treatment)**
+-   R(t, v): **Reporting(Treatment, Violence)**
 
 |                       | V(0) | V(1) | R(0,1) | R(1,1) | R(0,0) | R(1,0) |
 |-----------------------|------|------|--------|--------|--------|--------|
 | Type 1 (reporter)     | 1    | 1    | 1      | 1      | 0      | 0      |
 | Type 2 (non reporter) | 1    | 0    | 0      | 0      | 0      | 0      |
 
-Expected reporting given violence in control = Pr(Type 1)
+* Expected reporting given violence in control = **Pr(Type 1)** (explanation: both types see violence but only Type 1 reports)
 
-Expected reporting given violence in treatment = 100%
+* Expected reporting given violence in treatment = **100%** (explanation: only Type 1 sees violence and this type also reports)
+
+So you might infer a large effect on violence reporting.
 
 **Question**: What is the actual effect of treatment on the propensity to report violence?
 
@@ -428,8 +431,9 @@ Which problems face an endogenous subgroup issue?:
 
 Which problems face an endogenous subgroup issue?:
 
-1. You want to estimate the likelihood that a woman will stand for reelection in treatment versus control areas in year 2. You want to estimate how much incumbents are more likely to be reelected in treatment versus control areas in year 
-3. You want to estimate how much treatment areas have more re-elected incumbents in elections in year 2 compared to control.
+1. You want to estimate the likelihood that a woman will stand for reelection in treatment versus control areas in year 2. 
+2. You want to estimate whether incumbents are more likely to be reelected in treatment versus control areas in year 2
+3. You want to estimate how much treatment areas have more re-elected incumbents in elections in year 2 compared to control
 
 ### Endogeneous Categories: Responses
 
@@ -736,108 +740,6 @@ $$\Pr(A = a | C = c) = \Pr(A = a | B = b, C = c)$$
 
 Informally; given $C$, knowing $B$ tells you nothing more about $A$.
 
-### Conditional distributions: Factorization {.smaller}
-
--   Consider a situation with variables $X_1, X_2, \dots X_n$
--   The probability of outcome $x$ can always be written in the form $P(X_1 = x_1)P(X_2 = x_2|X_1=x_1)(X_3 = x_3|X_1=x_1, X_2 = x_2)\dots$.
--   This can be done with any ordering of variables.
--   However the representation can be greatly simplified if you can make use of a set of "parentage" relationships
--   Given an ordering of variables, the **Markovian parents** of variable $X_j$ are the minimal set of variables such that when you condition on these, $X_j$ is independent of all other prior variables in the ordering
--   We want to get to the point where we can can write: $P(x) = \prod_j(x_j | pa_j)$
-
-### Conditional distributions: Factorization from graphs{.smaller}
-
--   We want to use causal graphs to represent these relations of conditional independence.
--   Informally, an arrow, $A \rightarrow B$ means that $A$ is a cause of $B$: that is, under some conditions, a change in $A$ produces a change in $B$.
-    -   Arrows carry no information about the type of effect; e.g. sign, size, or whether different causes are complements or substitutes
--   We say that arrows point from *parents* to *children*, and by extension from *ancestors* to *descendants*.
--   These are parents *on the graph*; but we will connect them to Markovian parents in a probability distribution $P$.
-
-### Conditional distributions: Markov condition {.smaller}
-
--   A DAG is just a graph in which some or all nodes are connected by *directed* edges (arrows) and there are no cyclical paths along these directed edges.
--   Consider a DAG, $G$, and consider the ancestry relations implied by $G$: the distribution $P$ is *Markov relative to the graph* $G$ if every variable is independent of its nondescendants (in $G$) conditional on its parents (in $G$).
-    -   **Markov condition**: conditional on its parents, a variable is independent of its non-descendants.
-
-Now we have what we need to simplify: **if the Markov condition is satisfied**, then instead of writing the full probability as $P(x) = P(x_1)P(x_2|x_1)P(x_3|x_1, x_2)$ we can write $P(x) = \prod_i P(x_i |pa_i)$.
-
-### Illustration {.smaller}
-
-```{r, echo = FALSE}
-
-make_model("A -> B -> C") |> plot()
-
-```
-
-If $P(a,b,c)$ is Markov relative to this graph then: $C$ is independent of $A$ given $B$
-
-And instead of 
-
-$$\Pr(a,b,c) = \Pr(a)\Pr(a|b)\Pr(c|a, b)$$ 
-
-we could now write:
-
-$$\Pr(a,b,c) = \Pr(a)\Pr(a|b)\Pr(c|b)$$ 
-
-### Conditional distributions and interventions {.smaller}
-
-We want the graphs to be able to represent the effects of interventions.
-
-Pearl uses `do` notation to capture this idea.
-
-$$\Pr(X_1, X_2,\dots | do(X_j = x_j))$$ or
-
-$$\Pr(X_1, X_2,\dots | \hat{x}_j)$$
-
-denotes the distribution of $X$ when a particular node (or set of nodes) is *intervened upon* and forced to a particular level, $x_j$.
-
-### Conditional distributions given `do` operations {.smaller}
-
-Note, in general: $$\Pr(X_1, X_2,\dots | do(X_j = x_j')) \neq \Pr(X_1, X_2,\dots | X_j = x_j')$$ as an example we might imagine a situation where:
-
-* for men, binary $X$ always causes $Y=1$ 
-* for women, $Y=0$ regardless of $X$
-* $X=1$ for men only.
-
-In that case $\Pr(Y=1 | X = 1) = 1$ but $\Pr(Y=1 | do(X = 1)) = .5$
-
-<!-- ### Conditional distributions 6 {.smaller} -->
-
-<!-- -   Let $P_{z}$ denote the resulting distribution on all variables that arises when vector $Z$ is "set" (forced, controlled...) to the value $z$. That is when we have `do(Z=z)`. -->
-
-<!-- -   Let $P_*$ denote the set of all such distributions that can result from any set of interventions on variables. -->
-
-<!-- -   A DAG, $G$, is a **causal Bayesian network compatible with** $P_*$ if, for all interventions $z$: -->
-
-<!--     1.  $P_{z}$ is Markov relative to $G$ -->
-<!--     2.  $P_z(x_i)=1$ for all $x_i$ consistent with $z$ -->
-<!--     3.  $P_z(x_j|pa_j)=P(x_j|pa_j)$ for all $x_j \not\in Z$ when $pa_j$ is consistent with $z$ -->
-
-### Conditional distributions given `do` operations {.smaller}
-
-A DAG is "*causal Bayesian network*" or "*Causal DAG*" if (and only if) the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
-
-$$P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i')\prod_{-i}P(x_j|pa_j)$$
-
-This means that there is only probability mass on vectors in which $x_i = x_i'$ (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for $x_i$.
-
-### Conditional distributions given `do` operations {.smaller}
-
-Illustration, say we have binary $X$ causes binary $M$ which cases binary $Y$; say we intervene and set $M=1$. Then what is the distribution of $(x,m,y)$?
-
-It is:
-
-$$\Pr(x,m,y) = \Pr(x)\mathbb I(M = 1)\Pr(y|m)$$
-
-## Graphical reading of Conditional Independence
-
-### Conditional Independence and $d$-separation
-
--   We now have a well defined sense in which the arrows on a graph represent a causal structure and capture the conditional independence relations implied by the causal structure.
-
--   Of course any graph might represent many different probability distributions $P$
-
--   We can now start reading off from a graph when there is or is not conditional independence between sets of variables
 
 ### Conditional independence  on paths  graphs
 
@@ -907,14 +809,116 @@ Are A and D unconditionally independent:
 ### Back to this example {.smaller}
 
 ```{r, echo = FALSE}
-make_model("X -> Y <- U1 -> Z <- U2 -> X") |> plot()
+make_model("X -> Y <- U1 -> Z <- U2 -> X") |> 
+  plot(x_coord = c(3,1,1,2,3), y_coord = c(2,2,1,1.5,1))
 
 ```
 
 Now: say we removed the arrow from $X$ to $Y$
-    -   Would you expect to see a correlation between $X$ and $Y$ if you did not control for $Z$
-    -   Would you expect to see a correlation between $X$ and $Y$ if you did control for $Z$
 
+-   Would you expect to see a correlation between $X$ and $Y$ if you did not control for $Z$?
+-   Would you expect to see a correlation between $X$ and $Y$ if you did control for $Z$?
+
+
+<!-- ## Conditional independence: formal properties  -->
+
+<!-- ### Conditional distributions: Factorization from graphs{.smaller} -->
+
+<!-- -   A DAG is just a graph in which some or all nodes are connected by *directed* edges (arrows) and there are no cyclical paths along these directed edges. -->
+<!-- -   Informally, an arrow, $A \rightarrow B$ means that $A$ is a cause of $B$: that is, under some conditions, a change in $A$ produces a change in $B$. -->
+<!--   -   Arrows carry no information about the type of effect; e.g. sign, size, or whether different causes are complements or substitutes -->
+<!--   -   We say that arrows point from *parents* to *children*, and by extension from *ancestors* to *descendants*. -->
+<!-- -   It is easy to see parents *on the graph*; but we want to connect them more formally to the idea of "Markovian parents" in a probability distribution $P$. -->
+<!-- -   We want to use DAGs  to represent relations of conditional independence. -->
+
+<!-- ### Conditional distributions: Factorization {.smaller} -->
+
+<!-- -   Consider a situation with variables $X_1, X_2, \dots X_n$ -->
+<!-- -   The probability of outcome $x$ can always be written in the form $P(X_1 = x_1)P(X_2 = x_2|X_1=x_1)(X_3 = x_3|X_1=x_1, X_2 = x_2)\dots$. -->
+<!-- -   This can be done with any ordering of variables. -->
+<!-- -   However the representation can be greatly simplified if you can make use of a set of "parentage" relationships -->
+<!-- -   Given an ordering of variables, the **Markovian parents** of variable $X_j$ are the minimal set of variables such that when you condition on these, $X_j$ is independent of all other prior variables in the ordering -->
+<!-- -   We want to get to the point where we can can write: $P(x) = \prod_j(x_j | pa_j)$ -->
+
+
+<!-- ### Conditional distributions: Markov condition {.smaller} -->
+
+<!-- -   Consider a DAG, $G$, and consider the ancestry relations implied by $G$: the distribution $P$ is *Markov relative to the graph* $G$ if every variable is independent of its nondescendants (in $G$) conditional on its parents (in $G$). -->
+<!--     -   **Markov condition**: conditional on its parents, a variable is independent of its non-descendants. -->
+
+<!-- Now we have what we need to simplify: **if the Markov condition is satisfied**, then instead of writing the full probability as $P(x) = P(x_1)P(x_2|x_1)P(x_3|x_1, x_2)$ we can write $P(x) = \prod_i P(x_i |pa_i)$. -->
+
+<!-- ### Illustration {.smaller} -->
+
+<!-- ```{r, echo = FALSE} -->
+
+<!-- make_model("A -> B -> C") |> plot() -->
+
+<!-- ``` -->
+
+<!-- If $P(a,b,c)$ is Markov relative to this graph then: $C$ is independent of $A$ given $B$ -->
+
+<!-- And instead of  -->
+
+<!-- $$\Pr(a,b,c) = \Pr(a)\Pr(a|b)\Pr(c|a, b)$$  -->
+
+<!-- we could now write: -->
+
+<!-- $$\Pr(a,b,c) = \Pr(a)\Pr(a|b)\Pr(c|b)$$  -->
+
+<!-- ### Conditional distributions and interventions {.smaller} -->
+
+<!-- We want the graphs to be able to represent the effects of interventions. -->
+
+<!-- Pearl uses `do` notation to capture this idea. -->
+
+<!-- $$\Pr(X_1, X_2,\dots | do(X_j = x_j))$$ or -->
+
+<!-- $$\Pr(X_1, X_2,\dots | \hat{x}_j)$$ -->
+
+<!-- denotes the distribution of $X$ when a particular node (or set of nodes) is *intervened upon* and forced to a particular level, $x_j$. -->
+
+<!-- ### Conditional distributions given `do` operations {.smaller} -->
+
+<!-- Note, in general: $$\Pr(X_1, X_2,\dots | do(X_j = x_j')) \neq \Pr(X_1, X_2,\dots | X_j = x_j')$$ as an example we might imagine a situation where: -->
+
+<!-- * for men, binary $X$ always causes $Y=1$  -->
+<!-- * for women, $Y=0$ regardless of $X$ -->
+<!-- * $X=1$ for men only. -->
+
+<!-- In that case $\Pr(Y=1 | X = 1) = 1$ but $\Pr(Y=1 | do(X = 1)) = .5$ -->
+
+<!-- ### Conditional distributions 6 {.smaller} -->
+
+<!-- -   Let $P_{z}$ denote the resulting distribution on all variables that arises when vector $Z$ is "set" (forced, controlled...) to the value $z$. That is when we have `do(Z=z)`. -->
+
+<!-- -   Let $P_*$ denote the set of all such distributions that can result from any set of interventions on variables. -->
+
+<!-- -   A DAG, $G$, is a **causal Bayesian network compatible with** $P_*$ if, for all interventions $z$: -->
+
+<!--     1.  $P_{z}$ is Markov relative to $G$ -->
+<!--     2.  $P_z(x_i)=1$ for all $x_i$ consistent with $z$ -->
+<!--     3.  $P_z(x_j|pa_j)=P(x_j|pa_j)$ for all $x_j \not\in Z$ when $pa_j$ is consistent with $z$ -->
+
+### Conditional distributions given `do` operations {.smaller}
+
+A DAG is "*causal Bayesian network*" or "*Causal DAG*" if (and only if) the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
+
+$$P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i')\prod_{-i}P(x_j|pa_j)$$
+
+This means that there is only probability mass on vectors in which $x_i = x_i'$ (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for $x_i$.
+
+### Conditional distributions given `do` operations {.smaller}
+
+Illustration, say we have binary $X$ causes binary $M$ which cases binary $Y$; say we intervene and set $M=1$. Then what is the distribution of $(x,m,y)$?
+
+It is:
+
+$$\Pr(x,m,y) = \Pr(x)\mathbb I(M = 1)\Pr(y|m)$$
+
+### Application
+
+We will use these ideas to motivate a general procedure for learning about, updating over, and querying, causal models.
 
 ## Causal models
 
@@ -1003,19 +1007,10 @@ What is the probability that $X$ has a positive causal effect on $Y$?
 
 * So we want to learn about the distributions of the exogenous nodes
 
-### Recap: 
+* This general principle extends to a vast class of causal models
 
-* DAGs
-* Causality
 
-### Recap: Key features of graphs
 
--   Directed
--   Acyclic
--   The missing arcs are the really important ones
--   Implicitly there are shocks going into every node
--   These graphs represent Nonparametric structural equation models NPSEMs
--   But you cannot read off the size or direction of effects from a DAG
 
 ### Recap: Things you need to know about causal inference {.smaller}
 
@@ -1024,9 +1019,8 @@ What is the probability that $X$ has a positive causal effect on $Y$?
 3.  You can estimate average causal effects even if you cannot observe any individual causal effects.
 4.  If you know that $A$ causes $B$ and that $B$ causes $C$, this does not mean that you know that $A$ causes $C$.
 6.  $X$ can cause $Y$ even if there is no "causal path" connecting $X$ and $Y$.
-8.  $X$ can cause $Y$ even if $X$ is not a necessary condition or a sufficient condition for $Y$.
-9.  Estimating average causal effects does not require that treatment and control groups are identical.
 10. There is no causation without manipulation.
+9.  Estimating average causal effects via differences in means does not require that treatment and control groups are identical.
+9.  Estimating average causal effects via differences in means is fraught when you condition on post treatment variables or on colliders.
 
-<http://egap.org/resources/guides/causality/>
 
