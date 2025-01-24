@@ -315,6 +315,124 @@ Discuss results. Do any of these return the right answer?
 
 *These do not require coding*
 
+
+
+
+
+
+::: {.Q #q-posM}
+
+See the graph from slide: 
+
+https://macartan.github.io/ci/ci_2025.html#/back-to-this-example-1
+
+Imagine all variables are binary.
+
+Write down a set of potential outcomes representing a process where
+
+* $X$ does not affect $Y$, regardless of $U1$.
+* $X$ and $Y$ are uncorrelated if you do not condition on $Z$; but correlated if you do not.
+
+
+|Potential outcome  |  Values  |
+|-------------------|------|
+|X(0)	      |      |
+|X(1)	      |      |
+|Z(U1 = 0,U2 = 0)	      |      |
+|Z(U1 = 0,U2 = 1)	      |      |
+|Z(U1 = 1,U2 = 0)	      |      |
+|Z(U1 = 1,U2 = 1)	      |      |
+|Y(U1=0,X=0)	      |      |
+|Y(U1=0,X=1)	      |      |
+|Y(U1=1,X=0)	      |      |
+|Y(U1=1,X=1)	      |      |
+
+Demonstrate by completing the following *realized* dataset:
+
+| U1 | U2 | X | Z | Y |
+|----|----|---|---|---|
+| 0  | 0  |   |   |   |
+| 0  | 1  |   |   |   |
+| 1  | 0  |   |   |   |
+| 1  | 1  |   |   |   |
+
+and describe the relation between X and Y when you condition on Z or do not.
+
+Hint: a lot of the action comes from how you define $Z(X1, X2)$: consider values in which X1 and X2 interact to produce $Z$ which still $Z=1$ half the time and $Z=0$ half the time.
+
+
+<!-- |Potential outcome  |  Values  | -->
+<!-- |-------------------|------| -->
+<!-- |X(0)	      |   0   | -->
+<!-- |X(1)	      |   1   | -->
+<!-- |Z(U1 = 0,U2 = 0)	      | 1     | -->
+<!-- |Z(U1 = 0,U2 = 1)	      | 0     | -->
+<!-- |Z(U1 = 1,U2 = 0)	      | 0     | -->
+<!-- |Z(U1 = 1,U2 = 1)	      | 1     | -->
+<!-- |Y(U1=0,X=0)	      |  0    | -->
+<!-- |Y(U1=0,X=1)	      |  0    | -->
+<!-- |Y(U1=1,X=0)	      |  1    | -->
+<!-- |Y(U1=1,X=1)	      |  1    | -->
+
+<!-- | U1 | U2 | X  | Z  |  Y | -->
+<!-- |----|----|----|----|----| -->
+<!-- | 0  | 0  | 0  | 1  | 0  | -->
+<!-- | 0  | 1  | 1  | 0  | 0  | -->
+<!-- | 1  | 0  | 0  | 0  | 1  | -->
+<!-- | 1  | 1  | 1  | 1  | 1  | -->
+
+
+:::
+
+
+::: {.Q #q-pos2}
+
+Consider an outcome Y that can be affected by two variables X1 and X2 but say that X2 can itself be affected by X1.  Write down possible potential outcomes for Y1 and X2 when: 	
+
+1. X1 causes X2 and Y, but X1 does not cause Y through X2
+2. X1 causes Y via X2 only (with no direct effect when X2 is fixed at 0)
+3. X1 causes Y via X2 *and* directly
+4. X1 causes X2, X2 causes Y, but (overall), X1 does not cause Y
+
+|Potential outcome  |  1.  |  2.  |  3.  |  4.  |
+|-------------------|------|------|------|------|
+|X2(0) =           |      |      |      |      |
+|X2(1) =           |      |      |      |      |
+|Y(0,0) =          |      |      |      |      |
+|Y(1,0) =          |      |      |      |      |
+|Y(0,1) =          |      |      |      |      |
+|Y(1,1) =          |      |      |      |      |
+
+:::
+
+
+<!-- |Potential outcome  |  1.  |  2.  |  3.  |  4.  | -->
+<!-- |-------------------|------|------|------|------| -->
+<!-- |X2(0) =           |  0   |  0   |  0   |  0   | -->
+<!-- |X2(1) =           |  1   |  1   |  1   |  1   | -->
+<!-- |Y(0,0) =          |  0   |  0   |  0   |  1   | -->
+<!-- |Y(1,0) =          |  1   |  0   |  1   |  0   | -->
+<!-- |Y(0,1) =          |  0   |  1   |  1   |  0   | -->
+<!-- |Y(1,1) =          |  1   |  1   |  1   |  1   | -->
+
+
+
+::: {.Q #q-pos2}
+
+Consider a process with: Y(0,0) =0,   Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.
+
+* Say X1=1, X2=1. Then Y = 1. What caused Y = 1?
+* Say X1=0, X2=0. Then Y = 0. What caused Y = 0?
+* Say X1 = 1 with 10% probability, otherwise 0 and, independently,  X2 = 1 with 50% probability, otherwise 0. 
+
+Then what is the average effect of X1 on Y? What is the average effect of X2 on Y? Which cause has the biggest effect?
+
+:::
+
+
+
+
+
 ::: {.Q #q-pos1}
 
 Potential outcomes
@@ -331,33 +449,7 @@ Consider an outcome $Y$ that can be affected by two variables $X_1$ and $X_2$. A
 :::
 
 
-::: {.Q #q-pos2}
 
-Consider an outcome Y that can be affected by two variables X1 and X2 but say that X2 can itself be affected by X1.  Write down possible potential outcomes for Y1 and X2 when: 	X1 causes X2 and Y, but X1 does not cause Y through X2
-
-|Potential outcome |  Value (0/1)      |	
-|---------|---------|
-|Y(0,0) = |        |	
-|Y(1,0) =	||
-|Y(0,1) =	||
-|Y(1,1) =	||
-|X2(0) =	||
-| X2(1) =	||
-
-:::
-
-
-::: {.Q #q-pos2}
-
-Consider a process with: Y(0,0) =0,   Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.
-
-* Say X1=1, X2=1. Then Y = 1. What caused Y = 1?
-* Say X1=0, X2=0. Then Y = 0. What caused Y = 0?
-* Say X1 = 1 with 10% probability, otherwise 0 and, independently,  X2 = 1 with 50% probability, otherwise 0. 
-
-Then what is the average effect of X1 on Y? What is the average effect of X2 on Y? Which cause has the biggest effect?
-
-:::
 
 
 ::: {.Q #q-diff}
@@ -372,7 +464,6 @@ Then what is the average effect of X1 on Y? What is the average effect of X2 on 
 Compare these and discuss.
 
 :::
-
 
 
 
