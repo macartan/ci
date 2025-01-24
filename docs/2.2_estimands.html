@@ -1698,28 +1698,33 @@ Macartan Humphreys
 <li><span class="math inline">\(X\)</span> is independent of <span class="math inline">\(Z\)</span> given <span class="math inline">\(T\)</span>. (Since <span class="math inline">\(Z\)</span> includes only nondescendents)</li>
 </ol>
 <ul>
-<li>The intervention level relates to the observational level as follows: <span class="math display">\[p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)\]</span></li>
-<li>Think of this as <em>fully accounting for the (possibly unobserved) causes of <span class="math inline">\(X\)</span>, <span class="math inline">\(T\)</span></em></li>
+<li><p><strong>Key idea</strong>: The intervention level relates to the observational level as follows: <span class="math display">\[p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)\]</span></p></li>
+<li><p>Think of this as <em>fully accounting for the (possibly unobserved) causes of <span class="math inline">\(X\)</span>, <span class="math inline">\(T\)</span></em></p></li>
 </ul>
 </section>
 <section id="backdoor-proof-1" class="slide level3 smaller" data-number="1.5.10">
 <h3><span class="header-section-number">1.5.10</span> Backdoor Proof</h3>
+<p>We want to get to:</p>
+<p><span class="math display">\[p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)\]</span></p>
 <ul>
 <li>But of course we do not observe <span class="math inline">\(T\)</span>, rather we observe <span class="math inline">\(Z\)</span>. So we now need to write everything in terms of <span class="math inline">\(Z\)</span> rather than <span class="math inline">\(T\)</span>.</li>
 </ul>
-<p>We bring <span class="math inline">\(Z\)</span> into the picture by writing: <span class="math display">\[p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|x, t, z)p(z|x, t)\]</span></p>
+<p>We bring <span class="math inline">\(Z\)</span> into the picture by writing:</p>
+<p><span class="math display">\[p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|x, t, z)p(z|x, t)\]</span></p>
+<p>now we want to get rid of <span class="math inline">\(T\)</span>…</p>
+</section>
+<section id="backdoor-proof-2" class="slide level3 smaller" data-number="1.5.11">
+<h3><span class="header-section-number">1.5.11</span> Backdoor Proof</h3>
+<p>now we want to get rid of <span class="math inline">\(T\)</span>…</p>
 <ul>
-<li><p>Then using the two conditions above:</p>
+<li><p>Using the two conditions from the backdoor definition above:</p>
 <ol type="1">
 <li>replace <span class="math inline">\(p(y|x, t, z)\)</span> with <span class="math inline">\(p(y | x, z)\)</span></li>
 <li>replace <span class="math inline">\(p(z|x, t)\)</span> with <span class="math inline">\(p(z|t)\)</span></li>
 </ol></li>
 </ul>
-<p>This gives: <span class="math display">\[p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t) \]</span></p>
-</section>
-<section id="backdoor-proof-2" class="slide level3 smaller" data-number="1.5.11">
-<h3><span class="header-section-number">1.5.11</span> Backdoor Proof</h3>
-<p>So, cleaning up, we can get rid of <span class="math inline">\(T\)</span>:</p>
+<p>This gives: <span class="math display">\[p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t)\]</span></p>
+<p>Cleaning up, we can get rid of <span class="math inline">\(T\)</span>:</p>
 <p><span class="math display">\[p(y|\hat{x}) =  \sum_z p(y|x, z)\sum_{t\in T} p(z|t)p(t) = \sum_z p(y| x, z)p(z)\]</span></p>
 </section>
 <section id="backdoor-proof-figure" class="slide level3 smaller" data-number="1.5.12">

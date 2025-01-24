@@ -2560,18 +2560,43 @@ Avg.
 </section>
 <section id="conditional-distributions-given-do-operations" class="slide level3 smaller" data-number="1.7.7">
 <h3><span class="header-section-number">1.7.7</span> Conditional distributions given <code>do</code> operations</h3>
-<p>A DAG is “<em>causal Bayesian network</em>” or “<em>Causal DAG</em>” if (and only if) the probability distribution resulting from setting some set <span class="math inline">\(X_i\)</span> to <span class="math inline">\(\hat{x&#39;}_i\)</span> (i.e. <code>do(X=x&#39;)</code>) is:</p>
-<p><span class="math display">\[P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i&#39;)\prod_{-i}P(x_j|pa_j)\]</span></p>
-<p>This means that there is only probability mass on vectors in which <span class="math inline">\(x_i = x_i&#39;\)</span> (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for <span class="math inline">\(x_i\)</span>.</p>
+<p>We nor formalize things a little more:</p>
+<ul>
+<li><p>The probability of outcome <span class="math inline">\(x\)</span> can always be written in the form <span class="math display">\[P(X_1 = x_1)P(X_2 = x_2|X_1=x_1)(X_3 = x_3|X_1=x_1, X_2 = x_2)\dots\]</span></p></li>
+<li><p>This can be done with any ordering of variables.</p></li>
+<li><p>We want to describe the distribution in a simpler way that takes account of <em>parent-child</em> relations and that can be used to capture interventions.</p></li>
+</ul>
 </section>
 <section id="conditional-distributions-given-do-operations-1" class="slide level3 smaller" data-number="1.7.8">
 <h3><span class="header-section-number">1.7.8</span> Conditional distributions given <code>do</code> operations</h3>
+<ul>
+<li>Given an ordering of variables, the <strong>Markovian parents</strong> of variable <span class="math inline">\(X_j\)</span> are the minimal set of variables such that when you condition on these, <span class="math inline">\(X_j\)</span> is independent of all other prior variables in the ordering</li>
+</ul>
+<p><span class="math display">\[P: P(x_1,x_2,\dots x_n) = \prod_{}P(x_j|pa_j)\]</span></p>
+<ul>
+<li>A DAG is “<em>causal Bayesian network</em>” or “<em>Causal DAG</em>” if (and only if) the probability distribution resulting from setting some set <span class="math inline">\(X_i\)</span> to <span class="math inline">\(\hat{x}&#39;_i\)</span> (i.e. <code>do(X=x&#39;)</code>) is:</li>
+</ul>
+<p><span class="math display">\[P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i&#39;)\prod_{-i}P(x_j|pa_j)\]</span></p>
+<p><em>where the parents <span class="math inline">\(pa_j\)</span> are the parents on the graph</em> (parents of <span class="math inline">\(x_i\)</span> are the nodes with arrows pointing into <span class="math inline">\(x_i\)</span>.)</p>
+</section>
+<section id="conditional-distributions-given-do-operations-2" class="slide level3 smaller" data-number="1.7.9">
+<h3><span class="header-section-number">1.7.9</span> Conditional distributions given <code>do</code> operations</h3>
+<p>So:</p>
+<p><span class="math display">\[P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i&#39;)\prod_{-i}P(x_j|pa_j)\]</span></p>
+<ul>
+<li><p>This means that there is only probability mass on vectors in which <span class="math inline">\(x_i = x_i&#39;\)</span> (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for <span class="math inline">\(x_i\)</span>.</p></li>
+<li><p>Such expressions will be critical later when we want to consider identificatation.</p></li>
+<li><p>They let us assess whether the probability of an outcome <span class="math inline">\(y\)</span>, say, depends on the value of some other node, given some other node, or given <em>interventions</em> on some other node.</p></li>
+</ul>
+</section>
+<section id="conditional-distributions-given-do-operations-3" class="slide level3 smaller" data-number="1.7.10">
+<h3><span class="header-section-number">1.7.10</span> Conditional distributions given <code>do</code> operations</h3>
 <p>Illustration, say we have binary <span class="math inline">\(X\)</span> causes binary <span class="math inline">\(M\)</span> which cases binary <span class="math inline">\(Y\)</span>; say we intervene and set <span class="math inline">\(M=1\)</span>. Then what is the distribution of <span class="math inline">\((x,m,y)\)</span>?</p>
 <p>It is:</p>
 <p><span class="math display">\[\Pr(x,m,y) = \Pr(x)\mathbb I(M = 1)\Pr(y|m)\]</span></p>
 </section>
-<section id="application" class="slide level3" data-number="1.7.9">
-<h3><span class="header-section-number">1.7.9</span> Application</h3>
+<section id="application" class="slide level3" data-number="1.7.11">
+<h3><span class="header-section-number">1.7.11</span> Application</h3>
 <p>We will use these ideas to motivate a general procedure for learning about, updating over, and querying, causal models.</p>
 </section>
 
@@ -2630,11 +2655,10 @@ Avg.
 <h3><span class="header-section-number">1.8.6</span> Recap: Things you need to know about causal inference</h3>
 <ol type="1">
 <li>A causal claim is a statement about what didn’t happen.</li>
+<li>If you know that <span class="math inline">\(A\)</span> causes <span class="math inline">\(B\)</span> and that <span class="math inline">\(B\)</span> causes <span class="math inline">\(C\)</span>, this does not mean that you know that <span class="math inline">\(A\)</span> causes <span class="math inline">\(C\)</span>.</li>
+<li>There is no causation without manipulation.</li>
 <li>There is a fundamental problem of causal inference.</li>
 <li>You can estimate average causal effects even if you cannot observe any individual causal effects.</li>
-<li>If you know that <span class="math inline">\(A\)</span> causes <span class="math inline">\(B\)</span> and that <span class="math inline">\(B\)</span> causes <span class="math inline">\(C\)</span>, this does not mean that you know that <span class="math inline">\(A\)</span> causes <span class="math inline">\(C\)</span>.</li>
-<li><span class="math inline">\(X\)</span> can cause <span class="math inline">\(Y\)</span> even if there is no “causal path” connecting <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</li>
-<li>There is no causation without manipulation.</li>
 <li>Estimating average causal effects via differences in means does not require that treatment and control groups are identical.</li>
 <li>Estimating average causal effects via differences in means is fraught when you condition on post treatment variables or on colliders.</li>
 </ol>

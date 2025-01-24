@@ -902,11 +902,41 @@ Now: say we removed the arrow from $X$ to $Y$
 
 ### Conditional distributions given `do` operations {.smaller}
 
-A DAG is "*causal Bayesian network*" or "*Causal DAG*" if (and only if) the probability distribution resulting from setting some set $X_i$ to $\hat{x'}_i$ (i.e. `do(X=x')`) is:
+We nor formalize things a little more:
+
+* The probability of outcome $x$ can always be written in the form 
+$$P(X_1 = x_1)P(X_2 = x_2|X_1=x_1)(X_3 = x_3|X_1=x_1, X_2 = x_2)\dots$$ 
+
+* This can be done with any ordering of variables. 
+
+* We want to describe the distribution in a simpler way that takes account of *parent-child* relations and that can be used to capture interventions.
+
+### Conditional distributions given `do` operations {.smaller}
+
+* Given an ordering of variables, the **Markovian parents** of variable $X_j$ are the minimal set of variables such that when you condition on these, $X_j$ is independent of all other prior variables in the ordering 
+
+$$P: P(x_1,x_2,\dots x_n) = \prod_{}P(x_j|pa_j)$$
+
+
+* A DAG is "*causal Bayesian network*" or "*Causal DAG*" if (and only if) the probability distribution resulting from setting some set $X_i$ to $\hat{x}'_i$ (i.e. `do(X=x')`) is:
 
 $$P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i')\prod_{-i}P(x_j|pa_j)$$
 
-This means that there is only probability mass on vectors in which $x_i = x_i'$ (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for $x_i$.
+*where the parents $pa_j$ are the parents on the graph*  (parents of $x_i$ are the nodes with arrows pointing into $x_i$.)
+
+
+### Conditional distributions given `do` operations {.smaller}
+
+So:
+
+$$P_{\hat{x}_i}: P(x_1,x_2,\dots x_n|\hat{x}_i) = \mathbb{I}(x_i = x_i')\prod_{-i}P(x_j|pa_j)$$
+
+* This means that there is only probability mass on vectors in which $x_i = x_i'$ (reflecting the success of control) and all other variables are determined by their parents, given the values that have been set for $x_i$.
+
+* Such expressions will be critical later when we want to consider identificatation.
+
+* They let us assess whether the probability of an outcome $y$, say, depends on the value of some other node, given some other node, or given *interventions* on some other node.
+
 
 ### Conditional distributions given `do` operations {.smaller}
 
@@ -1015,11 +1045,10 @@ What is the probability that $X$ has a positive causal effect on $Y$?
 ### Recap: Things you need to know about causal inference {.smaller}
 
 1.  A causal claim is a statement about what didn't happen.
+4.  If you know that $A$ causes $B$ and that $B$ causes $C$, this does not mean that you know that $A$ causes $C$.
+10. There is no causation without manipulation.
 2.  There is a fundamental problem of causal inference.
 3.  You can estimate average causal effects even if you cannot observe any individual causal effects.
-4.  If you know that $A$ causes $B$ and that $B$ causes $C$, this does not mean that you know that $A$ causes $C$.
-6.  $X$ can cause $Y$ even if there is no "causal path" connecting $X$ and $Y$.
-10. There is no causation without manipulation.
 9.  Estimating average causal effects via differences in means does not require that treatment and control groups are identical.
 9.  Estimating average causal effects via differences in means is fraught when you condition on post treatment variables or on colliders.
 

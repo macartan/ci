@@ -398,25 +398,37 @@ If the backdoor criterion is satisfied, we have:
 1.  $Y$ is independent of $T$, given $X$ and observed data, $Z$ (since $Z$ blocks backdoor paths)
 2.  $X$ is independent of $Z$ given $T$. (Since $Z$ includes only nondescendents)
 
--  The intervention level relates to the observational level as follows: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)$$
+-  **Key idea**: The intervention level relates to the observational level as follows: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)$$
+
 -  Think of this as *fully accounting for the (possibly unobserved) causes of $X$, $T$*
 
 ### Backdoor Proof {.smaller}
 
+We want to get to:
+
+$$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)$$
+
 -   But of course we do not observe $T$, rather we observe $Z$. So we now need to write everything in terms of $Z$ rather than $T$.
 
-We bring $Z$ into the picture by writing: $$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|x, t, z)p(z|x, t)$$
+We bring $Z$ into the picture by writing: 
 
--   Then using the two conditions above:
+$$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|x, t, z)p(z|x, t)$$
+
+
+now we want to get rid of $T$...
+
+### Backdoor Proof {.smaller}
+
+now we want to get rid of $T$...
+
+-   Using the two conditions from the backdoor definition above:
 
     1.  replace $p(y|x, t, z)$ with $p(y | x, z)$
     2.  replace $p(z|x, t)$ with $p(z|t)$
 
-This gives: $$p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t) $$
+This gives: $$p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t)$$
 
-### Backdoor Proof {.smaller}
-
-So, cleaning up, we can get rid of $T$: 
+Cleaning up, we can get rid of $T$: 
 
 $$p(y|\hat{x}) =  \sum_z p(y|x, z)\sum_{t\in T} p(z|t)p(t) = \sum_z p(y| x, z)p(z)$$
 
