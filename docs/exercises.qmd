@@ -331,7 +331,7 @@ Imagine all variables are binary.
 Write down a set of potential outcomes representing a process where
 
 * $X$ does not affect $Y$, regardless of $U1$.
-* $X$ and $Y$ are uncorrelated if you do not condition on $Z$; but correlated if you do not.
+* $X$ and $Y$ are uncorrelated if you do not condition on $Z$; but correlated if you do.
 
 
 |Potential outcome  |  Values  |
@@ -361,26 +361,6 @@ and describe the relation between X and Y when you condition on Z or do not.
 Hint: a lot of the action comes from how you define $Z(X1, X2)$: consider values in which X1 and X2 interact to produce $Z$ which still $Z=1$ half the time and $Z=0$ half the time.
 
 
-<!-- |Potential outcome  |  Values  | -->
-<!-- |-------------------|------| -->
-<!-- |X(0)	      |   0   | -->
-<!-- |X(1)	      |   1   | -->
-<!-- |Z(U1 = 0,U2 = 0)	      | 1     | -->
-<!-- |Z(U1 = 0,U2 = 1)	      | 0     | -->
-<!-- |Z(U1 = 1,U2 = 0)	      | 0     | -->
-<!-- |Z(U1 = 1,U2 = 1)	      | 1     | -->
-<!-- |Y(U1=0,X=0)	      |  0    | -->
-<!-- |Y(U1=0,X=1)	      |  0    | -->
-<!-- |Y(U1=1,X=0)	      |  1    | -->
-<!-- |Y(U1=1,X=1)	      |  1    | -->
-
-<!-- | U1 | U2 | X  | Z  |  Y | -->
-<!-- |----|----|----|----|----| -->
-<!-- | 0  | 0  | 0  | 1  | 0  | -->
-<!-- | 0  | 1  | 1  | 0  | 0  | -->
-<!-- | 1  | 0  | 0  | 0  | 1  | -->
-<!-- | 1  | 1  | 1  | 1  | 1  | -->
-
 
 :::
 
@@ -404,16 +384,6 @@ Consider an outcome Y that can be affected by two variables X1 and X2 but say th
 |Y(1,1) =          |      |      |      |      |
 
 :::
-
-
-<!-- |Potential outcome  |  1.  |  2.  |  3.  |  4.  | -->
-<!-- |-------------------|------|------|------|------| -->
-<!-- |X2(0) =           |  0   |  0   |  0   |  0   | -->
-<!-- |X2(1) =           |  1   |  1   |  1   |  1   | -->
-<!-- |Y(0,0) =          |  0   |  0   |  0   |  1   | -->
-<!-- |Y(1,0) =          |  1   |  0   |  1   |  0   | -->
-<!-- |Y(0,1) =          |  0   |  1   |  1   |  0   | -->
-<!-- |Y(1,1) =          |  1   |  1   |  1   |  1   | -->
 
 
 
@@ -560,10 +530,13 @@ Consider the following data. Treatment is assigned in two blocks. One third of b
 
 * Can you estimate the ATE? How about the ATT? And the ATC?
 * How do these compare to a simple difference in means between treatment and control? 
-* Use `DeclareDesign` to compare the answers you get if you use exactly this data and calculate (1) OLS and controlled for block (2)  IPW and (3)  the Lin estimator
+* Use `DeclareDesign` to compare the answers you get if you use exactly this data and calculate (1) OLS and a linear control for block (2)  IPW and (3)  the Lin estimator (demean the Block variable and interact it with Z)
 * Imagine now letting the size of the data increase by a factor $k$--- meaning that if $k=2$ increase you would have twice as many units in each block. Show how the precision of your estimates changes under these different strategies as $k$ increases
 
 **Hint**: If you use exactly this data and replicate it there is no stochastic component; you can run with `sims = 1`; to get the precision of your estimates you can  declare the diagnosand `mean_se = mean(std.error)`
+
+**Optional**: Instead of simulated data, use any dataset you have access to that has a treatment and a covariate and implement the same tests using that data (the outcome does not have to be binary). 
+
 :::
 
 
@@ -571,24 +544,90 @@ Consider the following data. Treatment is assigned in two blocks. One third of b
 
 **randomization inferences**
 
-Declare a factorial design with two binary treatments and an interaction between them. For example $Y = .1*X1 + .3*X2 -  .2*X1*X2$
+Imagine a population with 100 northerners (X=0) and 100 southerners (X=0). 
 
-Have a non-stochastic model declaration so that the only source of randomness is in the assignment procedure.
+Assume 50 in each each group are assigned to binary treatment $Z$ with probability 0.5 (this is a blocked assignment) .
 
-Calculate a $p$ values for the null hypothesis of *no interaction between treatments* using randomization inference. 
+Assume the following model:
 
-* Bonus: Can you check the validity of the p value using the simulations dataframe?
+$$Y = X + Z -  2*X*Z$$
 
-Hint: You can use the `ri2` package.  Hint you can keep the top level fixed by declaring shocks outside the design (`U <- rnorm(N)`) or by using a simulation vector in diagnosis (`sims = c(1,1,500, 1, ...)`)
+Note for simplicity there is no stochastic component. 
+
+In this case the average treatment effect for Z is 0. Verify that!
+
+Now use randomization inference to calculate $p$ values for the hypothesis that Z has no effect for all units. Please:
+
+1. do this by permuting Z (given X) and using a coefficient on Z from the regression Y ~ Z + X as a test statistic
+2. do this by permuting Z (given X) and using a coefficient on X:Z from the regression Y ~ Z + X + X:Z  as a test statistic
+
+Note: the "given X" bit for permutations means that you permute X within the Z=0 and also within the Z=1 group.
+
+Implement two sided tests in each case and discuss differences you get from the two approaches. Which one is right? Or are they both right?
+
+Bonus: How would things change if the true data generating process were $Y = X + Z$? Implement both tests again with data from this model.
+
+**Optional**: Instead of simulated data, use any dataset you have access to that has a treatment and a covariate and implement the same tests using that data. 
 
 :::
 
+```{r, include = FALSE, eval = FALSE}
+
+df <-
+  expand_grid(X = 0:1, Z = 0:1) |>
+  mutate(Y = X + Z -  2 * X * Z) |>
+  uncount(25)
+
+ps <- function(df, sims = 5000) {
+  coefs_1 <- lm(Y ~ Z, data  = df) |> coef() |> nth(2)
+  coefs_2 <- lm(Y ~ Z * X, data  = df) |> coef() |> nth(4)
+  
+  T1 <-
+    replicate(sims, lm(Y ~ Z, data  = df |> group_by(X) |> mutate(Z = sample(Z))) |>
+                coef() |> nth(2))
+  T2 <-
+    replicate(sims,
+              lm(Y ~ X * Z, data  = df |> group_by(X) |> mutate(Z = sample(Z))) |>
+                coef() |> nth(4))
+  
+  c(p1 = mean(abs(T1) >= abs(coefs_1)), p2 = mean(abs(T2) >= abs(coefs_2)))
+}
+
+ps(df, 2000)
+
+df2 <-
+  expand_grid(X = 0:1, Z = 0:1) |>
+  mutate(Y = X + Z) |>
+  uncount(25)
+
+ps(df2, 2000)
+
+```
 
 ::: {.Q #q-lin}
 
-**doubly robust**
+**controls**
 
-Replicate Table 1 in @lin2012agnostic; ignore first rows which are theoretical results; include standard errors of  estimates (these are not included in Table 1 but are produced by `diagnose_design`); 'Tyranny of the minority' estimator is optional.
+Replicate Table 1 in [@lin2012agnostic](https://www.stat.berkeley.edu/~winston/agnostic.pdf);
+
+Focus on these rows:
+
+* SD(empirical) × 1000
+ 
+  *  Unadjusted
+  * Usual OLS-adjusted
+  *  OLS with interaction rows
+
+* Bias(estimated) × 1000
+ 
+  * Unadjusted
+  * Usual OLS-adjusted
+  * OLS with interaction rows
+
+Discuss what you see here. 
+
+**Note**: Precision for some of these may require a large number of simulations.
+
 
 :::
 
@@ -612,6 +651,8 @@ Compare answer strategies in which you:
 (c) Treat $X$ as a block in your analysis design with three values (0, 1, and missing). 
 
 Assess performance (RMSE) over a range of values for `p` and `b`. How do you think the comparison of strategies depends upon N? 
+
+**Optional**: Instead of simulated data, use any dataset you  have access to that has a treatment and missing data in a control variable. 
 
 :::
 

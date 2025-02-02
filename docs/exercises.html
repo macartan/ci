@@ -3497,39 +3497,39 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-1.3955568</td>
+<td style="text-align: right;">-1.1537545</td>
 <td style="text-align: left;">001</td>
-<td style="text-align: right;">-2.1593819</td>
+<td style="text-align: right;">1.0002828</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-1.3955568</td>
+<td style="text-align: right;">-1.1537545</td>
 <td style="text-align: left;">002</td>
-<td style="text-align: right;">0.8680573</td>
+<td style="text-align: right;">0.7671638</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">-1.3955568</td>
+<td style="text-align: right;">-1.1537545</td>
 <td style="text-align: left;">003</td>
-<td style="text-align: right;">-0.6249063</td>
+<td style="text-align: right;">-0.6315639</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">0.0174011</td>
+<td style="text-align: right;">0.2113228</td>
 <td style="text-align: left;">013</td>
-<td style="text-align: right;">-0.0814881</td>
+<td style="text-align: right;">0.3858570</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">0.0174011</td>
+<td style="text-align: right;">0.2113228</td>
 <td style="text-align: left;">014</td>
-<td style="text-align: right;">-1.0662142</td>
+<td style="text-align: right;">1.9614006</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">0.0174011</td>
+<td style="text-align: right;">0.2113228</td>
 <td style="text-align: left;">015</td>
-<td style="text-align: right;">-1.4556285</td>
+<td style="text-align: right;">-0.4215441</td>
 </tr>
 </tbody>
 </table>
@@ -3553,7 +3553,7 @@ window.Quarto = {
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(Y_Z_0, Y_Z_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5125938</code></pre>
+<pre><code>[1] 0.4810912</code></pre>
 </div>
 </div>
 </div></details>
@@ -3577,14 +3577,13 @@ window.Quarto = {
 <h2 data-number="2.1" class="anchored" data-anchor-id="potential-outcomes"><span class="header-section-number">2.1</span> Potential outcomes</h2>
 <p><em>These do not require coding</em></p>
 <div id="q-posM" class="Q">
-<details class="Q fbx-simplebox fbx-default"><summary><strong>Q 2.1</strong></summary><div>
-<p>See the graph from slide:</p>
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 2.1</strong></summary><div>See the graph from slide:<p></p>
 <p>https://macartan.github.io/ci/ci_2025.html#/back-to-this-example-1</p>
 <p>Imagine all variables are binary.</p>
 <p>Write down a set of potential outcomes representing a process where</p>
 <ul>
 <li><span class="math inline">\(X\)</span> does not affect <span class="math inline">\(Y\)</span>, regardless of <span class="math inline">\(U1\)</span>.</li>
-<li><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are uncorrelated if you do not condition on <span class="math inline">\(Z\)</span>; but correlated if you do not.</li>
+<li><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are uncorrelated if you do not condition on <span class="math inline">\(Z\)</span>; but correlated if you do.</li>
 </ul>
 <table class="caption-top table">
 <thead>
@@ -3680,24 +3679,6 @@ window.Quarto = {
 </table>
 <p>and describe the relation between X and Y when you condition on Z or do not.</p>
 <p>Hint: a lot of the action comes from how you define <span class="math inline">\(Z(X1, X2)\)</span>: consider values in which X1 and X2 interact to produce <span class="math inline">\(Z\)</span> which still <span class="math inline">\(Z=1\)</span> half the time and <span class="math inline">\(Z=0\)</span> half the time.</p>
-<!-- |Potential outcome  |  Values  | -->
-<!-- |-------------------|------| -->
-<!-- |X(0)        |   0   | -->
-<!-- |X(1)        |   1   | -->
-<!-- |Z(U1 = 0,U2 = 0)        | 1     | -->
-<!-- |Z(U1 = 0,U2 = 1)        | 0     | -->
-<!-- |Z(U1 = 1,U2 = 0)        | 0     | -->
-<!-- |Z(U1 = 1,U2 = 1)        | 1     | -->
-<!-- |Y(U1=0,X=0)         |  0    | -->
-<!-- |Y(U1=0,X=1)         |  0    | -->
-<!-- |Y(U1=1,X=0)         |  1    | -->
-<!-- |Y(U1=1,X=1)         |  1    | -->
-<!-- | U1 | U2 | X  | Z  |  Y | -->
-<!-- |----|----|----|----|----| -->
-<!-- | 0  | 0  | 0  | 1  | 0  | -->
-<!-- | 0  | 1  | 1  | 0  | 0  | -->
-<!-- | 1  | 0  | 0  | 0  | 1  | -->
-<!-- | 1  | 1  | 1  | 1  | 1  | -->
 </div></details>
 </div>
 <div id="q-pos2" class="Q">
@@ -3766,14 +3747,6 @@ window.Quarto = {
 </table>
 </div></details>
 </div>
-<!-- |Potential outcome  |  1.  |  2.  |  3.  |  4.  | -->
-<!-- |-------------------|------|------|------|------| -->
-<!-- |X2(0) =           |  0   |  0   |  0   |  0   | -->
-<!-- |X2(1) =           |  1   |  1   |  1   |  1   | -->
-<!-- |Y(0,0) =          |  0   |  0   |  0   |  1   | -->
-<!-- |Y(1,0) =          |  1   |  0   |  1   |  0   | -->
-<!-- |Y(0,1) =          |  0   |  1   |  1   |  0   | -->
-<!-- |Y(1,1) =          |  1   |  1   |  1   |  1   | -->
 <div id="q-pos2" class="Q">
 <p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 2.3</strong></summary><div>Consider a process with: Y(0,0) =0, Y(1,0) = 1, Y(0,1) =1, Y(1,1) =1.<p></p>
 <ul>
@@ -4033,26 +4006,52 @@ window.Quarto = {
 <ul>
 <li>Can you estimate the ATE? How about the ATT? And the ATC?</li>
 <li>How do these compare to a simple difference in means between treatment and control?</li>
-<li>Use <code>DeclareDesign</code> to compare the answers you get if you use exactly this data and calculate (1) OLS and controlled for block (2) IPW and (3) the Lin estimator</li>
+<li>Use <code>DeclareDesign</code> to compare the answers you get if you use exactly this data and calculate (1) OLS and a linear control for block (2) IPW and (3) the Lin estimator (demean the Block variable and interact it with Z)</li>
 <li>Imagine now letting the size of the data increase by a factor <span class="math inline">\(k\)</span>— meaning that if <span class="math inline">\(k=2\)</span> increase you would have twice as many units in each block. Show how the precision of your estimates changes under these different strategies as <span class="math inline">\(k\)</span> increases</li>
 </ul>
 <p><strong>Hint</strong>: If you use exactly this data and replicate it there is no stochastic component; you can run with <code>sims = 1</code>; to get the precision of your estimates you can declare the diagnosand <code>mean_se = mean(std.error)</code></p>
+<p><strong>Optional</strong>: Instead of simulated data, use any dataset you have access to that has a treatment and a covariate and implement the same tests using that data (the outcome does not have to be binary).</p>
 </div></details>
 </div>
 <div id="q-ri1" class="Q">
 <p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 3.2</strong></summary><div><strong>randomization inferences</strong><p></p>
-<p>Declare a factorial design with two binary treatments and an interaction between them. For example <span class="math inline">\(Y = .1*X1 + .3*X2 -  .2*X1*X2\)</span></p>
-<p>Have a non-stochastic model declaration so that the only source of randomness is in the assignment procedure.</p>
-<p>Calculate a <span class="math inline">\(p\)</span> values for the null hypothesis of <em>no interaction between treatments</em> using randomization inference.</p>
-<ul>
-<li>Bonus: Can you check the validity of the p value using the simulations dataframe?</li>
-</ul>
-<p>Hint: You can use the <code>ri2</code> package. Hint you can keep the top level fixed by declaring shocks outside the design (<code>U &lt;- rnorm(N)</code>) or by using a simulation vector in diagnosis (<code>sims = c(1,1,500, 1, ...)</code>)</p>
+<p>Imagine a population with 100 northerners (X=0) and 100 southerners (X=0).</p>
+<p>Assume 50 in each each group are assigned to binary treatment <span class="math inline">\(Z\)</span> with probability 0.5 (this is a blocked assignment) .</p>
+<p>Assume the following model:</p>
+<p><span class="math display">\[Y = X + Z -  2*X*Z\]</span></p>
+<p>Note for simplicity there is no stochastic component.</p>
+<p>In this case the average treatment effect for Z is 0. Verify that!</p>
+<p>Now use randomization inference to calculate <span class="math inline">\(p\)</span> values for the hypothesis that Z has no effect for all units. Please:</p>
+<ol type="1">
+<li>do this by permuting Z (given X) and using a coefficient on Z from the regression Y ~ Z + X as a test statistic</li>
+<li>do this by permuting Z (given X) and using a coefficient on X:Z from the regression Y ~ Z + X + X:Z as a test statistic</li>
+</ol>
+<p>Note: the “given X” bit for permutations means that you permute X within the Z=0 and also within the Z=1 group.</p>
+<p>Implement two sided tests in each case and discuss differences you get from the two approaches. Which one is right? Or are they both right?</p>
+<p>Bonus: How would things change if the true data generating process were <span class="math inline">\(Y = X + Z\)</span>? Implement both tests again with data from this model.</p>
+<p><strong>Optional</strong>: Instead of simulated data, use any dataset you have access to that has a treatment and a covariate and implement the same tests using that data.</p>
 </div></details>
 </div>
 <div id="q-lin" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 3.3</strong></summary><div><strong>doubly robust</strong><p></p>
-<p>Replicate Table 1 in <span class="citation" data-cites="lin2012agnostic">Lin (<a href="#ref-lin2012agnostic" role="doc-biblioref">2012</a>)</span>; ignore first rows which are theoretical results; include standard errors of estimates (these are not included in Table 1 but are produced by <code>diagnose_design</code>); ‘Tyranny of the minority’ estimator is optional.</p>
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 3.3</strong></summary><div><strong>controls</strong><p></p>
+<p>Replicate Table 1 in <a href="https://www.stat.berkeley.edu/~winston/agnostic.pdf"><span class="citation" data-cites="lin2012agnostic">Lin (<span>2012</span>)</span></a>;</p>
+<p>Focus on these rows:</p>
+<ul>
+<li><p>SD(empirical) × 1000</p>
+<ul>
+<li>Unadjusted</li>
+<li>Usual OLS-adjusted</li>
+<li>OLS with interaction rows</li>
+</ul></li>
+<li><p>Bias(estimated) × 1000</p>
+<ul>
+<li>Unadjusted</li>
+<li>Usual OLS-adjusted</li>
+<li>OLS with interaction rows</li>
+</ul></li>
+</ul>
+<p>Discuss what you see here.</p>
+<p><strong>Note</strong>: Precision for some of these may require a large number of simulations.</p>
 </div></details>
 </div>
 <div id="q-missing" class="Q">
@@ -4066,6 +4065,7 @@ window.Quarto = {
 <li>Treat <span class="math inline">\(X\)</span> as a block in your analysis design with three values (0, 1, and missing).</li>
 </ol>
 <p>Assess performance (RMSE) over a range of values for <code>p</code> and <code>b</code>. How do you think the comparison of strategies depends upon N?</p>
+<p><strong>Optional</strong>: Instead of simulated data, use any dataset you have access to that has a treatment and missing data in a control variable.</p>
 </div></details>
 </div>
 </section>
