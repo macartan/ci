@@ -266,6 +266,113 @@ fabricate(N = 100,
 
 ```
 
+### Causal inference on a grid
+
+Recall this joint distribution with binary X and binary Y from [here](https://macartan.github.io/ci/ci_2025.html#/example-without-identification-2)
+
+|     | Y = 0 | Y = 1 | 
+|-----|-------|-------|
+| **X = 0** | $b/2 + c/2$      |  $a/2 + d/2$     |   
+| **X = 1** | $a/2 + c/2$      |  $b/2 + d/2$     |   
+
+
+reminder: $a$ is share with negative effects, $b$ is share with positive effects...
+
+### Causal inference on a grid: strategy
+
+Say we now had (finite) data filling out this table. What posteriors should we form over $a,b,c,d$?
+
+
+|     | Y = 0 | Y = 1 | 
+|-----|-------|-------|
+| **X = 0** | $n_{00}$      |  $n_{01}$     |   
+| **X = 1** | $n_{10}$      |  $n_{11}$     |   
+
+Lets start with a flat prior over the shares and then update over possible shares based on the data.
+
+This time we will start with a draw of possible shares and put look for posterior weights on each drawn share.
+
+
+### Causal inference on a grid: likelihood {.smaller}
+
+$$
+\Pr(n_{00}, n_{01}, n_{10}, n_{11} \mid a,b,c,d) =
+f_{\text{multinomial}}\left( \alpha_{00}, \alpha_{01}, \alpha_{10}, \alpha_{11} \mid \sum n, w \right)
+$$
+where:
+
+$$w = \left(\frac12(b + c),  \frac12(a+d), \frac12(a+c), \frac12(b+d)\right)$$
+
+why multinomial?
+
+### Causal inference on a grid: execution {.smaller}
+
+prior draw with 10000 possibilities:
+
+```{r}
+
+x <- gtools::rdirichlet(10000, alpha = c(1,1,1,1)) |> as.data.frame()
+names(x) <- letters[1:4]
+
+x |> head() |> kable(digits = 3)
+```
+each row sums to 1; each point (row) lies on a simplex
+
+### Causal inference on a grid: execution {.smaller}
+
+
+Imagine we had data (number of units with given values of X and Y):
+
+$n_{00} = 400, n_{01} = 100, n_{10} = 100, n_{11} = 400$
+
+Difference in means = .6. 
+
+Then:
+
+
+```{r}
+# add likelihood and calculate posterior
+
+x <- x |> 
+  rowwise() |>  # Ensures row-wise operations
+  mutate(
+    likelihood = dmultinom(
+      c(400, 100, 100, 400),
+      prob = c(b + c, a + c, a + d, b + d) / 2
+    )
+  ) |> 
+  ungroup() |>
+  mutate(posterior = likelihood / sum(likelihood))
+
+```
+
+
+### Causal inference on a grid: execution {.smaller}
+
+```{r}
+x |> 
+  mutate(likelihood = formatC(likelihood, format = "e", digits = 2),
+         posterior = formatC(posterior, format = "e", digits = 2)) |> 
+  head() |>
+  kable(digits = 2)
+```
+
+### Causal inference on a grid: inferences
+
+```{r}
+x |> summarize(a = weighted.mean(a, posterior),
+               b = weighted.mean(b, posterior),
+               ATE = b - a) |>
+  kable(digits = 2)
+```
+
+### Causal inference on a grid: inferences
+
+```{r, fig.cap = "Spot the ridge"}
+x |> ggplot(aes(b, a, size = posterior)) + geom_point(alpha = .5) 
+
+```
+
 ### Bayes by hand 
 
 * This approach is sound, but if you are dealing with many continuous parameters, the full parameter space can get very large and so the number of calculations you do increases rapidly.
@@ -278,7 +385,7 @@ fabricate(N = 100,
 
 In this short lecture we:
 
--   fire up stan
+-   getting going with stan
 -   implement a simple linear model and talk through the main model blocks
 -   implement a simple hierarchical model
 -   describe a behavioral game and set up a model to recover some parameters of interest, given the game
@@ -327,7 +434,7 @@ The key features here are (read from bottom up!):
 
 -   $Y$ is assumed to be normally distributed with mean `a + bX` and standard deviation `sigma`.
 -   There are then three parameters: `a`, `b`, `sigma`.
--   There are no priors placed on these but sigma is constrained to be positive. Without priors improper flat priors are assumed.
+-   There are no priors placed on these but sigma is constrained to be positive. Without priors, improper flat priors are assumed.
 -   Stan expects a data set that contains three things: a scalar, `N` and `X1,`Y` data
 
 ### Simple model: Data
@@ -502,13 +609,13 @@ Note that we get a much lower estimate for `b` with the same data.
 
 * Now imagine a setting in which there are 10 villages, each with 10 respondents. Half in each village are assigned to treatment $X=1$, and half to control $X=0$.
 
-* Say that there is possibly a village specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each drawn from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
+* Say that there is possibly a village-specific average outcome: $Y_v = a_v + b_vX$ where $a_v$ and $b_v$ are each drawn from some distribution with a mean and variance of interest. The individual outcomes are draws from a village level distribution centered on the village specific average outcome.
 
 * This all implies a multilevel structure.
 
 ### A multilevel model {.smaller}
 
-Here is a model for this
+Here is a model for this (N baked in)
 
 ```{r echo=FALSE}
 knitr::knit_hooks$set(mysize = function(before, options, envir) {
@@ -588,9 +695,9 @@ kable(round(summary(M_ml)[[1]][c(24:25, 1:3),c(1,3,10)],2))
 
 ### A game and a structural model {.smaller}
 
-Say that a set of people in a population are playing sequential prisoner's dilemmas.
+Say that a set of people in a population is playing sequential prisoner's dilemmas.
 
-In such games selfish behavior might suggest defections by everyone everywhere. But of course people often cooperate. Why might this be?
+In such games, selfish behavior might suggest defections by everyone everywhere. But, of course, people often cooperate. Why might this be?
 
 -   One possible reason is that some people are irrational, in the sense that they simply choose to cooperate, ignoring the payoffs.
 -   Another possibility is that rational people think that others are irrational, in the sense that they think that others will reciprocate when they observe cooperative action
@@ -728,11 +835,83 @@ hist(.125/extract(M4)$theta, xlab = "Posterior on .125/theta", main = "", xlim =
 
 `CausalQueries` brings these elements together by allowing users to:
 
-1. Specify a DAG: `CausalQueries` figures out all principal strata and places a prior on these
-2. Provide data to the DAG:  `CausalQueries`  writes a stand model and updates on all parameters
+1. Make model: Specify a DAG: `CausalQueries` figures out all principal strata and places a prior on these
+2. Update model: Provide data to the DAG:  `CausalQueries`  writes a `stan` model and updates on all parameters
 3. Query model: `CausalQueries` figures out which parameters correspond to a given causal query
 
+### Illustration $X \rightarrow Y$ model
+
+Returning to this problem:
+
+|     | Y = 0 | Y = 1 | 
+|-----|-------|-------|
+| **X = 0** | $n_{00}$      |  $n_{01}$     |   
+| **X = 1** | $n_{10}$      |  $n_{11}$     |   
+
+
+where $X$ is randomized, both $X$, $Y$ binary
+
+### Model, update, query
+
+```{r}
+data = fabricate(
+  N = 1000, 
+  X = rbinom(N, 1, prob = .5),  
+  Y = rbinom(N, 1, prob = .2 + .4*X))
+
+model <- make_model("X -> Y") |> update_model(data)
+```
+
+### Model, update, query
+
+```{r}
+model |> inspect("posterior_distribution") 
+```
+
+### Model, update, query
+
+```{r, fig.cap = "Posterior draws"}
+model |> grab("posterior_distribution") |> 
+  ggplot(aes(Y.01, Y.10)) + geom_point(alpha = .2)
+```
+Note in the grid approach we had the same set of candidate vectors with different weights attached; in the MCMC approach our draws reflect the posterior distribution directly.
+
+### Model, update, query
+
+```{r}
+model |> query_model(
+  query = c(ATE = "Y[X=1] - Y[X=0]", 
+            POS = "Y[X=1] > Y[X=0]", 
+            SOME = "Y[X=1] != Y[X=0]" ),
+  using = c("priors", "posteriors")) |>
+  plot()
+
+```
+### Generalization: Procedure
+
+The `CausalQueries` approach generalizes to settings in which nodes are categorical:
+
+1. Identify all principal strata: that is, the universe of possible response types or "causal types": $\theta$
+2. Define as parameters of interest the *probability* of each of these response types: $\lambda$
+3. Place a prior over $\lambda$: e.g. Dirichlet
+4. Figure out $\Pr(\text{Data} | \lambda)$
+5. Use `stan` to figure out $\Pr(\lambda | \text{Data})$
+
+### Generalization: Procedure
+
+```{r, echo = FALSE, fig.width=10, fig.height=5, fig.align='center'}
+ggpubr::ggarrange(
+plot(make_model("X1 -> Y <- X2"), nodecol = "white", textcol = "black"), 
+plot(make_model("X->M -> Y <- X",add_causal_types = FALSE), nodecol = "white", textcol = "black"),
+plot(make_model("Z->X -> Y <- U ->X; X <-> Z",add_causal_types = FALSE), nodecol = "white", textcol = "black"),
+plot(make_model("X -> Y -> Y1; Y -> Y2; Y1 <-> Y2",add_causal_types = FALSE), nodecol = "white", textcol = "black")
+)
+```
+...where dotted lines means that the response types for two nodes are not independent 
+
 ### Illustration: "Lipids" data {.smaller}
+
+Example of an IV model. What are the principle strata (response types)? What relations of conditional independence are implied by the models? 
 
 ```{r}
 #| echo: true
@@ -760,6 +939,8 @@ model |> plot()
 
 ### Updating and querying  {.smaller}
 
+Queries can be condition on observable or counterfactual quantities
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -767,9 +948,11 @@ model |> plot()
 
 model |>
   update_model(lipids_data, refresh = 0) |>
-  query_model(query = "Y[X=1] - Y[X=0]",
-              given = c("All",  "X==0 & Y==0", "X[Z=1] > X[Z=0]"),
-              using = "posteriors") 
+  query_model(queries = c(
+      ATE  = "Y[X=1] - Y[X=0]",
+      PoC  = "Y[X=1] - Y[X=0] :|: X==0 & Y==0",
+      LATE = "Y[X=1] - Y[X=0] :|: X[Z=1] > X[Z=0]"),
+      using = "posteriors") 
 ```
 
 ```{r}
@@ -788,8 +971,10 @@ if (run) {
      
   lipids_model |>
     query_model(
-      query = "Y[X=1] - Y[X=0]",
-      given = c("All",  "X==0 & Y==0", "X[Z=1] > X[Z=0]"),
+     queries = list(
+      ATE  = "Y[X=1] - Y[X=0]",
+      PoC  = "Y[X=1] - Y[X=0] :|: X==0 & Y==0",
+      LATE = "Y[X=1] - Y[X=0] :|: X[Z=1] > X[Z=0]"),
       using = "posteriors") |>
     readr::write_rds(x = _, file = "saved/lipids_results.rds")
 

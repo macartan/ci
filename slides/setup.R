@@ -1,6 +1,6 @@
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
 pacman::p_load(DeclareDesign, knitr, tidyverse, kableExtra, CausalQueries, DesignLibrary, xtable, 
-               sandwich, lmtest, dagitty, ggdag, ggtext, latex2exp, cowplot, pwrss, ri2, future, SuperLearner, drtmle)
+               sandwich, lmtest, dagitty, ggdag, ggtext, latex2exp, cowplot, pwrss, ri2, future, SuperLearner, drtmle, ggpubr)
 
 
 options(mc.cores = parallel::detectCores())

@@ -657,10 +657,7 @@ Assess performance (RMSE) over a range of values for `p` and `b`. How do you thi
 :::
 
 
-## Bayesian 
-
-
-
+# Bayesian 
 
 ::: {.Q #q-POC}
 
