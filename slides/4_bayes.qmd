@@ -383,7 +383,7 @@ x |> ggplot(aes(b, a, size = posterior)) + geom_point(alpha = .5)
 
 ### Plan
 
-In this short lecture we:
+In this section we will:
 
 -   getting going with stan
 -   implement a simple linear model and talk through the main model blocks

@@ -3497,39 +3497,39 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">0.2160406</td>
+<td style="text-align: right;">2.0377861</td>
 <td style="text-align: left;">001</td>
-<td style="text-align: right;">-1.7270467</td>
+<td style="text-align: right;">1.0243145</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">0.2160406</td>
+<td style="text-align: right;">2.0377861</td>
 <td style="text-align: left;">002</td>
-<td style="text-align: right;">-1.1129149</td>
+<td style="text-align: right;">0.5582105</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">01</td>
-<td style="text-align: right;">0.2160406</td>
+<td style="text-align: right;">2.0377861</td>
 <td style="text-align: left;">003</td>
-<td style="text-align: right;">-0.0169343</td>
+<td style="text-align: right;">-1.7787884</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.0749540</td>
+<td style="text-align: right;">-0.8545338</td>
 <td style="text-align: left;">013</td>
-<td style="text-align: right;">0.0385511</td>
+<td style="text-align: right;">1.4834133</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.0749540</td>
+<td style="text-align: right;">-0.8545338</td>
 <td style="text-align: left;">014</td>
-<td style="text-align: right;">1.6498473</td>
+<td style="text-align: right;">-0.7611718</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">02</td>
-<td style="text-align: right;">-0.0749540</td>
+<td style="text-align: right;">-0.8545338</td>
 <td style="text-align: left;">015</td>
-<td style="text-align: right;">-1.1823538</td>
+<td style="text-align: right;">-0.4546901</td>
 </tr>
 </tbody>
 </table>
@@ -3553,7 +3553,7 @@ window.Quarto = {
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(Y_Z_0, Y_Z_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5215094</code></pre>
+<pre><code>[1] 0.5027449</code></pre>
 </div>
 </div>
 </div></details>
@@ -3946,7 +3946,8 @@ window.Quarto = {
 <section id="frequentist" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="frequentist"><span class="header-section-number">3.1</span> Frequentist</h2>
 <div id="q-blockestimates" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 3.1</strong></summary><div>Consider the following data. Treatment is assigned in two blocks. One third of block 1 got treatment (randomly); one third of block two got treatment (randomly). The data are as below:<p></p>
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 3.1</strong></summary><div>Consider the following data. Treatment is assigned in two blocks. One third of block 1 got randomly assigned to treatment; one half of block two got randomly assigned to treatment.<p></p>
+<p>The data are as below:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -4015,7 +4016,7 @@ window.Quarto = {
 </div>
 <div id="q-ri1" class="Q">
 <p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 3.2</strong></summary><div><strong>randomization inferences</strong><p></p>
-<p>Imagine a population with 100 northerners (X=0) and 100 southerners (X=0).</p>
+<p>Imagine a population with 100 northerners (X=0) and 100 southerners (X=1).</p>
 <p>Assume 50 in each each group are assigned to binary treatment <span class="math inline">\(Z\)</span> with probability 0.5 (this is a blocked assignment) .</p>
 <p>Assume the following model:</p>
 <p><span class="math display">\[Y = X + Z -  2*X*Z\]</span></p>
@@ -4072,8 +4073,89 @@ window.Quarto = {
 </section>
 <section id="bayesian" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Bayesian</h1>
+<div id="q-Bayesbyhand" class="Q">
+<details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.1</strong></summary><div>
+<p><strong>Bayes by hand</strong></p>
+<p>Say that we have 50 observations of <span class="math inline">\(Y_0\)</span> and 50 observations of <span class="math inline">\(Y_1\)</span> from a random experiment. Assume these are each drawn independently from a normal distribution centered on <span class="math inline">\(\mu_j\)</span> with sd <span class="math inline">\(\sigma_j\)</span>, <span class="math inline">\(j\in\{0,1\}\)</span>.</p>
+<ol type="1">
+<li><p>Write down a likelihood function that returns the probability of seeing the 100 observations that you see given the four parameters: <span class="math inline">\(\mu_0, \mu_1, \sigma_0, \sigma_1\)</span>.</p></li>
+<li><p>Use <code>grid &lt;- expand_grid(m0 = ..., m1 = ..., s0 = ..., s1 = ... )</code> to generate a grid of possible values for the four parameters (make sure <code>s0</code> and <code>s1</code> are positive..</p></li>
+<li><p>Apply your likelihood function to all the possible parameter values contained in your grid.</p></li>
+<li><p>Now:</p></li>
+</ol>
+<ul>
+<li>Identify the maximum likelihood set of values</li>
+<li>Calculate the posterior distribution assuming uniform priors over the range</li>
+<li>Identify the posterior modes</li>
+<li>Calculate the posterior means</li>
+<li>Compare the estimates of a treatment effect you would obtain from
+<ul>
+<li>maximum likelihood</li>
+<li>posterior means</li>
+<li>ols</li>
+</ul></li>
+</ul>
+</div></details>
+</div>
+<div id="q-bayes-sequencing" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.2</strong></summary><div><strong>Bayesian sequencing and posterior variance</strong><p></p>
+<p>Say you knew the probability of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>X_1 = 0</th>
+<th>X1 = 1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>X_2 = 0</td>
+<td>.2</td>
+<td>.5</td>
+</tr>
+<tr class="even">
+<td>X_2 = 1</td>
+<td>.8</td>
+<td>.9</td>
+</tr>
+</tbody>
+</table>
+<p>In addition you know that <span class="math inline">\(X_1 = 1\)</span> with probability 0.5, and <span class="math inline">\(X_2 = 1\)</span> with probability 0.5, independently.</p>
+<ol type="1">
+<li>Say you do not know <span class="math inline">\(X_1\)</span> or <span class="math inline">\(X_2\)</span>. What is your prior that <span class="math inline">\(Y = 1\)</span>?</li>
+<li>How uncertain are you? (You can use variance as a measure, where the variance in beliefs about a bernoulli event that arises with probability <span class="math inline">\(p\)</span> is just <span class="math inline">\(p(1-p)\)</span>)</li>
+<li>Say you now learn <span class="math inline">\(X_1 = 0\)</span>: what is your posterior belief now? (we will call this a posterior variance)</li>
+<li>What is your uncertainty now? Has it gone up or down with the additional information?</li>
+<li>Say in addition you now learn <span class="math inline">\(X_2 = 1\)</span>: what now is your posterior? What now is your uncertainty?</li>
+<li>There are two ways in which you could have answered the last question: one is to use your prior from (1) and update based on the joint observation of <span class="math inline">\(X_1, X_2\)</span> using the likelihood: <span class="math inline">\(\Pr(X_1 = 0, X_2=1 | Y = 1)\)</span>. The other is to use the posterior from (3) as your new prior and update using only the new information, given the existing data: <span class="math inline">\(\Pr(X_2=1 | Y = 1, X_1 = 0)\)</span>. Show, analytically, that these are equivalent.</li>
+<li>Ex ante you cannot tell what you would observe if you looked for <span class="math inline">\(X_1\)</span> or <span class="math inline">\(X_2\)</span>. Thinking through all the patterns you might see, what is the <em>expected</em> estimate you would get if you just looked for <span class="math inline">\(X_1\)</span> or just looked for <span class="math inline">\(X_2\)</span>? What is the <em>expected posterior variance</em>? If you had to choose just one of <span class="math inline">\(X_1\)</span> or <span class="math inline">\(X_2\)</span> to look for, which would be more informative?</li>
+</ol>
+<p><strong>Bonus</strong>: Think through how things might change if X1 and X2 were not independent?</p>
+</div></details>
+</div>
+<div id="q-Hierarchy" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.3</strong></summary><div><strong>Hierarchical</strong><p></p>
+<p>Generate a simple multilevel experimental design (e.g 20 children each in 20 schools), similar to what we saw in slides. Assume that the treatment effect in each schools is drawn from a normal distribution with a given variance <span class="math inline">\(\sigma\)</span>.</p>
+<p>Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover <span class="math inline">\(\sigma\)</span>.</p>
+<p>Help: You can make a custom estimation function for <code>declare_estimator</code> or you can try using <code>rstanarm</code> which has the advantage of slipping more easily into a declaration– see (Declaration 9.3)[https://book.declaredesign.org/declaration-diagnosis-redesign/choosing-answer-strategy.html#answer-2]. Note: stan updating is not very fast and so you should do this with a relatively small number of simulations.</p>
+<p>Bonus: Are estimates of treatment effects more or less reliable than what you would get from a frequentist approach that interacts school IDs with treatment?</p>
+</div></details>
+</div>
+<div id="q-Priors" class="Q">
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.4</strong></summary><div><strong>Priors matter</strong><p></p>
+<p>Generate a simple experimental design and estimate treatment effects using</p>
+<ol type="1">
+<li>Bayesian regression with <code>stan</code> (you can make a custom estimation function for <code>declare_estimator</code> or you can try using <code>rstanarm</code> which has the advantage of slipping more easily into a declaration– see (Declaration 9.3)[https://book.declaredesign.org/declaration-diagnosis-redesign/choosing-answer-strategy.html#answer-2]). Provide informative priors (e.g. a tight distribution around 0 or someother numebr).</li>
+<li><code>lm_robust</code></li>
+</ol>
+<p>Let the size of the data increase from 10 to 100 to 1000 and plot the estimates from the two approaches as <span class="math inline">\(N\)</span> increases, plot the average standard error and the posterior variance from the two approaches as <span class="math inline">\(N\)</span> increases.</p>
+<p>Note: stan updating is not always very fast and so you should do this with a relatively small number of simulations. (The first run of a stan model is usually especially slow as the model has to compile.)</p>
+</div></details>
+</div>
 <div id="q-POC" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.1</strong></summary><div><strong>Clues from causal processes</strong><p></p>
+<details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.5</strong></summary><div>
+<p><strong>Clues from causal processes</strong></p>
 <ul>
 <li>Set up a model in which <span class="math inline">\(X \rightarrow Y\)</span> (<span class="math inline">\(X\)</span> as if random) and there is a true effect of 0.56.</li>
 <li>Update using large data generated according to some distribution over causal types</li>
@@ -4083,10 +4165,20 @@ window.Quarto = {
 <li>Calculate a posterior on the share of <span class="math inline">\(X=1, Y=1\)</span> cases for which <span class="math inline">\(Y=1\)</span> is due to <span class="math inline">\(X=1\)</span> (a) when you know that <span class="math inline">\(M=1\)</span> and (b) when you know that <span class="math inline">\(M=0\)</span></li>
 </ul>
 <p>Bonus: Say instead of a single mediator <span class="math inline">\(M\)</span> you had a chain: <span class="math inline">\(M_1, M_2, \dots\)</span>. Does lengthening the chain sufficiently allow you to identify causal effects?</p>
+<p>Help: This exercise uses the <code>CausalQueries</code> package.</p>
+<ul>
+<li>You set up the model using <code>model &lt;- make_model(&quot;x -&gt; Y&quot;)</code>.<br>
+</li>
+<li>To set up a true effect of .56 you need to specify parameter values for the model and specifically the share of units for which <span class="math inline">\(X\)</span> has a positive effect on <span class="math inline">\(Y\)</span> (<code>Y.01</code>) and for which <span class="math inline">\(X\)</span> has a negative effect on <span class="math inline">\(Y\)</span>, <code>Y.10</code>. See <code>?set.parameters</code> for help setting parameters.</li>
+<li>You can draw data using <code>data &lt;- draw_data(model, using = &quot;parameters&quot;)</code>.</li>
+<li>You update using <code>update_model(model, data)</code></li>
+<li>You query using <code>query_model(model, query = ...)</code>, This is a conditional query which can be written <code>query = &quot;Y[X=1] &gt; Y[X=0] :|: X==1 &amp; Y==1&quot;</code></li>
+<li>Similar steps are take for the <code>X-&gt;M-&gt;Y</code> model.</li>
+</ul>
 </div></details>
 </div>
 <div id="q-napkin" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.2</strong></summary><div><strong>Napkin identification</strong><p></p>
+<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.6</strong></summary><div><strong>Napkin identification</strong><p></p>
 <p>Consider the Napkin model: <code>W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">make_model</span>(<span class="st">&quot;W-&gt;Z-&gt;X-&gt;Y; W &lt;-&gt; X; W &lt;-&gt; Y&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">plot</span>(<span class="at">x_coord =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">y_coord =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -4108,37 +4200,6 @@ window.Quarto = {
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_parameters</span>(<span class="at">param_name =</span> <span class="st">&quot;X.11_W.1&quot;</span>, <span class="at">parameters =</span> .<span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note: this is hard because the <code>W &lt;-&gt; Y</code> confounding implies an <code>X &lt;-&gt; Y</code> confounding. There is no scope for front door adjustment. If you control for <span class="math inline">\(W\)</span> you open a path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> (since <span class="math inline">\(W\)</span> is a collider) and, more subtly, conditioning on <span class="math inline">\(Z\)</span> also partly opens a collider path. See this discussion: https://twitter.com/analisereal/status/1273099716956430340</p>
-</div></details>
-</div>
-<div id="q-Bayesbyhand" class="Q">
-<details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.3</strong></summary><div>
-<p><strong>Bayes by hand</strong></p>
-<p>Say that we have 50 observations of <span class="math inline">\(Y_0\)</span> and 50 observations of <span class="math inline">\(Y_1\)</span> from a random experiment. Assume these are each drawn independently from a normal distribution centered on <span class="math inline">\(\mu_j\)</span> with sd <span class="math inline">\(\sigma_j\)</span>, <span class="math inline">\(j\in\{0,1\}\)</span>.</p>
-<ol type="1">
-<li><p>Write down a likelihood function that returns the probability of seeing the 100 observations that you see given the four parameters: <span class="math inline">\(\mu_0, \mu_1, \sigma_0, \sigma_1\)</span>.</p></li>
-<li><p>Use <code>grid &lt;- expand_grid(m0 = ..., m1 = ...)</code> to generate a grid of possible values for the four parameters.</p></li>
-<li><p>Apply your likelihood function to all the possible parameter values contained in your grid.</p></li>
-<li><p>Now:</p></li>
-</ol>
-<ul>
-<li>Identify the maximum likelihood set of values</li>
-<li>Calculate the posterior distribution assuming uniform priors over the range</li>
-<li>Identify the posterior modes</li>
-<li>Calculate the posterior means</li>
-<li>Compare the estimates of a treatment effect you would obtain from
-<ul>
-<li>maximum likelihood</li>
-<li>posterior means</li>
-<li>ols</li>
-</ul></li>
-</ul>
-</div></details>
-</div>
-<div id="q-Hierarchy" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 4.4</strong></summary><div><strong>Hierarchical</strong><p></p>
-<p>Generate a simple multilevel experimental design (e.g 20 children each in 20 schools). Assume that the treatment effect in each schools is drawn from a normal distribution with a given variance <span class="math inline">\(\sigma\)</span>.</p>
-<p>Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover <span class="math inline">\(\sigma\)</span>.</p>
-<p>Bonus: Are estimates of treatment effects more or less reliable than what you would get from a frequentist approach that interacts school IDs with treatment?</p>
 </div></details>
 </div>
 </section>
@@ -4315,12 +4376,6 @@ window.Quarto = {
 <div id="q-weights" class="Q">
 <p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 8.1</strong></summary><div><strong>what weights</strong><p></p>
 <p>Say you sampled subject A with probability .6 and subject B with probability .4. Say you assigned each to treatment with probability .6. What weight should you put on A in your analysis if they end up in treatment? What if they end up in control? How about B?</p>
-</div></details>
-</div>
-<div id="q-Priors" class="Q">
-<p></p><details class="Q fbx-simplebox fbx-default"><summary><strong>Q 8.2</strong></summary><div><strong>Priors matter</strong><p></p>
-<p>Generate a simple experimental design and estimate treatment effects using a (a) Bayesian regression with <code>rstanarm</code>. Provide informative priors (b) <code>lm_robust</code></p>
-<p>Let the size of the data increase from 10 to 1000 and: plot the estimates from the two approaches as <span class="math inline">\(N\)</span> increases, plot the average standard error and the posterior variance from the two approaches as <span class="math inline">\(N\)</span> increases.</p>
 </div></details>
 </div>
 </section>

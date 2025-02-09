@@ -316,10 +316,6 @@ Discuss results. Do any of these return the right answer?
 *These do not require coding*
 
 
-
-
-
-
 ::: {.Q #q-posM}
 
 See the graph from slide: 
@@ -514,7 +510,9 @@ make_model("X -> M -> Y <-> X") |> plot(x_coord = 1:3, y_coord = c(1,1,1))
 
 ::: {.Q #q-blockestimates}
 
-Consider the following data. Treatment is assigned in two blocks. One third of block 1 got treatment (randomly); one third of block two got treatment (randomly). The data are as below:
+Consider the following data. Treatment is assigned in two blocks. One third of block 1 got randomly assigned to treatment; one half of block two got randomly assigned to treatment. 
+
+The data are as below:
 
 | Block | Z | Y |
 |-------|---|---|
@@ -544,7 +542,7 @@ Consider the following data. Treatment is assigned in two blocks. One third of b
 
 **randomization inferences**
 
-Imagine a population with 100 northerners (X=0) and 100 southerners (X=0). 
+Imagine a population with 100 northerners (X=0) and 100 southerners (X=1). 
 
 Assume 50 in each each group are assigned to binary treatment $Z$ with probability 0.5 (this is a blocked assignment) .
 
@@ -571,38 +569,6 @@ Bonus: How would things change if the true data generating process were $Y = X +
 
 :::
 
-```{r, include = FALSE, eval = FALSE}
-
-df <-
-  expand_grid(X = 0:1, Z = 0:1) |>
-  mutate(Y = X + Z -  2 * X * Z) |>
-  uncount(25)
-
-ps <- function(df, sims = 5000) {
-  coefs_1 <- lm(Y ~ Z, data  = df) |> coef() |> nth(2)
-  coefs_2 <- lm(Y ~ Z * X, data  = df) |> coef() |> nth(4)
-  
-  T1 <-
-    replicate(sims, lm(Y ~ Z, data  = df |> group_by(X) |> mutate(Z = sample(Z))) |>
-                coef() |> nth(2))
-  T2 <-
-    replicate(sims,
-              lm(Y ~ X * Z, data  = df |> group_by(X) |> mutate(Z = sample(Z))) |>
-                coef() |> nth(4))
-  
-  c(p1 = mean(abs(T1) >= abs(coefs_1)), p2 = mean(abs(T2) >= abs(coefs_2)))
-}
-
-ps(df, 2000)
-
-df2 <-
-  expand_grid(X = 0:1, Z = 0:1) |>
-  mutate(Y = X + Z) |>
-  uncount(25)
-
-ps(df2, 2000)
-
-```
 
 ::: {.Q #q-lin}
 
@@ -659,6 +625,142 @@ Assess performance (RMSE) over a range of values for `p` and `b`. How do you thi
 
 # Bayesian 
 
+::: {.Q #q-Bayesbyhand}
+
+**Bayes by hand**
+
+Say that we have 50 observations of $Y_0$ and 50 observations of $Y_1$ from a random experiment. Assume these are each drawn independently from a normal distribution centered on $\mu_j$ with sd $\sigma_j$, $j\in\{0,1\}$.
+
+1. Write down a likelihood function that returns the probability of seeing the 100 observations that you see given the four parameters: $\mu_0, \mu_1, \sigma_0, \sigma_1$.
+
+2. Use `grid <- expand_grid(m0 = ..., m1 = ..., s0 = ..., s1 = ... )` to generate a grid of possible values for the four parameters (make sure `s0` and `s1` are positive..
+
+3. Apply your likelihood function to all the possible parameter values contained in your grid. 
+
+4. Now:
+ * Identify the maximum likelihood set of values
+ * Calculate the posterior distribution assuming uniform priors over the range 
+ * Identify the posterior modes
+ * Calculate the posterior means
+ * Compare the estimates of a treatment effect you would obtain from 
+   * maximum likelihood 
+   * posterior means
+   * ols
+
+:::
+
+::: {.Q #q-bayes-sequencing}
+
+**Bayesian sequencing and posterior variance**
+
+Say you knew the probability of $Y$ given $X_1$ and $X_2$:
+
+|         | X_1 = 0 | X1 = 1  |
+|---------|---------|---------|
+|X_2 = 0	|  .2     | .5      | 
+|X_2 = 1	|  .8     | .9      |
+
+
+In addition you know that $X_1 = 1$ with probability 0.5, and  $X_2 = 1$ with probability 0.5, independently.
+
+1. Say you do not know $X_1$ or $X_2$. What is your prior that $Y = 1$?
+2. How uncertain are you? (You can use variance as a measure, where the variance in beliefs about a bernoulli event that arises with probability $p$ is just $p(1-p)$)
+3.  Say you now learn $X_1 = 0$: what is your posterior belief now? (we will call this a posterior variance)
+4. What is your uncertainty now? Has it gone up or down with the additional information?
+5. Say in addition you now learn  $X_2 = 1$: what now is your posterior? What now is your uncertainty?
+6. There are two ways in which you could have answered the last question: one is to use your prior from (1) and update based on the joint observation of $X_1, X_2$ using the likelihood: $\Pr(X_1 = 0, X_2=1 | Y = 1)$. The other is to use the posterior from (3) as your new prior and update using only the new information, given the existing data: $\Pr(X_2=1 | Y = 1, X_1 = 0)$. Show, analytically, that these are equivalent.
+7. Ex ante you cannot tell what you would observe if you looked for $X_1$ or $X_2$. Thinking through all the patterns you might see, what is the *expected* estimate you would get if you just looked for $X_1$ or  just looked for $X_2$? What is the *expected posterior variance*? If you had to choose just one of $X_1$ or $X_2$ to look for, which would be more informative?
+
+**Bonus**: Think through how things might change if X1 and X2 were not independent?
+
+
+```{r, include = FALSE, eval = FALSE}
+
+
+df <- expand_grid(X1 = 0:1, X2= 0:1) |> mutate(pr_Y = c(.2, .8, .5, .9))  
+prior = df |> pull(pr_Y) |> mean()
+prior_var <- prior*(1-prior)
+
+posterior_1 = df |> filter(X1 == 0) |> pull(pr_Y) |> mean()
+posterior_var_1 =  posterior_1*(1-posterior_1)
+
+posterior_3 = df |> filter(X1 == 0, X2 == 1) |> pull(pr_Y) |> mean()
+
+just_X1 <- c(
+  posterior_0x = df |> filter(X1 == 0) |> pull(pr_Y) |> mean(),
+  posterior_1x = df |> filter(X1 == 1) |> pull(pr_Y) |> mean())
+
+
+just_X2 <- c(
+  posterior_x0 = df |> filter(X2 == 0) |> pull(pr_Y) |> mean(),
+  posterior_x1 = df |> filter(X2 == 1) |> pull(pr_Y) |> mean()
+)
+
+c(
+  E_just_X1 = mean(just_X1),
+  E_var_just_X1 = mean(just_X1*(1-just_X1)),
+  E_just_X2 = mean(just_X2),
+  E_var_just_X2 = mean(just_X2*(1-just_X2)))
+
+
+# equiv: Pr( Y = 1 | X1=0, X2=1)  = Pr(X1=0, X2=1 | Y = 1)Pr(Y=1)/Pr(X1=0, X2=1)
+
+# equiv: Pr( Y = 1 | X1=0, X2=1)  = Pr(X2=1 | Y = 1, X1=0) Pr(Y=1 | X1 = 0)/Pr( X2=1 | X1=0)
+
+```  
+:::
+
+
+::: {.Q #q-Hierarchy}
+
+**Hierarchical** 
+
+Generate a simple multilevel experimental design (e.g 20 children each in 20 schools), similar to what we saw in slides. Assume that the treatment effect in each schools is drawn from a normal distribution with a given variance $\sigma$.
+
+Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover $\sigma$. 
+
+Help: You can make a custom estimation function for `declare_estimator` or you can try using `rstanarm` which has the advantage of slipping more easily into a declaration-- see (Declaration 9.3)[https://book.declaredesign.org/declaration-diagnosis-redesign/choosing-answer-strategy.html#answer-2]. Note: stan updating is not very fast and so you should do this with a relatively small number of simulations.
+
+Bonus: Are estimates of treatment effects more or less reliable than what you would get from a frequentist approach that interacts school IDs with treatment?
+
+:::
+
+
+::: {.Q #q-Priors}
+
+**Priors matter**
+
+Generate a simple experimental design and estimate treatment effects using
+
+1.  Bayesian regression with `stan` (you can make a custom estimation function for `declare_estimator` or you can try using `rstanarm` which has the advantage of slipping more easily into a declaration-- see (Declaration 9.3)[https://book.declaredesign.org/declaration-diagnosis-redesign/choosing-answer-strategy.html#answer-2]). Provide informative priors (e.g. a tight distribution around 0 or someother numebr). 
+2. `lm_robust`
+
+Let the size of the data increase from 10 to 100 to 1000 and plot the estimates from the two approaches as $N$ increases,  plot the average standard error and the posterior variance from the two approaches as $N$ increases.
+
+Note: stan updating is not always very fast and so you should do this with a relatively small number of simulations. (The first run of a stan model is usually especially slow as the model has to compile.)
+:::
+
+```{r, echo = FALSE, eval = FALSE}
+library(broom.mixed) # for helper functions
+library(rstanarm)
+
+stan_design <-
+  declare_model(N = 100, age = sample(0:80, size = N, replace = TRUE),
+                Y = 1 + 2*age + rnorm(N)) +
+  declare_inquiry(b = 2) +
+  declare_estimator(
+    Y ~ age,
+    .method = stan_glm,
+    prior = normal(0, .05),
+    refresh = 0, # less verbose output
+    .summary = ~tidy(.),
+    inquiry = "b"
+  )
+
+eg <- run_design(stan_design)
+
+```
+
 ::: {.Q #q-POC}
 
 **Clues from causal processes**
@@ -672,7 +774,18 @@ Assess performance (RMSE) over a range of values for `p` and `b`. How do you thi
 
 Bonus: Say instead of a single mediator $M$ you had a chain: $M_1, M_2, \dots$. Does lengthening the chain sufficiently allow you to identify causal effects?
 
+Help: This exercise uses the `CausalQueries` package. 
+
+* You set up the model using `model <- make_model("x -> Y")`.  
+* To set up a true effect of .56 you need to specify parameter values for the model and specifically the share of units for which $X$ has a positive effect on $Y$ (`Y.01`) and for which $X$ has a negative effect on $Y$, `Y.10`. See `?set.parameters` for help setting parameters. 
+* You can draw data using `data <- draw_data(model, using = "parameters")`. 
+* You update using `update_model(model, data)`
+* You query using `query_model(model, query = ...)`, This is a conditional query which can be written `query = "Y[X=1] > Y[X=0] :|: X==1 & Y==1"`
+* Similar steps are take for the `X->M->Y` model.
+
 :::
+
+
 
 
 ::: {.Q #q-napkin}
@@ -702,45 +815,6 @@ target_model <- make_model("W->Z->X->Y; W <-> X; W <-> Y") |>
 Note: this is hard because  the `W <-> Y` confounding implies an `X <-> Y` confounding. There is no scope for front door adjustment. If you control for $W$ you open a path from $X$ to $Y$ (since $W$ is a collider) and, more subtly, conditioning on $Z$ also partly opens a collider path. See this discussion: https://twitter.com/analisereal/status/1273099716956430340
 
 :::
-
-
-::: {.Q #q-Bayesbyhand}
-
-**Bayes by hand**
-
-Say that we have 50 observations of $Y_0$ and 50 observations of $Y_1$ from a random experiment. Assume these are each drawn independently from a normal distribution centered on $\mu_j$ with sd $\sigma_j$, $j\in\{0,1\}$.
-
-1. Write down a likelihood function that returns the probability of seeing the 100 observations that you see given the four parameters: $\mu_0, \mu_1, \sigma_0, \sigma_1$.
-
-2. Use `grid <- expand_grid(m0 = ..., m1 = ...)` to generate a grid of possible values for the four parameters.
-
-3. Apply your likelihood function to all the possible parameter values contained in your grid. 
-
-4. Now:
- * Identify the maximum likelihood set of values
- * Calculate the posterior distribution assuming uniform priors over the range 
- * Identify the posterior modes
- * Calculate the posterior means
- * Compare the estimates of a treatment effect you would obtain from 
-   * maximum likelihood 
-   * posterior means
-   * ols
-
-:::
-
-
-::: {.Q #q-Hierarchy}
-
-**Hierarchical** 
-
-Generate a simple multilevel experimental design (e.g 20 children each in 20 schools). Assume that the treatment effect in each schools is drawn from a normal distribution with a given variance $\sigma$.
-
-Use design diagnosis to assess the ability of a Bayesian multilevel hierarchical to recover $\sigma$. 
-
-Bonus: Are estimates of treatment effects more or less reliable than what you would get from a frequentist approach that interacts school IDs with treatment?
-
-:::
-
 
 
 # Design
@@ -947,14 +1021,5 @@ Say you sampled subject A with probability .6 and subject B with probability .4.
 :::
 
 
-::: {.Q #q-Priors}
-
-**Priors matter**
-
-Generate a simple experimental design and estimate treatment effects using a (a) Bayesian regression with `rstanarm`. Provide informative priors (b) `lm_robust`
-
-Let the size of the data increase from 10 to 1000 and: plot the estimates from the two approaches as $N$ increases,  plot the average standard error and the posterior variance from the two approaches as $N$ increases.
-
-:::
 
 # References
