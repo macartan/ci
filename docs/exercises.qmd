@@ -665,8 +665,8 @@ In addition you know that $X_1 = 1$ with probability 0.5, and  $X_2 = 1$ with pr
 
 1. Say you do not know $X_1$ or $X_2$. What is your prior that $Y = 1$?
 2. How uncertain are you? (You can use variance as a measure, where the variance in beliefs about a bernoulli event that arises with probability $p$ is just $p(1-p)$)
-3.  Say you now learn $X_1 = 0$: what is your posterior belief now? (we will call this a posterior variance)
-4. What is your uncertainty now? Has it gone up or down with the additional information?
+3.  Say you now learn $X_1 = 0$: what is your posterior belief now? 
+4. What is your uncertainty now? (Again use variance, but now you should look at the posterior variance). Has it gone up or down with the additional information?
 5. Say in addition you now learn  $X_2 = 1$: what now is your posterior? What now is your uncertainty?
 6. There are two ways in which you could have answered the last question: one is to use your prior from (1) and update based on the joint observation of $X_1, X_2$ using the likelihood: $\Pr(X_1 = 0, X_2=1 | Y = 1)$. The other is to use the posterior from (3) as your new prior and update using only the new information, given the existing data: $\Pr(X_2=1 | Y = 1, X_1 = 0)$. Show, analytically, that these are equivalent.
 7. Ex ante you cannot tell what you would observe if you looked for $X_1$ or $X_2$. Thinking through all the patterns you might see, what is the *expected* estimate you would get if you just looked for $X_1$ or  just looked for $X_2$? What is the *expected posterior variance*? If you had to choose just one of $X_1$ or $X_2$ to look for, which would be more informative?
@@ -706,6 +706,9 @@ c(
 # equiv: Pr( Y = 1 | X1=0, X2=1)  = Pr(X1=0, X2=1 | Y = 1)Pr(Y=1)/Pr(X1=0, X2=1)
 
 # equiv: Pr( Y = 1 | X1=0, X2=1)  = Pr(X2=1 | Y = 1, X1=0) Pr(Y=1 | X1 = 0)/Pr( X2=1 | X1=0)
+
+# Pr(X1=0, X2=1 | Y = 1)Pr(Y=1)/Pr(X1=0, X2=1)  =  Pr(X2=1 | Y = 1, X1=0) Pr(Y=1 | X1 = 0)/Pr( X2=1 | X1=0)
+# Pr(X1=0, X2=1,  Y = 1)/Pr(X1=0, X2=1)  =  Pr(X2=1 , Y = 1 | X1=0) Pr(X1 = 0) /(Pr( X2=1 | X1=0)Pr(X1 = 0))  = =  Pr(X2=1 , Y = 1,  X1=0) /(Pr( X2=1,  X1=0)) 
 
 ```  
 :::
