@@ -672,13 +672,14 @@ adjacency <-
 diag(adjacency) <- 0
 ```
 
-### Indirect assignments {.smaller}
+### Indirect assignments: Adjacency matrix {.smaller}
 
-```{r}
+```{r, fig.height = 5, fig.width = 6}
 adjacency |>  
-  reshape2::melt(c("x", "y"), value.name = "z") |> mutate(z = factor(z)) |>
-  ggplot(aes(x=x,y=y,fill=z))+
-  geom_tile()
+  reshape2::melt(c("x", "y"), value.name = "close") |> mutate(close = factor(close)) |>
+  ggplot(aes(x=x,y=y,fill=close))+
+  geom_tile() + xlab("individual") + ylab("individual") + theme_bw() +
+  scale_fill_grey(start = 1, end = 0)  # 1 = white, 0 = black
 ```
 
 

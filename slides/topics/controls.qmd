@@ -1,0 +1,684 @@
+---
+title: "Topics"
+subtitle: "Controls"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+```{r, include = FALSE}
+if(!exists("child")) setwd("../")
+
+source("setup.R")
+
+library(SCtools)
+library(Synth)
+```
+
+
+## Covariate Adjustment
+
+### When to condition? What to condition on? {.smaller}
+
+* Note: Next slides are also used in [estimands deck](#secestimands)
+
+The key idea from Pearl is that you want to find a set of variables such that when you condition on these you get what you would get if you had random assignment---or, used a `do` operation.
+
+
+### When to condition? What to condition on? {.smaller}
+
+Intuition:
+
+-   You could imagine creating a "mutilated" graph by removing all the arrows leading *out* of *X*
+-   Then select a set of variables, $Z$, such that $X$ and $Y$ are d-separated by $Z$ on the the mutilated graph
+-   When you condition on these you are making sure that any covariation between $X$ and $Y$ is covariation that is due to the effects of $X$
+
+### Illustration
+
+```{r, echo = FALSE}
+m1 <- make_model("X -> M1 -> Y <- M2 <- X <- Z -> M1")
+plot(m1, x_coord = c(1, 2, 3, 3, 4), y_coord = c(1.5, 1, 2, 1, 1))
+```
+
+### Illustration: Remove paths out
+
+```{r, echo = FALSE}
+m2 <- make_model("M1 -> Y <- M2; X <- Z -> M1")
+plot(m2, x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), y_coord = c(M2=1, Z=1.5, M1=2, X=1, Y=1))
+```
+
+### Illustration: Block backdoor path
+
+```{r, echo = FALSE}
+m2 <- make_model("M1 -> Y <- M2; X <- Z -> M1")
+plot(m2, 
+     x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), 
+     y_coord = c(M2=1, Z=1.5, M1=2, X=1, Y=1), 
+     nodecol = c(1,2,1,1,1))
+```
+
+### Illustration: Why not like this?
+
+```{r, echo = FALSE}
+m2 <- make_model("M1 -> Y <- M2; X <- Z -> M1")
+plot(m2, 
+     x_coord = c(M2 = 3, Z=1, M1=3, X=2, Y=4), 
+     y_coord = c(M2=1, Z=1.5, M1=2, X=1, Y=1), 
+     nodecol = c(1,1,2, 1,1))
+```
+
+
+### Backdoor Criterion: (Pearl 1995) {.smaller}
+
+The **backdoor criterion** is satisfied by $Z$ (relative to $X$, $Y$) if:
+
+1.  No node in $Z$ is a descendant of $X$
+2.  $Z$ blocks every **backdoor** path from $X$ to $Y$ (i.e. every path that contains an arrow into $X$)
+
+In that case you can identify the effect of $X$ on $Y$ by conditioning on $Z$:
+
+$$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$ (This is eqn 3.19 in Pearl (2000))
+
+### Backdoor Criterion: (Pearl 1995)
+
+$$P(Y=y | \hat{x}) = \sum_z P(Y=y| X = x, Z=z)P(z)$$
+
+-   No notion of a linear control or anything like that; idea really is like blocking: think lots of discrete data and no missing patterns
+-   Note this is a formula for a (possibly counterfactual) *level*; a counterfactual difference would be given in the obvious way by:
+
+$$P(Y=y | \hat{x}) - P(Y=y | \hat{x}')$$
+
+### Backdoor Proof {.smaller}
+
+Following Pearl (2009), Chapter 11. Let $T$ denote the set of parents of $X$: $T := pa(X)$, with (possibly vector valued) realizations $t$. These might not all be observed.
+
+If the backdoor criterion is satisfied, we have:
+
+1.  $Y$ is independent of $T$, given $X$ and observed data, $Z$ (since $Z$ blocks backdoor paths)
+2.  $X$ is independent of $Z$ given $T$. (Since $Z$ includes only nondescendents)
+
+-  **Key idea**: The intervention level relates to the observational level as follows: $$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)$$
+
+-  Think of this as *fully accounting for the (possibly unobserved) causes of $X$, $T$*
+
+### Backdoor Proof {.smaller}
+
+We want to get to:
+
+$$p(y|\hat{x}) = \sum_{t\in T} p(t)p(y|x, t)$$
+
+-   But of course we do not observe $T$, rather we observe $Z$. So we now need to write everything in terms of $Z$ rather than $T$.
+
+We bring $Z$ into the picture by writing: 
+
+$$p(y|\hat{x}) = \sum_{t\in T} p(t) \sum_z p(y|x, t, z)p(z|x, t)$$
+
+
+now we want to get rid of $T$...
+
+### Backdoor Proof {.smaller}
+
+now we want to get rid of $T$...
+
+-   Using the two conditions from the backdoor definition above:
+
+    1.  replace $p(y|x, t, z)$ with $p(y | x, z)$
+    2.  replace $p(z|x, t)$ with $p(z|t)$
+
+This gives: $$p(y|\hat x) = \sum_{t \in T} p(t) \sum_z p(y|x, z)p(z|t)$$
+
+Cleaning up, we can get rid of $T$: 
+
+$$p(y|\hat{x}) =  \sum_z p(y|x, z)\sum_{t\in T} p(z|t)p(t) = \sum_z p(y| x, z)p(z)$$
+
+
+### Backdoor proof figure {.smaller}
+
+For intuition: 
+
+```{r, echo = FALSE, fig.height = 4, fig.width = 10}
+
+make_model(" Y <- Z <- T -> X -> Y ") |> plot(x_coord = c(1, 2, 2, 3), y_coord = c(1, 1, 2, 1))
+
+```
+
+We would be happy if we could condition on the parent $T$, but $T$ is not observed. However we can use $Z$ instead making use of the fact that:
+
+1.  $p(y|x, t, z) = p(y | x, z)$ (since $Z$ blocks)
+2.  $p(z|x, t) = p(z|t)$ (since $Z$ is upstream and blocked by parents, $T$)
+
+
+### Guidelines
+
+```{r, echo = FALSE}
+knitr::include_graphics("figs/controls.png") 
+```
+### Example {.smaller}
+
+Consider for example this data.
+
+-   You randomly pair offerers and receivers in a dictator game (in which offerers decide how much of \$1 to give to receivers).
+-   Your population comes from two groups (80% Baganda and 20% Banyankole) *so in randomly assigning partners you are randomly determining whether a partner is a coethnic or not*.
+-   **You find that in non-coethnic pairings 35% is offered, in coethnic pairings 48% is offered.**
+
+Should you believe it?
+
+### Covariate Adjustment {.smaller}
+
+-   Population: randomly matched Baganda (80% of pop) and Banyankole (20% of pop)
+-   You find: in non-coethnic pairings 35% is offered, in coethnic pairings 48% is offered.
+-   But a closer look at the data reveals...
+
+::: {#fig-games}
+|           |            | To: Baganda | To: Banyankole |
+|-----------|------------|-------------|----------------|
+| Offers by | Baganda    | 64%         | 16%            |
+|           | Banyankole | 16%         | 4%             |
+
+Number of Games
+:::
+
+::: {#fig-offers}
+|           |            | To: Baganda | To: Banyankole |
+|-----------|------------|-------------|----------------|
+| Offers by | Baganda    | 50          | 50             |
+|           | Banyankole | 20          | 20             |
+
+Average Offers
+:::
+
+So that's a problem
+
+### Covariate Adjustment
+
+Control?
+
+-   With such data you might be tempted to 'control' for the covariate (here: ethnic group), using regression.
+-   But, perhaps surprisingly, it turns out that regression with covariates does not estimate average treatment effects.
+-   It does estimate an average of treatment effects, but specifically a minimum variance estimator, not necessarily an estimator of your estimand.
+
+### Covariate Adjustment
+
+Compare:
+
+-   $\hat{\tau}_{ATE} =\sum_{x} \frac{w_x}{\sum_{j}w_{j}}\hat{\tau}_x$
+-   $\hat{\tau}_{OLS} =\sum_{x} \frac{w_xp_x(1-p_x)}{\sum_{j}w_j{p_j(1-p_j)}}\hat{\tau}_x$
+
+Instead you can use formula above for $\hat{\tau}_{ATE}$ to estimate ATE
+
+alternatively...
+
+### Covariate adjustment via saturated regression {.smaller}
+
+* Alternatively you can use propensity weights.
+* Alternatively you can use a regression that includes both the treatment and the treatment *interacted* with the covariates.
+  * In practice this is best done by *demeaning* the covariates; doing this lets you read off the average effect from the main term. Key resource: @lin2012agnostic
+
+You should have noticed that the logic for controlling for a covariate here is equivalent to the logic we saw for heterogeneous assignment propensities. These are really the same thing.
+
+### Covariate adjustment via saturated regression {.smaller}
+
+Returning to prior example:
+
+```{r}
+df <- fabricatr::fabricate(
+  N = 500, 
+  X = rep(0:1, N/2), 
+  Z = rbinom(N, 1, .2 + .3*X),
+  Y = rnorm(N) + Z*X)
+
+lm_robust(Y ~ Z*X_c, data = df |> mutate(X_c = X - mean(X))) |>
+  tidy() |> kable(digits = 2)
+```
+
+### Covariate adjustment via saturated regression {.smaller}
+
+Returning to prior example:
+
+```{r}
+
+lm_lin(Y ~ Z, ~ X, data = df) |>
+  tidy() |> kable(digits = 2)
+
+```
+
+### Demeaning and saturating 
+
+Demeaning interactions
+
+-   Say you have a factorial design with treatments X1 and X2 (or observational data with two covariates)
+-   You analyse with a model that has main terms and interaction terms
+-   Interpreting coefficients can be confusing, but sometimes demeaning can help. What does demeaning do?
+
+
+### Demeaning and saturating {.smaller}
+
+Let's:
+
+-   Declare a factorial design in which Y is generated according to
+
+`f_Y <- function(X1, X2, u) .1 + .2*X1 + .3*X2 + u*X1*X2`
+
+where u is distributed $U[0,1]$.
+
+-   Specify estimands carefully
+-   Run analyses in which we do and do not demean the treatments; compare and explain results
+
+### Demeaning interactions {.smaller}
+
+```{r}
+f_Y <- function(X1, X2, u) .1 + .2*X1 + .3*X2 + u*X1*X2
+
+design <-
+  declare_model(N = 1000, u = runif(N),
+                X1 = complete_ra(N), X2 = block_ra(blocks = X1),
+                X1_demeaned = X1 - mean(X1),
+                X2_demeaned = X2 - mean(X2),
+                Y = f_Y(X1, X2, u)) +
+  declare_inquiry(
+    base = mean(f_Y(0, 0, u)),
+    average = mean(f_Y(0, 0, u) + f_Y(0, 1, u)  + f_Y(1, 0, u)  + f_Y(1, 1, u))/4,
+    CATE_X1_given_0 = mean(f_Y(1, 0, u) - f_Y(0, 0, u)),
+    CATE_X2_given_0 = mean(f_Y(0, 1, u) - f_Y(0, 0, u)),
+    ATE_X1 = mean(f_Y(1, X2, u) - f_Y(0, X2, u)),
+    ATE_X2 = mean(f_Y(X1, 1, u) - f_Y(X1, 0, u)),
+    I_X1_X2 = mean((f_Y(1, 1, u) - f_Y(0, 1, u)) - (f_Y(1, 0, u) - f_Y(0, 0, u)))
+  ) +
+  declare_estimator(Y ~ X1*X2, 
+                    inquiry = c("base", "CATE_X1_given_0", "CATE_X2_given_0", "I_X1_X2"), 
+                    term = c("(Intercept)", "X1", "X2", "X1:X2"),
+                    label = "natural") +
+  declare_estimator(Y ~ X1_demeaned*X2_demeaned, 
+                    inquiry = c("average", "ATE_X1", "ATE_X2", "I_X1_X2"), 
+                    term = c("(Intercept)", "X1_demeaned", "X2_demeaned", "X1_demeaned:X2_demeaned"),
+                    label = "demeaned")
+```
+
+### Demeaning interactions: Solution {.smaller}
+
+```{r, echo = FALSE}
+if(run)
+  design |> diagnose_design(bootstrap_sims = 0) |>write_rds("saved/demeaned.rds")
+
+read_rds("saved/demeaned.rds") |> reshape_diagnosis() |> 
+  select(Estimator,	 Inquiry,	Term,	'Mean Estimand',	'Mean Estimate') |>  
+  arrange(Estimator, Inquiry) |>
+  kable(align = c("l", "l", "l", "c", "c"))
+
+```
+
+It's all good. But you need to match the estimator to the inquiry: demean for average marginal effects; do not demean for conditional marginal effects.
+
+### Recap {.smaller}
+
+If you have different groups with different assignment propensities you can do any or all of these:
+
+1.  Blocked differences in means
+2.  Inverse propensity weighting
+3.  Saturated regression (Lin)
+4.  More... (coming)
+
+You cannot (reliably):
+
+1.  Ignore the groups
+2.  Include them in a regression (without interactions)
+
+## To control or not control
+
+Even "good" controls might  not pay their way *in practice*:
+
+*When (and how) does controlling for covariates improve things and when does it make it worse*
+
+### Considerations  {.smaller}
+
+- Even though randomization ensures no bias, you may sometimes **want** to "**control**" for covariates in order to improve efficiency (see the discussion of blocking above).
+- Or you may **have** to take account of the fact that the assignment to treatment is correlated with a covariate (as above).
+- In observational work you might also figure out you have to control for a covariate to justify inferences (Refer to our discussion of the backdoor criteria)
+
+### Observational work {.smaller}
+
+
+* Observational motivation: Controls can provide grounds for identification
+* But recall -- they can also destroy identification
+
+For a great walk through of what you can draw from graphical models for the decision to control see:
+
+[A Crash Course in Good and Bad Controls](https://ftp.cs.ucla.edu/pub/stat_ser/r493.pdf) by @cinelli2022crash
+
+**Aside**: these implications generally refer to use controls as covariates -- e.g. by implementing blocked differences in means or similar.  For a Bayesian model of the form used in `CausalQueries` the information from "bad controls" is used wisely.
+
+
+
+
+### Experimental work
+
+* Conditional Bias and Precision Gains from Controls
+
+* Experimental motivation: Controls can  reduce noise and improve precision. This is an argument for using variables that are correlated with the output (not with the treatment).
+
+
+### Precision Gains from Controls  {.smaller}
+
+However: Introducing controls can create complications
+
+* As argued by Freedman (summary from @lin2012agnostic), we can get: "worsened asymptotic precision, invalid measures of precision, and small-sample bias"$^*$
+
+* These adverse effects are essentially removed with an interacted model
+
+* See discussions in @imbens2015causal (7.6, 7.7) and especially Theorem 7.2 for the asymptotic variance of the estimator
+
+$^*$ though note that the precision concern does not hold when treatment and control groups are equally sized
+
+
+### To control or not {.smaller}
+
+We will illustrate by comparing:
+
+  * DIM
+  * OLS (linear controls)
+  * Lin (saturated)
+
+With:
+
+  * Varying fraction assigned to treatment
+  * Varying relation between $Y(0)$ and $Y(1)$
+
+### Declaration (from RDSS) {.smaller}
+
+```{r}
+# https://book.declaredesign.org/library/experimental-causal.html
+
+prob <- 0.5
+control_slope <- -1
+
+declaration_18.3 <-
+  declare_model(N = 100, X = runif(N, 0, 1),
+                U = rnorm(N, sd = 0.1),
+                Y_Z_1 = 1*X + U, Y_Z_0 = control_slope*X + U
+  ) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_assignment(Z = complete_ra(N = N, prob = prob)) + 
+  declare_measurement(Y = reveal_outcomes(Y ~ Z)) +
+  declare_estimator(Y ~ Z, inquiry = "ATE", label = "DIM") +
+  declare_estimator(Y ~ Z + X, .method = lm_robust, inquiry = "ATE", label = "OLS") +
+  declare_estimator(Y ~ Z, covariates = ~X, .method = lm_lin, 
+                    inquiry = "ATE", label = "Lin")
+```
+
+### Implied potential outcomes
+
+The variances and covariance of potential outcomes depend on the slope parameter
+
+```{r, echo = FALSE, fig.width = 8, fig.height = 3}  
+datas <- declaration_18.3 |> 
+  redesign(control_slope = seq(-1, 1, 1)) |> 
+  lapply(function(x) draw_data(x) )   
+
+names(datas) <- paste("slope", -1:1)
+  
+datas |>    bind_rows(.id = "control_slope") |>
+  gather(var, val, -X,  -Y, -Z, -ID, -U, -control_slope) |>
+  ggplot(aes(X, val, color = var)) + geom_point(alpha = .5) + 
+  facet_grid(~control_slope) + theme_bw()
+
+```
+
+### To control or not {.smaller}
+
+Diagnosis:
+
+```{r, eval = FALSE}
+declaration_18.3 |> 
+  redesign(
+    control_slope = seq(-1, 1, 0.5), 
+    prob = seq(0.1, 0.9, 0.1)) |> 
+  diagnose_designs()
+```
+
+### To control or not {.smaller}
+
+* Lin always does well
+* OLS does fine with equal probability assignments
+* Otherwise the ranking of DIM and OLS is design dependent
+
+```{r, echo = FALSE, fig.width = 8, fig.height = 3}
+if(run)
+  declaration_18.3 |> 
+  redesign(
+    control_slope = seq(-1, 1, 0.5), 
+    prob = seq(0.1, 0.9, 0.1)) |> 
+  diagnose_designs() |>
+  write_rds("saved/freedman18.3.rds") 
+
+read_rds("saved/freedman18.3.rds")$diagnosands_df |> 
+  ggplot(aes(prob, sd_estimate, color = estimator)) + geom_line() + facet_grid(~control_slope, labeller = label_both) + theme_bw() +
+  xlab("Fraction assigned to treatment") + ylab("(real) standard error")
+
+       
+         
+```
+
+### Conditional Bias and Precision Gains from Controls
+
+* Treatment correlated with covariates can induce "conditional bias." 
+* Including controls that are correlated with treatment can introduce inefficiencies
+* Including controls can change your estimates so be sure not to fish!
+
+###  Declaration
+
+```{r}
+a <- 0
+b <- 0
+
+design <- 
+  declare_model(N = 100,
+                        X = rnorm(N),
+                        Z = complete_ra(N),
+                        Y_Z_0 = a*X + rnorm(N),
+                        Y_Z_1 = a*X + correlate(given = X, rho = b, rnorm) + 1,
+                        Y = reveal_outcomes(Y ~ Z)) +
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z, covariates = ~X, .method = lm_lin, label = "Lin") +
+  declare_estimator(Y ~ Z,  label = "No controls") +
+  declare_estimator(Z ~ X,  label = "Condition")
+```
+
+The design implements estimation controlling and not controlling for $X$  and also keeps track of the results of a test for the relation between $Z$ and $X$. 
+
+### Simulations
+
+We simulate with many simulations over a range of designs
+
+```{r, eval = FALSE}
+simulations <- 
+  list(design |> redesign(a = 0, b = 0),  design |> redesign(a = 1, b = 0),  design |> redesign(a = 0, b = 1)) |>
+  simulate_design(sims = 20000) 
+```
+
+```{r bigsimsmutz, echo = FALSE}
+
+if(run)
+  list(design |> redesign(a= 0, b = 0),  design |> redesign(a = 1, b = 0),  design |> redesign(a = 0, b = .8)) |>
+  simulate_design(sims = 20000)|>
+  mutate(design = paste("a =", a, ", b =", b))  |>
+  write_rds("saved/tocontrolornot.rds")
+
+simulations <-  read_rds("saved/tocontrolornot.rds") |>
+  mutate(design_label = factor(design, c("a = 0 , b = 0",    "a = 1 , b = 0", "a = 0 , b = 0.8"), c("X unrelated", "X also causes Y", "X moderates Z")))
+
+```
+
+
+### Standard errors {.smaller}
+
+We see the standard errors are larger when you control in cases in which the control is *not* predictive of the outcome *and* it *is* correlated with the treatment. Otherwise they can be smaller.
+
+```{r mutz, echo = FALSE}
+
+simulations |> group_by(a, b, sim_ID) |> 
+  mutate(correlation = mean(statistic[estimator == "Condition"])) |> 
+  ungroup() |>
+  mutate(error = estimate - estimand,
+        unbalanced = abs(correlation) >= 1.96) |>
+  filter(estimator != "Condition") |>
+
+  ggplot(aes(correlation, std.error, color = estimator)) + facet_grid(design_label~., scales = "free")+   
+  theme_bw() +  geom_smooth() + xlab("imbalance between covariate, X,  and treatment, Z (z stat)") + xlim(-4, 4)
+
+
+```
+
+
+See [Mutz et al](https://www.asc.upenn.edu/sites/default/files/2021-03/The%20perils%20of%20balance%20testing%20in%20experimental%20design-%20Messy%20analyses%20of%20clean%20data.pdf)
+
+### Errors 
+
+We also see "conditional bias" when we do not control: where the distribution of errors depends on the correlation with the covariate.
+
+```{r, echo = FALSE, fig.cap = "Errors"}
+
+simulations |> group_by(a, b, sim_ID) |> 
+  mutate(correlation = mean(statistic[estimator == "Condition"])) |> 
+  ungroup() |>
+  mutate(error = estimate - estimand,
+        unbalanced = abs(correlation) >= 1.96) |>
+  filter(estimator != "Condition") |>
+
+  ggplot(aes(correlation, error)) + facet_grid(design_label~estimator)+  theme_bw() + geom_point(alpha = .2) + geom_smooth()  + 
+  xlab("imbalance between covariate, X,  and treatment, Z (z stat)")
+
+
+```
+
+
+
+### Estimands
+
+Puzzle: Does the sample average treatment effect on the treated depend on the covariate balance?
+
+
+## Doubly robust estimation
+
+### Doubly robust estimation {.smaller}
+
+Doubly robust estimation combines:
+
+1.  A model for how the covariates predict the potential outcomes
+2.  A model for how the covariates predict assignment propensities
+
+Using both together to estimate potential outcomes using propensity weighting lets you do well even if either model is wrong.
+
+Each part can be done using nonparameteric methods resulting in an overall semi-parametric procedure.
+
+-   $\pi(Z) = \Pr(Z=1|X)$: Estimate $\hat\pi$
+-   $Y_z = \mathbb{E}[Y|Z=z, X]$: Estimate $\hat{Y}_z$
+-   Estimate of causal effect: $\frac{1}{n}\sum_{i=1}^n\left(\left(\frac{Z_i}{\hat{\pi}_i}(Y_i - \hat{Y}_{i1}\right) - \left(\frac{1-Z_i}{1-\hat{\pi}_i}(Y_i - \hat{Y}_{i0}\right) + \left(\hat{Y}_{i1} - \hat{Y}_{i0}\right) \right)$
+
+### Doubly robust estimation
+
+-   Estimate of causal effect: $\frac{1}{n}\sum_{i=1}^n\left(\left(\frac{Z_i}{\hat{\pi}_i}(Y_i - \hat{Y}_{i1}\right) - \left(\frac{1-Z_i}{1-\hat{\pi}_i}(Y_i - \hat{Y}_{i0}\right) + \left(\hat{Y}_{i1} - \hat{Y}_{i0}\right) \right)$
+
+-   Note that if $\hat{Y}_{iz}$ are correct then the first parts drop out and we we get the right answer.
+
+-   So if you can impute the potential outcomes, you are good (though hardly surprising)
+
+### Doubly robust estimation {.smaller}
+
+-   More subtly say the $\hat{\pi}$s are correct, but your imputations are wrong; then we again have an unbiased estimator.
+
+To see this imagine with probability $\pi$ we assign unit 1 to treatment and 2 to control (otherwise 1 to control and 2 to treatment).
+
+Then our *expected* estimate is:
+
+$\frac12\pi\left(\left(\frac{1}{\pi}(Y_{11} - \hat{Y}_{11}\right) - \left(\frac{1}{\pi}(Y_{20} - \hat{Y}_{20}\right) \right) + (1-\pi)\left(\left(\frac{1}{1-\pi}(Y_{21} - \hat{Y}_{21}\right) - \left(\frac{1}{1-\pi}(Y_{10} - \hat{Y}_{10}\right) \right) + \left(\hat{Y}_{11} - \hat{Y}_{20}\right) + \left(\hat{Y}_{21} - \hat{Y}_{10}\right)$
+
+$\frac12\left(Y_{11} - Y_{10} + Y_{21}- Y_{20} +\pi\left(\left(\frac{1}{\pi}( - \hat{Y}_{11}\right) - \left(\frac{1}{\pi}( - \hat{Y}_{20}\right) \right) + (1-\pi)\left(\left(\frac{1}{1-\pi}( - \hat{Y}_{21}\right) - \left(\frac{1}{1-\pi}(- \hat{Y}_{10}\right) \right)\right) + \left(\hat{Y}_{11} - \hat{Y}_{20}\right) + \left(\hat{Y}_{21} - \hat{Y}_{10}\right)$
+
+$\frac12\left(Y_{11} - Y_{10} + Y_{21}- Y_{20}\right)$
+
+@robins1994estimation
+
+### Doubly robust estimation illustration
+
+
+Consider this data (with confounding):
+
+```{r}
+# df with true treatment effect of 1 
+# (0.5 if race = 0; 1.5 if race = 1)
+
+df <- fabricatr::fabricate(
+  N = 5000,
+  class = sample(1:3, N, replace = TRUE),
+  race = rbinom(N, 1, .5),
+  Z = rbinom(N, 1, .2 + .3*race),
+  Y = .5*Z + race*Z + class + rnorm(N),
+  qsmk = factor(Z),
+  class = factor(class),
+  race = factor(race)
+)
+```
+
+### Simple approaches
+
+Naive regression produces biased estimates, even with controls. Lin regression gets the right result however.
+
+```{r}
+# Naive
+lm_robust(Y ~ Z, data = df)$coefficients[["Z"]]
+
+# OLS with controls
+lm_robust(Y ~ Z + class + race, data = df)$coefficients[["Z"]]
+
+# Lin
+lm_lin(Y ~ Z,  ~ class + race, data = df)$coefficients[["Z"]]
+
+```
+
+### Doubly robust estimation
+
+`drtmle` is an R package that uses doubly robust estimation to compute "marginal means of an outcome under fixed levels of a treatment."
+
+```{r}
+library(SuperLearner)
+library(drtmle)
+drtmle_fit <- drtmle(
+  W = df |> select(race, class), 
+  A = df$Z, 
+  Y = df$Y, 
+  SL_Q = c("SL.glm", "SL.mean", "SL.glm.interaction"),
+  SL_g = c("SL.glm", "SL.mean", "SL.glm.interaction"),
+  SL_Qr = "SL.glm",
+  SL_gr = "SL.glm", 
+  maxIter = 1
+)
+```
+
+### Doubly robust estimation
+
+```{r}
+# "Marginal means"
+drtmle_fit$drtmle$est
+
+# Effects
+ci(drtmle_fit, contrast = c(-1,1))
+wald_test(drtmle_fit, contrast = c(-1,1))
+
+```
+
+Resource: <https://muse.jhu.edu/article/883477>
+
+### Assessing performance
+
+**Challenge**: Use `DeclareDesign` to compare performance of `drtmle` and `lm_lin`
+
+

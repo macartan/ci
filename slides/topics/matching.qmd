@@ -1,0 +1,273 @@
+---
+title: "Topics"
+subtitle: "Matching"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+```{r, include = FALSE}
+if(exists("child")) source("setup.R")
+if(!exists("child")) source("../setup.R")
+
+library(MatchIt)
+data("lalonde")
+```
+
+
+## Matching {#match}
+
+### Core idea
+
+The matching idea can be seen as an application of the [backdoor criterion](https://macartan.github.io/ci/ci_2025.html#/backdoor-criterion-pearl-1995):
+
+Seek features $X$ that block backdoor paths from $Z$ to $Y$ and estimate:
+
+$$\sum_x p(x) \mathbb E[Y | Z = 1, X = x] - \mathbb E[Y | Z = 0, X = x]$$ 
+
+This, fundamentally, is a blocked differences in means. The intuitions from the discussion of Lin estimation applies here.
+
+### ATT Wrinkle
+
+In practice matching differs from simply controlling for covariates (with interactions) insofar matches are (often) sought specifically for treated units.
+
+Thus for example in data like this:
+
+```{r, echo = FALSE}
+
+data.frame(Z = c(0,0,1,1), X = c(1,2,1,1), Y = c(1,2,3,4)) |> 
+  kable()
+```
+we would not make use of the second observation. Indeed it is not even part of our estimand.
+
+
+### ATT Wrinkle
+
+More formally if $M_i$ are matches for each unit $i$ of $n_1$ treated units, our estimand is:
+
+$$\tau_{ATT} = \frac{1}{n_1} \sum_{i: Z_i = 1}\left(Y_i(1) - Y_i(0)\right) $$
+
+and we estimate:
+
+$$\hat\tau_{ATT} =\frac{1}{n_1} \sum_{i: Z_i = 1}\left(Y_i - \frac{1}{|M_i|}\sum_{j \in M_i}Y_j\right) $$
+
+### ATE?
+
+In principle however one could maintain a focus on ATE and find matches both for treated and for control units. 
+
+The commitment to the ATT then is not cooked in. See @stuart2008using
+
+Example below.
+
+### Variations
+
+* **Exact matching**. Great if possible: use as matches units that exactly agree on all covariates
+* **Coarsened exact matching**. Transparent and easy: use as matches units that exactly agree on all *coarsened* covariates (i.e. nearly agree on covariates) 
+* **Distance matching** e.g. Mahalanobis, nearest neighbor: use as matches units that are close in the multidimensional covariate space 
+* **Propensity matching**. Clever but more model dependent: use as matches units that, baed ono covariates, have similar estimated probabilities of being in treatment
+
+###Exact matching illustration {.smaller}
+
+```{r}
+
+exact_matching <- 
+  function(data) { 
+    matched <- MatchIt::matchit(Z ~ X, method = "exact", data = data) 
+    MatchIt::match.data(matched) 
+  }
+
+design <-
+  declare_model(
+    N = 20, 
+    U = rnorm(N), 
+    X = sample(c(.2, .4, .6, .8), N, replace = TRUE),
+    Z = rbinom(N, 1, prob = X),
+    Y_Z_0 = 0.2 * X + U,
+    Y_Z_1 = Y_Z_0 + 0.5,
+    Y = reveal_outcomes(Y~Z)
+  ) + 
+  declare_inquiry(ATE = mean(Y_Z_1 - Y_Z_0)) +
+  declare_step(handler = exact_matching) +
+  declare_estimator(Y ~ Z, weights = weights, label = "Matched")
+```
+
+
+### Investigate
+
+```{r}
+set.seed(1000)
+data <- draw_data(design)
+
+dim(data)
+
+data|> group_by(X,Z) |> summarize(Y = mean(Y), n = n()) |> kable()
+```
+
+### Investigate
+
+```{r}
+get_estimates(design,  data) |> kable()
+
+```
+
+###By hand
+
+```{r}
+sets <- 
+  data|> group_by(X,Z) |> summarize(Y = mean(Y), n = n()) |>
+  group_by(X) |> summarize(diff = Y[2] - Y[1], n = n[2])
+
+sets |> kable()
+
+weighted.mean(sets$diff, sets$n)
+
+```
+
+
+
+
+###Estimand considerations {.smaller}
+
+Here there is no actual confounding and there are efficiency losses from matching. Why?
+
+```{r}
+design <-
+  declare_model(
+    N = 20, 
+    U = rnorm(N), 
+    X = sample(c(.2, .4, .6, .8), N, replace = TRUE),
+    Z = rbinom(N, 1, prob = .5),
+    Y_Z_0 = 0.2 * X + U,
+    Y_Z_1 = Y_Z_0 + 0.5,
+    Y = reveal_outcomes(Y~Z)
+  ) + 
+  declare_inquiry(
+    ATE = mean(Y_Z_1 - Y_Z_0),
+    ATT = mean(Y_Z_1 - Y_Z_0)) +
+  declare_estimator(Y ~ Z, label = "Unmatched", inquiry = "ATE") +
+  declare_step(handler = exact_matching) +
+  declare_estimator(Y ~ Z, weights = weights, label = "Matched", inquiry = "ATT")
+
+diagnose_design(design) |> reshape_diagnosis() |> select(Estimator, RMSE) |> kable()
+```
+
+### Puzzle
+
+Say that in fact $X$ does not affect $Z$; then is there anything at stake in going from the ATE to the ATT?
+
+
+
+### For real {.smaller}
+
+The `MatchIt` package [@ho2011matchit] provides multiple methods and diagnostic tools to implement different strategies.
+
+The below example of full propensity matching is from their [vignettes](https://cran.r-project.org/web/packages/MatchIt/vignettes/MatchIt.html#assessing-the-quality-of-matches)
+
+Steps:
+
+* Choose covariates ([close the backdoor](https://macartan.github.io/ci/ci_2025.html#/backdoor-criterion-pearl-1995))
+* Choose matching method
+* Check matches
+* Maybe revise method
+* Implement
+
+### For real {.smaller}
+
+"Lalonde" data has been used by many researchers to assess the merits of different strategies. It is used ot assess job training effect on earnings. We have before and after earnings data and various characteristics.
+
+The basic analysis would yield:
+
+```{r}
+lm_robust(re78 ~ treat, data = lalonde) |> tidy() |> kable()
+```
+### For real {.smaller}
+
+But there are clear concerns regarding confounding:
+
+```{r}
+lm_robust(treat ~ age + educ + race + married + nodegree + re74 +  re75, data = lalonde) |> 
+  tidy() |> kable(digits = 2)
+```
+### For real: Match {.smaller}
+
+Here we match using a probit mode to predict assignment probabilities: 
+
+```{r}
+pm <- 
+  matchit(treat ~ age + educ + race + married + nodegree + re74 + re75,
+          data = lalonde,
+          method = "full",
+          distance = "glm",
+          link = "probit")
+pm_data <- MatchIt::match.data(pm) 
+
+pm_data |> arrange(subclass) |> head() |> kable(digits = 2)
+```
+
+"matching as pre-processing"
+
+### For real: Inspect
+
+```{r}
+plot(summary(pm))
+```
+
+Huge gains in balance
+
+
+### For real: Estimate
+
+```{r}
+lm(re78 ~ treat * (age + educ + race + married + nodegree + re74 + re75),
+          data = pm_data, weights = weights) |>
+  
+  marginaleffects::avg_comparisons(
+    variables = "treat",
+    vcov = ~subclass, 
+    newdata = subset(treat == 1))
+
+```
+
+### Intuition: What are these weights? {.smaller}
+
+```{r}
+pm_data <- pm_data |> 
+     mutate(
+       propensity = glm(
+         treat ~ age + educ + race + married + nodegree + re74 + re75,
+         data = pm_data, family = binomial(link = "probit"))$fitted.values)
+
+pm_data |> 
+  ggplot(aes(propensity, weights, color = subclass, shape = factor(treat))) +  geom_point() +
+  scale_y_continuous(trans = "log") + theme(legend.position = "none")
+  
+
+```
+
+Weights on treated units = 1. If propensity is low, treated units weighted more than control.
+
+### Intuition: Comparison with IPW (by hand)
+
+```{r}
+
+lm_robust(re78 ~ treat * (age + educ + race + married + nodegree + re74 + re75 + ipw),
+   data = lalonde |> 
+     mutate(ipw = 1/(treat*propensity + (1-treat)*(1-propensity))) |>
+     filter(ipw <= 20), 
+   weights = ipw) |>
+  
+  marginaleffects::avg_comparisons(
+    variables = "treat",
+    newdata = subset(treat == 1))
+
+
+```
