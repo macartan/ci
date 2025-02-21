@@ -16,7 +16,8 @@ bibliography: ../bib.bib
 ---
 
 ```{r, include = FALSE}
-source("setup.R")
+if(exists("child")) source("setup.R")
+if(!exists("child")) source("../setup.R")
 ```
 
 
@@ -39,11 +40,13 @@ can be written:
 $$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre])$$
 
 ### Logic {.smaller}
-Cleaning up
 
 $$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre])$$
+Adding and subtract $\mathbb{E}[Y_0^A | post]$:
 
 $$\hat\tau = (\mathbb{E}[Y_1^A | post] - \mathbb{E}[Y_0^A | post]) + ((\mathbb{E}[Y_0^A | post] - \mathbb{E}[Y_0^A | pre]) -(\mathbb{E}[Y_0^B | post] - \mathbb{E}[Y_0^B | pre]))$$
+
+Cleaning up:
 
 $$\hat\tau_{ATT} = \tau_{ATT} + \text{Difference in trends}$$
 
@@ -138,14 +141,16 @@ design |>
 ### In practice
 
 * Need to defend parallel trends
-* Most typically using an *event study*
+* Most typically using an *event study*: predicting trends in a unit based on its history
 * Sometimes: report balance between treatment and control groups in covariates
 * Placebo leads and lags
 
 
 ### Heterogeneity {.smaller}
 
-* Things get much more complicated when there is (a) heterogeneous timing in treatment take up and (b) heterogeneous effects
+* Things get much more complicated when there is 
+  1. heterogeneous timing in treatment take up and 
+  2. heterogeneous effects
 
 
 *  It's only recently been appreciated how tricky things can get
@@ -176,11 +181,18 @@ design <-
   declare_estimator(Y ~ Z, label = "1. naive") + 
   declare_estimator(Y ~ Z + I, label = "2. FE1") + 
   declare_estimator(Y ~ Z + as.factor(T), label = "3. FE2") + 
-  declare_estimator(Y ~ Z + I + as.factor(T), label = "4. FE3") + 
+  declare_estimator(Y ~ Z + I + as.factor(T), label = "4. TWFE") + 
   declare_estimator(Y ~ Z*I_c + as.factor(T), label = "5. Sat")  
 ```
 
 
+### Staggared assignments diagnosis {.smaller}
+
+```{r}
+draw_data(design) |> mutate(I = factor(I)) |>
+  ggplot(aes(T, Y, color = I, label = Z)) + geom_text()
+
+```
 ### Staggared assignments diagnosis {.smaller}
 
 
@@ -314,7 +326,7 @@ design <-
     ATT_switchers = mean(Y_Z_1 - Y_Z_0), 
     subset = Z == 1 & Z_lag == 0 & !is.na(Z_lag)) +
   declare_estimator(
-    Y = "Y",  G = "unit",  T = "T",  D = "Z",
+    Y = "Y",  G = "unit",  T = "T",  D = "Z", mode = "old", 
     handler = label_estimator(rdss::did_multiplegt_tidy),
     inquiry = c("ATT_switchers"),
     label = "chaisemartin"
