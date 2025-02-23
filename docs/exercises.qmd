@@ -623,6 +623,15 @@ Assess performance (RMSE) over a range of values for `p` and `b`. How do you thi
 :::
 
 
+::: {.Q #q-weights}
+
+**what weights**
+
+Say you sampled subject A with probability .6 and subject B with probability .4. Say you assigned each to treatment with probability .6. What weight should you put on A in your analysis if they end up in treatment? What if they end up in control? How about B?
+
+:::
+
+
 # Bayesian 
 
 ::: {.Q #q-Bayesbyhand}
@@ -915,17 +924,10 @@ Compare the power gains from two strategies:
 :::
 
 
+
 ::: {.Q #q-blocks}
 
 **Covariates 2**
-
-Equation (4.6) in @gerber2012field suggests that if the sum of two slopes exceeds 1 then there are gains in efficiency from adding a covariate. Show that this is true in practice using a design declaration.
-
-:::
-
-::: {.Q #q-blocks}
-
-**Covariates 3**
 
 Compare the performance of the Lin estimator an the doubly robust estimator discussed in slides
 
@@ -934,7 +936,7 @@ Compare the performance of the Lin estimator an the doubly robust estimator disc
 
 ::: {.Q #q-controls}
 
-**Covariates 4**
+**Covariates 3**
 
 Sometimes researchers running an experiment look for imbalance on a covariate and then include the covariate as a control if and only if they see imbalance. Set up a design in which a covariate may or may not affect potential outcomes and assess the performance given different rules 
 
@@ -950,6 +952,174 @@ Sometimes researchers running an experiment look for imbalance on a covariate an
 
 
 # Topics 1
+
+::: {.Q #q-blocks}
+
+**Covariates**
+
+Equation (4.6) in @gerber2012field suggests that if the sum of two slopes exceeds 1 then there are gains in efficiency from adding a covariate. Show that this is true in practice using a design declaration.
+
+:::
+
+::: {.Q #q-diffdiff}
+**Difference in Differences**
+
+[DD 16.3](https://book.declaredesign.org/library/observational-causal.html#sec-ch16s3) shows poor behavior of a multi-period difference in differences design when there is effect heterogeneity.
+
+[@imai2021use](https://web.mit.edu/insong/www/pdf/FEmatch-twoway.pdf) highlights the risk of negative weights in this setting.  Can you recover the implied weights and identify which units contribute negatively to estimates?
+
+:::
+
+
+::: {.Q #q-doubly-robust}
+
+**Doubly Robust Estimation**
+
+
+Say in truth that:
+
+1. $Z$ is assigned according to: $\Pr(Z=1) := \pi = 1/2 + X1/4 + \alpha X2/4$
+2. Potential outcomes are given by $Y = Z + \beta X1 + X2 + \epsilon$  
+
+In particular:
+
+```{r, eval = FALSE}
+
+declare_model(
+    N = 500, 
+    
+    X1 = runif(N, -1, 1),
+    X2 = runif(N, -1, 1),
+    
+    # propensity model correct when alpha = 0
+    p = 1/2 + X1/4 + alpha*X2/4,
+    Z = rbinom(N, 1, p),
+    
+    # outcome model correct when beta = 0
+    Y = Z + beta*X1 + X2 + rnorm(N)
+    )
+```
+
+However, you have:
+
+1. a *prediction* $\hat{\pi}$ from regressing $Z$ on $X1$ (e.g. using a probit)  
+2. a *prediction* $\hat{Y_z}$ from regressing $Y$ on $X2$ in each treatment group (and predicting to the other group)
+
+Compare your estimates from:
+
+1. IPW  (using  $\hat{\pi}$)
+2. Calculating   the average of $\hat{Y_1} - \hat{Y_0}$
+3. Employing the doubly robust formula from the [slides](https://macartan.github.io/ci/6_topics_1.html#/doubly-robust-estimation-1)  to get an estimate of treatment effects (don't worry about estimating standard errors) 
+4. Naive model regressing Y on Z.
+
+
+as $\alpha$ and $\beta$ vary over \{0, .5, 1\}
+
+discuss whether and when doubly robust estimation dominates the other approaches
+
+
+```{r, eval = FALSE, echo = FALSE}
+alpha <- 1
+beta <- 1
+
+# X2 used for prediction model
+y1_pred <- function(data) 
+  data |>
+  mutate(y0 = lm(Y~X2, subset = Z==0, data = data) |> 
+  predict(newdata = data),
+  y1 = lm(Y~X2, subset = Z==1, data = data) |> 
+  predict(newdata = data),
+  diff = y1 - y0)
+
+dr <- function(data)
+  with(data,
+       data.frame(
+    estimate = mean((Z/p_pred)*(Y - y1) - ((1-Z)/(1-p_pred))*(Y - y0) + (y1 - y0))
+    ))
+
+design <- 
+  declare_model(
+    N = 500, 
+    X1 = runif(N, -1, 1),
+    X2 = runif(N, -1, 1),
+    # propensity model correct when alpha = 0
+    p = .5 + X1/4 + alpha*X2/4,
+    Z = rbinom(N, 1, p),
+    # outcome model correct when beta = 0
+    Y = Z + beta*X1 + X2 + rnorm(N),
+    p_pred = glm(Z~X1, family = binomial(link = "probit"))$fitted.values,
+    ipw = 1/(Z*p_pred + (1-Z)*(1-p_pred))) +
+  declare_inquiry(ate = 1) +
+  declare_measurement(handler = y1_pred)  +
+  declare_estimator(Y ~ Z,  label = "naive") +
+  declare_estimator(Y ~ Z,  weights = ipw, label = "ipw") +
+# declare_estimator(diff ~ 1, label = "prediction") +
+  declare_estimator(Y ~ Z,  covariates = ~ X2, .method = lm_lin, label = "lin") +
+  declare_estimator(handler = label_estimator(dr), label = "dr")
+  
+diagnosis <- 
+  design |> redesign(alpha = c(0, .5, 1), beta = c(0, .5, 1)) |>
+  diagnose_design(sims = 200)
+
+diagnosis |> tidy() |> filter(diagnosand == "mean_estimate") |> 
+  ggplot(aes(estimator, estimate)) + geom_point()  + theme_bw() +
+  facet_grid(alpha~ beta, labeller = label_both) + geom_hline(yintercept = 1, color = "red") +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high, width = .2))
+
+
+```
+         
+**Hint for 2**: your estimate from average differences in imputed potential outcomes  should align exactly with what you would get from Lin estimation: why?
+
+**Hint for 3**: You can use a handler for the doubly robust estimator; assuming you have figured out predicted  probabilities (`p_pred`) and potential outcomes (`y0` and `y1`):
+
+```{r, eval = FALSE}
+dr <- function(data)
+  with(data,
+       data.frame(
+    estimate = mean((Z/p_pred)*(Y - y1) - ((1-Z)/(1-p_pred))*(Y - y0) + (y1 - y0))
+    ))
+
+```
+
+and
+
+```{r, eval = FALSE}
+declare_estimator(handler = label_estimator(dr), label = "dr")
+```
+:::
+
+
+::: {.Q #q-matching}
+
+**Matching**
+
+
+Assume the same data generating process as in the last example.
+
+```{r, eval = FALSE}
+
+declare_model(
+    N = 500, 
+    
+    X1 = runif(N, -1, 1),
+    X2 = runif(N, -1, 1),
+    
+    # propensity model correct when alpha = 0
+    p = 1/2 + X1/4 + alpha*X2/4,
+    Z = rbinom(N, 1, p),
+    
+    # outcome model correct when beta = 0
+    Y = Z + beta*X1 + X2 + rnorm(N)
+    )
+```
+
+Compare results when you match just on $X1$  or on both $X1$ and $X2$. Use Coarsened exact matching and propensity matching, varying $\alpha$ and $\beta$ as above.
+
+:::
+
+# Topics 2
+
 
 ::: {.Q #q-spillovers}
 
@@ -970,8 +1140,6 @@ So for example if one unit is in treatment that unit has outcome Y=1, and the ot
 :::
 
 
-# Topics 2
-
 ::: {.Q #q-mediation}
 
 **Mediation**
@@ -986,14 +1154,6 @@ Demonstrate under what conditions  estimates using the Baron-Kenny procedure are
 :::
 
 
-::: {.Q #q-diffdiff}
-**Difference in Differences**
-
-[DD 16.3](https://book.declaredesign.org/library/observational-causal.html#sec-ch16s3) shows poor behavior of a multi period difference in differences design when there is effect heterogeneity.
-
-[@imai2021use](https://web.mit.edu/insong/www/pdf/FEmatch-twoway.pdf) highlights the risk of negative weights in this setting.  Can you recover the implied weights and identify which units contribute negatively to estimates?
-
-:::
 
 ::: {.Q #q-late}
 
@@ -1010,18 +1170,6 @@ Which of these problems could be addressed using instrumental variables? In each
 
 :::
 
-
-
-
-# Additional puzzle assortment
-
-::: {.Q #q-weights}
-
-**what weights**
-
-Say you sampled subject A with probability .6 and subject B with probability .4. Say you assigned each to treatment with probability .6. What weight should you put on A in your analysis if they end up in treatment? What if they end up in control? How about B?
-
-:::
 
 
 
