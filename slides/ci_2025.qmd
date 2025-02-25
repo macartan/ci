@@ -43,6 +43,7 @@ bibliography: bib.bib
 ```{r, include = FALSE}
 
 source("setup.R")
+options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 # remotes::install_github("jhelvy/renderthis")
 # renderthis::to_pdf("ci_2024.html")

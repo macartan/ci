@@ -207,8 +207,8 @@ design <-
   declare_inquiry(
     ATE = mean(Y_Z_1 - Y_Z_0), ATT = mean(Y_Z_1 - Y_Z_0)) +
   declare_estimator(Y ~ Z, label = "Unmatched", inquiry = "ATE") +
-  declare_step(handler = matching_function) +
-  declare_estimator(Y ~ Z, weights = weights, label = "Matched", inquiry = "ATT")
+  declare_estimator(handler = label_estimator(matching_estimator), 
+                    label = "Matched", inquiry = "ATT")
 
 diagnose_design(design) |> reshape_diagnosis() |> select(Estimator, RMSE) |> kable()
 ```
@@ -314,7 +314,7 @@ Weights on treated units = 1. If propensity is low, treated units weighted more 
 ```{r}
 
 lm_robust(re78 ~ treat * (age + educ + race + married + nodegree + re74 + re75 + ipw),
-   data = lalonde |> 
+   data = pm_data |> 
      mutate(ipw = 1/(treat*propensity + (1-treat)*(1-propensity))) |>
      filter(ipw <= 20), 
    weights = ipw) |>

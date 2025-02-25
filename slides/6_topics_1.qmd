@@ -18,6 +18,8 @@ bibliography: bib.bib
 ```{r, include = FALSE}
 source("setup.R")
 child <- TRUE
+options(future.globals.maxSize = 3 * 1024^3)  # 2GB
+
 ```
 
 
