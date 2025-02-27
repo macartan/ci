@@ -21,79 +21,70 @@ if(!exists("child")) source("../setup.R")
 
 library(SCtools)
 library(Synth)
+
+# devtools::install_github("edunford/tidysynth")
+
+require(tidysynth)
+
 ```
 
 ## Synthetic controls
 
 Interested in the effect of an intervention on a single unit.
 
-Available data: time series for unit of interest; 
+Available data: time series for unit of interest and possible comparison groups 
 
 
-### Core idea
+### Core idea {.smaller}
 
-Generate a frankenstein control from weighting a set of control outcomes so that they collectively track the unit of interest and can  plausibly serve as a counterfactual.
+* Generate a Frankenstein control from weighting a set of control units so that they collectively track the unit of interest and can  plausibly serve as a counterfactual.
 
-```{r, eval = FALSE, include = FALSE}
-library(nloptr)
-
-
-find_weights <- function(data, cutoff) {
-  Y <- data$Y[data$T < cutoff]
-  Ys <- as.matrix(data[data$T < cutoff, c("YA", "YB", "YC")])
-  
-  obj_fun <- function(w)  sum((Y - Ys %*% w)^2)
-  
-  w0 <- rep(1 / ncol(Ys), ncol(Ys))
-  
-  w <- 
-    nloptr(
-    x0 = w0, 
-    eval_f = obj_fun,
-    eval_g_eq = function(w) sum(w) - 1, 
-    lb = rep(0, ncol(Ys)),
-    opts = list(algorithm = "NLOPT_LN_COBYLA", xtol_rel = 1e-6)
-  )$solution
-  
-  print(w)
-  
-  data |>
-    mutate(Y0 = w[1]*data$YA + w[2]*data$YB + w[3]*data$YC)
-}
+* Identify weights $w$ that minimize $\left(Y_i^s(0) - \sum_{j\neq i} w_j Y_j^s(0)\right)^2$ in time period(s) $s$, prior to treatment; use these to predict counterfactual outcomes $Y^t_i(0)$ in later periods, $t$
 
 
-
-design <-
-  declare_model(N  = 10,
-                T = 1:N,
-                X = runif(N),
-                YA = 1 + .25*T + .3*X,
-                YB = 0 + .5*T + .2*X,
-                YC = 1 + .3*Y + .4*X,
-                Y = 2 + .4*X + .3*X*(T>5)
-
-                )
-
-data <- design()
-
-find_weights(data, 5) |>
-  gather(var, val, -ID, -T, -X) |>
-  ggplot(aes(T, val, color = var)) + geom_line()
-
-```
+* Note, in @abadie2003economic weights are chosen to minimize $(X_1 - X_0W)'V(X_1 - X_0W)$ where $X_1$, $X_0$ are covariates in the unit of interest and the "donor" units respectively. $V$ is chosen so that the pre treatment *outcomes* are as close as possible. 
 
 
+## Optimization problem
+
+In practice weights are found using a two stage minimization procedure:
+
+1. Given matrix $V$ choose $W(V)$ to minimize $(X_1-X_0W)'V(X1-X_0W)$
+2. Choose $V$ to minimize  $(Z_1-Z_0W(V))'(X1-X_0W(V))$
+
+So in effect you end up with weights on cases and also weights on variables
 
 ### Basque example
 
-```{r, echo = FALSE, eval = FALSE}
-data("basque")
+* The seminal study is: @abadie2003economic which examines the impact of conflict on the Basque area
 
-dataprep.out  <- 
-  dataprep.out <- dataprep(
-  foo = basque,
+* A vignette showing how to use the [`SCtools`](https://cran.r-project.org/web/packages/SCtools/index.html)   package to implement synthetic controls for this example is (here)[https://cran.r-project.org/web/packages/SCtools/vignettes/replicating-basque.html]
+
+
+*  We will walk through this and then interrogate this with a common package and a tidy version
+
+### Basque example {.smaller}
+
+Packages and data:
+
+```{r, message = FALSE}
+library(SCtools)
+library(Synth)
+data("basque")
+```
+
+### Basque example {.smaller}
+
+
+Some fairly nasty data manipulation:
+
+```{r}
+f_dataprep  <- function(data, time_plot = min(data$year):max(data$year))
+  dataprep(
+  foo = data,
   predictors = c("school.illit", "school.prim", "school.med",
-    "school.high", "school.post.high", "invest"),
+     "school.high", "school.post.high", 
+    "invest"),
   predictors.op = "mean",
   time.predictors.prior = 1964:1969,
   special.predictors = list(
@@ -112,13 +103,260 @@ dataprep.out  <-
   treatment.identifier = 17,
   controls.identifier = c(2:16, 18),
   time.optimize.ssr = 1960:1969,
-  time.plot = 1955:1997)
+  time.plot = time_plot)
+
+dataprep.out  <- f_dataprep(basque)
 ```
 
 
-## In practice
 
-The [SCtools](https://cran.r-project.org/web/packages/SCtools/index.html) is useful package.
+### Implementation (with messages) {.smaller}
 
-We will go through their [vignette on the Basque conflict](https://cran.r-project.org/web/packages/SCtools/vignettes/replicating-basque.html) 
+```{r}
+synth.out <- synth(data.prep.obj = dataprep.out, method = "BFGS")
+```
 
+### Results {.smaller}
+
+This produces the following weights, selected to render the pre-treatment trends of the synthetic and actual controls as similar as possible. 
+
+
+```{r, echo = FALSE}
+
+basque |> group_by(regionno) |> slice(1) |>  select(regionno, regionname) |>
+  left_join(data.frame(
+    regionno = rownames(synth.out$solution.w ) |> as.numeric(),
+    weight =  synth.out$solution.w)) |>
+  kable(digits = 2)
+
+
+```
+
+### Plotting the counterfactual
+
+Lets plot by hand and compare with package
+
+```{r}
+
+basque_df <- basque |> filter(regionno == 17) |> 
+  mutate(counterfactual = .15*basque$gdpcap[basque$regionno == 14] + .85*basque$gdpcap[basque$regionno == 10] )
+
+basque_df |> ggplot(aes(year, gdpcap)) + geom_line(color = "blue") + 
+  geom_line(aes(year, counterfactual), color = "red") + theme_bw() +
+  ylab("real per-capita GDP (1986 USD, thousand)") + xlab("year")
+
+
+```
+
+
+### Plotting 2
+
+```{r}
+path.plot(synth.res = synth.out, dataprep.res = dataprep.out,
+          Ylab = "real per-capita GDP (1986 USD, thousand)", Xlab = "year",
+          Ylim = c(0, 12), Legend = c("Basque country",
+                                      "synthetic Basque country"), 
+          Legend.position = "bottomright")
+```
+
+
+### Then what?
+
+What is your estimate?
+
+How do you do inference?
+
+
+* Estimate could be at a particular point in time or averaging over a range. Inference often based on placebos: assess  whether estimated effects are large relative to what you would get if you looked for effects in random places. 
+
+*  This has an RI flavor to it, but we are not exploiting any actual randomization.
+
+* Alternatives are to do sensitivity analyses, bootstrap (though this is really capturing sampling variability), and perhaps using estimates of the uncertainty from errors in pre treatment predictions.
+
+### `tidysynth` implementation {.smaller}
+
+`tidysynth` a wrapper for `synth` and tidier for sure
+
+Vignette on: Impact of Proposition 99 on cigarette consumption in California. https://github.com/edunford/tidysynth
+
+
+```{r}
+data("smoking")
+smoking |> head() |> kable()
+```
+
+### `tidysynth` implementation
+
+In a pipe:
+
+```{r}
+smoking_out <-
+  
+  smoking %>%
+  
+  # initial the synthetic control object
+  synthetic_control(
+    outcome = cigsale, # outcome
+    unit = state, # unit index in the panel data
+    time = year, # time index in the panel data
+    i_unit = "California", # unit where the intervention occurred
+    i_time = 1988, # time period when the intervention occurred
+    generate_placebos=T # generate placebo synthetic controls (for inference)
+    )
+
+```
+
+### add predictor information {.smaller}
+
+```{r}
+
+smoking_out <- smoking_out %>%
+  
+  # Generate the aggregate predictors used to fit the weights
+  
+  # average log income, retail price of cigarettes, and proportion of the
+  # population between 15 and 24 years of age from 1980 - 1988
+  generate_predictor(time_window = 1980:1988,
+                     ln_income = mean(lnincome, na.rm = T),
+                     ret_price = mean(retprice, na.rm = T),
+                     youth = mean(age15to24, na.rm = T)) %>%
+  
+  # average beer consumption in the donor pool from 1984 - 1988
+  generate_predictor(time_window = 1984:1988, 
+                     beer_sales = mean(beer, na.rm = T)) %>%
+  
+  # Lagged cigarette sales 
+  generate_predictor(time_window = 1975, cigsale_1975 = cigsale) %>%
+  generate_predictor(time_window = 1980, cigsale_1980 = cigsale) %>%
+  generate_predictor(time_window = 1988, cigsale_1988 = cigsale) 
+
+```
+
+### implement  {.smaller}
+
+```{r}
+
+smoking_out <- smoking_out %>%
+  
+  
+  # Generate the fitted weights for the synthetic control
+  generate_weights(optimization_window = 1970:1988, # time for optimization
+                   margin_ipop = .02,sigf_ipop = 7,bound_ipop = 6 # options
+  ) %>%
+  
+  # Generate the synthetic control
+  generate_control()
+
+
+```
+
+### plot trends
+
+```{r}
+
+smoking_out %>% plot_trends()
+
+
+```
+
+### plot weights
+
+```{r}
+smoking_out %>% plot_weights()
+
+
+```
+
+### plot placebos
+
+```{r}
+smoking_out %>% plot_placebos()
+```
+
+
+### Design declaration {.smaller}
+
+```{r}
+
+sc_helper <- function(data, treatment_time = 2010)
+
+  data |>
+  
+  # initial the synthetic control object
+  synthetic_control(
+    outcome = Y, # outcome
+    unit = state, # unit index in the panel data
+    time = year, # time index in the panel data
+    i_unit = "01", # unit where the intervention occurred
+    i_time = treatment_time, # time period when the intervention occurred
+    generate_placebos = F  # generate placebo synthetic controls
+    )  |>
+  
+  generate_predictor(time_window = 2000:2020,
+                     lnincome = mean(ln_income, na.rm = T),
+                     youth = mean(age15to24, na.rm = T)) %>%
+  generate_weights(optimization_window = 2000:2010, # time for optimization
+                   margin_ipop = .02,sigf_ipop = 7,bound_ipop = 6 # options
+  ) |>
+  generate_control()
+```
+
+
+### Declare an estimator
+
+```{r}
+
+sc_estimator <- function(data, treatment_time = 2010) 
+  
+  data.frame(estimate = 
+               sc_helper(data, treatment_time = 2010) |>
+               grab_synthetic_control() |> 
+               mutate(difference = real_y - synth_y) |>
+               filter(time_unit >= treatment_time) |> 
+               pull(difference) |> 
+               mean()
+)
+
+```
+
+### Design
+
+```{r}
+
+design <-
+  declare_model(
+    state = add_level(50, 
+                      youth_mean = runif(N, .2, .7), 
+                      income_mean = runif(N, 1, 5), 
+                      b = runif(N, 0, 10)),
+    time = add_level(21, year = 2000:2020, nest = FALSE),
+    unit = cross_levels(join_using(state, time))) +
+  
+  declare_model(
+    treatment = 1*(state == "01" & (year >=2010)),
+    age15to24 = youth_mean + .5*runif(N, -.1, .1) - .2*(year- 2000),
+    ln_income = income_mean + .5*rlnorm(N),
+    Y = 5*age15to24 + .1*(year- 2000)^2 +  1*ln_income + b* treatment) +
+  
+  declare_inquiry(b[1]) +
+  
+  declare_estimator(handler = label_estimator(sc_estimator))
+
+```
+
+### Inspection
+
+```{r}
+
+draw_data(design) |> sc_helper()  |> plot_trends()
+
+```
+
+### Simulation
+
+```{r}
+simulations <- simulate_design(design, sims = 10)
+
+simulations |> ggplot(aes(estimand, estimate)) + geom_point()
+
+```

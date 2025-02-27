@@ -24,8 +24,19 @@ child <- TRUE
 # Topics 2 {#topics_2}
 
 
+```{r, child = "topics/synthetic.qmd"}
 
-```{r, child = "topics/workflows.qmd"}
+```
+
+
+```{r, child = "topics/late.qmd"}
+
+```
+
+
+
+
+```{r, child = "topics/ethics.qmd"}
 
 ```
 
@@ -36,20 +47,10 @@ child <- TRUE
 
 
 
-```{r, child = "topics/synthetic.qmd"}
+```{r, child = "topics/RDD.qmd"}
 
 ```
 
 
-
-```{r, child = "topics/mediation.qmd"}
-
-```
-
-
-
-```{r, child = "topics/spillovers.qmd"}
-
-```
 
 

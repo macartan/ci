@@ -36,8 +36,9 @@ format:
     * [4 Bayesian inference](https://macartan.github.io/ci/4_bayes.html)
     * [5.1 Experimental design](https://macartan.github.io/ci/5.1_design.html)
     * [5.2 Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
-    * [6. Topics 1 (Diff in Diff, RDD, IV, other)](https://macartan.github.io/ci/6_topics_1.html)
-    * [7. Topics 2: incl Workflows](https://macartan.github.io/ci/7_topics_2.html)
+    * [6. Topics 1  incl controls, doubly robust, Diff in Diff,  matching](https://macartan.github.io/ci/6_topics_1.html)
+    * [7. Topics 2: incl synth, IV, survey experiments, RDD, ethics](https://macartan.github.io/ci/7_topics_2.html)
+    * [8. Topics 3: incl media, SUTVA,  prereg](https://macartan.github.io/ci/7_topics_3.html)
 
 * Puzzles: [https://macartan.github.io/ci/exercises.html](https://macartan.github.io/ci/exercises.html)
 

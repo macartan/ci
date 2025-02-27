@@ -1,3 +1,6 @@
+rm(list = ls()) # because of memory build up issues
+# gc() 
+
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
 pacman::p_load(DeclareDesign, knitr, tidyverse, kableExtra, CausalQueries, DesignLibrary, xtable, 
                sandwich, lmtest, dagitty, ggdag, ggtext, latex2exp, cowplot, pwrss, ri2, future, SuperLearner, drtmle, ggpubr)
@@ -184,3 +187,6 @@ perm <- function(v) {
          length.out=prod(v))
   } ) - 1
 }
+
+
+child <- TRUE

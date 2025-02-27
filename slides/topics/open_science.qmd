@@ -9,114 +9,19 @@ format:
     preview-links: auto
     number-sections: true
 title: "Topics"
-subtitle: "workflows"
+subtitle: "open science"
 author: "Macartan Humphreys"
 bibliography: ../bib.bib
 ---
 
   
 ```{r, include = FALSE}
+if(!exists("child")) setwd("../")
 
 source("setup.R")
 
 ```
 
-
-
-## Experimentation: Workflows {#openscience}
-
-*Good questions studied well*
-
-### Outline
-
-* Scope for experimentation
-* Ethics of experiments
-* Open science workflows
-
-
-### When to experiment {#L_prospects}
-
-Prospects and priorities
-
-### Prospects 
-
-* Whenever someone is uncertain about *something* they are doing (all the time)
-* Whenever someone hits scarcity constraints
-* When people have incentives to demonstrate that they are doing the right thing (careful...)
-
-### Prospects 
-
-* **Advice**: If you can, **start from theory** and find an intervention, rather than the other way around.
-* **Advice**: If you can, go for *structure* rather than *gimmicks*
-* **Advice**: In attempts to parse, beware of generating unnatural interventions (how should a voter think of a politician that describes his policy towards Korea in detail but does not mention the economy? Is not mentioning the economy sending an unintended message?)
-
-### Innovative designs {.smaller}
-
-* Randomization of where police are stationed (India)
-* Randomization of how government tax collectors get paid (do they get a share?) (Pakistan)
-* Randomization of the voting rules for determining how decisions get made (Afghanistan)
-* Random assignment of populations to peacekeepers (Liberia)
-* Random assignment of ex-combatants out of their networks (Indonesia)
-* Randomization of students to ethnically homogeneous or ethnically diverse schools (anywhere?)
-
-
-## Ethics {#ethics}
-
-### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
-
-* There is no foundationless answer to this question. So let's take some foundations from the Belmont report and seek to ensure:
-  1. Respect for persons
-  2. Beneficence
-  3. Justice
-
-* Unfortunately, operationalizing these requires further ethical theories. Let's assume that (1) is operationalized by informed consent (a very liberal idea). We are a bit at sea for (2) and (3) (the Belmont report suggests something like a utilitarian solution).
-
-* The major focus on (1) by IRBs might follow from the view that if subjects consent, then they endorse the ethical calculations made for 2 and 3 — *they* think that it is good and fair.
-
-* This is a little tricky, though, since the study may not be good or fair because of implications for non-subjects.
-
-
-
-### Is it ethical to manipulate subjects for research purposes? {.smaller}
-
-* The problem is that many (many) field experiments have nothing like informed consent.
-* For example, whether the government builds a school in your village, whether an ad appears on your favorite radio show, and so on.
-* Consider three cases:
-
-  1. You work with a nonprofit to post (true?) posters about the crimes of politicians on billboards to see effects on **voters**
-  2. You hire confederates to offer bribes to **police officers** to see if they are more likely to bend the law for coethnics
-  3. The British government asks you to work on figuring out how the use of water cannons helps stop **rioters** rioting
-
-
-### Is it ethical to manipulate subjects for research purposes? {.smaller}
-
-* Consider three cases:
-
-  * You work with a nonprofit to post (true?) posters about the crimes of politicians on billboards to see effects on **voters**
-  * You hire confederates to offer bribes to **police officers** to see if they are more likely to bend the law for coethnics
-  * The British government asks you to work on figuring out how the use of water cannons helps stop **rioters** rioting
-
-* In all cases, there is **no consent** given by subjects.
-* In 2 and 3, the treatment is **possibly harmful** for subjects, and the results might also be harmful. But even in case 1, there could be major unintended harmful consequences.
-* In cases 1 and 3, however, the "intervention" is within the sphere of **normal activities** for the implementer.
-
-
-
-### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
-
-* Sometimes it is possible to use this point of difference to make a "spheres of ethics" argument for "embedded experimentation."
-* **Spheres of Ethics Argument**: Experimental research that involves manipulations that are not normally appropriate for researchers may nevertheless be ethical if:
-
-  * Researchers and implementers agree on a **division of responsibility** where implementers take on responsibility for actions
-  * Implementers have **legitimacy** to make these decisions within the sphere of the intervention
-  * Implementers are indeed **materially independent** of researchers (no swapping hats)
-
-### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
-
-* Difficulty with this argument:
-  * **Question begging**: How to determine the legitimacy of the implementer? (Can we rule out Nazi doctors?)
-
-Otherwise keep focus on consent and desist if this is not possible
 
 ## Transparency & Experimentation {#registeration}
 
@@ -155,7 +60,6 @@ Experimental researchers are deeply engaged in the movement towards more transpa
 
 
 
-## Pre-registration rationales and structures
 
 ### Two distinct rationales for registration
 
@@ -308,7 +212,9 @@ Simple idea:
 
 
 
-## Worries and Myths around registration
+### Worries and Myths
+
+Lots of misunderstandings around registration
 
 ### Myth: Concerns about fishing presuppose researcher dishonesty {.smaller}
 
@@ -401,7 +307,7 @@ adjust analysis in light of findings in the data.
 * Instead: reconcile
 
 
-## Reconciliation
+### Reconciliation
 
 Incentives and strategies
 

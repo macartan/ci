@@ -98,6 +98,11 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 ```
 
 
+```{r, child = "8_topics_3.qmd"}
+
+```
+
+
 # References
 
 ### References

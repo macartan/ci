@@ -1,6 +1,6 @@
 ---
 title: "Causal Inference"
-subtitle: "Topics I"
+subtitle: "Topics III"
 format: 
    revealjs:
     embed-resources: true
@@ -18,27 +18,24 @@ bibliography: bib.bib
 ```{r, include = FALSE}
 source("setup.R")
 child <- TRUE
-options(future.globals.maxSize = 3 * 1024^3)  # 2GB
+```
+
+
+# Topics 3 {#topics_3}
+
+
+
+```{r, child = "topics/mediation.qmd"}
 
 ```
 
 
-# Topics 1 {#topics_1}
-
-
-```{r, child = "topics/controls.qmd"}
+```{r, child = "topics/spillovers.qmd"}
 
 ```
 
-
-```{r, child = "topics/matching.qmd"}
-
-```
-
-
-```{r, child = "topics/diffdiff.qmd"}
+```{r, child = "topics/open_science.qmd"}
 
 ```
-
 
 

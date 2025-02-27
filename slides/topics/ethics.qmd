@@ -1,0 +1,224 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Topics"
+subtitle: "ethics"
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+  
+```{r, include = FALSE}
+if(!exists("child")) setwd("../")
+
+source("setup.R")
+
+```
+
+
+
+
+## Ethics {#ethics}
+
+### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
+
+* There is no foundationless answer to this question. 
+* Belmont principles commonly used for guidance:
+
+  1. Respect for persons
+  2. Beneficence
+  3. Justice
+
+* Unfortunately, operationalizing these requires further ethical theories. (1) is often operationalized by informed consent (a very liberal idea). (2) and (3) sometimes by more utiliarian principles
+
+* The major focus on (1) by IRBs might follow from the view that if subjects consent, then they endorse the ethical calculations made for 2 and 3 — *they* think that it is good and fair.
+
+* Trickiness: can a study be good or fair because of implications for non-subjects?
+
+
+
+### Is it ethical to manipulate subjects for research purposes? {.smaller}
+
+* Many (many) field experiments have nothing like informed consent.
+* For example, whether the government builds a school in your village, whether an ad appears on your favorite radio show, and so on.
+* Consider three cases:
+
+  1. You work with a nonprofit to post (true?) posters about the crimes of politicians on billboards to see effects on **voters**
+  2. You hire confederates to offer bribes to **police officers** to see if they are more likely to bend the law for coethnics
+  3. The British government asks you to work on figuring out how the use of water cannons helps stop **rioters** rioting
+
+
+### Is it ethical to manipulate subjects for research purposes? {.smaller}
+
+* Consider three cases:
+
+  * You work with a nonprofit to post (true?) posters about the crimes of politicians on billboards to see effects on **voters**
+  * You hire confederates to offer bribes to **police officers** to see if they are more likely to bend the law for coethnics
+  * The British government asks you to work on figuring out how the use of water cannons helps stop **rioters** rioting
+
+* In all cases, there is **no consent** given by subjects.
+* In 2 and 3, the treatment is **possibly harmful** for subjects, and the results might also be harmful. But even in case 1, there could be major unintended harmful consequences.
+* In cases 1 and 3, however, the "intervention" is within the sphere of **normal activities** for the implementer.
+
+
+
+### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
+
+* Sometimes it is possible to use this point of difference to make a "spheres of ethics" argument for "embedded experimentation."
+* **Spheres of Ethics Argument**: Experimental research that involves manipulations that are not normally appropriate for researchers may nevertheless be ethical if:
+
+  * Researchers and implementers agree on a **division of responsibility** where implementers take on responsibility for actions
+  * Implementers have **legitimacy** to make these decisions within the sphere of the intervention
+  * Implementers are indeed **materially independent** of researchers (no swapping hats)
+
+### Constraint: Is it ethical to manipulate subjects for research purposes? {.smaller}
+
+* Difficulty with this argument:
+  * **Question begging**: How to determine the legitimacy of the implementer? (Can we rule out Nazi doctors?)
+
+Otherwise keep focus on consent and desist if this is not possible
+
+
+### APSA Guidelines
+
+* Available [here](https://www.apsanet.org/Portals/54/diversity%20and%20inclusion%20prgms/Ethics/Final_Principles%20with%20Guidance%20with%20intro.pdf?ver=2020-04-20-211740-153)
+* Used e.g. by APSR
+* Below is lightly abbreviated; full text however has detailed guidelines
+
+### APSA Ethics: General [Abbr] {.smaller}
+
+1. Political science researchers should respect **autonomy**, consider the **wellbeing**
+of participants and other people affected by their research, and be **open**
+about the ethical issues they face.
+
+2. Political science researchers have an **individual responsibility** to consider the
+ethics of their research related activities and cannot outsource ethical
+reflection to review boards, other institutional bodies, or regulatory agencies.
+
+3. These principles describe the standards of conduct and **reflexive openness**
+that are expected of political science researchers. ...  [In cases of reasonable deviations], researchers should
+acknowledge and justify deviations in scholarly publications and
+presentations of their work.
+
+
+### APSA Ethics: Power  {.smaller}
+ 
+4. When designing and conducting research, political scientists should be aware
+of **power differentials** between researcher and researched, and the ways in
+which such power differentials can affect the voluntariness of consent and
+the evaluation of risk and benefit.
+
+  a. especially with low-power or vulnerable participants
+  b. covert or deceptive research with more than minimal harm may sometimes be ethically
+  permissible in research with powerful parties
+
+### APSA Ethics: Consent {.smaller}
+
+5. Political science researchers should generally seek informed **consent** from
+individuals who are directly engaged by the research process, especially if
+research involves more than minimal risk of harm or if it is plausible to expect
+that engaged individuals would withhold consent if consent were sought.
+
+a. **informed and voluntary** 
+b. **continuing** consent 
+c. observation of public behavior does not usually invoke this principle of consent.
+d. forgoing perhaps if  minimal risk, or seeking consent increases the risks for participants
+e. discuss consent in  publications and presentations
+
+### APSA Ethics: Deception
+
+6. Political science researchers should **carefully consider** any use of deception and
+the ways in which deception can conflict with participant autonomy.
+
+  a. ask:  is it plausible  that engaged individuals would withhold consent if fully
+  informed consent were sought
+  b. disclose, justify,, and describe steps taken to respect participant
+  autonomy.
+
+[Note: no general injunction against]
+
+
+### APSA Ethics: Harm and Trauma  {.smaller}
+
+7. Political science researchers should **consider the harms** associated with their
+research.
+
+* Researchers should generally avoid harm when possible, minimize
+harm when avoidance is not possible, and not conduct research when
+harm is excessive.
+
+* do not limit concern to physical and psychological risks to the participant.
+
+
+8. Political science researchers should anticipate and protect individual
+participants from trauma stemming from participation in research.
+
+
+### APSA Ethics: Confidentiality  {.smaller}
+
+9. Political science researchers should generally keep the identities of research
+participants **confidential**; when circumstances require, researchers should
+adopt the higher standard of ensuring anonymity.
+
+
+a. Researchers should clearly communicate assurances of confidentiality /  anonymity
+b. If confidentiality bit provided, communicate this and justify
+c./d. consider risks at all stages
+e. Researchers who determine that it would be unethical to share
+materials derived from human subjects should be prepared to justify
+their decision to journal editors, to reviewers, etc
+
+
+
+### APSA Ethics: Impact {.smaller}
+
+10. Political science researchers conducting studies on political processes should
+consider the broader social impacts of the research process as well as the
+impact on the experience of individuals directly engaged by the research.  In
+general, political science researchers **should not compromise the integrity of
+political processes for research purposes without the consent of individuals
+that are directly engaged by the research process**.
+
+a. cases in which research that produces impacts on political
+processes without consent of individuals directly engaged by the research
+might be appropriate. [examples]
+
+b. Studies of interventions by third parties do not usually invoke this principle
+on impact. [details]
+
+c. This principle is not intended to discourage any form of political engagement
+by political scientists in their non-research activities or private lives. 
+
+d. researchers should report likely impacts
+
+
+
+### APSA Ethics: Laws, Regulations, and Prospective Review
+
+11. Political science researchers should be aware of relevant laws and regulations
+governing their research related activities.
+
+
+### APSA Ethics: Shared Responsibility  {.smaller}
+
+12. The responsibility to promote ethical research goes **beyond the individual
+researcher** or research team.
+
+a. Mentors, advisors, dissertation committee members, and instructors
+
+b. Graduate programs in political science should include ethics
+instruction in their formal and informal graduate curricula;
+
+c. Editors and reviewers should encourage researchers to be open about
+the ethical decisions ...
+
+d. Journals, departments, and associations should incorporate ethical
+commitments into their mission, bylaws, instruction, practices, and
+procedures.

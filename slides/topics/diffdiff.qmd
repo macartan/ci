@@ -127,7 +127,7 @@ read_rds("saved/dd10.rds") |>
 
 ```
 
-### Extends to multipe units easily
+### Extends to multiple units easily
 
 
 ```{r}
