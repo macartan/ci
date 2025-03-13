@@ -1117,58 +1117,6 @@ declare_model(
 Compare results when you match just on $X1$  or on both $X1$ and $X2$. Use Coarsened exact matching and propensity matching, varying $\alpha$ and $\beta$ as above.
 
 
-
-```{r, eval = FALSE, echo = FALSE}
-alpha <- 1
-beta <- 1
-
-# X2 used for prediction model
-y1_pred <- function(data) 
-  data |>
-  mutate(y0 = lm(Y~X2, subset = Z==0, data = data) |> 
-  predict(newdata = data),
-  y1 = lm(Y~X2, subset = Z==1, data = data) |> 
-  predict(newdata = data),
-  diff = y1 - y0)
-
-dr <- function(data)
-  with(data,
-       data.frame(
-    estimate = mean((Z/p_pred)*(Y - y1) - ((1-Z)/(1-p_pred))*(Y - y0) + (y1 - y0))
-    ))
-
-design <- 
-  declare_model(
-    N = 500, 
-    X1 = runif(N, -1, 1),
-    X2 = runif(N, -1, 1),
-    # propensity model correct when alpha = 0
-    p = .5 + X1/4 + alpha*X2/4,
-    Z = rbinom(N, 1, p),
-    # outcome model correct when beta = 0
-    Y = Z + beta*X1 + X2 + rnorm(N),
-    p_pred = glm(Z~X1, family = binomial(link = "probit"))$fitted.values,
-    ipw = 1/(Z*p_pred + (1-Z)*(1-p_pred))) +
-  declare_inquiry(ate = 1) +
-  declare_measurement(handler = y1_pred)  +
-  declare_estimator(Y ~ Z,  label = "naive") +
-  declare_estimator(Y ~ Z,  weights = ipw, label = "ipw") +
-# declare_estimator(diff ~ 1, label = "prediction") +
-  declare_estimator(Y ~ Z,  covariates = ~ X2, .method = lm_lin, label = "lin") +
-  declare_estimator(handler = label_estimator(dr), label = "dr")
-  
-diagnosis <- 
-  design |> redesign(alpha = c(0, .5, 1), beta = c(0, .5, 1)) |>
-  diagnose_design(sims = 200)
-
-diagnosis |> tidy() |> filter(diagnosand == "mean_estimate") |> 
-  ggplot(aes(estimator, estimate)) + geom_point()  + theme_bw() +
-  facet_grid(alpha~ beta, labeller = label_both) + geom_hline(yintercept = 1, color = "red") +
-  geom_errorbar(aes(ymin = conf.low, ymax = conf.high, width = .2))
-
-
-```
-
 :::
 
 # Topics 2

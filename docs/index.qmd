@@ -8,23 +8,9 @@ format:
 
 ::: {.panel-tabset}
 
-## Times and places
-
-| Date     | Time    | Location     | Topic                          |
-|----------|---------|--------------|--------------------------------|
-| 10 Jan 2025    | 10 - 12 | WZB B002/003 | Intro                          |
-| 17 Jan  2025  | 9 - 1   | WZB B002/003 | Causality and causal inquiries  |
-| 24 Jan 2025    | 9 - 1   | WZB B002/003 | Frequentist answer strategies   |
-| 31 Jan 2025    | 9 - 1   | WZB B002/003 | Bayesian answer strategies  |
-| 14 Feb 2025   | 9 - 1   | WZB B002/003 | Design and evaluation           |
-| 21 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 1                       |
-| 28 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 2                       |
-
-[AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&vmfile=no&publishid=224623&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
 
 ## Resources
 
-* This syllabus: [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
 
 * [All slides](https://macartan.github.io/ci/ci_2025.html)
 
@@ -38,10 +24,27 @@ format:
     * [5.2 Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
     * [6. Topics 1  incl controls, doubly robust, Diff in Diff,  matching](https://macartan.github.io/ci/6_topics_1.html)
     * [7. Topics 2: incl synth, IV, survey experiments, RDD, ethics](https://macartan.github.io/ci/7_topics_2.html)
-    * [8. Topics 3: incl media, SUTVA,  prereg](https://macartan.github.io/ci/7_topics_3.html)
+    * [8. Topics 3: incl mediation, SUTVA,  open science](https://macartan.github.io/ci/8_topics_3.html)
 
 * Puzzles: [https://macartan.github.io/ci/exercises.html](https://macartan.github.io/ci/exercises.html)
 
+* This syllabus: [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
+
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
 
+## 2025 Times and places
+
+| Date     | Time    | Location     | Topic                          |
+|----------|---------|--------------|--------------------------------|
+| 10 Jan 2025    | 10 - 12 | WZB B002/003 | Intro                          |
+| 17 Jan  2025  | 9 - 1   | WZB B002/003 | Causality and causal inquiries  |
+| 24 Jan 2025    | 9 - 1   | WZB B002/003 | Frequentist answer strategies   |
+| 31 Jan 2025    | 9 - 1   | WZB B002/003 | Bayesian answer strategies  |
+| 14 Feb 2025   | 9 - 1   | WZB B002/003 | Design and evaluation           |
+| 21 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 1                       |
+| 28 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 2                       |
+
+[AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&vmfile=no&publishid=224623&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
+
 :::
+
