@@ -1,0 +1,272 @@
+---
+title: 'Design and analysis of experiments'
+subtitle: HU | Spring 2026 (Winter term 25-26)
+abstract: "The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. Topics  include randomization schemes, analysis strategies, design evaluation, and workflows."
+author: "Macartan Humphreys"
+bibliography: ../slides/bib.bib
+format: 
+  pdf:
+    number-sections: true
+    # Adjust text size and margins
+    documentclass: extarticle
+    classoption: a4paper,10pt
+    margin-left: 1in
+    margin-right: 1in
+    margin-top: 0.8in
+    margin-bottom: 0.8in
+urlcolor: orange
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Class resources
+
+* All resources: [https://macartan.github.io/ci](https://macartan.github.io/ci)
+
+* This syllabus: [https://macartan.github.io/ci/experiments_syllabus_2026.pdf](https://macartan.github.io/ci/experiments_syllabus_2026.pdf)
+
+* Slides: [https://macartan.github.io/ci/experiments_2026.html](https://macartan.github.io/ci/experiments_2026.html)
+
+* [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
+
+* Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci): This repo is for both my causal inference class and this experments class.
+
+# Times and locations 
+
+Meetings will be held at the WZB
+
+| Date     | Time    | Location     | Topic                          |
+|----------|---------|--------------|--------------------------------|
+| 9 Jan 2026    | 9 - 13 | WZB A 305  | Getting started |
+| 16 Jan  2026  | 9 - 13   | WZB A 305  | Doing experiments |
+| 30 Jan 2026    | 9 - 13   | WZB A 305  | Causality and causal inquiries |
+| 6 Feb 2026    | 9 - 13   | WZB A 305  | Answer strategies |
+| 20 Feb 2026   | 9 - 13   | WZB A 305  | Data strategies and design evaluation |
+| 27 Feb 2026   | 9 - 13   | WZB B 001  | Topics: downstream experimentation, spillover experiments, patient preference trials, survey experiments |
+
+
+The sessions will be structured roughly as follows.
+
+* 9:00 - 11:00: lecture or discussions of readings
+* 11:00 - 11:15: break
+* 11:15 - 13:00: discussions, team presentations and in-class exercises
+
+
+
+
+
+# Expectations
+
+## Required
+
+* Do the readings and take part in discussion  (25%)
+* Take part in field experiment I  (25%)
+* Design an experiment as a candidate for survey experiment II  (25%)
+* Short in class exam   (25%)
+
+
+## Optional
+* Prepare a research design or short paper, perhaps building on existing work. Typically this contains: 
+  - a problem statement
+  - a description of a method to address the problem
+  - analytic or simulation based results describing properties of the solution
+  - a discussion of implications for practice. 
+  - A passing paper will illustrate subtle features of a method; a good paper will identify unknown properties of a method; en excellent paper will develop a new method. 
+
+
+
+
+
+
+# Sessions and readings
+
+The course combines lectures, discussion, and activities. 
+
+All readings are linked from this document. 
+
+I will draw material especially from @blair2023research: [Research Design in the Social Sciences](https://book.declaredesign.org/)
+
+Recommended but not  open access:  [@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: [https://isps.yale.edu/FEDAI](https://isps.yale.edu/FEDAI)
+
+Readings for each session are given below.
+
+## Intro
+
+Aims: 
+
+* Introduce the class
+* Practice running experiments by hand
+* Introduce and discuss field experiment I
+* To prepare for next session: proposed adaptation of field experiment 1
+
+**Course outline, tools** 
+
+
+
+## Experimentation
+
+Aims:
+
+* Review lifecycle of an experiment (discussion)
+* Discuss ethical challenges to experimentation
+* Develop group field experiment 1
+
+Required reading:
+
+* [The Hijab penalty](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12627) and the  [Appendix](https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fajps.12627&file=ajps12627-sup-0001-Appendix.pdf)
+* [Johnson: Protecting the Community: Lessons from the Montana Flyer Project](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/protecting-the-community-lessons-from-the-montana-flyer-project/2595ED0DB8189897DF6BDB121BBB83CA)
+* [DD, Ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html) introduces ideas at a high level
+* [Design lifecycle](https://book.declaredesign.org/lifecycle) @blair2023research p 319 - 358
+* [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
+
+Optional reading:
+
+* [@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
+* [@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
+
+
+## Causality
+
+Aims: 
+
+* Understand the potential outcomes framework
+* Understand identification challenges and the role of randomization
+* Understand varieties of estimands
+
+Required:
+
+* [Holland](https://www.jstor.org/stable/2289064) is a beautiful classic reading on the fundamental problem of causal inference
+* [DD, Ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/defining-inquiry.html)
+
+Optional:
+
+* [II Ch 2](https://integrated-inferences.github.io/book/02-causal-models.html), goes over both potential outcomes and DAGs
+* [@keele2015statistics](https://hrr.w.uib.no/files/2019/01/Keele_2015_causal.pdf) gives a good high level overview of many key ideas in this course
+* [@imai2008misunderstandings](https://gking.harvard.edu/files/matchse.pdf) 
+* [@hernanwhatif](https://miguelhernan.org/whatifbook)  (Section 3.1, 7.2, 8.4, 10.1)
+* [@hernanwhatif](https://miguelhernan.org/whatifbook) Ch 6
+* [II Ch 4](https://macartan.github.io/integrated_inferences/HJC4.html)
+* @lundberg2021your
+
+## Answer strategies
+
+Aims:
+
+* Understand alternative strategies to estimating treatmente effects
+* Understand design based strategies for estimanting standard errors and $p$-values
+* Understand confidence intervals
+* Understand the role of covariates in experimental design
+
+Required:
+
+* [@freedman2008regression](https://www.stat.berkeley.edu/~census/neyregr.pdf) helps make connections between design based inference and regression 
+* [@lin2012agnostic](https://arxiv.org/pdf/1208.2301.pdf) relieves some worries you might have after reading @freedman2008regression
+
+Optional:
+
+* [@bind2020possible](https://scholar.harvard.edu/files/marie-abele/files/pnas.pdf)  on RI
+* [@chang2024exact](https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA20289) follows up on @lin2012agnostic.
+
+
+## Experimental Design and Evaluation
+
+Aims:
+
+* Understand alternative assignement strategies
+* Understand statistical power
+* Understand how to assess alternative diagnosands
+
+Required:
+
+* [DD, Ch 7](https://book.declaredesign.org/declaration-diagnosis-redesign/diagnosing-designs.html)
+* [DD, Ch 8](https://book.declaredesign.org/declaration-diagnosis-redesign/crafting-data-strategy.html) on data strategies
+* [DD, Ch 9](https://book.declaredesign.org/declaration-diagnosis-redesign/choosing-answer-strategy.html) on answer strategies
+* [DD, Ch 13](https://book.declaredesign.org/declaration-diagnosis-redesign/declaration-in-code.html) gives more practical guidance on getting started
+
+Optional:
+
+## Topics
+
+Aims
+
+* Topics TBD
+
+Required reading (TBD):
+
+### downstream experimentation
+
+### spillover experiments
+
+* [@aronow2017estimating](https://arxiv.org/abs/1305.6156) on spillovers
+
+### patient preference trials
+
+### survey experiments
+
+### mediation experiments
+
+* [@imai2010general](https://imai.fas.harvard.edu/research/files/BaronKenny.pdf) on mediation
+
+
+\newpage
+
+
+# Prerequisites and tools
+
+You should already have background in statistics up to the point of feeling comfortable with regression. 
+
+In addition you should know some `R`. Really, the more you can invest on getting on top of `R` before the class the better.  
+
+
+Before the first class please make sure your `R` is up-to-date and that you are working in `R studio`. Then make sure you have the following packages installed.
+
+```{r, eval = FALSE}
+pacman::p_load(
+  rstan, 
+  dagitty, 
+  DeclareDesign, 
+  CausalQueries,
+  tidyverse,
+  knitr
+  )
+```
+
+Resources:
+
+* Resources for learning `R`: http://www.r-bloggers.com/how-to-learn-r-2/
+* *Hadley Wickham's [R for Data Science](https://r4ds.hadley.nz/)
+* [Grant McDermott on data science](https://grantmcdermott.com/ds4e)
+
+
+## Writing with  `qmd`
+
+Please plan to do drafting in `Quarto`.  This is a  simple markup language that lets you integrate writing and coding.  This document is written in `quarto` and the slides will be also. 
+
+The key thing is that you can insert code chunks like this.
+
+```{r}
+# Define a random number
+x <- rnorm(1)
+```
+
+
+Code like this is  run as the document compiles, and results can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
+
+* See [@wickham2023r](https://r4ds.hadley.nz/) on [Workflow](https://r4ds.hadley.nz/workflow-scripts) and [Quarto](https://r4ds.hadley.nz/quarto)
+
+
+I recommend using `Rstudio` as an editor. More information here: 
+https://quarto.org/docs/get-started/hello/rstudio.html
+
+
+
+## AI
+
+AI can be a great aid to help understand this material and also to develop code. However it should only be used as an aid: it makes many many mistakes; you remain responsible for your code and more importantly for your comprehension.
+
+
+# References
+

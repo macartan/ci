@@ -1,0 +1,121 @@
+---
+format: 
+   revealjs:
+      embed-resources: true
+      theme: serif
+      slide-level: 3
+      slide-number: true
+      toc-depth: 2
+      show-slide-number: all
+      preview-links: auto
+      number-sections: true
+      link-color: orange
+title: "Lectures on the design and analysis of experiments"
+author: "Macartan Humphreys"
+bibliography: bib.bib
+---
+
+
+# Roadmap
+
+1. Intro | [Course outline, tools](#secoutline) |  [`DeclareDesign`](#secdd)
+2. Causality | [Fundamental problems and solutions](#seccausality) | [Inquiries and identification](#secestimands) 
+3. Estimation and Inference 1:  [Frequentist](#secfisher) 
+4. Design |  [Experimental Design](#secdesign) |  [Design evaluation](#secdiagnosis)
+5. Topics 1| [Topics and techniques 1](#citopics1) 
+6. Topics 2| [Topics and techniques 2](#citopics2) 
+
+
+
+```{css}
+##| echo: false
+##| include: false
+
+.reveal table {
+  font-size: medium;
+}
+
+## also: smaller, small
+
+```
+  
+```{r, include = FALSE}
+
+source("setup.R")
+options(future.globals.maxSize = 3 * 1024^3)  # 2GB
+
+# remotes::install_github("jhelvy/renderthis")
+# renderthis::to_pdf("ci_2024.html")
+```
+
+
+```{r, child = "1.1_intro_experiments.qmd"}
+
+```
+
+
+```{r, child = "topics/open_science.qmd"}
+
+```
+
+```{r, child = "topics/ethics.qmd"}
+
+```
+
+
+
+```{r, child = "2.1_causality.qmd"}
+
+```
+
+```{r, child = "2.2_estimands.qmd"}
+
+```
+
+
+```{r, child = "3_fisher.qmd"}
+
+```
+
+```{r, child = "1.2_declaredesign.qmd"}
+
+```
+
+
+```{r, child = "5.1_design.qmd"}
+
+```
+
+
+```{r, child = "5.2_evaluation.qmd"}
+
+```
+
+
+```{r, child = "6_topics_1.qmd"}
+
+```
+
+
+```{r, child = "7_topics_2.qmd"}
+
+```
+
+
+
+```{r, child = "topics/survey_experiments.qmd"}
+
+```
+
+```{r, child = "topics/late.qmd"}
+
+```
+
+
+```{r, child = "topics/spillovers.qmd"}
+
+```
+
+# References
+
+### References

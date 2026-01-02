@@ -1512,7 +1512,7 @@ It's not a good design though. Just look at the diagnosis:
 diagnose_design(design)
 ```
 
-```{r}
+```{r, echo = FALSE}
 if(run)
   diagnose_design(design) |> write_rds("saved/probit.rds")
 
@@ -1548,7 +1548,7 @@ design <- design +
 
 ### A: Answers: other packages
 
-```{r}
+```{r, echo = FALSE}
 if(run)
   diagnose_design(design) |> write_rds("saved/probit_2.rds")
 
