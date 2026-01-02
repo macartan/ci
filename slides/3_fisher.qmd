@@ -26,9 +26,6 @@ library(drtmle)
 
 ```
 
-# Frequentist Analysis {#secfisher}
-
-*Estimation and testing*
 
 ## Outline {#nools}
 

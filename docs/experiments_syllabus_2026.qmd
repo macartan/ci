@@ -270,3 +270,74 @@ AI can be a great aid to help understand this material and also to develop code.
 
 # References
 
+
+```{r, eval = FALSE}
+Survey Experiments
+Mullinix, K. J., Leeper, T. J., Druckman, J. N., & Freese, J. (2015). "The Generalizability of Survey Experiments." Journal of Experimental Political Science, 2(2), 109-138.
+Link: https://doi.org/10.1017/XPS.2015.19 (Open access via Cambridge Core)
+Why: Discusses external validity and generalizability of survey experiments
+Krupnikov, Y., & Levine, A. S. (2014). "Cross-Sample Comparisons and External Validity." Journal of Experimental Political Science, 1(1), 59-80.
+Link: https://doi.org/10.1017/XPS.2014.6 (Open access via Cambridge Core)
+Why: Addresses external validity across samples
+Coppock, A., & McClellan, O. A. (2019). "Validating the Demographic, Political, Psychological, and Experimental Results Obtained from a New Source of Online Survey Respondents." Research & Politics, 6(2).
+Link: https://doi.org/10.1177/2053168018822174 (Open access)
+Why: Discusses online survey platforms and validity
+Mutz, D. C. (2011). "Population-Based Survey Experiments." Princeton University Press (selected chapters often available open access)
+Why: Overview of survey experiments in political science
+
+Spillover Experiments
+Bowers, J., Fredrickson, M. M., & Panagopoulos, C. (2013). "Reasoning about Interference Between Units: A General Framework." Political Analysis, 21(1), 97-124.
+Link: https://www.jstor.org/stable/23359636 (JSTOR - most libraries)
+Why: Framework for thinking about spillovers
+Sinclair, B., McConnell, M., & Green, D. P. (2012). "Detecting Spillover Effects: Design and Analysis of Multilevel Experiments." American Journal of Political Science, 56(4), 1055-1069.
+Link: https://www.jstor.org/stable/23359636 (JSTOR - most libraries)
+Why: Methods for detecting spillovers in field experiments
+
+Mediation Experiments
+Imai, K., Keele, L., & Tingley, D. (2010). "A General Approach to Causal Mediation Analysis." Psychological Methods, 15(4), 309-334.
+Link: https://doi.org/10.1037/a0020761 (Often available open access)
+Why: General framework for mediation (already in your list)
+Acharya, A., Blackwell, M., & Sen, M. (2016). "Explaining Causal Findings Without Bias: Detecting and Assessing Direct Effects." American Political Science Review, 110(3), 512-529.
+Link: https://www.jstor.org/stable/24806015 (JSTOR - most libraries)
+Why: Discusses direct effects and mediation in experiments
+
+Downstream Experimentation
+Gerber, A. S., & Green, D. P. (2017). "Field Experiments on Voter Mobilization: An Overview of a Burgeoning Literature." In Handbook of Experimental Economics and Political Science (often available through libraries)
+Why: Overview of follow-up and downstream effects
+Green, D. P., & Gerber, A. S. (2019). "Get Out the Vote: How to Increase Voter Turnout." Brookings Institution Press (supplementary materials often open access)
+Why: Discusses long-term effects of voter mobilization experiments
+Patient Preference Trials / Choice Experiments
+Hainmueller, J., Hopkins, D. J., & Yamamoto, T. (2014). "Causal Inference in Conjoint Analysis: Understanding Multidimensional Choices via Stated Preference Experiments." Political Analysis, 22(1), 1-30.
+Link: https://www.jstor.org/stable/24572619 (JSTOR - most libraries)
+Why: Conjoint analysis for political preferences
+Bansak, K., Hainmueller, J., Hopkins, D. J., & Yamamoto, T. (2021). "Beyond the Breaking Point? Survey Satisficing in Conjoint Experiments." Political Science Research and Methods, 9(1), 53-71.
+Link: https://doi.org/10.1017/psrm.2019.28 (Open access via Cambridge Core)
+Why: Methodological considerations in choice experiments
+
+General Experimental Design Discussion Pieces
+Gerber, A. S., & Green, D. P. (2012). "Field Experiments: Design, Analysis, and Interpretation." Norton (supplementary materials: https://isps.yale.edu/FEDAI - open access)
+Why: Comprehensive overview with open access supplementary materials
+Druckman, J. N., Green, D. P., Kuklinski, J. H., & Lupia, A. (2011). "Experiments: An Introduction to Core Concepts." In Cambridge Handbook of Experimental Political Science (many chapters available through libraries)
+Why: Core concepts in experimental political science
+Morton, R. B., & Williams, K. C. (2010). "Experimental Political Science and the Study of Causality: From Nature to the Lab." Cambridge University Press (often available through libraries)
+Why: Philosophical and methodological foundations
+Power Analysis & Design Evaluation
+Cohen, J. (1988). "Statistical Power Analysis for the Behavioral Sciences." Routledge (classic reference, often available through libraries)
+Why: Standard reference on power analysis
+Lakens, D. (2022). "Sample Size Justification." Collabra: Psychology, 8(1).
+Link: https://doi.org/10.1525/collabra.33267 (Open access)
+Why: Modern perspective on sample size justification
+
+Ethics & Field Experiments
+Desposato, S. (2016). "Ethics and Experiments: Problems and Solutions for Social Scientists and Policy Professionals." Routledge (some chapters available through libraries)
+Why: Ethics in field experiments
+Michelitch, K. (2015). "Detecting Election Fraud from Irregularities in Vote-Share Distributions." Political Analysis, 23(1), 1-24.
+Link: https://www.jstor.org/stable/24572619 (JSTOR - most libraries)
+Why: Raises ethical and methodological questions
+
+Randomization & Analysis
+Gerber, A. S., & Green, D. P. (2000). "The Effects of Canvassing, Telephone Calls, and Direct Mail on Voter Turnout: A Field Experiment." American Political Science Review, 94(3), 653-663.
+Link: https://www.jstor.org/stable/2585837 (JSTOR - most libraries)
+Why: Classic field experiment, good for discussion
+
+```  

@@ -58,31 +58,38 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 # Experimenting {#experimenting}
 
-```{r, child = "6_experiments_topics.qmd"}
+```{r, child = "2_experimenting.qmd"}
 
 ```
 
 # Causality {#causality}
 
 
+## Fundamental problems 
+
 ```{r, child = "2.1_causality.qmd"}
 
 ```
 
+## Estimands 
+
+*Estimation and testing*
 
 ```{r, child = "2.2_estimands.qmd"}
 
 ```
 
 
-# Causality {#answer_strategies}
+# Answer strategies {#answer_strategies}
 
 ```{r, child = "3_fisher.qmd"}
 
 ```
 
 
-# Design {#design}
+# Data strategies and design evaluation {#design}
+
+*How to define and assess research designs* 
 
 ```{r, child = "1.2_declaredesign.qmd"}
 

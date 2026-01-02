@@ -54,6 +54,10 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 ```
 
 
+# `DeclareDesign` {#secdd}
+
+*How to define and assess research designs* 
+
 ```{r, child = "1.2_declaredesign.qmd"}
 
 ```
@@ -63,10 +67,17 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 ```
 
+# Inquiries {#secestimands}
+
+*Well posed questions*
+
 ```{r, child = "2.2_estimands.qmd"}
 
 ```
 
+# Frequentist Analysis {#secfisher}
+
+*Estimation and testing*
 
 ```{r, child = "3_fisher.qmd"}
 

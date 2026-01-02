@@ -20,10 +20,6 @@ source("setup.R")
 
 ```
 
-# Inquiries {#secestimands}
-
-*Well posed questions*
-
 
 ## Outline
 

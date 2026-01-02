@@ -15,10 +15,6 @@ author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
 bibliography: bib.bib
 ---
 
-# `DeclareDesign` {#secdd}
-
-*How to define and assess research designs* 
-
 ## Roadmap
 
 1. The MIDA framework and the declaration-diagnosis-redesign cycle
