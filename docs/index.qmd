@@ -9,7 +9,49 @@ format:
 ::: {.panel-tabset}
 
 
-## Resources
+## Experiments 2026
+
+* [All slides](https://macartan.github.io/ci/experiments_2026.html)
+
+    * [1 Intro](https://macartan.github.io/ci/1_intro_experiments.html)
+    * [2 Experimenting](https://macartan.github.io/ci/2_experimenting.html)
+    * [3 Causality](https://macartan.github.io/ci/2.1_causality.html)
+    * [3 Estimands and Identification](https://macartan.github.io/ci/2.2_estimands.html)
+    * [4 Frequentists inference](https://macartan.github.io/ci/3_fisher.html)
+    * [5 Design declaration](https://macartan.github.io/ci/1.2_declaredesign.html)
+    * [5 Experimental design](https://macartan.github.io/ci/5.1_design.html)
+    * [5 Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
+    * [6. Topics](https://macartan.github.io/ci/6_experiments_topics.html)
+
+
+* The syllabus: [https://macartan.github.io/ci/experiments_syllabus_2026.pdf](https://macartan.github.io/ci/experiments_syllabus_2026.pdf)
+
+* [Student survey](https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ)
+
+### Times and locations 2026
+
+Meetings will be held at the WZB
+
+| Date     | Time    | Location     | Topic                          |
+|----------|---------|--------------|--------------------------------|
+| 9 Jan 2026    | 9 - 13 | WZB A 305  | 1 Getting started |
+| 16 Jan  2026  | 9 - 13   | WZB A 305  | 2 Doing experiments |
+| 30 Jan 2026    | 9 - 13   | WZB A 305  | 3 Causality and causal inquiries |
+| 6 Feb 2026    | 9 - 13   | WZB A 305  | 4 Answer strategies |
+| 20 Feb 2026   | 9 - 13   | WZB A 305  | 5 Data strategies and design evaluation |
+| 27 Feb 2026   | 9 - 13   | WZB B 001  | 6 Topics: downstream experimentation, spillover experiments, patient preference trials, survey experiments |
+
+
+The sessions will be structured roughly as follows.
+
+* 9:00 - 11:00: lecture or discussions of readings
+* 11:00 - 11:15: break
+* 11:15 - 13:00: discussions, team presentations and in-class exercises
+
+
+[AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&publishid=238785&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
+
+## Causal inference 2025
 
 
 * [All slides](https://macartan.github.io/ci/ci_2025.html)
@@ -32,7 +74,7 @@ format:
 
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
 
-## 2025 Times and places
+2025 Times and places
 
 | Date     | Time    | Location     | Topic                          |
 |----------|---------|--------------|--------------------------------|

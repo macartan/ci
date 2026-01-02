@@ -1,6 +1,6 @@
 ---
 title: "Topics"
-subtitle: "LATE"
+subtitle: "LATE, encouragements, compliance, and downstream experiments"
 format: 
    revealjs:
     embed-resources: true

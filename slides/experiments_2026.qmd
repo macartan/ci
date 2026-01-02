@@ -18,12 +18,12 @@ bibliography: bib.bib
 
 # Roadmap
 
-1. Intro | [Course outline, tools](#secoutline) |  [`DeclareDesign`](#secdd)
-2. Causality | [Fundamental problems and solutions](#seccausality) | [Inquiries and identification](#secestimands) 
-3. Estimation and Inference 1:  [Frequentist](#secfisher) 
-4. Design |  [Experimental Design](#secdesign) |  [Design evaluation](#secdiagnosis)
-5. Topics 1| [Topics and techniques 1](#citopics1) 
-6. Topics 2| [Topics and techniques 2](#citopics2) 
+1. Intro: | [Course outline, tools](#intro)
+1. Experimenting: | [questions, workflow, ethics](#experimenting)
+2. Causality: [Fundamental problems, questions, and answers](#causality)  
+3. Estimation:  [Answer Strategies](#answer_strategies) 
+4. Design:  [Experimental Design and Evaluation](#design) 
+6. Topics:  [Specific experimental design](#experimental_topics) 
 
 
 
@@ -49,33 +49,40 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 ```
 
 
-```{r, child = "1.1_intro_experiments.qmd"}
+# Intro {#intro}
+
+```{r, child = "1_intro_experiments.qmd"}
 
 ```
 
 
-```{r, child = "topics/open_science.qmd"}
+# Experimenting {#experimenting}
+
+```{r, child = "6_experiments_topics.qmd"}
 
 ```
 
-```{r, child = "topics/ethics.qmd"}
-
-```
-
+# Causality {#causality}
 
 
 ```{r, child = "2.1_causality.qmd"}
 
 ```
 
+
 ```{r, child = "2.2_estimands.qmd"}
 
 ```
 
 
+# Causality {#answer_strategies}
+
 ```{r, child = "3_fisher.qmd"}
 
 ```
+
+
+# Design {#design}
 
 ```{r, child = "1.2_declaredesign.qmd"}
 
@@ -91,30 +98,14 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 ```
 
+# Topics {#topics}
 
-```{r, child = "6_topics_1.qmd"}
-
-```
-
-
-```{r, child = "7_topics_2.qmd"}
+```{r, child = "6_experiments_topics.qmd"}
 
 ```
 
 
 
-```{r, child = "topics/survey_experiments.qmd"}
-
-```
-
-```{r, child = "topics/late.qmd"}
-
-```
-
-
-```{r, child = "topics/spillovers.qmd"}
-
-```
 
 # References
 

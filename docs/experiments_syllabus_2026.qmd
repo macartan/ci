@@ -1,7 +1,7 @@
 ---
 title: 'Design and analysis of experiments'
 subtitle: HU | Spring 2026 (Winter term 25-26)
-abstract: "The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. Topics  include randomization schemes, analysis strategies, design evaluation, and workflows."
+abstract: "The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. Topics include randomization schemes, analysis strategies, design evaluation, and workflows."
 author: "Macartan Humphreys"
 bibliography: ../slides/bib.bib
 format: 
@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
 
-* Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci): This repo is for both my causal inference class and this experments class.
+* Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci): This repo is for both my causal inference class and this experiments class.
 
 # Times and locations 
 
@@ -74,7 +74,7 @@ The sessions will be structured roughly as follows.
   - a description of a method to address the problem
   - analytic or simulation based results describing properties of the solution
   - a discussion of implications for practice. 
-  - A passing paper will illustrate subtle features of a method; a good paper will identify unknown properties of a method; en excellent paper will develop a new method. 
+  - A passing paper will illustrate subtle features of a method; a good paper will identify unknown properties of a method; an excellent paper will develop a new method. 
 
 
 
@@ -89,7 +89,7 @@ All readings are linked from this document.
 
 I will draw material especially from @blair2023research: [Research Design in the Social Sciences](https://book.declaredesign.org/)
 
-Recommended but not  open access:  [@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: [https://isps.yale.edu/FEDAI](https://isps.yale.edu/FEDAI)
+Recommended but not open access: [@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: [https://isps.yale.edu/FEDAI](https://isps.yale.edu/FEDAI)
 
 Readings for each session are given below.
 
@@ -99,7 +99,7 @@ Aims:
 
 * Introduce the class
 * Practice running experiments by hand
-* Introduce and discuss field experiment I
+* Introduce and discuss field [experiment I](in_class_experiment.html)
 * To prepare for next session: proposed adaptation of field experiment 1
 
 **Course outline, tools** 
@@ -155,8 +155,8 @@ Optional:
 
 Aims:
 
-* Understand alternative strategies to estimating treatmente effects
-* Understand design based strategies for estimanting standard errors and $p$-values
+* Understand alternative strategies to estimating treatment effects
+* Understand design based strategies for estimating standard errors and $p$-values
 * Understand confidence intervals
 * Understand the role of covariates in experimental design
 
@@ -175,7 +175,7 @@ Optional:
 
 Aims:
 
-* Understand alternative assignement strategies
+* Understand alternative assignment strategies
 * Understand statistical power
 * Understand how to assess alternative diagnosands
 
@@ -190,7 +190,7 @@ Optional:
 
 ## Topics
 
-Aims
+Aims:
 
 * Topics TBD
 
@@ -237,13 +237,13 @@ pacman::p_load(
 Resources:
 
 * Resources for learning `R`: http://www.r-bloggers.com/how-to-learn-r-2/
-* *Hadley Wickham's [R for Data Science](https://r4ds.hadley.nz/)
+* Hadley Wickham's [R for Data Science](https://r4ds.hadley.nz/)
 * [Grant McDermott on data science](https://grantmcdermott.com/ds4e)
 
 
 ## Writing with  `qmd`
 
-Please plan to do drafting in `Quarto`.  This is a  simple markup language that lets you integrate writing and coding.  This document is written in `quarto` and the slides will be also. 
+Please plan to do drafting in `Quarto`. This is a simple markup language that lets you integrate writing and coding. This document is written in `Quarto` and the slides will be also. 
 
 The key thing is that you can insert code chunks like this.
 
@@ -253,7 +253,7 @@ x <- rnorm(1)
 ```
 
 
-Code like this is  run as the document compiles, and results can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
+Code like this is run as the document compiles, and results can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
 
 * See [@wickham2023r](https://r4ds.hadley.nz/) on [Workflow](https://r4ds.hadley.nz/workflow-scripts) and [Quarto](https://r4ds.hadley.nz/quarto)
 

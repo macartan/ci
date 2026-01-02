@@ -75,27 +75,42 @@ The catch: when you turn over a  card you are only allowed to read the black num
 
 Proceed as follows:
 
+**Step 1: Implement a first experiment**
+
 1. Put all the cards face down on the table.  
 2. Decide for which ones you will  read the black number and for which ones you will read the white number ($Z$). For this you might first want to detemine a strategy. You are free to use any method.
 3. Turn each card over and read the appropriate number
 4. Fill in a table like the below in a spreadsheet (e.g. .csv file)
 5. When all numbers are complete calculate:
-  1. An estimate of the difference between the black and white numbers
-  2. A standard error associated with this estimate
-  3. A $p-$value for the null hypothesis that there is no difference
+    1. An estimate of the difference between the black and white numbers
+    2. A standard error associated with this estimate
+    3. A $p-$value for the null hypothesis that there is no difference
+
+[Discuss]
+
+**Step 2: Redesign and repeat**
+
 6. You have completed the first investigation. You are now doing to do 10 more. Write down a brief pre-analysis plan for these next investigations. This is your design. Based on what you found so far you might want to (a) revist your assignment strategy in step 2 and (b) you analysis strategy in step 4. 
 7. Repeat steps 1 - 5  10 times and show histograms of
-  1. the estimates
-  2. the standard errors
-  3. the  $p-$values
-  4. the confidence interval for the estimate
-8. Now turn over all the cards and calculate:
-  1. the true difference between the numbers 
-  2. the correlation between the white numbers, the black numbers 
-  3. the correlation between the black numbers and the prompt (if any)
-  4. using the calculations you have, estimate: 
-      1. the power of your design
-      2. the coverage of the confidence intervals
+    1. the estimates
+    2. the standard errors
+    3. the  $p-$values
+    4. the confidence interval for the estimate
+    
+[Discuss]
+    
+**Step 3: Evaluate your design**
+    
+8. Now turn over all the cards:
+    1. calculate the true difference between the numbers 
+    4. using the calculations you have, estimate: 
+          1. whether you design was biased            
+          2. the power of your design
+          3. the coverage of the confidence intervals
+    2. calculate the correlation between the white numbers, the black numbers 
+    3. calculate the correlation between the black numbers and the prompt (if any)
+
+[Discuss]
 
 
 ```{r, echo = FALSE}
