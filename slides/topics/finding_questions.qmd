@@ -28,10 +28,7 @@ source("setup.R")
 
 *Good questions studied well*
 
-
-### When to experiment {#L_prospects}
-
-Prospects and priorities
+* Prospects and priorities
 
 ### Prospects 
 
@@ -41,12 +38,13 @@ Prospects and priorities
 
 ### Prospects 
 
-* **Advice**: If you can, **start from theory** and find an intervention, rather than the other way around.
-* **Advice**: If you can, go for *structure* rather than *gimmicks*
-* **Advice**: In attempts to parse, beware of generating unnatural interventions (how should a voter think of a politician that describes his policy towards Korea in detail but does not mention the economy? Is not mentioning the economy sending an unintended message?)
+* If you can, **start from theory** and find an intervention, rather than the other way around.
+* If you can, go for *structure* rather than *gimmicks*
+* In attempts to parse, beware of generating unnatural interventions (how should a voter think of a politician that describes his policy towards Korea in detail but does not mention the economy? Is *not mentioning* the economy sending an unintended message?)
 
 ### Innovative designs {.smaller}
 
+* Radnomization of encouragements to gain citizenship (New York)
 * Randomization of where police are stationed (India)
 * Randomization of how government tax collectors get paid (do they get a share?) (Pakistan)
 * Randomization of the voting rules for determining how decisions get made (Afghanistan)

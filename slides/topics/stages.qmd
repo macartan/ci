@@ -1,0 +1,73 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Topics"
+subtitle: "stages of an experimental project"
+author: "Macartan Humphreys"
+bibliography: ../bib.bib
+---
+
+  
+```{r, include = FALSE}
+if(!exists("child")) setwd("../")
+
+source("setup.R")
+
+```
+
+
+## What is an experiment?
+
+
+## What is an experiment?
+
+Cox & Reid (2000) define experiments as:
+
+> investigations in which an intervention, in all its essential elements, is under the control of the investigator. 
+
+Two types of control: 
+
+* control over assignment to treatment and 
+* control over the treatment itself
+
+## Two types of control: 
+
+
+![](../assets/labfield.jpg)
+
+
+## Experimentation: Stages {.smaller}
+
+1. Find a good **question**: Minimally, find an $X$ and a $Y$. 
+    * $X$-based motivations
+    * $Y$ based motivations
+    * Theory based, hypothesis based, mechanism based, replication focused
+2. Survey literatures, identify **contribution**.
+3. Identify partners, **resources**. Perhaps run exploratory pilot analyses.
+4. Develop a **design**:  Data strategy | Measurement strategy |  Answer strategy
+5. **Simulate** the design: Power analysis, Confirmation of properties of estimators
+5. **Present**! gather feedback 
+6. Gather **priors**: what do others expect will happen?
+7. Apply for **ethics** approval
+8. Ensure **compliance** with other provisions (e.g. GDPR)!
+10.  **Register** a pre-analysis plan (e.g OSF, AEA)
+
+## Experimentation: Stages  {.smaller}
+
+11. Conduct **Baseline** (if needed): **With live data quality control!**
+8. Implement **randomization**
+9. Gather **process** observations
+10. Implement **Endline**.  **With live data quality control!**
+11. Run **analysis**; check analysis
+12. Generate **key tables**
+13. **Present** to colleagues, but also  present to any stakeholders
+2. Prep **replication** materials. Make **data** and code available to others 
+13. **Writeup**
+14. **Submit** [Get rejected - Submit again] 

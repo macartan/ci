@@ -24,7 +24,7 @@ child <- TRUE
 # Experimenting {#experimenting}
 
 
-```{r, child = "topics/ethics.qmd"}
+```{r, child = "topics/stages.qmd"}
 
 ```
 
@@ -32,6 +32,12 @@ child <- TRUE
 ```{r, child = "topics/finding_questions.qmd"}
 
 ```
+
+
+```{r, child = "topics/ethics.qmd"}
+
+```
+
 
 
 ```{r, child = "topics/open_science.qmd"}

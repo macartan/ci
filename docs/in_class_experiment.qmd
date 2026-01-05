@@ -33,7 +33,7 @@ library(kableExtra)
 
 show_answer <- FALSE
 
-run <- TRUE
+run <- FALSE
 ```
 
 

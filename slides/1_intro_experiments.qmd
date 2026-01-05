@@ -48,11 +48,10 @@ run <- FALSE
 
 ## Aims and items
 
+* Primary focus is training on how to *do* experiments; not just knowledge of good experiments
 * Deep understanding of key ideas in causal inference 
 * Transportable tools for understanding how to evaluate and improve design
-* Applied skills for design and analysis
-* Exposure to open science practices
-* Deeper dive into some specific topics (see survey)
+* Practice!
 
 ### Syllabus and resources
 
@@ -85,10 +84,9 @@ We hope to run three experiments:
 
 ### Required
 
-* Do the readings and take part in discussion  (25%)
-* Take part in field experiment I  (25%)
-* Design an experiment as a candidate for survey experiment II  (25%)
-* Short in class exam   (25%)
+* Do the readings and take part in discussion  (30%)
+* Take part in field experiment I  (30%)
+* Design an experiment as a candidate for survey experiment II  (50%)
 
 
 ### Optional {.smaller}
