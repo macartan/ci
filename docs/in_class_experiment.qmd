@@ -82,7 +82,7 @@ Proceed as follows:
 3. Turn each card over and read the appropriate number
 4. Fill in a table like the below in a spreadsheet (e.g. .csv file)
 5. When all numbers are complete calculate:
-    1. An estimate of the difference between the black and white numbers
+    1. An estimate of the average difference between the black and white numbers
     2. A standard error associated with this estimate
     3. A $p-$value for the null hypothesis that there is no difference
 
@@ -95,20 +95,19 @@ Proceed as follows:
     1. the estimates
     2. the standard errors
     3. the  $p-$values
-    4. the confidence interval for the estimate
-    
+
 [Discuss]
     
 **Step 3: Evaluate your design**
     
 8. Now turn over all the cards:
-    1. calculate the true difference between the numbers 
+    1. calculate the true average difference between the numbers 
     4. using the calculations you have, estimate: 
-          1. whether you design was biased            
+          1. whether your design was biased            
           2. the power of your design
           3. the coverage of the confidence intervals
     2. calculate the correlation between the white numbers, the black numbers 
-    3. calculate the correlation between the black numbers and the prompt (if any)
+    3. calculate the correlation between the black numbers and the prompt / clue (if any)
 
 [Discuss]
 
