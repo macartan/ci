@@ -51,14 +51,14 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 # Intro {#intro}
 
-```{r, child = "1_intro_experiments.qmd"}
+```{r intro, child = "1_intro_experiments.qmd"}
 
 ```
 
 
 # Experimenting {#experimenting}
 
-```{r, child = "2_experimenting.qmd"}
+```{r experimenting, child = "2_experimenting.qmd"}
 
 ```
 
@@ -67,7 +67,7 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 ## Fundamental problems 
 
-```{r, child = "2.1_causality.qmd"}
+```{r causes, child = "2.1_causality.qmd"}
 
 ```
 
@@ -75,14 +75,14 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 *Estimation and testing*
 
-```{r, child = "2.2_estimands.qmd"}
+```{r estimands, child = "2.2_estimands.qmd"}
 
 ```
 
 
 # Answer strategies {#answer_strategies}
 
-```{r, child = "3_fisher.qmd"}
+```{r answers, child = "3_fisher.qmd"}
 
 ```
 
@@ -91,7 +91,7 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 *How to define and assess research designs* 
 
-```{r, child = "1.2_declaredesign.qmd"}
+```{r dd1, child = "1.2_declaredesign.qmd", eval = FALSE}
 
 ```
 

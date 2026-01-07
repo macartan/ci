@@ -58,13 +58,9 @@ Let's discuss:
 * Examples of the kinds of questions people address
 * The ethics of intervening
 
-Then:
+Then:  Deep dive into discussion of actual experiments
 
-* Deep dive into discussion of actual experiments
-
-Then: 
-
-* Plans for our own
+Then: Plans for our own
 
 
 ## The MIDA Framework {#MIDAframework}

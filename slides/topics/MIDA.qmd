@@ -12,14 +12,9 @@ format:
 title: "Design declaration, diagnosis, and redesign "
 subtitle: "MIDA and more"
 author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
-bibliography: bib.bib
+bibliography: ../bib.bib
 ---
 
-
-```{r, include=FALSE}
-source("setup.R")
-run <- FALSE
-```
 
 
 ### Four elements of any research design
