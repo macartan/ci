@@ -86,7 +86,7 @@ We hope to run three experiments:
 
 * Do the readings and take part in discussion  (30%)
 * Take part in field experiment I  (30%)
-* Design an experiment as a candidate for survey experiment II  (50%)
+* Design an experiment as a candidate for survey experiment II  (40%)
 
 
 ### Optional {.smaller}
@@ -146,6 +146,16 @@ We are going to make mistakes and learn to work as a team.
 ![Results](assets/hijab_header_results.jpg)
 
 
+## Let's create some brainstorming groups
+
+* 5 groups
+* Each thinks through a possible intervention 
+  * Motivation: What question can you answer?
+  * Treatment: What would be varied?
+  * Measurement: What would outcome measures be?
+  * Feasibility: Challenges to doing this rapidly and ethically in the coming weeks
+* Feedback
+
 
 ## Appendix: Coding Tips
 
@@ -182,3 +192,4 @@ We are going to make mistakes and learn to work as a team.
 * Update to github frequently
 
 
+### Fin

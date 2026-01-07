@@ -53,12 +53,12 @@ full_data <-
           clue = seq(-19, 19, 2),
           ID  = sample(1:20),
           Y0  = 1:20,
-          Y1a = 20:1,
-          Y1b = 1:20,
+          Y1a = 20:1, # prompt shown but irrelevant
+          Y1b = 1:20, # prompt shown but irrelevant
           Y1c = 20:1 + 5  + clue, # Good to control or else form blocks
           Y1d = 1:20 + 5  + clue, # Especially good to control or else form blocks
-          Y1e = rep(15, 20),   # Better to select many Y0s
-          Y1f = 2*(20:1)*prompt + 5  # Better to block with more Y0s in prompt = FALSE group
+          Y1e = rep(15, 20),   # clue shown but irrelevant: Better to select many Y0s
+          Y1f = 2*(20:1)*prompt + 5  # "Read the left number" Better to block with more Y0s in prompt = FALSE group
           ) |>
   arrange(ID)
 
