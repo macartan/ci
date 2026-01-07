@@ -39,7 +39,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Meetings will be held at the WZB
 
 | Date | Time | Location | Topic |
-|--------------|--------------|--------------|------------------------------|
+|---------------|---------------|---------------|---------------------------|
 | 9 Jan 2026 | 9 - 13 | WZB A 305 | Getting started |
 | 16 Jan 2026 | 9 - 13 | WZB A 305 | Doing experiments |
 | 30 Jan 2026 | 9 - 13 | WZB A 305 | Causality and causal inquiries |
@@ -78,11 +78,11 @@ All readings are linked from this document.
 
 I will draw material especially from @blair2023research: [Research Design in the Social Sciences](https://book.declaredesign.org/)
 
-Recommended but not open access: [\@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: <https://isps.yale.edu/FEDAI>
+Recommended but not open access: [@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: <https://isps.yale.edu/FEDAI>
 
 Readings for each session are given below.
 
-## Intro
+## Intro (9 January)
 
 Aims:
 
@@ -93,14 +93,14 @@ Aims:
 
 **Course outline, tools**
 
-## Experimentation
+## Experimentation (16 January)
 
 Aims:
 
 -   Review lifecycle of an experiment (discussion)
 -   Discuss ethical challenges to experimentation
 -   Discuss a set of strong experiments
--   Develop group field experiment 1 and decide on strategy
+-   Develop group field experiment 1, decide on strategy, and start ethics application
 
 **To do before class**: 1. the readings; 2. develop specific proposals in small groups for field experiment 1 (4 slides), completing individually or collectively a copy of the [EGAP research design form](https://egap.github.io/learningdays-resources/Exercises/design-form.html)
 
@@ -117,7 +117,6 @@ some cases:
 -   Example 2: @lowe2021types
 -   [The Hijab penalty](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12627) and the [Appendix](https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fajps.12627&file=ajps12627-sup-0001-Appendix.pdf)
 
-
 Optional reading:
 
 -   [Design lifecycle](https://book.declaredesign.org/lifecycle) @blair2023research p 319 - 358
@@ -128,7 +127,7 @@ Optional reading:
 -   @mousa2020building
 -   @dietrichSeeingRacialAvoidance2023a
 
-## Causality
+## Causality (30 January)
 
 Aims:
 
@@ -136,7 +135,7 @@ Aims:
 -   Understand identification challenges and the role of randomization
 -   Understand varieties of estimands
 
-**To do before class**: 1. the readings; 2. collectively complete a pre-analysis plan and ethics application for Experiment 1
+**To do before class**: 1. the readings; 2. collectively complete a pre-analysis plan and [ethics application](https://wiki.wzb.eu/de/nsfr_img_auth.php/8/8d/Ethics_Full_Review_Form_new.docx) for Experiment 1
 
 Required:
 
@@ -153,7 +152,7 @@ Optional:
 -   [II Ch 4](https://macartan.github.io/integrated_inferences/HJC4.html)
 -   @lundberg2021your
 
-## Answer strategies
+## Answer strategies (6 February)
 
 Aims:
 
@@ -171,7 +170,7 @@ Optional:
 -   [@lin2012agnostic](https://arxiv.org/pdf/1208.2301.pdf) relieves some worries you might have after reading @freedman2008regression
 -   [@chang2024exact](https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA20289) follows up on @lin2012agnostic.
 
-## Experimental Design and Evaluation
+## Experimental Design and Evaluation (20 February)
 
 Aims:
 
@@ -188,7 +187,7 @@ Required:
 -   [DD, Ch 9](https://book.declaredesign.org/declaration-diagnosis-redesign/choosing-answer-strategy.html) on answer strategies
 -   [DD, Ch 13](https://book.declaredesign.org/declaration-diagnosis-redesign/declaration-in-code.html) gives more practical guidance on getting started
 
-## Topics
+## Topics (27 February)
 
 Aims: \* Topics TBD
 
@@ -257,7 +256,7 @@ x <- rnorm(1)
 
 Code like this is run as the document compiles, and results can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
 
--   See [@wickham2023r](https://r4ds.hadley.nz/) on [Workflow](https://r4ds.hadley.nz/workflow-scripts) and [Quarto](https://r4ds.hadley.nz/quarto)
+-   See [\@wickham2023r](https://r4ds.hadley.nz/) on [Workflow](https://r4ds.hadley.nz/workflow-scripts) and [Quarto](https://r4ds.hadley.nz/quarto)
 
 I recommend using `Rstudio` as an editor. More information here: https://quarto.org/docs/get-started/hello/rstudio.html
 
