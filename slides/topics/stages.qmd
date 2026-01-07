@@ -23,26 +23,6 @@ source("setup.R")
 ```
 
 
-## What is an experiment?
-
-
-## What is an experiment?
-
-Cox & Reid (2000) define experiments as:
-
-> investigations in which an intervention, in all its essential elements, is under the control of the investigator. 
-
-Two types of control: 
-
-* control over assignment to treatment and 
-* control over the treatment itself
-
-## Two types of control: 
-
-
-![](../assets/labfield.jpg)
-
-
 ## Experimentation: Stages {.smaller}
 
 1. Find a good **question**: Minimally, find an $X$ and a $Y$. 

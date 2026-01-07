@@ -1,0 +1,64 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+title: "Design declaration, diagnosis, and redesign "
+subtitle: "MIDA and more"
+author: "Graeme Blair, Alex Coppock, Macartan Humphreys"
+bibliography: bib.bib
+---
+
+
+```{r, include=FALSE}
+source("setup.R")
+run <- FALSE
+```
+
+
+### Four elements of any research design
+
+- `Model`: set of models of what causes what and how
+- `Inquiry`: a question stated in terms of the model
+- `Data strategy`: the set of procedures we use to gather information from the world (sampling, assignment, measurement)
+- `Answer strategy`: how we summarize the data produced by the data strategy
+
+### Four elements of any research design
+
+```{r midaplot, echo = FALSE}
+knitr::include_graphics("assets/mida.png")
+```
+
+### Declaration
+
+Design declaration is telling the computer (and readers) what `M`, `I`, `D`, and `A` are.
+
+### Diagnosis
+
+* Design diagnosis is figuring out how the design will perform under imagined conditions.
+
+* Estimating "diagnosands" like power, bias, rmse, error rates, ethical harm, "amount learned".
+
+*  Diagnosis takes account of model uncertainty: it aims  to identify models for which the design works well and models for which it does not
+
+### Redesign 
+
+Redesign is the fine-tuning of  features of the data- and answer strategies to understand how changing them affects  the diagnosands
+
+* Different sample sizes
+* Different randomization procedures
+* Different estimation strategies
+* Implementation: effort into compliance versus more effort into sample size
+
+### Very often you have to simulate!
+
+* Doing all this is often too hard to work out from rules of thumb or power calculators
+* Specialized formulas exist for some diagnosands, but not all
+
+

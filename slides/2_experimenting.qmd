@@ -24,6 +24,56 @@ child <- TRUE
 # Experimenting {#experimenting}
 
 
+### What is an experiment?
+
+Cox & Reid (2000) define experiments as:
+
+> investigations in which an intervention, in all its essential elements, is under the control of the investigator. 
+
+Two types of control: 
+
+* control over assignment to treatment and 
+* control over the treatment itself
+
+### Two types of control: 
+
+
+![](../assets/labfield.jpg)
+
+### More broadly:
+
+Experimental studies use research designs in which the researchers uses:
+
+* *interventional* **data strategies** (to control setting or treatments)
+* often with **causal** *inquiries*
+* often with **design based** *answer strategies*
+
+
+## Plan
+
+Let's discuss:
+
+* The four parts to any design
+* The stages of an experimental design
+* Examples of the kinds of questions people address
+* The ethics of intervening
+
+Then:
+
+* Deep dive into discussion of actual experiments
+
+Then: 
+
+* Plans for our own
+
+
+## The MIDA Framework {#MIDAframework}
+
+```{r, child = "topics/MIDA.qmd"}
+
+```
+
+
 ```{r, child = "topics/stages.qmd"}
 
 ```

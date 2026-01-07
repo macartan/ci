@@ -11,7 +11,7 @@ format:
 
 ## Experiments 2026
 
-* [All slides](https://macartan.github.io/ci/experiments_2026.html)
+* [All slides](https://macartan.github.io/ci/slides_experiments_2026.html)
 
     1. [Intro](https://macartan.github.io/ci/1_intro_experiments.html)
     2. [Experimenting](https://macartan.github.io/ci/2_experimenting.html)
@@ -21,7 +21,7 @@ format:
     6. [Topics](https://macartan.github.io/ci/6_experiments_topics.html)
 
 
-* The syllabus: [https://macartan.github.io/ci/experiments_syllabus_2026.pdf](https://macartan.github.io/ci/experiments_syllabus_2026.pdf)
+* The syllabus: [https://macartan.github.io/ci/syllabus_experiments_2026.pdf](https://macartan.github.io/ci/syllabus_experiments_2026.pdf)
 
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ)
 
@@ -67,7 +67,7 @@ The sessions will be structured roughly as follows.
 
 * Puzzles: [https://macartan.github.io/ci/exercises.html](https://macartan.github.io/ci/exercises.html)
 
-* This syllabus: [https://macartan.github.io/ci/syllabus.pdf](https://macartan.github.io/ci/syllabus.pdf)
+* This syllabus: [https://macartan.github.io/ci/syllabus_ci_2025.pdf](https://macartan.github.io/ci/syllabus_ci_2025.pdf)
 
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
 
