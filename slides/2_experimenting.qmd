@@ -39,6 +39,7 @@ child <- TRUE
 ```
 
 
+## Appendix
 
 ```{r, child = "topics/open_science.qmd"}
 

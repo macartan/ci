@@ -99,22 +99,28 @@ Aims:
 
 -   Review lifecycle of an experiment (discussion)
 -   Discuss ethical challenges to experimentation
--   Discuss a set of strong experiments (all graduate student projects)
--   Develop group field experiment 1
+-   Discuss a set of strong experiments
+-   Develop group field experiment 1 and decide on strategy
 
-**To do before class**: 1. the readings; 2. develop specific proposals in small groups for field experiment 1, completing individually or collectively a copy of the [EGAP research design form](https://egap.github.io/learningdays-resources/Exercises/design-form.html)
+**To do before class**: 1. the readings; 2. develop specific proposals in small groups for field experiment 1 (4 slides), completing individually or collectively a copy of the [EGAP research design form](https://egap.github.io/learningdays-resources/Exercises/design-form.html)
 
 Required reading:
 
--   [The Hijab penalty](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12627) and the [Appendix](https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fajps.12627&file=ajps12627-sup-0001-Appendix.pdf)
+on ethics:
+
 -   [Johnson: Protecting the Community: Lessons from the Montana Flyer Project](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/protecting-the-community-lessons-from-the-montana-flyer-project/2595ED0DB8189897DF6BDB121BBB83CA)
--   [Design lifecycle](https://book.declaredesign.org/lifecycle) @blair2023research p 319 - 358
+-   [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
+
+some cases:
+
 -   Example 1: @gerber2008social
 -   Example 2: @lowe2021types
+-   [The Hijab penalty](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12627) and the [Appendix](https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fajps.12627&file=ajps12627-sup-0001-Appendix.pdf)
+
 
 Optional reading:
 
--   [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
+-   [Design lifecycle](https://book.declaredesign.org/lifecycle) @blair2023research p 319 - 358
 -   [DD, Ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html) introduces ideas at a high level
 -   [@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
 -   [@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
