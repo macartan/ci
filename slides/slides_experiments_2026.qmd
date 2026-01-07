@@ -64,7 +64,6 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 # Causality {#causality}
 
-
 ## Fundamental problems 
 
 ```{r causes, child = "2.1_causality.qmd"}
@@ -86,10 +85,6 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 ```
 
-
-# Data strategies and design evaluation {#design}
-
-*How to define and assess research designs* 
 
 ```{r dd1, child = "1.2_declaredesign.qmd", eval = FALSE}
 

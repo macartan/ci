@@ -21,9 +21,6 @@ child <- TRUE
 ```
 
 
-# Experimenting {#experimenting}
-
-
 ### What is an experiment?
 
 Cox & Reid (2000) define experiments as:
@@ -38,7 +35,7 @@ Two types of control:
 ### Two types of control: 
 
 
-![](../assets/labfield.jpg)
+![](assets/labfield.jpg)
 
 ### More broadly:
 

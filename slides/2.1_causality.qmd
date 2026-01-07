@@ -19,8 +19,6 @@ source("setup.R")
 
 ```
 
-# Causality. What's a cause? {#seccausality}
-
 ## Potential outcomes and the counterfactual approach
 
 *Causation as difference making*

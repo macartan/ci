@@ -167,7 +167,7 @@ But  to estimate effects you still need *some* SUTVA like assumption.
 ### Spillovers: Opportunities and Warnings
 
 ```{r, echo = FALSE}
-knitr::include_graphics("../figs/neelan.png")
+knitr::include_graphics("figs/neelan.png")
 ```
 
 In this example if one compared the outcome between treated units and all control units that are at least $n$ positions away from a treated unit you will get the wrong answer unless $n \geq 7$.
