@@ -1,5 +1,5 @@
 ---
-title: "puzzles for causal inference and experimental design"
+title: "in-class exercise for causal inference and experimental design"
 author: "Macartan Humphreys"
 date: "2025-01-04"
 format: 
@@ -8,16 +8,6 @@ format:
     number-sections: true
     embed-resources: true
 bibliography: ../slides/bib.bib
-filters: 
-  - custom-numbered-blocks
-custom-numbered-blocks:
-  groups: 
-    exgrp: 
-      collapse: true
-      boxstyle: foldbox.simple  
-  classes:
-    Q:
-      group: exgrp
 ---
 
 
@@ -91,7 +81,7 @@ Proceed as follows:
 **Step 2: Redesign and repeat**
 
 6. You have completed the first investigation. You are now doing to do 10 more. Write down a brief pre-analysis plan for these next investigations. This is your design. Based on what you found so far you might want to (a) revist your assignment strategy in step 2 and (b) you analysis strategy in step 4. 
-7. Repeat steps 1 - 5  10 times and show histograms of
+7. *Findings*: Repeat steps 1 - 5  10 times and show histograms of
     1. the estimates
     2. the standard errors
     3. the  $p-$values
@@ -100,7 +90,7 @@ Proceed as follows:
     
 **Step 3: Evaluate your design**
     
-8. Now turn over all the cards:
+8. *Diagnosis*. Now turn over all the cards:
     1. calculate the true average difference between the numbers 
     4. using the calculations you have, estimate: 
           1. whether your design was biased            
@@ -111,10 +101,16 @@ Proceed as follows:
 
 [Discuss]
 
+**Deliverables**: e-mail me a report that has 
+
+a. names of team members
+b. your analysis plan (short: one paragraph for assignment strategy, one for analysis strategy)
+c. your histograms from step 2
+d. your diagnoses from step 3
 
 ```{r, echo = FALSE}
-fabricate(N = 20,
-          ID  = sample(1:20),
+fabricate(N = 5,
+          ID  = sample(1:5),
           side = "",
           number = "",
           w  = "",
@@ -124,7 +120,7 @@ fabricate(N = 20,
   kable(
     col.names = c(
       "ID",
-      "Z: Color read (W = 0, B = 1)",
+      "Z: Color selected (W = 0, B = 1)",
       "Y: Number observed",
       "Y0: White number (if read)",
       "Y1: Black number (if read)",

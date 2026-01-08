@@ -64,7 +64,7 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 # Causality {#causality}
 
-## Fundamental problems 
+Fundamental problems 
 
 ```{r causes, child = "2.1_causality.qmd"}
 
