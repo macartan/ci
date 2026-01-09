@@ -47,7 +47,7 @@ The sessions will be structured roughly as follows.
 
 **Instructor:** Fridays, 13:00 - 15:00, in person
 
-**Teaching assistant:** Wednesdays, 13:00 - 14:00 on Zoom (excluding 25 Feb)
+**Teaching assistant:** Wednesdays, 13:00 - 14:00 on [Zoom](https://hu-berlin.zoom-x.de/j/68850907617) (excluding 25 Feb)
 
 ## Causal inference 2025
 
