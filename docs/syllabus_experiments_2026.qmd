@@ -2,7 +2,7 @@
 title: 'Design and analysis of experiments'
 subtitle: HU | Spring 2026 (Winter term 25-26)
 abstract: "The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. In-class discussions focus on major works, features of designs, and experimental strtegies. Topics include randomization schemes, analysis strategies, design evaluation, and workflows. "
-author: "Macartan Humphreys"
+author: ""
 bibliography: ../slides/bib.bib
 format: 
   pdf:
@@ -17,6 +17,14 @@ format:
 urlcolor: orange
 fontsize: 10pt
 ---
+
++-------------------------------------------------------------------+----------------------------------------------------------:+
+| **Instructor\                                                     | **Teaching assistant**\                                   |
+| **Macartan Humphreys**\                                           | Lennard Naumann\                                          |
+| **[macartan.humphreys\@wzb.eu](mailto:macartan.humphreys@wzb.eu)\ | [lennard.naumann\@wzb.eu](mailto:lennard.naumann@wzb.eu)\ |
+| E 308\                                                            | E306                                                      |
+| [macartan.github.io](https://macartan.github.io/)                 |                                                           |
++-------------------------------------------------------------------+-----------------------------------------------------------+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -38,14 +46,21 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Meetings will be held at the WZB
 
-| Date | Time | Location | Topic |
-|---------------|---------------|---------------|---------------------------|
-| 9 Jan 2026 | 9 - 13 | WZB A 305 | Getting started |
-| 16 Jan 2026 | 9 - 13 | WZB A 305 | Doing experiments |
-| 30 Jan 2026 | 9 - 13 | WZB A 305 | Causality and causal inquiries |
-| 6 Feb 2026 | 9 - 13 | WZB A 305 | Answer strategies |
-| 20 Feb 2026 | 9 - 13 | WZB A 305 | Data strategies and design evaluation |
++-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
+| Date        | Time   | Location  | Topic                                                                                                    |
++=============+========+===========+==========================================================================================================+
+| 9 Jan 2026  | 9 - 13 | WZB A 305 | Getting started                                                                                          |
++-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
+| 16 Jan 2026 | 9 - 13 | WZB A 305 | Doing experiments                                                                                        |
++-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
+| 30 Jan 2026 | 9 - 13 | WZB A 305 | Causality and causal inquiries                                                                           |
++-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
+| 6 Feb 2026  | 9 - 13 | WZB A 305 | Answer strategies                                                                                        |
++-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
+| 20 Feb 2026 | 9 - 13 | WZB A 305 | Data strategies and design evaluation                                                                    |
++-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
 | 27 Feb 2026 | 9 - 13 | WZB B 001 | Topics: downstream experimentation, spillover experiments, patient preference trials, survey experiments |
++-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
 
 The sessions will be structured roughly as follows.
 
@@ -53,22 +68,31 @@ The sessions will be structured roughly as follows.
 -   11:00 - 11:15: break
 -   11:15 - 13:00: discussions, team presentations and in-class exercises
 
+**Instructor office hours**: Fridays, 13:00 - 15:00, in person
+
+**Teaching assistant office hours**: Wednesdays, 13:00 - 14:00 on [Zoom](https://hu-berlin.zoom-x.de/j/68850907617) (excluding 25 Feb)
+
 # Expectations
 
-## Required
+## Required (6 ECTS)
 
 -   Do the readings and take part in discussion (30%)
 -   Take part in field experiment I (30%)
 -   Design an experiment as a candidate for survey experiment II (40%)
 
-## Optional
+## Optional (4 ECTS)
 
 -   Prepare a research design or short paper, perhaps building on existing work. Typically this contains:
     -   a problem statement
-    -   a description of a method to address the problem
-    -   analytic or simulation based results describing properties of the solution
-    -   a discussion of implications for practice.
-    -   A passing paper will illustrate subtle features of a method; a good paper will identify unknown properties of a method; an excellent paper will develop a new method.
+
+    -   a description of an experimental strategy to address the problem
+
+    -   empirical (ideally) or simulation based results (ok)
+
+    -   a discussion of implications
+
+    -   A passing paper will illustrate identify a causal effect of substantive interest credibly; a good paper will innovate on method or topic.
+-   Deadline: August 31, 2026
 
 # Sessions and readings
 
@@ -78,7 +102,7 @@ All readings are linked from this document.
 
 I will draw material especially from @blair2023research: [Research Design in the Social Sciences](https://book.declaredesign.org/)
 
-Recommended but not open access: [@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: <https://isps.yale.edu/FEDAI>
+Recommended but not open access: [\@gerber2012field](https://wwnorton.com/books/9780393979954) with supplementary material available here: <https://isps.yale.edu/FEDAI>
 
 Readings for each session are given below.
 
@@ -109,7 +133,7 @@ Required reading:
 on ethics:
 
 -   [Johnson: Protecting the Community: Lessons from the Montana Flyer Project](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/protecting-the-community-lessons-from-the-montana-flyer-project/2595ED0DB8189897DF6BDB121BBB83CA)
--   [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
+-   [\@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
 
 some cases:
 
@@ -121,8 +145,8 @@ Optional reading:
 
 -   [Design lifecycle](https://book.declaredesign.org/lifecycle) @blair2023research p 319 - 358
 -   [DD, Ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html) introduces ideas at a high level
--   [@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
--   [@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
+-   [\@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
+-   [\@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
 -   @kurzban2001can
 -   @mousa2020building
 -   @dietrichSeeingRacialAvoidance2023a
@@ -145,10 +169,10 @@ Required:
 Optional:
 
 -   [II Ch 2](https://integrated-inferences.github.io/book/02-causal-models.html), goes over both potential outcomes and DAGs
--   [@keele2015statistics](https://hrr.w.uib.no/files/2019/01/Keele_2015_causal.pdf) gives a good high level overview of many key ideas in this course
--   [@imai2008misunderstandings](https://gking.harvard.edu/files/matchse.pdf)
--   [@hernanwhatif](https://miguelhernan.org/whatifbook) (Section 3.1, 7.2, 8.4, 10.1)
--   [@hernanwhatif](https://miguelhernan.org/whatifbook) Ch 6
+-   [\@keele2015statistics](https://hrr.w.uib.no/files/2019/01/Keele_2015_causal.pdf) gives a good high level overview of many key ideas in this course
+-   [\@imai2008misunderstandings](https://gking.harvard.edu/files/matchse.pdf)
+-   [\@hernanwhatif](https://miguelhernan.org/whatifbook) (Section 3.1, 7.2, 8.4, 10.1)
+-   [\@hernanwhatif](https://miguelhernan.org/whatifbook) Ch 6
 -   [II Ch 4](https://macartan.github.io/integrated_inferences/HJC4.html)
 -   @lundberg2021your
 
@@ -165,10 +189,10 @@ Aims:
 
 Optional:
 
--   [@freedman2008regression](https://www.stat.berkeley.edu/~census/neyregr.pdf) helps make connections between design based inference and regression
--   [@bind2020possible](https://scholar.harvard.edu/files/marie-abele/files/pnas.pdf) on RI
--   [@lin2012agnostic](https://arxiv.org/pdf/1208.2301.pdf) relieves some worries you might have after reading @freedman2008regression
--   [@chang2024exact](https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA20289) follows up on @lin2012agnostic.
+-   [\@freedman2008regression](https://www.stat.berkeley.edu/~census/neyregr.pdf) helps make connections between design based inference and regression
+-   [\@bind2020possible](https://scholar.harvard.edu/files/marie-abele/files/pnas.pdf) on RI
+-   [\@lin2012agnostic](https://arxiv.org/pdf/1208.2301.pdf) relieves some worries you might have after reading @freedman2008regression
+-   [\@chang2024exact](https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA20289) follows up on @lin2012agnostic.
 
 ## Experimental Design and Evaluation (20 February)
 
@@ -189,7 +213,6 @@ Required:
 
 ## Topics (27 February)
 
-
 **To do before class**: 1. The readings 2. Round-robin report on design performance. Teams receive a class-mate's design, declare a model that produces possible data from the design (without consulting the authors design declaration, if any) and applies the original authors answer strategy, reporting performance.
 
 Required reading (TBC):
@@ -201,7 +224,7 @@ Required reading (TBC):
 ### spillover experiments
 
 -   @sinclair2012detecting
--   [@aronow2017estimating](https://arxiv.org/abs/1305.6156) on spillovers
+-   [\@aronow2017estimating](https://arxiv.org/abs/1305.6156) on spillovers
 
 ### patient preference trials
 
@@ -213,7 +236,7 @@ Required reading (TBC):
 
 ### mediation experiments
 
--   [@imai2010general](https://imai.fas.harvard.edu/research/files/BaronKenny.pdf) on mediation
+-   [\@imai2010general](https://imai.fas.harvard.edu/research/files/BaronKenny.pdf) on mediation
 
 \newpage
 

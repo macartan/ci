@@ -6,84 +6,82 @@ format:
     embed-resources: true
 ---
 
-::: {.panel-tabset}
-
-
+::: panel-tabset
 ## Experiments 2026
 
-* [All slides](https://macartan.github.io/ci/slides_experiments_2026.html)
+-   [All slides](https://macartan.github.io/ci/slides_experiments_2026.html)
 
-    1. [Intro](https://macartan.github.io/ci/1_intro_experiments.html)
-    2. [Experimenting](https://macartan.github.io/ci/2_experimenting.html)
-    3. [Causality](https://macartan.github.io/ci/2.1_causality.html) | [Estimands and Identification](https://macartan.github.io/ci/2.2_estimands.html)
-    4. [Answer strategies](https://macartan.github.io/ci/3_fisher.html)
-    5. [Design declaration](https://macartan.github.io/ci/1.2_declaredesign.html) | [Data strategies](https://macartan.github.io/ci/5.1_design.html) |  [Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
-    6. [Topics](https://macartan.github.io/ci/6_experiments_topics.html)
+    1.  [Intro](https://macartan.github.io/ci/1_intro_experiments.html)
+    2.  [Experimenting](https://macartan.github.io/ci/2_experimenting.html)
+    3.  [Causality](https://macartan.github.io/ci/2.1_causality.html) \| [Estimands and Identification](https://macartan.github.io/ci/2.2_estimands.html)
+    4.  [Answer strategies](https://macartan.github.io/ci/3_fisher.html)
+    5.  [Design declaration](https://macartan.github.io/ci/1.2_declaredesign.html) \| [Data strategies](https://macartan.github.io/ci/5.1_design.html) \| [Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
+    6.  [Topics](https://macartan.github.io/ci/6_experiments_topics.html)
 
+-   The syllabus: <https://macartan.github.io/ci/syllabus_experiments_2026.pdf>
 
-* The syllabus: [https://macartan.github.io/ci/syllabus_experiments_2026.pdf](https://macartan.github.io/ci/syllabus_experiments_2026.pdf)
-
-* [Student survey](https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ)
+-   [Student survey](https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ)
 
 ### Times and locations 2026
 
 Meetings will be held at the WZB
 
-| Date     | Time    | Location     | Topic                          |
-|----------|---------|--------------|--------------------------------|
-| 9 Jan 2026    | 9 - 13 | WZB A 305  | 1 Getting started |
-| 16 Jan  2026  | 9 - 13   | WZB A 305  | 2 Doing experiments |
-| 30 Jan 2026    | 9 - 13   | WZB A 305  | 3 Causality and causal inquiries |
-| 6 Feb 2026    | 9 - 13   | WZB A 305  | 4 Answer strategies |
-| 20 Feb 2026   | 9 - 13   | WZB A 305  | 5 Data strategies and design evaluation |
-| 27 Feb 2026   | 9 - 13   | WZB B 001  | 6 Topics: downstream experimentation, spillover experiments, patient preference trials, survey experiments |
-
+| Date | Time | Location | Topic |
+|--------------|--------------|--------------|------------------------------|
+| 9 Jan 2026 | 9 - 13 | WZB A 305 | 1 Getting started |
+| 16 Jan 2026 | 9 - 13 | WZB A 305 | 2 Doing experiments |
+| 30 Jan 2026 | 9 - 13 | WZB A 305 | 3 Causality and causal inquiries |
+| 6 Feb 2026 | 9 - 13 | WZB A 305 | 4 Answer strategies |
+| 20 Feb 2026 | 9 - 13 | WZB A 305 | 5 Data strategies and design evaluation |
+| 27 Feb 2026 | 9 - 13 | WZB B 001 | 6 Topics: downstream experimentation, spillover experiments, patient preference trials, survey experiments |
 
 The sessions will be structured roughly as follows.
 
-* 9:00 - 11:00: lecture or discussions of readings
-* 11:00 - 11:15: break
-* 11:15 - 13:00: discussions, team presentations and in-class exercises
-
+-   9:00 - 11:00: lecture or discussions of readings
+-   11:00 - 11:15: break
+-   11:15 - 13:00: discussions, team presentations and in-class exercises
 
 [AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&publishid=238785&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
 
+### Office hours
+
+**Instructor:** Fridays, 13:00 - 15:00, in person
+
+**Teaching assistant:** Wednesdays, 13:00 - 14:00 on Zoom (excluding 25 Feb)
+
 ## Causal inference 2025
 
+-   [All slides](https://macartan.github.io/ci/ci_2025.html)
 
-* [All slides](https://macartan.github.io/ci/ci_2025.html)
+    -   [1.1 Intro](https://macartan.github.io/ci/1.1_intro.html)
+    -   [1.2 Design declaration](https://macartan.github.io/ci/1.2_declaredesign.html)
+    -   [2.1 Causality](https://macartan.github.io/ci/2.1_causality.html)
+    -   [2.2 Estimands and Identification](https://macartan.github.io/ci/2.2_estimands.html)
+    -   [3 Frequentists inference](https://macartan.github.io/ci/3_fisher.html)
+    -   [4 Bayesian inference](https://macartan.github.io/ci/4_bayes.html)
+    -   [5.1 Experimental design](https://macartan.github.io/ci/5.1_design.html)
+    -   [5.2 Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
+    -   [6. Topics 1 incl controls, doubly robust, Diff in Diff, matching](https://macartan.github.io/ci/6_topics_1.html)
+    -   [7. Topics 2: incl synth, IV, survey experiments, RDD, ethics](https://macartan.github.io/ci/7_topics_2.html)
+    -   [8. Topics 3: incl mediation, SUTVA, open science](https://macartan.github.io/ci/8_topics_3.html)
 
-    * [1.1  Intro](https://macartan.github.io/ci/1.1_intro.html)
-    * [1.2 Design declaration](https://macartan.github.io/ci/1.2_declaredesign.html)
-    * [2.1 Causality](https://macartan.github.io/ci/2.1_causality.html)
-    * [2.2 Estimands and Identification](https://macartan.github.io/ci/2.2_estimands.html)
-    * [3 Frequentists inference](https://macartan.github.io/ci/3_fisher.html)
-    * [4 Bayesian inference](https://macartan.github.io/ci/4_bayes.html)
-    * [5.1 Experimental design](https://macartan.github.io/ci/5.1_design.html)
-    * [5.2 Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
-    * [6. Topics 1  incl controls, doubly robust, Diff in Diff,  matching](https://macartan.github.io/ci/6_topics_1.html)
-    * [7. Topics 2: incl synth, IV, survey experiments, RDD, ethics](https://macartan.github.io/ci/7_topics_2.html)
-    * [8. Topics 3: incl mediation, SUTVA,  open science](https://macartan.github.io/ci/8_topics_3.html)
+-   Puzzles: <https://macartan.github.io/ci/exercises.html>
 
-* Puzzles: [https://macartan.github.io/ci/exercises.html](https://macartan.github.io/ci/exercises.html)
+-   This syllabus: <https://macartan.github.io/ci/syllabus_ci_2025.pdf>
 
-* This syllabus: [https://macartan.github.io/ci/syllabus_ci_2025.pdf](https://macartan.github.io/ci/syllabus_ci_2025.pdf)
-
-* [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
+-   [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
 
 2025 Times and places
 
-| Date     | Time    | Location     | Topic                          |
-|----------|---------|--------------|--------------------------------|
-| 10 Jan 2025    | 10 - 12 | WZB B002/003 | Intro                          |
-| 17 Jan  2025  | 9 - 1   | WZB B002/003 | Causality and causal inquiries  |
-| 24 Jan 2025    | 9 - 1   | WZB B002/003 | Frequentist answer strategies   |
-| 31 Jan 2025    | 9 - 1   | WZB B002/003 | Bayesian answer strategies  |
-| 14 Feb 2025   | 9 - 1   | WZB B002/003 | Design and evaluation           |
-| 21 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 1                       |
-| 28 Feb 2025   | 9 - 1   | WZB B002/003 | Topics 2                       |
+| Date        | Time    | Location     | Topic                          |
+|-------------|---------|--------------|--------------------------------|
+| 10 Jan 2025 | 10 - 12 | WZB B002/003 | Intro                          |
+| 17 Jan 2025 | 9 - 1   | WZB B002/003 | Causality and causal inquiries |
+| 24 Jan 2025 | 9 - 1   | WZB B002/003 | Frequentist answer strategies  |
+| 31 Jan 2025 | 9 - 1   | WZB B002/003 | Bayesian answer strategies     |
+| 14 Feb 2025 | 9 - 1   | WZB B002/003 | Design and evaluation          |
+| 21 Feb 2025 | 9 - 1   | WZB B002/003 | Topics 1                       |
+| 28 Feb 2025 | 9 - 1   | WZB B002/003 | Topics 2                       |
 
 [AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&vmfile=no&publishid=224623&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
-
 :::
-
