@@ -1,0 +1,74 @@
+---
+title: "in-class exercise for causal inference and experimental design"
+author: "Macartan Humphreys"
+date: "2025-01-04"
+format: 
+  html:
+    toc: true
+    number-sections: true
+    embed-resources: true
+bibliography: ../slides/bib.bib
+---
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(knitr)
+library(tidyverse)
+library(CausalQueries)
+library(DeclareDesign)
+library(kableExtra)
+
+```
+
+
+
+#  Results from simple experiment, complete random assignment, difference in means
+
+```{r, echo = FALSE}
+diagnosis_1 <-   read_rds( "cardgame_simulation.rds")
+diagnosis_1$simulations_df |>
+  select(estimator, estimate, std.error, p.value) |>
+  gather("stat", "val", -estimator) |>
+  ggplot(aes(val)) + geom_histogram() + facet_grid(estimator ~ stat, scales = "free_x") +
+  theme_bw() 
+```
+
+
+```{r}
+diagnosis_1 |> reshape_diagnosis() |> 
+  select(Inquiry, Bias, Power, Coverage) |> kable()
+```
+
+
+#  Results from simple experiment, complete random assignment, controlling for clue
+
+```{r, echo = FALSE}
+diagnosis_2 <-   read_rds( "cardgame_simulation_2.rds")
+diagnosis_2$simulations_df |>
+  select(estimator, estimate, std.error, p.value) |>
+  gather("stat", "val", -estimator) |>
+  ggplot(aes(val)) + geom_histogram() + facet_grid(estimator ~ stat, scales = "free_x") +
+  theme_bw() 
+```
+
+
+
+```{r}
+diagnosis_2 |> reshape_diagnosis() |> 
+  select(Inquiry, Bias, Power, Coverage) |> kable()
+```
+# Comparison of controls
+
+```{r}
+d <- list(without = diagnosis_1, with = diagnosis_2) |> 
+  lapply(tidy) |>
+  bind_rows(.id = "strategy")
+
+d |> filter(diagnosand == "sd_estimate") |>
+  ggplot(aes(inquiry, estimate, color = strategy)) + geom_point() + theme_bw()
+
+```
+          

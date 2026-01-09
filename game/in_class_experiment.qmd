@@ -141,6 +141,9 @@ fabricate(N = 5,
 
 
 
+
+# Without clue at analysis stage
+
 ```{r, include = show_answer, eval = show_answer}
 # Answer:
 
@@ -177,3 +180,41 @@ diagnosis$simulations_df |>
   theme_bw() 
 ```
 
+
+# With clue at analysis stage
+
+```{r, include = show_answer, eval = show_answer}
+# Answer:
+
+design_2 <- declare_model(full_data, 
+                        Z = simple_ra(N),
+                        Ya = Z*Y1a + (1-Z)*Y0,
+                        Yb = Z*Y1b + (1-Z)*Y0,
+                        Yc = Z*Y1c + (1-Z)*Y0,
+                        Yd = Z*Y1d + (1-Z)*Y0,
+                        Ye = Z*Y1e + (1-Z)*Y0,
+                        Yf = Z*Y1f + (1-Z)*Y0) +
+  declare_inquiry(Qa = mean(Y1a - Y0),
+                   Qb = mean(Y1b - Y0),
+                   Qc = mean(Y1c - Y0),
+                   Qd = mean(Y1d - Y0),
+                   Qe = mean(Y1e - Y0),
+                   Qf = mean(Y1f - Y0)) +
+  declare_estimator(Ya ~ Z + prompt, inquiry = "Qa", label = "a") +
+  declare_estimator(Yb ~ Z + prompt, inquiry = "Qb", label = "b")+
+  declare_estimator(Yc ~ Z + clue, inquiry = "Qc", label = "c")+
+  declare_estimator(Yd ~ Z + clue, inquiry = "Qd", label = "d")+
+  declare_estimator(Ye ~ Z + clue, inquiry = "Qe", label = "e")+
+  declare_estimator(Yf ~ Z + prompt, inquiry = "Qf", label = "f")
+
+if(run)
+diagnose_design(design_2, sims = 5000) |> 
+  write_rds( "cardgame_simulation_2.rds")
+
+diagnosis_2 <-   read_rds( "cardgame_simulation_2.rds")
+diagnosis_2$simulations_df |>
+  select(estimator, estimate, std.error, p.value) |>
+  gather("stat", "val", -estimator) |>
+  ggplot(aes(val)) + geom_histogram() + facet_grid(estimator ~ stat, scales = "free_x") +
+  theme_bw() 
+```
