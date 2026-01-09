@@ -133,7 +133,7 @@ Required reading:
 on ethics:
 
 -   [Johnson: Protecting the Community: Lessons from the Montana Flyer Project](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/protecting-the-community-lessons-from-the-montana-flyer-project/2595ED0DB8189897DF6BDB121BBB83CA)
--   [\@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
+-   [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
 
 some cases:
 
@@ -145,8 +145,8 @@ Optional reading:
 
 -   [Design lifecycle](https://book.declaredesign.org/lifecycle) @blair2023research p 319 - 358
 -   [DD, Ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html) introduces ideas at a high level
--   [\@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
--   [\@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
+-   [@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
+-   [@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
 -   @kurzban2001can
 -   @mousa2020building
 -   @dietrichSeeingRacialAvoidance2023a
@@ -169,10 +169,10 @@ Required:
 Optional:
 
 -   [II Ch 2](https://integrated-inferences.github.io/book/02-causal-models.html), goes over both potential outcomes and DAGs
--   [\@keele2015statistics](https://hrr.w.uib.no/files/2019/01/Keele_2015_causal.pdf) gives a good high level overview of many key ideas in this course
--   [\@imai2008misunderstandings](https://gking.harvard.edu/files/matchse.pdf)
--   [\@hernanwhatif](https://miguelhernan.org/whatifbook) (Section 3.1, 7.2, 8.4, 10.1)
--   [\@hernanwhatif](https://miguelhernan.org/whatifbook) Ch 6
+-   [@keele2015statistics](https://hrr.w.uib.no/files/2019/01/Keele_2015_causal.pdf) gives a good high level overview of many key ideas in this course
+-   [@imai2008misunderstandings](https://gking.harvard.edu/files/matchse.pdf)
+-   [@hernanwhatif](https://miguelhernan.org/whatifbook) (Section 3.1, 7.2, 8.4, 10.1)
+-   [@hernanwhatif](https://miguelhernan.org/whatifbook) Ch 6
 -   [II Ch 4](https://macartan.github.io/integrated_inferences/HJC4.html)
 -   @lundberg2021your
 
@@ -189,10 +189,10 @@ Aims:
 
 Optional:
 
--   [\@freedman2008regression](https://www.stat.berkeley.edu/~census/neyregr.pdf) helps make connections between design based inference and regression
--   [\@bind2020possible](https://scholar.harvard.edu/files/marie-abele/files/pnas.pdf) on RI
--   [\@lin2012agnostic](https://arxiv.org/pdf/1208.2301.pdf) relieves some worries you might have after reading @freedman2008regression
--   [\@chang2024exact](https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA20289) follows up on @lin2012agnostic.
+-   [@freedman2008regression](https://www.stat.berkeley.edu/~census/neyregr.pdf) helps make connections between design based inference and regression
+-   [@bind2020possible](https://scholar.harvard.edu/files/marie-abele/files/pnas.pdf) on RI
+-   [@lin2012agnostic](https://arxiv.org/pdf/1208.2301.pdf) relieves some worries you might have after reading @freedman2008regression
+-   [@chang2024exact](https://onlinelibrary.wiley.com/doi/full/10.3982/ECTA20289) follows up on @lin2012agnostic.
 
 ## Experimental Design and Evaluation (20 February)
 
@@ -224,7 +224,7 @@ Required reading (TBC):
 ### spillover experiments
 
 -   @sinclair2012detecting
--   [\@aronow2017estimating](https://arxiv.org/abs/1305.6156) on spillovers
+-   [@aronow2017estimating](https://arxiv.org/abs/1305.6156) on spillovers
 
 ### patient preference trials
 
@@ -236,7 +236,7 @@ Required reading (TBC):
 
 ### mediation experiments
 
--   [\@imai2010general](https://imai.fas.harvard.edu/research/files/BaronKenny.pdf) on mediation
+-   [@imai2010general](https://imai.fas.harvard.edu/research/files/BaronKenny.pdf) on mediation
 
 \newpage
 
@@ -278,7 +278,7 @@ x <- rnorm(1)
 
 Code like this is run as the document compiles, and results can be accessed as needed, like this: we just sampled the random number $x =$ `r x`.
 
--   See [\@wickham2023r](https://r4ds.hadley.nz/) on [Workflow](https://r4ds.hadley.nz/workflow-scripts) and [Quarto](https://r4ds.hadley.nz/quarto)
+-   See [@wickham2023r](https://r4ds.hadley.nz/) on [Workflow](https://r4ds.hadley.nz/workflow-scripts) and [Quarto](https://r4ds.hadley.nz/quarto)
 
 I recommend using `Rstudio` as an editor. More information here: https://quarto.org/docs/get-started/hello/rstudio.html
 
