@@ -1,7 +1,6 @@
 ---
 title: 'Design and analysis of experiments'
 subtitle: HU | Spring 2026 (Winter term 25-26)
-abstract: "The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. In-class discussions focus on major works, features of designs, and experimental strtegies. Topics include randomization schemes, analysis strategies, design evaluation, and workflows. "
 author: ""
 bibliography: ../slides/bib.bib
 format: 
@@ -18,13 +17,15 @@ urlcolor: orange
 fontsize: 10pt
 ---
 
-+-------------------------------------------------------------------+----------------------------------------------------------:+
-| **Instructor\                                                     | **Teaching assistant**\                                   |
-| **Macartan Humphreys**\                                           | Lennard Naumann\                                          |
-| **[macartan.humphreys\@wzb.eu](mailto:macartan.humphreys@wzb.eu)\ | [lennard.naumann\@wzb.eu](mailto:lennard.naumann@wzb.eu)\ |
-| E 308\                                                            | E306                                                      |
-| [macartan.github.io](https://macartan.github.io/)                 |                                                           |
-+-------------------------------------------------------------------+-----------------------------------------------------------+
+| **Instructor** | **Teaching assistant** |
+|----------------|-----------------------:|
+| **Macartan Humphreys** | Lennard Naumann |
+| [macartan.humphreys@wzb.eu](mailto:macartan.humphreys@wzb.eu) | [lennard.naumann@wzb.eu](mailto:lennard.naumann@wzb.eu) |
+| [macartan.github.io](https://macartan.github.io/) | E306 |
+
+
+**Overview**: The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. In-class discussions focus on major works, features of designs, and experimental strtegies. Topics include randomization schemes, analysis strategies, design evaluation, and workflows. 
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -46,21 +47,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Meetings will be held at the WZB
 
-+-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
-| Date        | Time   | Location  | Topic                                                                                                    |
-+=============+========+===========+==========================================================================================================+
-| 9 Jan 2026  | 9 - 13 | WZB A 305 | Getting started                                                                                          |
-+-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
-| 16 Jan 2026 | 9 - 13 | WZB A 305 | Doing experiments                                                                                        |
-+-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
-| 30 Jan 2026 | 9 - 13 | WZB A 305 | Causality and causal inquiries                                                                           |
-+-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
-| 6 Feb 2026  | 9 - 13 | WZB A 305 | Answer strategies                                                                                        |
-+-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
-| 20 Feb 2026 | 9 - 13 | WZB A 305 | Data strategies and design evaluation                                                                    |
-+-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
-| 27 Feb 2026 | 9 - 13 | WZB B 001 | Topics: downstream experimentation, spillover experiments, patient preference trials, survey experiments |
-+-------------+--------+-----------+----------------------------------------------------------------------------------------------------------+
+| Date     | Time | Location| Topic                     |
+|----------|------|---------|------------------------------|
+| 9 Jan 2026  | 9–13   | WZB A 305 | Getting started |
+| 16 Jan 2026 | 9–13   | WZB A 305 | Doing experiments |
+| 30 Jan 2026 | 9–13   | WZB A 305 | Causality and causal inquiries |
+| 6 Feb 2026  | 9–13   | WZB A 305 | Answer strategies |
+| 20 Feb 2026 | 9–13   | WZB A 305 | Data strategies and design evaluation |
+| 27 Feb 2026 | 9–13   | WZB B 001 | Topics: downstream experimentation; spillover experiments; patient preference trials; survey experiments |
+
 
 The sessions will be structured roughly as follows.
 
@@ -80,7 +75,7 @@ The sessions will be structured roughly as follows.
 -   Take part in field experiment I (30%)
 -   Design an experiment as a candidate for survey experiment II (40%)
 
-## Optional (4 ECTS)
+## Optional (+4 ECTS)
 
 -   Prepare a research design or short paper, perhaps building on existing work. Typically this contains:
     -   a problem statement
@@ -133,7 +128,7 @@ Required reading:
 on ethics:
 
 -   [Johnson: Protecting the Community: Lessons from the Montana Flyer Project](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/protecting-the-community-lessons-from-the-montana-flyer-project/2595ED0DB8189897DF6BDB121BBB83CA)
--   [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
+- [APSA guidelines](https://connect.apsanet.org/hsr/principles-and-guidance/)
 
 some cases:
 
@@ -141,12 +136,16 @@ some cases:
 -   Example 2: @lowe2021types
 -   [The Hijab penalty](https://onlinelibrary.wiley.com/doi/full/10.1111/ajps.12627) and the [Appendix](https://onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1111%2Fajps.12627&file=ajps12627-sup-0001-Appendix.pdf)
 
-Optional reading:
+Optional pieces on experimentation:
 
+-   [@humphreys2015reflections](https://macartan.github.io/assets/pdf/papers/2015_reflections_ethics.pdf) on ethics in experiments
 -   [Design lifecycle](https://book.declaredesign.org/lifecycle) @blair2023research p 319 - 358
 -   [DD, Ch 2](https://book.declaredesign.org/introduction/what-is-a-research-design.html) introduces ideas at a high level
 -   [@alvarez2018research](https://www.researchgate.net/publication/324240650_Research_Replication_Practical_Considerations/link/5ca3688b458515f7851d7b2e/download?)
 -   [@humphreys2013fishing](https://macartan.github.io/assets/pdf/papers/2013_fishing.pdf) on fishing and registration
+
+Optional substantive pieces:
+
 -   @kurzban2001can
 -   [@haasPersuasionProtestsDirect2025](https://osf.io/42s8e/download)
 -   @mousa2020building
@@ -216,20 +215,7 @@ Required:
 
 **To do before class**: 1. The readings 2. Round-robin report on design performance. Teams receive a class-mate's design, declare a model that produces possible data from the design (without consulting the authors design declaration, if any) and applies the original authors answer strategy, reporting performance.
 
-Required reading (TBC):
-
-### downstream experimentation
-
--   @coppock2016voting
-
-### spillover experiments
-
--   @sinclair2012detecting
--   [@aronow2017estimating](https://arxiv.org/abs/1305.6156) on spillovers
-
-### patient preference trials
-
--   @de2019persuading
+**Required reading**:
 
 ### survey experiments
 
@@ -238,6 +224,28 @@ Required reading (TBC):
 ### mediation experiments
 
 -   [@imai2010general](https://imai.fas.harvard.edu/research/files/BaronKenny.pdf) on mediation
+
+
+### Lab experiments
+
+- @roth1986laboratory [@palfrey2009laboratory]
+
+
+### Experiments on networks
+
+- @baird2014designing [Optional:    @sinclair2012detecting;   [@aronow2017estimating](https://arxiv.org/abs/1305.6156)]
+
+### downstream experimentation
+
+-   @coppock2016voting
+
+
+
+**Not required:**
+
+### patient preference trials
+
+-   @de2019persuading
 
 \newpage
 

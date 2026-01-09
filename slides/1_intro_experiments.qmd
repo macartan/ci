@@ -190,6 +190,11 @@ Summary:
 * Treatment: Random exposure to protests; field experimental variation
 * Difference in means (variant)
 
+### Other ideas
+
+* Information experiments (take the stairs!)
+* Audit experiments (can you send me information?)
+
 ## Let's create some brainstorming groups {.smaller}
 
 * 4 groups
