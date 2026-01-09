@@ -72,3 +72,13 @@ d |> filter(diagnosand == "sd_estimate") |>
 
 ```
           
+          
+          
+# Intuitions
+
+```{r, eval = FALSE}
+df |> ggplot(aes(clue, Ya, color = Z)) + geom_point()
+
+df |> ggplot(aes(clue, Yc, color = Z)) + geom_point()
+
+```

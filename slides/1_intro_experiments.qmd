@@ -162,6 +162,12 @@ Summary:
 ### Starter Pack II : A protest study {.smaller}
 
 
+
+![Team](assets/protest.jpg)
+
+### Starter Pack II : A protest study {.smaller}
+
+
 > Despite decades of scholarship on protest effects, we know little about how bystanders---citizens who observe protests without participating---are affected by them. Understanding the impact of protest on bystanders is crucial as they constitute a growing audience whose latent support, normative beliefs, and concrete actions can make or break a movement's broader societal impact. 
 To credibly assess the effects of protests on observers, we design and implement a  field experiment in Berlin in which we randomly route pedestrians past (**treatment**) or away from (**control**) three large-scale Fridays for Future (FFF) climate strikes. Using data gathered on protest days as well as through a one-month follow-up survey, we find evidence for a substantial increase in immediate donations to climate causes but no detectable impact on climate attitudes, vote intentions, or norm perceptions.  Our findings challenge the prevailing assumption in both scholarship and public discourse that protest effects operate via impacts on public opinion and call for renewed theorizing that centers on observers' immediate behavioral activation. 
 

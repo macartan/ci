@@ -2183,6 +2183,7 @@ vertical-align: -.125em;
   <li><a href="#results-from-simple-experiment-complete-random-assignment-difference-in-means" id="toc-results-from-simple-experiment-complete-random-assignment-difference-in-means" class="nav-link active" data-scroll-target="#results-from-simple-experiment-complete-random-assignment-difference-in-means"><span class="header-section-number">1</span> Results from simple experiment, complete random assignment, difference in means</a></li>
   <li><a href="#results-from-simple-experiment-complete-random-assignment-controlling-for-clue" id="toc-results-from-simple-experiment-complete-random-assignment-controlling-for-clue" class="nav-link" data-scroll-target="#results-from-simple-experiment-complete-random-assignment-controlling-for-clue"><span class="header-section-number">2</span> Results from simple experiment, complete random assignment, controlling for clue</a></li>
   <li><a href="#comparison-of-controls" id="toc-comparison-of-controls" class="nav-link" data-scroll-target="#comparison-of-controls"><span class="header-section-number">3</span> Comparison of controls</a></li>
+  <li><a href="#intuitions" id="toc-intuitions" class="nav-link" data-scroll-target="#intuitions"><span class="header-section-number">4</span> Intuitions</a></li>
   </ul>
 </nav>
 </div>
@@ -2445,6 +2446,14 @@ vertical-align: -.125em;
 </figure>
 </div>
 </div>
+</div>
+</section>
+<section id="intuitions" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Intuitions</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(clue, Ya, <span class="at">color =</span> Z)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(clue, Yc, <span class="at">color =</span> Z)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
