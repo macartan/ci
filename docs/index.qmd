@@ -15,7 +15,7 @@ format:
     2.  [Experimenting](https://macartan.github.io/ci/2_experimenting.html)
     3.  [Causality](https://macartan.github.io/ci/2.1_causality.html) \| [Estimands and Identification](https://macartan.github.io/ci/2.2_estimands.html)
     4.  [Answer strategies](https://macartan.github.io/ci/3_fisher.html)
-    5.  [Design declaration](https://macartan.github.io/ci/1.2_declaredesign.html) \| [Data strategies](https://macartan.github.io/ci/5.1_design.html) \| [Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
+    5.  [Data strategies](https://macartan.github.io/ci/5.1_design.html) \| [Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
     6.  [Topics](https://macartan.github.io/ci/6_experiments_topics.html)
 
 -   The syllabus: <https://macartan.github.io/ci/syllabus_experiments_2026.pdf>
