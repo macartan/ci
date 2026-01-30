@@ -11,9 +11,11 @@ format:
 
 -   [All slides](https://macartan.github.io/ci/slides_experiments_2026.html)
 
+
+
     1.  [Intro](https://macartan.github.io/ci/1_intro_experiments.html)
     2.  [Experimenting](https://macartan.github.io/ci/2_experimenting.html)
-    3.  [Causality](https://macartan.github.io/ci/2.1_causality.html) \| [Estimands and Identification](https://macartan.github.io/ci/2.2_estimands.html)
+    3.  [Causality](https://macartan.github.io/ci/2.1__experiments_causality.html) 
     4.  [Answer strategies](https://macartan.github.io/ci/3_fisher.html)
     5.  [Data strategies](https://macartan.github.io/ci/5.1_design.html) \| [Design evaluation](https://macartan.github.io/ci/5.2_evaluation.html)
     6.  [Topics](https://macartan.github.io/ci/6_experiments_topics.html)

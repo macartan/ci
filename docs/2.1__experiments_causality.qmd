@@ -21,11 +21,11 @@ source("setup.R")
 
 
 
-```{r, child = "2.1.1_potential_outcomes.qmd"}
+```{r pos, child = "2.1.1_potential_outcomes.qmd"}
 
 ```
 
-```{r, child = "2.1.2_dags.qmd"}
+```{r estms, child = "2.2.1_estimand_types.qmd"}
 
 ```
 
@@ -41,3 +41,4 @@ source("setup.R")
 9.  Estimating average causal effects via differences in means is fraught when you condition on post treatment variables or on colliders.
 
 
+# References

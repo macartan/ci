@@ -1,0 +1,69 @@
+---
+title: "Postmortem"
+format: 
+  revealjs:
+    embed-resources: true
+---
+
+## Lets look at results so far
+
+## Post mortem
+
+What went well. What went poorly?
+
+-- thoughts?
+
+
+# Workflow
+
+* What went well or poorly with `git`?
+* File structure?
+* replicaability of work plan
+* How could coordination be improved?
+
+
+
+# Protocols
+
+* Were these read and used?
+* did people stick to these?
+
+
+## Lack of variation
+
+Can we make sense of it? Any rethink of theory
+How to sharpen?
+
+
+## Analysis plan
+
+Standard operating procedures
+What differently?
+Qualitative analysis?
+Use of priors?
+
+Analysis choices rethink?
+
+## Ethics
+
+What was easy; what hard
+Compromises
+Any thoughts after implementation?
+
+
+
+
+# Implemetration
+
+See the cost and value of every data point
+Trust it?
+Costs?
+How better to field?
+How improve logistics?
+What challenges?
+
+# Next steps
+
+Short write up?
+Expand?
+Abandon?
