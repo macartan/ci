@@ -367,6 +367,26 @@ knitr::include_graphics("assets/coffee.png")
 
 Experiments often give rise to endogenous subgroups. The potential outcomes framework can make it clear why this can cause problems.
 
+We are going to look at three examples in which you might be tempted to condition on an endogeneous subgroup:
+
+1. focusing on "reporting" subgroups
+2. handling attrition
+3. analyzing multistage behavior
+
+[We will split up and try to make sense of each of these in groups]
+
+### Endogeneous Subgroups
+
+General problem:
+
+* is usually of the form: $Y[X1, X2]$ --- outcomes depend on multiple features, but you condition on the observed or revealed value of one
+
+* usually requires heterogeneity
+
+* involves conditioning on some post treatment feature that varies across types
+
+
+
 ### Heterogeneous Effects with Endogeneous Categories
 
 -   Problems arise in analyses of subgroups when the categories themselves are affected by treatment

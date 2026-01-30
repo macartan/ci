@@ -124,6 +124,18 @@ What estimand captures "the average effect of $X$ on $Y$?
 include_graphics("assets/continouous_ols.jpg")
 ```
 
+### Estimands for a continuous treatment
+
+In class exercise:
+
+* Write down potential outcomes for two units that can take on up to 5 values of X.
+
+* Assume a non linear but (largely?) homogeneous relationship (up to a constant, for example)
+
+* Define your estimand in terms of the potential outcomes
+
+* Imagine the multiple plot results you might get from observing two units. 
+
 ### Differences in CATEs and interaction estimands {.smaller}
 
 A difference in CATEs is a well defined estimand that might involve interventions on one node only:
