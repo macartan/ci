@@ -39,7 +39,7 @@ See topics for *Controls and doubly robust estimation*
 
 ### ATE: DIM
 
-Unbiased estimates of the (sample) average treatment effect can be estimated (**whether or not there imbalance on covariates**) using:
+Unbiased estimates of the (sample) average treatment effect can be estimated (**whether or not there is imbalance on covariates**) using:
 
 $$
 \widehat{ATE} = \frac{1}{n_T}\sum_TY_i - \frac{1}{n_C}\sum_CY_i,
@@ -367,7 +367,7 @@ If the sampling distribution is roughly normal, as it may be with large samples,
 
 ### Var(ATE) {.smaller}
 
-* **Key idea**: You can estimate variance straight from the data,  given knowledge of the **assignment process** and assuming well defined potential outcomes?
+* **Key idea**: You can estimate variance straight from the data,  given knowledge of the **assignment process** and assuming well defined potential outcomes
 
 * Recall in general $Var(x) = \frac{1}n\sum_i(x_i - \overline{x})^2$. here the $x_i$s are the treatment effect estimates we might get under different random assignments, the $n$ is number of different assignments (assumed here all equally likely, but otherwise we can weight) and $\overline{x}$ is the truth.
 
@@ -537,7 +537,7 @@ sharp_var <- function(yt, yc, N=length(c(yt,yc)), upper=TRUE){
      2*sum(((p_i-p_i_minus)*yti*yci)[2:length(p_i)]) - 2*mean(yt)*mean(yc))/(N-1)}
 ```
 
-### Illustration
+### Illustration {.smaller}
 
 ```{r}
 n   <- 1000000
