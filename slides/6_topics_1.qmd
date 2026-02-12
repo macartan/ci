@@ -26,6 +26,10 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 # Topics 1 {#topics_1}
 
 
+```{r, child = "topics/controls_observational.qmd"}
+
+```
+
 ```{r, child = "topics/controls.qmd"}
 
 ```
