@@ -389,6 +389,24 @@ The first two terms correspond to the variance of $Y(1)$ and the variance of $Y(
 
 ### Var(ATE)  {.smaller}
 
+Key intuition:
+
+World 1: 
+
+* $Y_A(0) = 1$, $Y_A(1) = 2$
+* $Y_B(0) = 2$, $Y_B(1) = 3$
+* Estimates: 0 or 2
+
+World 2: 
+
+* $Y_A(0) = 1$, $Y_A(1) = 3$
+* $Y_B(0) = 2$, $Y_B(1) = 2$
+* Estimates: 1 or 1
+
+ATE the same; also marginal distributions of potential outcomes the same.
+
+### Var(ATE)  {.smaller}
+
 How can we go about estimating this?
 
 $$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ 2\frac{(A_1 - B_1)(A_0-B_0)}{2}$$
@@ -422,7 +440,7 @@ where the final term is positive
 
 Note:
 
--   With more than two units we  cannot  use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
+-   With at least two units per arm we  can  use the sample estimates $s^2(\{Y_i\}_{i \in C})$ and $s^2(\{Y_i\}_{i \in T})$ for the first part.
 -   But $C_{01}$ still cannot be estimated from data.
 -   The **Neyman estimator** ignores the second part (and so is conservative).
 -   Tip: for STATA users, use `, robust` (see @samii2012equivalencies)
@@ -437,62 +455,49 @@ $V(\widehat{ATE}) = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \le
 
 An illustration of *how* conservative the conservative estimator of variance really is (numbers in plot are correlations between $Y(1)$ and $Y(0)$.
 
+
+
+```{r}
+rho <- 0
+design <-
+  declare_model(N = 100, 
+              Y_Z_0 = rnorm(N),
+              Y_Z_0 = Y_Z_0/sd(Y_Z_0),
+              Y_Z_1 = correlate(rnorm, given = Y_Z_0, rho = rho),
+              Y_Z_1 = Y_Z_1/sd(Y_Z_1)) +
+  declare_measurement(
+    Z = complete_ra(N),
+    Y = Z*Y_Z_1 + (1-Z)*Y_Z_0) +
+  declare_estimator(Y~Z)
+
+if(FALSE)
+  design |> redesign(rho = seq(-1, 1, .4)) |>
+  diagnose_design(sims = c(1, 2000, 1),
+                  diagnosands = declare_diagnosands(
+                    var_estimate = var(estimate),
+                    mean_se_2 = mean(std.error^2))) |>
+  write_rds("saved/conservative.rds")
+
+```
+
+### Illustration of Neyman Conservative Estimator {.smaller}
+
 We confirm that:
 
 1.  the estimator is conservative
 2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment, and
 3.  with $\tau$ and $V(Y(0))$ fixed, high positive correlations are associated with highest variance.
 
-```{r, echo = FALSE}
-n    <- 100; Y0 <- scale(1:n); e <- 2*abs(Y0)     
-s    <- c(-1, -4/9, -1/9, .00001 , 1/9, 4/9, 1)   # Correlation between Y1,Y0
-Z    <- c(rep(TRUE, n/2), rep(FALSE, n/2))
-gY1  <- function(Y0, s) {.Y1 <- scale(sign(s)*( abs(s)^.5*Y0 + (1-abs(s))^.5*e))+1}
-tau  <- sapply(s, function(i) mean(gY1(Y0, i) - Y0))
-cors <- sapply(s, function(i) cor(gY1(Y0, i),  Y0))  # possible correlations
-var1 <- sapply(s, function(i) var(gY1(Y0, i)))
-phis <- sapply(s, function(i) (1/(n-1))*(2*cov(gY1(Y0, i), Y0) - var(gY1(Y0, i))-var(Y0)))  # Unknown term
-tauhat <- function(sims, s=1){
- Y1 <- gY1(Y0, s)
- m  <- matrix(NA, sims)
-  for(i in 1:sims){  Z=(1:100 %in% sample(n, n/2)); m[i]=mean(Y1[Z] - Y0[!Z])}
-  m}
-neyman <- function(sims, s=1, cons=1){  # Neyman Estimate
- Y1 <- gY1(Y0, s)   
- NE = matrix(NA, sims)
- for(i in 1:sims){ Z <- sample(Z)
- NE[i] <- (n/(n-1))*(var(Y1[Z])/(n/2) + var(Y0[!Z])/(n/2))+ 
- (1-cons)*(1/(n-1))*(2*cov(Y1, Y0) - var(Y1)-var(Y0))}
- mean(NE)}
-V   <- sapply(s, function(i) var(tauhat(5000, i)))      # True variance; Empirical estimate
-VN1 <- sapply(s, function(i) neyman(5000, i, cons=0)) # True variance; Formula check
-VN2 <- sapply(s, function(i) neyman(5000, i, cons=1)) # Neyman conservative estimate
-```
-
 
 ### Illustration of Neyman Conservative Estimator {.smaller}
 
-| $\tau$ | $\rho$ | $\sigma^2_{Y(1)}$ | $\Delta$ | $\sigma^2_{\tau}$ | $\widehat{\sigma}^2_{\tau}$ | $\widehat{\sigma}^2_{\tau(\text{Neyman})}$ |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
-| 1.00   | -1.00  | 1.00              | -0.04    | 0.00              | -0.00                       | 0.04                                       |
-| 1.00   | -0.67  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
-| 1.00   | -0.33  | 1.00              | -0.03    | 0.01              | 0.01                        | 0.04                                       |
-| 1.00   | 0.00   | 1.00              | -0.02    | 0.02              | 0.02                        | 0.04                                       |
-| 1.00   | 0.33   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
-| 1.00   | 0.67   | 1.00              | -0.01    | 0.03              | 0.03                        | 0.04                                       |
-| 1.00   | 1.00   | 1.00              | 0.00     | 0.04              | 0.04                        | 0.04                                       |
-
-Here $\rho$ is the unobserved correlation between $Y(1)$ and $Y(0)$; and $\Delta$ is the final term in the sample variance equation that we cannot estimate.
-
-### Illustration of Neyman Conservative Estimator {.smaller}
 
 ```{r, echo = FALSE}
-plot(V, VN1, xlim=c(0, max(VN1, VN2,V)), ylim=c(0, max(V, VN1, VN2)), 
-main="Neyman estimator for  Y(1) and Y(0) correlations, ATE=1, Var(Y(0)=1, Var(Y(1) free" ,
-ylab="Conservative Neyman Estimator of the Variance", xlab="True Variance of Estimates", col="grey")
-lines(V, VN2, col="red"); text(V, VN2, round(cors,2), offset=TRUE); abline(0,1)
-```
+read_rds("saved/conservative.rds") |> tidy() |> 
+  ggplot(aes(rho, estimate, color = diagnosand)) + 
+  geom_point() + theme_bw() + geom_line()
 
+```
 ### Tighter Bounds On Variance Estimate 
 
 The conservative variance comes from the fact that you do not know the covariance between $Y(1)$ and $Y(0)$.
