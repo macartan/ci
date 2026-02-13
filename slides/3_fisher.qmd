@@ -329,7 +329,7 @@ $$\mathbb{E}[\widehat{\overline{Y_1 - Y_0}}] = \overline{Y_1 - Y_0}$$
 
 -   Why would this procedure produce uncertainty?
 -   The uncertainty comes from being uncertain about the average outcome under control from observations of the control units, and from being uncertain about the average outcome under treatment from observation of the treated units
--   In other words, it comes from the variance in the treatment outcomes and variance in the control outcomes (and not, for example, from variance in the treatment effect)
+-   In other words, it comes from the variance in the treatment outcomes and variance in the control outcomes since you are sampling these
 
 ### Var(ATE) {.smaller}
 
@@ -341,22 +341,6 @@ $$\mathbb{E}[\widehat{\overline{Y_1 - Y_0}}] = \overline{Y_1 - Y_0}$$
 
 (See [Woolridge (2023)](https://www.sciencedirect.com/science/article/pii/S0304407623002336) where the standard error is understood as the  "*estimate* of the standard deviation of the sampling distribution")
 
-
-### Variance and standard errors {.smaller}
-
-Given:
-
-* $\hat\tau$ is an estimate for $\tau$ 
-* $\overline{x}$ is the average values of $x$ 
-
-The variance of the estimator of $n$ repeated 'runs' of a design is:
-$Var(\hat{\tau}) = \frac{1}n\sum_i(\hat\tau_i - \overline{\hat\tau_i})^2$
-
-And the standard error is:
-
-
-$se(\hat{\tau}) = \sqrt{\frac{1}n\sum_i(\hat\tau_i - \overline{\hat\tau_i})^2}$
-
 ### Variance and standard errors {.smaller}
 
 If we have a good measure for the *shape* of the sampling distribution we can start to make statements of the form:
@@ -365,29 +349,81 @@ If we have a good measure for the *shape* of the sampling distribution we can st
 
 If the sampling distribution is roughly normal, as it may be with large samples, then we can use procedures such as:  "there is a 5%  probability that an estimate would be more than 1.96 standard errors away from the mean of the sampling distribution"
 
-### Var(ATE) {.smaller}
+
+
+### Neyman standard errors {.smaller}
 
 * **Key idea**: You can estimate variance straight from the data,  given knowledge of the **assignment process** and assuming well defined potential outcomes
 
-* Recall in general $Var(x) = \frac{1}n\sum_i(x_i - \overline{x})^2$. here the $x_i$s are the treatment effect estimates we might get under different random assignments, the $n$ is number of different assignments (assumed here all equally likely, but otherwise we can weight) and $\overline{x}$ is the truth.
+* **Key result**: the variance in the treatment effect relates directly to variance in each treatment group.
 
-* For intuition imagine we have just two units $A$, $B$, with potential outcomes $A_1$, $A_0$, $B_1$, $B_0$.
+$$
+\begin{split}
+V(\widehat{ATE})  =
+\underbrace{
+\frac{n}{n-1}\left[\frac{V_1}{n_T} + \frac{V_0}{n_C}\right]
+}_{\begin{array}{c}
+\text{This part is estimated} \\
+\text{from observed variances} \\
+\text{in each treatment group}
+\end{array}}
+-
+\underbrace{
+\frac{1}{n-1}\left[V_1 + V_0 - 2C_{01}\right]
+}_{\begin{array}{c}
+\text{This part cannot} \\
+\text{be estimated but is} \\
+\text{known to be positive}
+\end{array}}
+\end{split}
+$$
 
-* When there are two units with outcomes $x_1, x_2$, the variance simplifies like this:
+Next slides build up intuition for this
+
+### Variance and standard errors {.smaller}
+
+Notation:
+
+* $\hat\tau$ is an estimate for $\tau$ 
+* $\overline{x}$ is the average values of $x$ 
+* $Var(x) = \frac{1}n\sum_i(x_i - \overline{x})^2$. 
+
+From the definition of variance, over $n$ repeated 'runs' of a design:
+
+$$Var(\hat{\tau}) = \frac{1}n\sum_i(\hat\tau_i - \overline{\hat\tau_i})^2$$
+
+$$se(\hat{\tau}) = \sqrt{\frac{1}n\sum_i(\hat\tau_i - \overline{\hat\tau_i})^2}$$
+
+
+Here the $\hat\tau$s are the treatment effect estimates we might get under different random assignments and $\overline{\hat\tau} = \tau$ is the truth (if the estimator is unbiased).
+
+### Variance and standard errors {.smaller}
+
+For intuition imagine:
+
+* we have just two units $A$, $B$
+* potential outcomes $A_1$, $A_0$, $B_1$, $B_0$.
+
+**Note**:  When there are two units with outcomes $x_1, x_2$, the variance simplifies like this:
 
 $$Var(x) = \frac{1}2\left(x_1 - \frac{x_1 + x_2}{2}\right)^2 + \frac{1}2\left(x_2 - \frac{x_1 + x_2}{2}\right)^2 = \left(\frac{x_1 - x_2}{2}\right)^2$$
 
 ### Var(ATE)  {.smaller}
 
-In the two unit case the two possible treatment estimates are: $\hat{\tau}_1=A_1 - B_0$ and $\hat{\tau}_2=B_1 - A_0$, depending on what gets put into treatment. So the variance is:
+In the two unit case the two possible treatment estimates, depending on what gets put into treatment are: 
+
+* $\hat{\tau}_1=A_1 - B_0$ 
+* $\hat{\tau}_2=B_1 - A_0$
+
+So the variance is:
 
 $$Var(\hat{\tau}) = \left(\frac{\hat{\tau}_1 - \hat{\tau}_2}{2}\right)^2 = \left(\frac{(A_1 - B_0) - (B_1 - A_0)}{2}\right)^2 =\left(\frac{(A_1 - B_1) + (A_0 - B_0)}{2}\right)^2 $$
 which we can re-write as:
 
-$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ 2\frac{(A_1 - B_1)(A_0-B_0)}{2}$$
-The first two terms correspond to the variance of $Y(1)$ and the variance of $Y(0)$. The last term is a bit pesky though, it corresponds to twice the *covariance* of $Y(1)$ and $Y(0)$. 
+$$Var(\hat{\tau}) =  \left(\frac{A_1 - B_1}{2}\right)^2 + \left(\frac{A_0 - B_0}{2}\right)^2+ 2\frac{(A_1 - B_1)(A_0-B_0)}{4}$$
+The first 2 terms are the variances of $Y(1)$ and  $Y(0)$. The last term is a bit pesky; it corresponds to twice the *covariance* of $Y(1)$ and $Y(0)$. 
 
-### Var(ATE)  {.smaller}
+### Why does covariance play such a role?  {.smaller}
 
 Key intuition:
 
@@ -395,15 +431,44 @@ World 1:
 
 * $Y_A(0) = 1$, $Y_A(1) = 2$
 * $Y_B(0) = 2$, $Y_B(1) = 3$
-* Estimates: 0 or 2
+* You will estimate either 0 or 2, so variance in estimates = 1
 
 World 2: 
 
 * $Y_A(0) = 1$, $Y_A(1) = 3$
 * $Y_B(0) = 2$, $Y_B(1) = 2$
-* Estimates: 1 or 1
+* You will estimate either 1 or 1, so variance in estimates = 0
 
-ATE the same; also marginal distributions of potential outcomes the same.
+Note: ATE the same; also marginal distributions of potential outcomes the same.
+
+### And sure enough {.smaller}
+
+World 1:
+
+$$
+\underbrace{Var(\hat{\tau})}_{1}
+ =
+\underbrace{\left(\frac{3 - 2}{2}\right)^2}_{\frac{1}{4}}
++
+\underbrace{\left(\frac{1 - 2}{2}\right)^2}_{\frac{1}{4}}
++
+\underbrace{2\frac{(2 - 3)(1 - 2)}{4}}_{\frac{1}{2}}
+$$
+*variance augmented by positive covariance*
+
+World 2:
+
+$$
+\underbrace{Var(\hat{\tau})}_{0}
+ =
+\underbrace{\left(\frac{3 - 2}{2}\right)^2}_{\frac{1}{4}}
++
+\underbrace{\left(\frac{1 - 2}{2}\right)^2}_{\frac{1}{4}}
++
+\underbrace{2\frac{(3 - 2)(1 - 2)}{4}}_{-\frac{1}{2}}
+$$
+
+*variance eliminated by negative covariance*
 
 ### Var(ATE)  {.smaller}
 
@@ -419,7 +484,7 @@ Things do look a bit better however with more units...
 
 From [Freedman Prop 1 / Example 1](http://www.stat.berkeley.edu/~census/neyregcm.pdf) (using combinatorics!) we have:
 
-$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V_1 + \frac{n_T}{n_C}V_0 + 2C_{01}\right]$
+$$V(\widehat{ATE}) = \frac{1}{n-1}\left[\frac{n_C}{n_T}V_1 + \frac{n_T}{n_C}V_0 + 2C_{01}\right]$$
 
 ... where $V_0, V_1$ denote variances and $C_{01}$ covariance
 
@@ -449,7 +514,7 @@ Note:
 
 For the case with blocking, the conservative estimator is:
 
-$V(\widehat{ATE}) = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \left({\frac{s^2_{S1}}{n_{S1}}} + {\frac{s^2_{S0}}{n_{S0}}} \right)}$
+$$V(\widehat{ATE}) = {\sum_{S\in \mathcal{S}}{\left(\frac{n_{S}}{n}\right)^2} \left({\frac{s^2_{S1}}{n_{S1}}} + {\frac{s^2_{S0}}{n_{S0}}} \right)}$$
 
 ### Illustration of Neyman Conservative Estimator {.smaller}
 
@@ -485,7 +550,7 @@ if(FALSE)
 We confirm that:
 
 1.  the estimator is conservative
-2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- eg if those cases that do particularly badly in control are the ones that do particularly well in treatment, and
+2.  the estimator is more conservative for negative correlations between $Y(0)$ and $Y(1)$ --- e.g. if those cases that do particularly badly in control are the ones that do particularly well in treatment, and
 3.  with $\tau$ and $V(Y(0))$ fixed, high positive correlations are associated with highest variance.
 
 
