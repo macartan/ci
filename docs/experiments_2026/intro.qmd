@@ -55,7 +55,7 @@ run <- FALSE
 ### Syllabus and resources
 
 * [https://macartan.github.io/ci](https://macartan.github.io/ci) for all resources
-* [https://macartan.github.io/ci/syllabus_experiments_2026.pdf](https://macartan.github.io/ci/syllabus_experiments_2026.pdf)
+* [https://macartan.github.io/ci/experiments_2026/syllabus.pdf](https://macartan.github.io/ci/experiments_2026/syllabus.pdf)
 * Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci)
 * [Student survey](https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ): **Please fill this out today**.
 
@@ -63,12 +63,12 @@ run <- FALSE
 
 | Day | Topic | Activity |
 |----:|-------|----------|
-| 1: 1/9 | **Getting started** [Outline](#secoutline) | In-class exercise, intro to field experiment |
-| 2: 1/16 | **Doing experiments**:  [Workflows; ethics](#workflows) | Presentation of plans, ethics application |
-| 3: 1/30 | **Causality**: [Foundations](#seccausality), [Inquiries](#secestimands) | Field reports |
-| 4: 2/6 | **Answer strategies**: [Estimation and Inference](#secfisher) | Discussion of findings 1; Proposals 2 |
-| 5: 2/20 | **Data strategies** and **Design evaluation** [`DeclareDesign`](#secdd), [Assignments](#secdesign), [Design evaluation](#secdiagnosis) | Proposal refinements 2 |
-| 6: 2/27 | **Topics**: [Survey experiments](#survey-experiments), [Spillovers](#spillovers), [Downstream experimentation](#late) | Design declarations and ethics applications |
+| 1: 1/9 | **Getting started**  | In-class exercise, intro to field experiment |
+| 2: 1/16 | **Doing experiments**| Presentation of plans, ethics application |
+| 3: 1/30 | **Causality**| Field reports |
+| 4: 2/6 | **Answer strategies** | Discussion of findings 1; Proposals 2 |
+| 5: 2/20 | **Data strategies** | Proposal refinements 2 |
+| 6: 2/27 | **Topics** | Design declarations and ethics applications |
 
 
 ### Hands on!
