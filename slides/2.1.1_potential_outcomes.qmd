@@ -15,7 +15,7 @@ bibliography: bib.bib
 
 ```{r, include = FALSE}
 
-source("setup.R")
+source(here::here("slides", "setup.R"))
 
 ```
 

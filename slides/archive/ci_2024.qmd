@@ -39,7 +39,7 @@ bibliography: bib.bib
   
 ```{r, include = FALSE}
 
-source("setup.R")
+source(here::here("slides", "setup.R"))
 
 # remotes::install_github("jhelvy/renderthis")
 # renderthis::to_pdf("ci_2024.html")

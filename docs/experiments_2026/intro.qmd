@@ -1,0 +1,247 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    toc: true
+    toc-depth: 2
+    toc-title: outline
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    css: styles.css
+    plugins:
+      - menu
+title: "Design and Analysis of Experiments"
+subtitle: "Introduction to the class"
+author: "Macartan Humphreys"
+bibliography: ../../slides/bib.bib
+include-before-body:
+  text: |
+    <script src="plugins/menu/menu.js"></script>
+    <script>
+      Reveal.initialize({
+        plugins: [ RevealMenu ]
+        menu: {
+    // Specifies which side of the presentation the menu will
+    // be shown. Use 'left' or 'right'.
+    side: 'right'}
+      });
+    </script>
+---
+
+
+```{r, message = FALSE, echo = FALSE, include = FALSE}
+setwd("../../slides")
+source(here::here("slides", "setup.R"))
+run <- FALSE
+```
+
+
+## Getting started {#secoutline}
+
+* General aims and structure
+* Expectations
+
+## Aims and items
+
+* Primary focus is training on how to *do* experiments; not just knowledge of good experiments
+* Deep understanding of key ideas in causal inference 
+* Transportable tools for understanding how to evaluate and improve design
+* Practice!
+
+### Syllabus and resources
+
+* [https://macartan.github.io/ci](https://macartan.github.io/ci) for all resources
+* [https://macartan.github.io/ci/syllabus_experiments_2026.pdf](https://macartan.github.io/ci/syllabus_experiments_2026.pdf)
+* Git repo [https://github.com/macartan/ci](https://github.com/macartan/ci)
+* [Student survey](https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ): **Please fill this out today**.
+
+### The topics {.smaller}
+
+| Day | Topic | Activity |
+|----:|-------|----------|
+| 1: 1/9 | **Getting started** [Outline](#secoutline) | In-class exercise, intro to field experiment |
+| 2: 1/16 | **Doing experiments**:  [Workflows; ethics](#workflows) | Presentation of plans, ethics application |
+| 3: 1/30 | **Causality**: [Foundations](#seccausality), [Inquiries](#secestimands) | Field reports |
+| 4: 2/6 | **Answer strategies**: [Estimation and Inference](#secfisher) | Discussion of findings 1; Proposals 2 |
+| 5: 2/20 | **Data strategies** and **Design evaluation** [`DeclareDesign`](#secdd), [Assignments](#secdesign), [Design evaluation](#secdiagnosis) | Proposal refinements 2 |
+| 6: 2/27 | **Topics**: [Survey experiments](#survey-experiments), [Spillovers](#spillovers), [Downstream experimentation](#late) | Design declarations and ethics applications |
+
+
+### Hands on!
+
+We hope to run three experiments:
+
+1. Today, simulated experiments by hand
+2. Over the next four weeks (completed by 6 Feb): A field experimental variation of @choi2023hijab
+3. Last weeks development of designs to implement in collective survey experiment (admitted based on external review and subject to ethics approval and implemented likely after class ends). Expect to have space for four projects (individual or collective).
+
+## Responsibilities
+
+### Required
+
+* Do the readings and take part in discussion  (30%)
+* Take part in (field) experiment I  (30%)
+* Design an experiment as a candidate for (survey) experiment II  (40%)
+
+
+### Optional {.smaller}
+
+* Prepare a research design or short paper, perhaps building on existing work. Typically this contains: 
+  - a problem statement
+  - a description of an experimental strategy to address the problem
+  - empirical (ideally) or simulation based results (ok) 
+  - a discussion of implications 
+  - A passing paper will illustrate identify a causal effect of substantive interest credibly; a good paper will innovate on method or  topic. 
+
+## Support
+
+* Office hours: Friday afternoons after class: 2 - 4
+* Lennard: Office hours
+* Email
+
+
+## Let's go 1
+
+### Task
+
+We are going to do some experiments by hand. You choose assignment schemes and analysis plans.
+
+* You have been given an envelope with 20 cards. Each card has two numbers. One in black lettering (on white) and one in white lettering (on black). On the other side of the card there may or may not be writing.
+
+* Your job is to figure out whether--on average--the black numbers are larger or smaller than the white numbers or the same. 
+
+### But
+
+* **The catch**: when you turn over a  card you are only allowed to read the black number *or* the white number (honor code!!).  What's more: you have to decide *before reading the card* which number you will look at (though of course you can see the symbol on the card, if there is one, before reading the numbers) 
+
+* To do: Access the complete [procedure sheet](in_class_experiment.html), get a pack of cards, go!
+
+## Let's go 2
+
+### Task {.smaller}
+
+We are collectively going to try to replicate an experimental design that was implemented in Germany.
+
+We are free to modify this design as will. Our goal is to:
+
+* Modify the design (or not)
+* Generate a pre-analysis plan, including power estimates, if we can
+* File an ethics application: **HARD DEADLINE January 19**
+* Actually implement it!
+* Run analysis
+* Short write up
+
+We are going to make mistakes and learn to work as a team. 
+
+### Starter pack I
+
+![AJPS](assets/hijab_header.jpg)
+
+
+
+### Starter pack I {.smaller}
+
+> Why do native Europeans discriminate against Muslim immigrants? Can shared ideas between natives and immigrants reduce discrimination? We hypothesize that natives' bias against Muslim immigrants is shaped by the belief that Muslims hold conservative attitudes about women's rights and this ideational basis for discrimination is more pronounced among native women. We test this hypothesis in a large-scale field experiment conducted in 25 cities across Germany, during which 3,797 unknowing bystanders were exposed to brief social encounters with confederates who revealed their ideas regarding gender roles. We find significant discrimination against Muslim women, but this discrimination is eliminated when Muslim women signal that they hold progressive gender attitudes. Through an implicit association test and a follow-up survey among German adults, we further confirm the centrality of ideational stereotypes in structuring opposition to Muslims. Our findings have important implications for reducing conflict between native–immigrant communities in an era of increased cross-border migration.
+
+### Starter pack I: Results
+
+![Results](assets/hijab_header_results.jpg)
+
+### Starter Pack I : A norms study
+
+Summary:
+
+* Inquiry: Does prejudice depend on outgroup attitudes?
+* Population: People out and about
+* Treatment: Random exposure to outgroup attitudes; lab-in-the-field experimental variation
+* Difference in means (variant)
+
+### Starter Pack II : A protest study {.smaller}
+
+
+
+![Team](assets/protest.jpg)
+
+### Starter Pack II : A protest study {.smaller}
+
+
+> Despite decades of scholarship on protest effects, we know little about how bystanders---citizens who observe protests without participating---are affected by them. Understanding the impact of protest on bystanders is crucial as they constitute a growing audience whose latent support, normative beliefs, and concrete actions can make or break a movement's broader societal impact. 
+To credibly assess the effects of protests on observers, we design and implement a  field experiment in Berlin in which we randomly route pedestrians past (**treatment**) or away from (**control**) three large-scale Fridays for Future (FFF) climate strikes. Using data gathered on protest days as well as through a one-month follow-up survey, we find evidence for a substantial increase in immediate donations to climate causes but no detectable impact on climate attitudes, vote intentions, or norm perceptions.  Our findings challenge the prevailing assumption in both scholarship and public discourse that protest effects operate via impacts on public opinion and call for renewed theorizing that centers on observers' immediate behavioral activation. 
+
+### Starter Pack II : A protest study {.smaller}
+
+
+![Results](assets/protest_design.jpg)
+
+### Starter Pack II : A protest study {.smaller}
+
+![Results](assets/protest_results.jpg)
+
+
+### Starter Pack II : A protest study
+
+Summary:
+
+* Inquiry: Does protest matter? *Does observing a climate protest affect beliefs or behavior?*
+* Population: People out and about
+* Treatment: Random exposure to protests; field experimental variation
+* Difference in means (variant)
+
+### Other ideas
+
+* Information experiments (take the stairs!)
+* Audit experiments (can you send me information?)
+
+## Let's create some brainstorming groups {.smaller}
+
+* 4 groups
+* Each thinks through a possible intervention 
+  * Motivation: What question can you answer?
+  * Treatment: What would be varied?
+  * Measurement: What would outcome measures be?
+  * Feasibility: Challenges to doing this rapidly and ethically in the coming weeks
+  * Sketch of workteams for implementation
+* Initial feedback. 
+* Plan to present next week (4 slides). Groups can collude.
+
+
+## Appendix: Coding Tips
+
+### Good coding rules 
+
+* [https://bookdown.org/content/d1e53ac9-28ce-472f-bc2c-f499f18264a3/code.html](https://bookdown.org/content/d1e53ac9-28ce-472f-bc2c-f499f18264a3/code.html)
+* [https://www.r-bloggers.com/2018/09/r-code-best-practices/](https://www.r-bloggers.com/2018/09/r-code-best-practices/)
+
+### Good coding rules   {.smaller}
+
+* Metadata first
+* Call packages at the beginning: use `pacman` 
+* Put options at the top
+* Call all data files once, at the top. Best to call directly from a public archive, when possible.  
+* Use functions and define them at the top: comment them; useful sometimes to illustrate what they do
+* Replicate first, re-analyze second. Use sections.
+* (For replications) Have subsections named after specific tables, figures or analyses
+
+
+### Aim
+
+* First best: If someone has access to your `.qmd` file they can hit render or compile and the whole thing reproduces first time.  So:  Nothing local, everything relative: so please do not include hardcoded paths to your computer
+
+*  But: often you need ancillary files for data and code. That's OK but aims should still be that with a self contained folder someone can open a `main.Rmd` file, hit compile and get everything. I usually have an `input` and an `output` subfolder.
+
+
+### Collaborative coding / writing  {.smaller}
+
+* Do not get in the business of passing attachments around
+* Documents in some cloud: `git`, osf, Dropbox, Drive, Nextcloud
+* General rule: only post non sensitive, non proprietary material
+* Share self contained folders; folders contain a small set of live documents plus an archive. Old versions of documents are in archive. Only one version of the most recent document is in a main folder.
+* Data is self contained folder (`in`) and is never edited directly
+* Update to github frequently
+
+
+### Fin

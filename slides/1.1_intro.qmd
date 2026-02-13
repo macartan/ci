@@ -34,7 +34,7 @@ include-before-body:
 
 
 ```{r, message = FALSE, echo = FALSE, include = FALSE}
-source("setup.R")
+source(here::here("slides", "setup.R"))
 run <- FALSE
 ```
 

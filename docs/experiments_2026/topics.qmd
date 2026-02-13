@@ -1,6 +1,6 @@
 ---
-title: "Causal Inference"
-subtitle: "Topics I"
+title: "Experiments"
+subtitle: "Topics"
 format: 
    revealjs:
     embed-resources: true
@@ -12,37 +12,31 @@ format:
     number-sections: true
     link-color: orange
 author: "Macartan Humphreys"
-bibliography: bib.bib
+bibliography: "../../slides/bib.bib"
 ---
 
 ```{r, include = FALSE}
 source(here::here("slides", "setup.R"))
 child <- TRUE
-options(future.globals.maxSize = 3 * 1024^3)  # 2GB
+knitr::opts_knit$set(root.dir = here::here("slides"))
 
 ```
 
 
-# Topics 1 {#topics_1}
 
-
-```{r, child = "topics/controls_observational.qmd"}
+```{r, child = "topics/late.qmd"}
 
 ```
 
-```{r, child = "topics/controls.qmd"}
+```{r, child = "topics/survey_experiments.qmd"}
 
 ```
 
-
-```{r, child = "topics/matching.qmd"}
-
-```
-
-
-```{r, child = "topics/diffdiff.qmd"}
+```{r, child = "topics/mediation.qmd"}
 
 ```
 
+```{r, child = "topics/spillovers.qmd"}
 
+```
 

@@ -16,8 +16,11 @@ bibliography: bib.bib
 ---
 
 
-```{r, message = FALSE, echo = FALSE, include = FALSE}
-source("setup.R")
+```{r evalsetup, message = FALSE, echo = FALSE, include = FALSE}
+if (requireNamespace("here", quietly = TRUE)) {
+  knitr::opts_knit$set(root.dir = here::here("slides"))
+}
+source(here::here("slides", "setup.R"))
 run <- FALSE
 ```
 

@@ -15,10 +15,11 @@ author: "Macartan Humphreys"
 bibliography: bib.bib
 ---
 
-```{r, include = FALSE}
-
-source("setup.R")
-
+```{r designsetup, include = FALSE}
+if (requireNamespace("here", quietly = TRUE)) {
+  knitr::opts_knit$set(root.dir = here::here("slides"))
+}
+source(here::here("slides", "setup.R"))
 ```
 
 # Design
@@ -96,7 +97,7 @@ Here the $P$ matrix gives 1000 possible ways of allocating 5 of 10 units to trea
 -   Unless you need them to keep subjects at ease, leave your spinners and your dice and your cards behind.
 -   Especially when you have multiple or complex randomizations you are generally much better doing it with a computer in advance
 
-```{r, echo = FALSE, fig.align='center', fig.cap="A survey dictionary with results from a complex randomization presented in a simple way for enumerators"}
+```{r dictionary, echo = FALSE, fig.align='center', fig.cap="A survey dictionary with results from a complex randomization presented in a simple way for enumerators"}
 knitr::include_graphics("figs/dictionary.png")
 ```
 

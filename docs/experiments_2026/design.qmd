@@ -1,0 +1,46 @@
+---
+title: "Experiments"
+subtitle: "Design"
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+    link-color: orange
+author: "Macartan Humphreys"
+bibliography: ../../slides/bib.bib
+---
+
+```{r, include = FALSE}
+root <- here::here()
+
+source(here::here("slides", "setup.R"))
+
+child <- TRUE
+
+design_child   <- here::here("slides", "5.1_design.qmd")
+
+knitr::opts_knit$set(root.dir = here::here("slides"))
+
+```
+
+# Design
+
+
+```{r design, child = design_child}
+
+```
+
+# Evaluation
+
+```{r}
+eval_child     <- here::here("slides", "5.2_evaluation.qmd")
+```
+
+```{r, child = eval_child}
+
+```

@@ -1,0 +1,38 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Design based inference and co."
+author: "Macartan Humphreys"
+bibliography: "../../slides/bib.bib"
+---
+
+# Frequentist inference
+
+```{r, include = FALSE}
+
+source(here::here("slides", "setup.R"))
+
+knitr::opts_knit$set(root.dir = here::here("slides"))
+
+```
+
+
+```{r pos, child = here::here("slides", "3_fisher.qmd")}
+
+```
+
+# To control or not to control
+
+
+```{r estms, child = "topics/controls.qmd"}
+
+```
+
+
