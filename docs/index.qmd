@@ -20,7 +20,7 @@ format:
 
 ### Syllabus 
 
-<https://macartan.github.io/ci/ci_2025/experiments_2026.pdf>
+<https://macartan.github.io/ci/experiments_2026/syllabus.pdf>
 
 ### Survey
 

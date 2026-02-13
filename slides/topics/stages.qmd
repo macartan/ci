@@ -23,7 +23,9 @@ source("setup.R")
 ```
 
 
-## Experimentation: Stages {.smaller}
+## Planning an experiment
+
+### Experimentation: Stages {.smaller}
 
 1. Find a good **question**: Minimally, find an $X$ and a $Y$. 
     * $X$-based motivations
@@ -39,7 +41,7 @@ source("setup.R")
 8. Ensure **compliance** with other provisions (e.g. GDPR)!
 10.  **Register** a pre-analysis plan (e.g OSF, AEA)
 
-## Experimentation: Stages  {.smaller}
+### Experimentation: Stages  {.smaller}
 
 11. Conduct **Baseline** (if needed): **With live data quality control!**
 8. Implement **randomization**
@@ -51,3 +53,17 @@ source("setup.R")
 2. Prep **replication** materials. Make **data** and code available to others 
 13. **Writeup**
 14. **Submit** [Get rejected - Submit again] 
+
+
+### In teams {.smaller}
+
+Teams:
+
+* Analysis team: Design / PAP team / Analysis Code
+* Implementation team: Ethics, Approvals, Protocols, Schedules
+* Data team: Instruments, tools, quality checks
+* Writing team: Motivation, literature, presentations, reports
+
+Politburo: 
+
+* At least one member of each team. Collective sign off on major docs: ethics application, PAP, protocols, instruments, presentations

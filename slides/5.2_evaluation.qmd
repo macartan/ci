@@ -122,7 +122,7 @@ Here's my **test**:
 What is the power of this test?
 
 ```{r dice, echo = FALSE}
-knitr::include_graphics("assets/dice.jpeg")
+include_graphics(here::here("slides", "assets/dice.jpeg"))
 ```
 
 ### By hand
@@ -137,7 +137,7 @@ Here's my **test**:
 What is the power of *this* test?
 
 ```{r dice2, echo = FALSE}
-knitr::include_graphics("assets/dice.jpeg")
+include_graphics(here::here("slides", "assets/dice.jpeg"))
 ```
 
 

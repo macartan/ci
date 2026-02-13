@@ -22,6 +22,21 @@ knitr::opts_knit$set(root.dir = here::here("slides"))
 
 ```
 
+## Plan
+
+Let's discuss:
+
+* Experimentation and the four parts to any design
+* The stages of an experimental design
+* Examples of the kinds of questions people address
+* The ethics of intervening
+
+Then:  Deep dive into discussion of actual experiments
+
+Then: Plans for our own
+
+
+## Introduction to experimentation
 
 ### What is an experiment?
 
@@ -37,7 +52,7 @@ Two types of control:
 ### Two types of control: 
 
 
-![](assets/labfield.jpg)
+![](../../slides/assets/labfield.jpg)
 
 ### More broadly:
 
@@ -47,19 +62,6 @@ Experimental studies use research designs in which the researchers uses:
 * often with **causal** *inquiries*
 * often with **design based** *answer strategies*
 
-
-## Plan
-
-Let's discuss:
-
-* The four parts to any design
-* The stages of an experimental design
-* Examples of the kinds of questions people address
-* The ethics of intervening
-
-Then:  Deep dive into discussion of actual experiments
-
-Then: Plans for our own
 
 
 ## The MIDA Framework {#MIDAframework}
@@ -83,8 +85,6 @@ Then: Plans for our own
 
 ```
 
-
-## Appendix
 
 ```{r, child = "topics/open_science.qmd"}
 

@@ -2,7 +2,7 @@
 title: 'Design and analysis of experiments'
 subtitle: HU | Spring 2026 (Winter term 25-26)
 author: ""
-bibliography: ../slides/bib.bib
+bibliography: ../../slides/bib.bib
 format: 
   pdf:
     number-sections: true
@@ -35,9 +35,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 -   All resources: <https://macartan.github.io/ci>
 
--   This syllabus: <https://macartan.github.io/ci/syllabus_experiments_2026.pdf>
+-   This syllabus: <https://macartan.github.io/ci/experiments_2006/syllabus.pdf>
 
--   Slides: <https://macartan.github.io/ci/slides_experiments_2026.html>
+-   Slides: <https://macartan.github.io/ci>
 
 -   [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
 

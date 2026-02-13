@@ -173,14 +173,15 @@ df |> mutate(result = "pos") |> ggplot(aes(x, y, color = result)) + geom_point(s
 ### The scope for fishing
 
 ```{r, echo = FALSE}
-knitr::include_graphics("assets/fishing.png")
+knitr::include_graphics(here::here("slides", "assets/fishing.png"))
 ```
 
 ### Evidence from political science
 
 ```{r, echo = FALSE}
-knitr::include_graphics("assets/hack.png")
+knitr::include_graphics(here::here("slides", "assets/hack.png"))
 ```
+
 Source: Gerber and Malhotra
 
 ### More evidence from TESS

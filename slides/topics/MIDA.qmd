@@ -27,7 +27,7 @@ bibliography: ../bib.bib
 ### Four elements of any research design
 
 ```{r midaplot, echo = FALSE}
-knitr::include_graphics("assets/mida.png")
+knitr::include_graphics(here::here("slides", "assets/mida.png"))
 ```
 
 ### Declaration

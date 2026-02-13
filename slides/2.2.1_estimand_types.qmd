@@ -121,7 +121,8 @@ Say our treatment $X$ varies continuous over $[0,1]$, and is randomly assigned.
 What estimand captures "the average effect of $X$ on $Y$?
 
 ```{r, echo = FALSE}
-include_graphics("assets/continouous_ols.jpg")
+
+include_graphics(here::here("slides", "assets/continouous_ols.jpg"))
 ```
 
 ### Estimands for a continuous treatment
@@ -349,7 +350,7 @@ label_df <-
 Consider a binary treatment D, randomized. and an interest in the way X -- possibly randomized -- moderates the effect of D.
 
 ```{r, echo = FALSE}
-include_graphics("assets/interaction_estimandsd.jpg")
+include_graphics(here::here("slides", "assets/interaction_estimandsd.jpg"))
 ```
 ## Interaction estimands
 

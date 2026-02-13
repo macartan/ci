@@ -163,7 +163,7 @@ list(lm(Y ~ X, data = df),
 * See [Imai](http://imai.princeton.edu/projects/mechanisms.html) on better ways to think about this problem and designs to address it.
 
 ```{r, echo = FALSE, include = TRUE}
-knitr::include_graphics("figs/collider.png")
+knitr::include_graphics(here::here("slides", "figs/collider.png"))
 ```
 
 ### The problem of unidentified mediators: Quantities  {.smaller}

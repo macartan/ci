@@ -51,7 +51,7 @@ source(here::here("slides", "setup.R"))
 ### Experiments
 
 ```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("figs/labfield.jpg")
+knitr::include_graphics(here::here("slides", "figs/labfield.jpg"))
 ```
 
 ### Basic randomization {.smaller}
@@ -98,7 +98,7 @@ Here the $P$ matrix gives 1000 possible ways of allocating 5 of 10 units to trea
 -   Especially when you have multiple or complex randomizations you are generally much better doing it with a computer in advance
 
 ```{r dictionary, echo = FALSE, fig.align='center', fig.cap="A survey dictionary with results from a complex randomization presented in a simple way for enumerators"}
-knitr::include_graphics("figs/dictionary.png")
+knitr::include_graphics(here::here("slides", "figs/dictionary.png"))
 ```
 
 ### Did the randomization ''work''?
@@ -192,7 +192,7 @@ kable(
 ### Of blocks and clusters
 
 ```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("figs/bf.png")
+include_graphics(here::here("slides","figs/bf.png"))
 ```
 
 ### Blocking {.smaller}

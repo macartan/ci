@@ -357,7 +357,7 @@ Take a short break!
 
 ```{r, echo  = FALSE}
 
-knitr::include_graphics("assets/coffee.png")
+include_graphics(here::here("slides", "assets/coffee.png"))
 
 ```
 
