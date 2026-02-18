@@ -24,7 +24,6 @@ knitr::opts_knit$set(root.dir = here::here("slides"))
 ```
 
 
-
 ```{r pos, child = "2.1.1_potential_outcomes.qmd"}
 
 ```
@@ -38,7 +37,7 @@ The inquiries you have...
 ```
 
 
-### Recap: Things you need to know about causal inference {.smaller}
+# Recap: Things you need to know about causal inference {.smaller}
 
 1.  A causal claim is a statement about what didn't happen.
 4.  If you know that $A$ causes $B$ and that $B$ causes $C$, this does not mean that you know that $A$ causes $C$.

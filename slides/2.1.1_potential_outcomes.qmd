@@ -351,17 +351,11 @@ Consider the following potential outcomes table:
 
 What is the actual treatment effect?
 
-## Pause
 
-Take a short break!
-
-```{r, echo  = FALSE}
-
-include_graphics(here::here("slides", "assets/coffee.png"))
-
-```
 
 ## Endogeneous subgroups {#subs}
+
+We will apply these ideas of potential outcomes to examine the problem of endogeneous subgroups, or "post treatment conditioning"
 
 ### Endogeneous Subgroups
 
@@ -385,6 +379,19 @@ General problem:
 
 * involves conditioning on some post treatment feature that varies across types
 
+### Graphically {.smaller}
+
+```{r, echo = FALSE}
+make_model("X -> C <- U -> Y" ) |> plot(x_coord = c(3, 1, 3, 2), y_coord = c(2, 3, 1, 2))
+```
+
+* The conditioning set $C$ is downstream from $X$. It is also informative about $Y$, here via $U$. It *may or may not* also be a cause of $Y$. Here:
+  * $X$ is "unconditionally" independent of $Y$ (and in particular, it does not cause $Y$)
+  * But it is *not* independent of $Y$ *conditional on* $C$
+
+If you condition on $C$ -- e.g. by creating subgroups or "controlling" for $C$ in other ways--- you are "conditioning on a collider."
+
+Don't do this.
 
 
 ### Heterogeneous Effects with Endogeneous Categories
