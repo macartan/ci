@@ -2,7 +2,7 @@
 title: 'Design and analysis of experiments'
 subtitle: HU | Spring 2026 (Winter term 25-26)
 author: ""
-bibliography: ../../slides/bib.bib
+bibliography: ../slides/bib.bib
 format: 
   pdf:
     number-sections: true
@@ -24,7 +24,7 @@ fontsize: 10pt
 | [macartan.github.io](https://macartan.github.io/) | E306 |
 
 
-**Overview**: The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. In-class discussions focus on major works, features of designs, and experimental strategies. Topics include randomization schemes, analysis strategies, design evaluation, and workflows. 
+**Overview**: The course addresses the design and analysis of experiments. It is a hands-on course in which theoretical results are introduced through lecture, demonstrated in practice, and worked on in groups. In-class discussions focus on major works, features of designs, and experimental strtegies. Topics include randomization schemes, analysis strategies, design evaluation, and workflows. 
 
 
 ```{r setup, include=FALSE}
@@ -35,9 +35,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 -   All resources: <https://macartan.github.io/ci>
 
--   This syllabus: <https://macartan.github.io/ci/experiments_2006/syllabus.pdf>
+-   This syllabus: <https://macartan.github.io/ci/syllabus_experiments_2026.pdf>
 
--   Slides: <https://macartan.github.io/ci>
+-   Slides: <https://macartan.github.io/ci/slides_experiments_2026.html>
 
 -   [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
 

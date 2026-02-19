@@ -1,0 +1,35 @@
+---
+title: "In class exercises: RI and assignment schemes"
+format: pdf
+---
+
+This exercise connects intuitions for randomization inference with the implications of different assignmet schemes?  
+
+```{r setup, include = FALSE}
+library(DeclareDesign)
+library(knitr)
+```
+
+
+You have the following data:
+
+```{r, echo = FALSE}
+fabricate(N = 8,
+  B = rep(0:1, each = 4),
+  C = rep(1:4, each = 2),
+  Z = c(0,0,1,1,0,0,1,1),
+  Y = Z) |> kable()
+```
+
+Calculate the $p$ value for the sharp null hypothesis that effects of $Z$ on $Y$ are zero for all units under each of these conditions:
+
+1. $Z$ was assigned using **complete randomization**. 
+2. $Z$ was assigned using **block randomization**, using $B$ as a block.
+3. $Z$ was assigned using **cluster randomization**, where $C$ denotes clusters.
+4. $Z$ was assigned using **block cluster randomization**, using $B$ for blocks and $C$ for clusters.
+
+Implement one sided tests in all cases.
+
+ 
+*Discuss*: we usually expect that blocking will improve power but clustering will reduce it. Is the logic in tension with what you just found. Explain why or why not.
+
