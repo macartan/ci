@@ -22,9 +22,6 @@ if (requireNamespace("here", quietly = TRUE)) {
 source(here::here("slides", "setup.R"))
 ```
 
-# Design
-
-*Focus on randomization schemes*
 
 ## Aims and practice
 

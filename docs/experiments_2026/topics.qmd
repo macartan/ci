@@ -40,3 +40,4 @@ knitr::opts_knit$set(root.dir = here::here("slides"))
 
 ```
 
+## References

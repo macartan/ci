@@ -1,0 +1,67 @@
+---
+title: "In class exercises: interaction exercise"
+format: pdf
+fontsize: 9pt
+geometry:
+  - a4paper
+  - margin=3cm
+header-includes:
+  - |
+    \makeatletter
+    \patchcmd{\maketitle}{\vskip 2em}{\vskip 0em}{}{}
+    \patchcmd{\maketitle}{\vskip 1.5em}{\vskip 0em}{}{}
+    \makeatother
+    \usepackage{float}
+---
+
+This exercise is designed to make sure you understand how to interpret coefficients from interaction models.  
+
+```{r setup, include = FALSE}
+library(DeclareDesign)
+library(knitr)
+```
+
+
+You have the following (no noise) data generating process
+
+```{r, echo = TRUE, results = 'asis'}
+data <- fabricate(
+  N = 20,
+  X1 = complete_ra(N),
+  X2 = block_ra(X1, prob = .6),
+  Y = 1 - X1 + 2*X2 - 3*X1*X2,
+  X1_demeaned = X1 - mean(X1),
+  X2_demeaned = X2 - mean(X2))
+```
+
+What is:
+
+1. the effect of X1 when X2 = 0
+2. the effect of X2 when X1 = 0
+3. the average of X1
+4. the average of X2
+5. the effect of X1 on the effect of X2
+6. the effect of X2 on the effect of X1
+7. The average value of Y across all conditions
+
+You run the following regressions:
+
+
+```{r, echo=FALSE, results='asis'}
+texreg::texreg(
+  list(
+    lm_robust(Y ~ X1 * X2, data = data),
+    lm_robust(Y ~ X1_demeaned * X2_demeaned, data = data)
+  ),
+  include.ci = FALSE,
+  float.pos = "h",
+  digits = 3
+)
+```
+
+
+Which regression model lets you see which of these quantities more easily?
+
+Declare a simple design to calculate the power for quantities 1, 3, and 5. Try to do it from scratch without looking up an existing design.
+
+

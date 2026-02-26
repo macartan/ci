@@ -25,9 +25,6 @@ run <- FALSE
 ```
 
 
-# Design diagnosis {#secdiagnosis}
-
-*A focus on power*
 
 ## Outline
 
@@ -245,14 +242,28 @@ power(3)
 
 This is essentially what is done by `pwrss::power.z.test` -- and it produces nice graphs!
 
-See:
+Imagine the effect was actually 1.96 what would power be?:
 
-```{r}
-pwrss::power.z.test(ncp = 1.96, alpha = 0.05, alternative = "not equal", plot = TRUE)
+```{r, }
+pwrss::power.z.test(mean = 1.96, alpha = 0.05, 
+                    alternative = "two.sided", plot = TRUE, verbose = FALSE)
 ```
+
 ### Power analytics: graphed
 
 Substantively: if in expectation an estimate will be *just* significant, then your power is 50%
+
+
+### Power analytics: graphed
+
+This is essentially what is done by `pwrss::power.z.test` -- and it produces nice graphs!
+
+Imagine the effect was actually 2.5 what would power be? Is this a lot?:
+
+```{r, }
+pwrss::power.z.test(mean = 2.5, alpha = 0.05, 
+                    alternative = "two.sided", plot = TRUE, verbose = FALSE)
+```
 
 
 ### Equivalent
@@ -465,7 +476,7 @@ sims_2 <-
 ```{r, echo = TRUE, message = FALSE, echo = FALSE, fig.height = 1.5, fig.width = 6}
 sims_2 |>
   ggplot(aes(p.value)) + 
-  geom_histogram() +
+  geom_histogram(binwidth = 0.05, boundary = 0) +
   geom_vline(xintercept = .05, color = "red")
 
 ```
@@ -667,7 +678,7 @@ read_rds("saved/tolag.rds") |>
 
 Punchline: 
 
-* if you difference: *the lag has to be sufficiently information to pay its way* (the $\rho = .5$ equivalent between level and change follows from @gerber2012field equation 4.6)
+* if you difference: *the lag has to be sufficiently informative to pay its way* (the $\rho = .5$ equivalent between level and change follows from @gerber2012field equation 4.6)
 * The right hand side is your friend, at least for experiments ([@ding2019bracketing](https://arxiv.org/abs/1903.06286)) 
 * As $N$ grows the stakes fall
 

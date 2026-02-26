@@ -44,7 +44,7 @@ Say that people are one of 3 types:
 
 ### Local Average Treatment Effects  {.smaller}
 
-Sometimes you give a medicine but only a non random sample of people actually try to use it. Can you still estimate the medicine's effect?
+Sometimes you give a medicine but only a nonrandom sample of people actually try to use it. Can you still estimate the medicine's effect?
 
 |     | X=0                           | X=1                           |
 |-----|-------------------------------|-------------------------------|
@@ -87,6 +87,23 @@ $$ITT = ({\overline{y}^1_c-\overline{y}^0_c})\frac{n_c}{n}$$
 $$\leftrightarrow$$ 
 
 $$LATE = \frac{ITT}{\frac{n_c}{n}}= \frac{\text{Intent to treat effect}}{\text{First stage effect}}$$
+
+### Local Average Treatment Effects (Simpler)  {.smaller}
+
+Let $\lambda_c =$ share compliers; $\lambda_a =$ share always takers; $\lambda_n =$ share never takers.
+
+Average $Y$ in $Z=0$ group: $$\lambda_c\overline{y}^0_{c}+ \lambda_n\overline{y}_{n} +\lambda_a\overline{y}_a$$
+
+Average $Y$ in $Z=1$ group: $$\lambda_c\overline{y}^1_{c}+ \lambda_n\overline{y}_{n} +\lambda_a\overline{y}_a$$
+
+
+So, the *difference*, or  ITT is:  
+
+\begin{eqnarray*}
+ITT &=& \lambda_c({\overline{y}^1_c-\overline{y}^0_c}) 
+
+&=& (\text{First stage})\times LATE
+\end{eqnarray*}
 
 
 ### The good and the bad of LATE  {.smaller}

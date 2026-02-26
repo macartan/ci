@@ -30,17 +30,24 @@ knitr::opts_knit$set(root.dir = here::here("slides"))
 
 # Design
 
+*Focus on randomization schemes*
+
 
 ```{r design, child = design_child}
 
 ```
 
-# Evaluation
+# Design evaluation (design diagnosis!) {#secdiagnosis}
 
-```{r}
+*A focus on power*
+
+
+```{r, echo = FALSE}
 eval_child     <- here::here("slides", "5.2_evaluation.qmd")
 ```
 
 ```{r, child = eval_child}
 
 ```
+
+## References
