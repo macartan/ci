@@ -249,3 +249,136 @@ $$Y_i = \beta_0 + \beta_1Z_i  + \beta_2Long_i + \beta_3Z_iLong_i$$
 
   
 
+## Conjoint
+
+### Conjoints
+
+* Conjoints are factorial experiments in which you vary multiple features of a description at once
+* You can then define the effect of a given feature on responses conditional on the distribution of other features
+* The *average* effect of a feature is taken both with respect to subjects and with respect to background profiles
+
+* In this literature the estimand is often called the "Average Marginal Component Effect" but it generally corresponds to the ATE from a factorial as described by Fisher
+* For simple random assignments you can use differences in means; for blocked assignments you can take account of blocks
+
+
+### The strengths of a conjoint  {.smaller}
+
+* You can vary many features simultaneously
+* You may get more natural descriptions of more fully fleshed out options
+* You may avoid desirability biases
+
+See @hainmueller2014causal
+
+### Pitfalls  {.smaller}
+
+* The use of causal inference techniques can mislead into thinking that the effects of attributes themselves are being studied; need to remain conscious that these are focused on seeing how changing questions change answers --- it is the effect of *descriptions* on *responses* not the effect of *features* on *actions* --- since ultimately you are asking for hypothetical evaluations these might be best thought of as a nice tool to measure (stated) preferences
+* You generally end up *controlling* for various features,  rather then having them vary naturally; so, for instance, if you have both origin and education you are not getting effects of origin that work via education (or beliefs about education that are due to beliefs about origin)
+
+
+### Conjoint forced choice  {.smaller}
+
+Often the focus is on the effect of described features on the indicated preference for one candidate over another.
+
+Imagine this setup:
+
+Two candidates. 
+
+Two attributes:
+
+- Corrupt (C) vs Non-corrupt (N)  
+- Left-handed (L) vs Right-handed (R)
+
+Decision rule:
+
+1. Voters always choose a **non-corrupt candidate over a corrupt one**.
+2. If both are corrupt or both are non-corrupt, they prefer **right-handed**.
+3. Otherwise, they flip a coin.
+
+What is the average effect of corruption on vote choice? What is the average effect of right handedness?
+
+### Effects across all profiles  {.smaller}
+
+Define $Y(C_A, R_A, C_B, R_B)$ as the decision to vote for candidate A given the different values of corrutopn and handedness for A and B.
+
+Then the average effect of corruption on the vote for 1 for a given person, across possible contests, is:
+
+$$\frac{1}8 \sum_{r_a=0}^1 \sum_{c_b=0}^1 \sum_{r_b=0}^1 \left(Y(1, r_a, c_b, r_b) - Y(0, r_a, c_b, r_b)\right)$$
+
+This estimand is defined weighting all profiles equally. But it is up to you how you want to weight.
+
+### Effect of corruption (C vs N) {.smaller}
+
+We average over all distinct contexts:
+
+| A (handedness) | B  | Effect of C on selecting A |
+|----------------|----|----------------------------|
+| L | CL | -0.5 |
+| R | CL | 0 |
+| L | CR | -1 |
+| R | CR | -0.5 |
+| L | NL | -0.5 |
+| R | NL | -1 |
+| L | NR | 0 |
+| R | NR | -0.5 |
+|   |    | **Average = -0.5** |
+
+
+### Effect of right-handedness (R vs L) {.smaller}
+
+We average over all distinct contexts:
+
+| A (corruption) | B  | Effect of R on selecting A |
+|----------------|----|----------------------------|
+| C | CL | 0.5 |
+| N | CL | 0 |
+| C | CR | 0.5 |
+| N | CR | 0 |
+| C | NL | 0 |
+| N | NL | 0.5 |
+| C | NR | 0 |
+| N | NR | 0.5 |
+|   |    | **Average = 0.25** |
+
+### Effects across all profiles {.smaller}
+
+This average effect is the ACME.
+
+Intuitively:
+
+* Non corruption: 1/8 of the time A will win regardless of corruption. 1/8 A will lose regardless of corruption; 2/9 of the time corruption takes A from a sure win to a sure loss; 4/8 of the time corruption gets you to or from a tie.
+
+* Righthandedness: 1/2 of the time handedness is irrelevant. 1/2 the time there are ties and handedness gets you to or from a tie.
+
+* Example really highlights how the averaging is over conditions (over races). If you are interested in the role of corruption in a particular type of race (or a target race) this is not the quantity you want
+
+### Do it with Lin {.smaller}
+
+```{r}
+
+Y <- function(cA, rA, cB, rB) 
+  case_when((cA < cB) | ((cA == cB) & (rA > rB))  ~ 1,
+            (cA > cB) | ((cA == cB) & (rA < rB))  ~ 0,
+            .default = .5)
+
+design <-
+  
+  declare_model(
+    data = expand_grid(cA = 0:1, rA = 0:1, cB = 0:1, rB = 0:1),
+    Y = Y(cA, rA, cB, rB)) +
+  
+  declare_inquiry(
+    tau_C = mean(Y(1, rA, cB, rB) - Y(0, rA, cB, rB)),
+    tau_R = mean(Y(cA, 1, cB, rB) - Y(cA, 0, cB, rB))) +
+  
+  declare_estimator(Y ~ cA, covariates = ~rA + cB + rB,  
+                    .method = lm_lin, inquiry = "tau_C", label = "C") +
+  
+  declare_estimator(Y ~ rA, covariates = ~cA + cB + rB,  
+                    .method = lm_lin, inquiry = "tau_R", label = "R")
+```
+
+### Do it with Lin {.smaller}
+
+```{r}
+run_design(design) |> select(inquiry, estimand, estimate) |>  kable()
+```
