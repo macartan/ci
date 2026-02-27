@@ -22,11 +22,11 @@ source("setup.R")
 ```
 
 
-## Survey experiments {#survey-experiments}
+## List experiments {#survey-experiments}
 
 
-* Survey experiments are used to *measure* things: nothing (except answers) should be *changed*!
-* If the experiment in the survey is changing things then it is a field experiment in a survey, not a survey experiment
+* manipulations are used to *measure* things not to change things
+* changing the wording changes the answer but this helps you learn about a stable quantity
 
 
 ### The list experiment: Motivation
@@ -345,7 +345,7 @@ This average effect is the ACME.
 
 Intuitively:
 
-* Non corruption: 1/8 of the time A will win regardless of corruption. 1/8 A will lose regardless of corruption; 2/9 of the time corruption takes A from a sure win to a sure loss; 4/8 of the time corruption gets you to or from a tie.
+* Non corruption: 1/8 of the time A will win regardless of corruption. 1/8 A will lose regardless of corruption; 2/8 of the time corruption takes A from a sure win to a sure loss; 4/8 of the time corruption gets you to or from a tie.
 
 * Righthandedness: 1/2 of the time handedness is irrelevant. 1/2 the time there are ties and handedness gets you to or from a tie.
 
