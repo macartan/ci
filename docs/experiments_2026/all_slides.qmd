@@ -1,0 +1,49 @@
+---
+format: 
+   revealjs:
+    embed-resources: true
+    theme: serif
+    slide-level: 3
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    number-sections: true
+title: "Experiments"
+author: "Macartan Humphreys"
+bibliography: "../../slides/bib.bib"
+---
+
+
+```{r sintros, child = "intro.qmd"}
+
+```
+
+
+```{r sexpers, child = "experimenting.qmd"}
+
+```
+
+
+```{r scaus, child = "causality.qmd"}
+
+```
+
+
+
+```{r sanalysis, child = "analysis.qmd"}
+
+```
+
+
+```{r sdesigns, child = "design.qmd"}
+
+```
+
+
+
+```{r stopics, child = "topics.qmd"}
+
+```
+
+
+# References

@@ -24,7 +24,7 @@ knitr::opts_knit$set(root.dir = here::here("slides"))
 ```
 
 
-```{r pos, child = "2.1.1_potential_outcomes.qmd"}
+```{r posc, child = "2.1.1_potential_outcomes.qmd"}
 
 ```
 
@@ -32,7 +32,7 @@ knitr::opts_knit$set(root.dir = here::here("slides"))
 
 The inquiries you have...
 
-```{r estms, child = "2.2.1_estimand_types.qmd"}
+```{r estmst, child = "2.2.1_estimand_types.qmd"}
 
 ```
 

@@ -11,12 +11,24 @@ format:
 
 ### Slides
 
-1.  [Intro](https://macartan.github.io/ci/experiments_2026/intro.html)
-2.  [Experimenting](https://macartan.github.io/ci/experiments_2026/experimenting.html)
-3.  [Causality](https://macartan.github.io/ci/experiments_2026/causality.html) 
-4.  [Answer strategies](https://macartan.github.io/ci/experiments_2026/analysis.html)
-5.  [Design](https://macartan.github.io/ci/experiments_2026/design.html)
-6.  [Topics](https://macartan.github.io/ci/experiments_2026/topics.html)
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+flowchart LR
+    A("Intro") === B("Experimenting") === C("Causality") === D("Answer strategies") === E("Design") === F("Topics")
+    click A "https://macartan.github.io/ci/experiments_2026/intro.html"
+    click B "https://macartan.github.io/ci/experiments_2026/experimenting.html"
+    click C "https://macartan.github.io/ci/experiments_2026/causality.html"
+    click D "https://macartan.github.io/ci/experiments_2026/analysis.html"
+    click E "https://macartan.github.io/ci/experiments_2026/design.html"
+    click F "https://macartan.github.io/ci/experiments_2026/topics.html"
+```
+
+
+### Exercises
+
+* [RI intuition](experiments_2026/ri_exercise.pdf)
+* [interactions intuition](experiments_2026/interaction_exercise.pdf)
+* [in class experiment](in_class_experiment.html)
 
 ### Syllabus 
 
