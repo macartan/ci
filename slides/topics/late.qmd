@@ -16,7 +16,7 @@ bibliography: ../bib.bib
 ---
 
 ```{r, include = FALSE}
-source("setup.R")
+source(here::here("slides", "setup.R"))
 ```
 
 
@@ -159,9 +159,9 @@ if(run)
   query_model(query = list(CATE = "Y[X=1] - Y[X=0]", Nonmonotonic = "X[Z=1] < X[Z=0]"),
               given = list("X[Z=1] > X[Z=0]", TRUE),
               using = "posteriors") |>
-    write_rds("saved/lipids_again.rds")
+    write_rds(here::here("slides", "saved/lipids_again.rds"))
 
-read_rds("saved/lipids_again.rds") |> select(model, query, mean, sd) |> arrange(query) |> kable(digits = 2)
+read_rds(here::here("slides", "saved/lipids_again.rds")) |> select(model, query, mean, sd) |> arrange(query) |> kable(digits = 2)
 ```
 
 

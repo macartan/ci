@@ -206,8 +206,8 @@ Results is a sampling distribution not centered on the true effect (0)
 
 ```{r, echo = FALSE}
 if(run)
-  design |> diagnose_design(sims = 2000) |>write_rds("saved/fixer.rds")
-diagnosis <- read_rds("saved/fixer.rds")
+  design |> diagnose_design(sims = 2000) |>write_rds(here::here("slides", "saved/fixer.rds"))
+diagnosis <- read_rds(here::here("slides", "saved/fixer.rds"))
 ```
 
 ```{r, eval  = FALSE}
@@ -259,8 +259,8 @@ Improved results
 
 ```{r, echo = FALSE}
 if(run)
-  design_2 |> diagnose_design(sims = 1500) |>write_rds("saved/fixer2.rds")
-diagnosis <- read_rds("saved/fixer2.rds")
+  design_2 |> diagnose_design(sims = 1500) |>write_rds(here::here("slides", "saved/fixer2.rds"))
+diagnosis <- read_rds(here::here("slides", "saved/fixer2.rds"))
 ```
 
 ```{r, eval  = FALSE}
@@ -541,7 +541,7 @@ if(FALSE)
                   diagnosands = declare_diagnosands(
                     var_estimate = var(estimate),
                     mean_se_2 = mean(std.error^2))) |>
-  write_rds("saved/conservative.rds")
+  write_rds(here::here("slides", "saved/conservative.rds"))
 
 ```
 
@@ -558,7 +558,7 @@ We confirm that:
 
 
 ```{r, echo = FALSE}
-read_rds("saved/conservative.rds") |> tidy() |> 
+read_rds(here::here("slides", "saved/conservative.rds")) |> tidy() |> 
   ggplot(aes(rho, estimate, color = diagnosand)) + 
   geom_point() + theme_bw() + geom_line()
 
@@ -738,14 +738,14 @@ ri2_out <- conduct_ri(
   data = df, 
   p = "upper",
   sims = 4000
-) |> write_rds("saved/ri2eg.rds")
+) |> write_rds(here::here("slides", "saved/ri2eg.rds"))
 
 ```
 
 ### Using `ri2`
 
 ```{r, echo = FALSE}
-read_rds("saved/ri2eg.rds") |> summary() |> kable()
+read_rds(here::here("slides", "saved/ri2eg.rds")) |> summary() |> kable()
 ```
 
 
@@ -830,10 +830,10 @@ get_p <- function(j)
 # Implement
 if(run)
  candidates |> sapply(get_p) |>
-  write_rds("saved/ri_ci.rds")
+  write_rds(here::here("slides", "saved/ri_ci.rds"))
 
 ci_df <- 
-  data.frame(candidates = candidates, p = read_rds("saved/ri_ci.rds"))  
+  data.frame(candidates = candidates, p = read_rds(here::here("slides", "saved/ri_ci.rds")))  
 
 
 ```
@@ -894,10 +894,10 @@ if(run){
 
   design |> redesign(b = c(0, .25, .5, .75, 1)) |> 
   simulate_design(sims = c(200, 1, 1000, 1)) |>
-  write_rds("saved/mde.rds")
+  write_rds(here::here("slides", "saved/mde.rds"))
 }
 
-simulations <- read_rds("saved/mde.rds")
+simulations <- read_rds(here::here("slides", "saved/mde.rds"))
 ```
 
 ### `ri` with `DeclareDesign` (advanced) {.smaller}
@@ -1010,9 +1010,9 @@ diagnose_design(design, sims = 1000, diagnosands = ri_ps(my_estimate))
 if(run)
   diagnose_design(design, sims = 1000,
                 diagnosands = ri_ps(my_estimate)) |>
-  write_rds("saved/ri_dd_inter.rds")
+  write_rds(here::here("slides", "saved/ri_dd_inter.rds"))
 
-read_rds("saved/ri_dd_inter.rds") |> reshape_diagnosis() |> kable()
+read_rds(here::here("slides", "saved/ri_dd_inter.rds")) |> reshape_diagnosis() |> kable()
 
 ```
 
@@ -1034,7 +1034,7 @@ read_rds("saved/ri_dd_inter.rds") |> reshape_diagnosis() |> kable()
 
 
 ```{r, echo = FALSE, fig.height = 3, fig.width = 8}
-diagnosis <- read_rds("saved/fixer2.rds")
+diagnosis <- read_rds(here::here("slides", "saved/fixer2.rds"))
 diagnosis$simulations_df |> filter(estimator == "naive") |>
   ggplot(aes(estimate)) + geom_histogram() +
   geom_vline(xintercept = 0, color = "red")

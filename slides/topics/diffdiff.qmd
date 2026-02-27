@@ -16,7 +16,7 @@ bibliography: ../bib.bib
 ---
 
 ```{r, include = FALSE}
-if(exists("child")) source("setup.R")
+if(exists("child")) source(here::here("slides", "setup.R"))
 if(!exists("child")) source("../setup.R")
 ```
 
@@ -91,9 +91,9 @@ if(run)
   design |> 
   redesign(n_units = 10) |>  
   diagnose_design(bootstrap_sims = 0)  |>
-  write_rds("saved/dd1.rds") 
+  write_rds(here::here("slides", "saved/dd1.rds")) 
 
-read_rds("saved/dd1.rds") |>
+read_rds(here::here("slides", "saved/dd1.rds")) |>
   reshape_diagnosis() |> select(Inquiry, Estimator, Bias) |> kable()
 
 ```
@@ -120,9 +120,9 @@ if(run)
   design |> 
   redesign(n_units = 10) |>  
   diagnose_design(bootstrap_sims = 0)  |>
-  write_rds("saved/dd10.rds")
+  write_rds(here::here("slides", "saved/dd10.rds"))
 
-read_rds("saved/dd10.rds") |>
+read_rds(here::here("slides", "saved/dd10.rds")) |>
   reshape_diagnosis() |> select(Inquiry, Estimator, Bias) |> kable()
 
 ```
@@ -241,7 +241,7 @@ design |> draw_data()  |> group_by(time) |> summarize(var = mean(Z)*(1-mean(Z)))
 ### Where do these numbers come?
 
 ```{r, echo = FALSE}
-include_graphics("assets/Goodman-Bacon.png")
+include_graphics(here::here("slides", "assets", "Goodman-Bacon.png"))
 ```
 
 ### Where do these numbers come?
@@ -304,7 +304,7 @@ So *quite* complex weighting of different comparisons
 See excellent review by @roth2023s 
 
 ```{r}
-knitr::include_graphics("assets/didtools.jpg")
+knitr::include_graphics(here::here("slides", "assets", "didtools.jpg")))
 ```
 
 ### Chaisemartin and d’Haultfoeuille (2020).

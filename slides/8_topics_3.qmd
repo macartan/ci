@@ -25,17 +25,16 @@ child <- TRUE
 
 
 
-```{r, child = "topics/mediation.qmd"}
+```{r, child = here::here("slides", "topics/mediation.qmd")}
 
 ```
 
 
-```{r, child = "topics/spillovers.qmd"}
+```{r, child = here::here("slides", "topics/spillovers.qmd")}
 
 ```
 
-```{r, child = "topics/open_science.qmd"}
+```{r, child = here::here("slides", "topics/open_science.qmd")}
 
 ```
-
 

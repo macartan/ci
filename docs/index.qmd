@@ -12,9 +12,9 @@ format:
 ### Slides
 
 ```{mermaid}
-%%{init: {"flowchart": {"htmlLabels": false}} }%%
+%%{init: {"flowchart": {"htmlLabels": true}} }%%
 flowchart LR
-    A("Intro") === B("Experimenting") === C("Causality") === D("Answer strategies") === E("Design") === F("Topics")
+    A("Intro") === B("Experimenting") === C("Causality") === D("Answer<br>strategies") === E("Design") === F("Topics")
     click A "https://macartan.github.io/ci/experiments_2026/intro.html"
     click B "https://macartan.github.io/ci/experiments_2026/experimenting.html"
     click C "https://macartan.github.io/ci/experiments_2026/causality.html"
@@ -24,19 +24,29 @@ flowchart LR
 ```
 
 
-### Exercises
+### Activities
 
-* [RI intuition](experiments_2026/ri_exercise.pdf)
-* [interactions intuition](experiments_2026/interaction_exercise.pdf)
-* [in class experiment](in_class_experiment.html)
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": true}} }%%
+flowchart LR
+    G("RI<br>intuition") === H("interactions<br>intuition") === I("in class<br>experiment") === J("DeclareDesign<br>shiny app")
+    click G "https://macartan.github.io/ci/experiments_2026/ri_exercise.pdf"
+    click H "https://macartan.github.io/ci/experiments_2026/interaction_exercise.pdf"
+    click I "https://macartan.github.io/ci/in_class_experiment.html"
+    click J "https://shiny2.wzb.eu/ipi/declaredesign/"
+```
 
-### Syllabus 
+### Resources
 
-<https://macartan.github.io/ci/experiments_2026/syllabus.pdf>
-
-### Survey
-
-* [Student survey](https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ)
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": true}} }%%
+flowchart LR
+    S("Syllabus") --- V("Student<br>survey")
+    click S "https://macartan.github.io/ci/experiments_2026/syllabus.pdf"
+    click V "https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ"
+    style S fill:#f472b6,stroke:#be123d,stroke-width:2px,color:#ffffff
+    style V fill:#fb7185,stroke:#be123c,stroke-width:2px,color:#ffffff
+```
 
 ### Times and locations 2026
 

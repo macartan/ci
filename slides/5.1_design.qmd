@@ -562,9 +562,9 @@ diagnoses <- diagnose_design(designs)
 ```{r, echo = FALSE}
 if(run)
   diagnose_design(designs, sims = 1000) |>
-  write_rds("saved/assignment_diagnosis.rds")
+  write_rds(here::here("slides", "saved/assignment_diagnosis.rds"))
 
-diagnoses <- read_rds("saved/assignment_diagnosis.rds") 
+diagnoses <- read_rds(here::here("slides", "saved/assignment_diagnosis.rds")) 
 
 diagnoses |>
   reshape_diagnosis() |> 
@@ -708,9 +708,9 @@ indirect_propensities <- replicate(5000, draw_data(design)$indirect) |>
 if(run) 
   replicate(5000, draw_data(design)$indirect) |> 
   apply(1, mean) |>
-  write_rds("saved/wild_1.rds")
+  write_rds(here::here("slides", "saved/wild_1.rds"))
 
-indirect_propensities_1 <-  read_rds("saved/wild_1.rds")
+indirect_propensities_1 <-  read_rds(here::here("slides", "saved/wild_1.rds"))
 
 indirect_propensities_1 |>   
   hist(xlab = paste("Indirect propensities: mean = ", indirect_propensities_1 |> mean()))
@@ -735,9 +735,9 @@ replicate(5000, draw_data(design |> redesign(n_assigned = 25))$indirect) |>
 if(run) 
   replicate(5000, draw_data(design |> redesign(n_assigned = 25))$indirect) |> 
   apply(1, mean) |>
-  write_rds("saved/wild_2.rds")
+  write_rds(here::here("slides", "saved/wild_2.rds"))
 
-indirect_propensities_2 <-  read_rds("saved/wild_2.rds")
+indirect_propensities_2 <-  read_rds(here::here("slides", "saved/wild_2.rds"))
 
 indirect_propensities_2 |>   
   hist(xlab = paste("Indirect propensities: mean = ", indirect_propensities_2 |> mean()))

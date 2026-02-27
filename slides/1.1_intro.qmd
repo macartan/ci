@@ -11,9 +11,6 @@ format:
     show-slide-number: all
     preview-links: auto
     number-sections: true
-    css: styles.css
-    plugins:
-      - menu
 title: "Causal Inference and Experimentation"
 subtitle: "Introduction to the class"
 author: "Macartan Humphreys"

@@ -10,9 +10,10 @@ format:
       preview-links: auto
       number-sections: true
       link-color: orange
+      include-after-body: menu-hide-level3.html
 title: "Lectures on causal inference and experimental methods"
 author: "Macartan Humphreys"
-bibliography: bib.bib
+bibliography: "../../slides/bib.bib"
 ---
 
 
@@ -36,6 +37,15 @@ bibliography: bib.bib
   font-size: medium;
 }
 
+/* Left menu: show first and second levels (all items); hide third level */
+.slide-menu-wrapper .slide-menu-item[data-level="3"],
+.slide-menu-wrapper .slide-menu-item-vertical[data-level="3"] {
+  display: none;
+}
+.slide-menu-wrapper .slide-menu-item-vertical {
+  padding-left: 1.5em;
+}
+
 ## also: smaller, small
 
 ```
@@ -49,7 +59,7 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 # renderthis::to_pdf("ci_2024.html")
 ```
 
-```{r, child = "1.1_intro.qmd"}
+```{r, child = here::here("slides", "1.1_intro.qmd")}
 
 ```
 
@@ -58,12 +68,14 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 *How to define and assess research designs* 
 
-```{r, child = "1.2_declaredesign.qmd"}
+```{r, child = here::here("slides","1.2_declaredesign.qmd")}
 
 ```
 
 
-```{r, child = "2.1_causality.qmd"}
+# Causality {#seccausality} 
+
+```{r, child = here::here("slides","2.1_causality.qmd")}
 
 ```
 
@@ -71,7 +83,7 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 *Well posed questions*
 
-```{r, child = "2.2_estimands.qmd"}
+```{r, child = here::here("slides","2.2_estimands.qmd")}
 
 ```
 
@@ -79,41 +91,43 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 
 *Estimation and testing*
 
-```{r, child = "3_fisher.qmd"}
+```{r, child = here::here("slides", "3_fisher.qmd")}
 
 ```
 
 
-```{r, child = "4_bayes.qmd"}
+```{r, child = here::here("slides", "4_bayes.qmd")}
+
+```
+
+# Design {#secdesign}
+
+```{r, child = here::here("slides", "5.1_design.qmd")}
+
+```
+
+# Design evaluation {#secdesign2}
+
+```{r, child = here::here("slides", "5.2_evaluation.qmd")}
 
 ```
 
 
-```{r, child = "5.1_design.qmd"}
+```{r top61, child = here::here("slides","6_topics_1.qmd")}
 
 ```
 
 
-```{r, child = "5.2_evaluation.qmd"}
+```{r, child = here::here("slides","7_topics_2.qmd")}
 
 ```
 
 
-```{r, child = "6_topics_1.qmd"}
+```{r, child = here::here("slides","8_topics_3.qmd")}
 
 ```
 
 
-```{r, child = "7_topics_2.qmd"}
-
-```
-
-
-```{r, child = "8_topics_3.qmd"}
-
-```
-
-
-# References
+# Resources
 
 ### References

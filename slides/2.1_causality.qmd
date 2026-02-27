@@ -21,11 +21,11 @@ source(here::here("slides", "setup.R"))
 
 
 
-```{r, child = "2.1.1_potential_outcomes.qmd"}
+```{r, child = here::here("slides", "2.1.1_potential_outcomes.qmd")}
 
 ```
 
-```{r, child = "2.1.2_dags.qmd"}
+```{r, child = here::here("slides", "2.1.2_dags.qmd")}
 
 ```
 

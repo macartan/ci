@@ -34,7 +34,8 @@ run <- FALSE
 
 ## The MIDA Framework {#MIDAframework}
 
-```{r, child = "topics/MIDA.qmd"}
+
+```{r midamida, child = here::here("slides", "topics/MIDA.qmd")}
 
 ```
 
@@ -83,7 +84,7 @@ design |>
 
 
 ```{r, echo = FALSE}
-knitr::include_graphics("assets/cheat_sheet.png") 
+knitr::include_graphics(here::here("slides", "assets", "cheat_sheet.png")) 
 ```
 
 ### Other resources
@@ -128,7 +129,7 @@ simplest_design <-
 if(run)
   simplest_design |>
   diagnose_design() |>
-  write_rds("saved/simplest_design.rds")
+  write_rds(here::here("slides", "saved/simplest_design.rds"))
 ```
 
 
@@ -251,9 +252,9 @@ diagnosis <-
 if(run)
   simplest_design |>
   diagnose_design() |>
-  write_rds("saved/simplest_design.rds")
+  write_rds(here::here("slides", "saved/simplest_design.rds"))
 
-diagnosis <- read_rds("saved/simplest_design.rds") 
+diagnosis <- read_rds(here::here("slides", "saved/simplest_design.rds")) 
 
 diagnosis |>
   reshape_diagnosis() |>
@@ -462,9 +463,9 @@ if(run)
     make_groups = vars(significant = p.value <= 0.05),
     sims = 500
   ) |>
-  write_rds("saved/group_rep.rds")
+  write_rds(here::here("slides", "saved/group_rep.rds"))
 
-grouped_diagnosis <-   read_rds("saved/group_rep.rds") 
+grouped_diagnosis <-   read_rds(here::here("slides", "saved/group_rep.rds")) 
 
 grouped_diagnosis |>
   reshape_diagnosis() |>
@@ -518,12 +519,12 @@ diagnosis_2 <- diagnose_design(sampling_design, sims = c(1, 5000, 1, 1))
 ```{r, warning = FALSE, echo = FALSE}
 if(run){
 set.seed(1)
-diagnose_design(sampling_design, sims = c(5000, 1, 1, 1)) |> write_rds("saved/multistage1.rds") 
-diagnose_design(sampling_design, sims = c(1, 5000, 1, 1)) |> write_rds("saved/multistage2.rds")
+diagnose_design(sampling_design, sims = c(5000, 1, 1, 1)) |> write_rds(here::here("slides", "saved/multistage1.rds")) 
+diagnose_design(sampling_design, sims = c(1, 5000, 1, 1)) |> write_rds(here::here("slides", "saved/multistage2.rds"))
 }
 
-list(diagnosis_1 = read_rds("saved/multistage1.rds") |> reshape_diagnosis(),
-     diagnosis_2 = read_rds("saved/multistage2.rds") |> reshape_diagnosis()) |>
+list(diagnosis_1 = read_rds(here::here("slides", "saved/multistage1.rds")) |> reshape_diagnosis(),
+     diagnosis_2 = read_rds(here::here("slides", "saved/multistage2.rds")) |> reshape_diagnosis()) |>
   bind_rows(.id = "diagnosis") |>
   select(-Design, -Inquiry, -Estimator, -Outcome, -Term) |>
   kable(digits = 2) |> 
@@ -560,12 +561,12 @@ Here is the diagnosis
 if(run)
   simplest_design_2 |>
   diagnose_design() |>
-  write_rds("saved/simplest_design_2.rds")
+  write_rds(here::here("slides", "saved/simplest_design_2.rds"))
 ```
 
 ```{r, echo = FALSE}
 
-read_rds("saved/simplest_design_2.rds") |>
+read_rds(here::here("slides", "saved/simplest_design_2.rds")) |>
   reshape_diagnosis() |>
   select(-Inquiry, -Estimator, -Outcome, -Term) |>
   kable() |> 
@@ -695,9 +696,9 @@ designs |> diagnose_design() |> tidy()
 
 ```{r, echo = FALSE}
 if(run)
-  redesign(design, N = c(100, 200, 300), m = c(0, .1, .2)) |> diagnose_design() |> tidy() |> write_rds("saved/redesigns.rds")
+  redesign(design, N = c(100, 200, 300), m = c(0, .1, .2)) |> diagnose_design() |> tidy() |> write_rds(here::here("slides", "saved/redesigns.rds"))
 
-read_rds("saved/redesigns.rds") |>
+read_rds(here::here("slides", "saved/redesigns.rds")) |>
   select(N, m, diagnosand, estimate, std.error, conf.low, conf.high) |>  slice(c(1:4, 8:9, 29:30, 59:63)) |>           
   kable(digits = 2) |> 
   kable_styling(font_size = 20)
@@ -720,7 +721,7 @@ designs |> diagnose_design() |>
 
 
 ```{r, echo = FALSE, fig.cap = "Power depends on N and m, rmse depends on N only", fig.height = 2, fig.width = 6}
-read_rds("saved/redesigns.rds") |>
+read_rds(here::here("slides", "saved/redesigns.rds")) |>
   filter(diagnosand %in% c("power", "rmse")) |> 
   ggplot(aes(N, estimate, color = factor(m))) + 
   geom_line() + 
@@ -946,9 +947,9 @@ redesign(design, N = 50) %>%
 if(run)
 redesign(design, N = 50) %>%
   compare_diagnoses(design)  %>%
-  write_rds("saved/compare_diagnoses.rds")
+  write_rds(here::here("slides", "saved/compare_diagnoses.rds"))
 
-  read_rds("saved/compare_diagnoses.rds")$compared_diagnoses_df |>
+  read_rds(here::here("slides", "saved/compare_diagnoses.rds"))$compared_diagnoses_df |>
     select(-design_1, -design_2, -inquiry, -estimator, -term, -se_1, -se_2, -se_difference,
            -sims, -bootstrap_sims) |>
     kable(digits = 2) |> 
@@ -1004,10 +1005,10 @@ sims_1 |> select(sim_ID, estimate, p.value)
 ```{r, echo = FALSE}
 if(run)
   simulate_design(design, sims = 3000) |>
-  write_rds("saved/simple_simulations_1")
+  write_rds(here::here("slides", "saved/simple_simulations_1"))
 
 sims_1 <- 
-  read_rds("saved/simple_simulations_1")
+  read_rds(here::here("slides", "saved/simple_simulations_1"))
 
 sims_1 |>  select(sim_ID, estimate, p.value) |> head() |> kable(digits = 2) |> 
   kable_styling(font_size = 20)
@@ -1036,10 +1037,10 @@ redesign(design, b = 0) |>
 if(run)
   redesign(design, b = 0) |> 
   simulate_design(sims = 10000) |>
-  write_rds("saved/simple_simulations_2")
+  write_rds(here::here("slides", "saved/simple_simulations_2"))
 
 sims_2 <- 
-  read_rds("saved/simple_simulations_2")
+  read_rds(here::here("slides", "saved/simple_simulations_2"))
 
 ```
 
@@ -1064,9 +1065,9 @@ sims_2 |>
 if(run)
   design |> 
   diagnose_design(sims = 10000) |>
-  write_rds("saved/simple_diagnosis_1")
+  write_rds(here::here("slides", "saved/simple_diagnosis_1"))
 
-read_rds("saved/simple_diagnosis_1") |>
+read_rds(here::here("slides", "saved/simple_diagnosis_1")) |>
   reshape_diagnosis() |>
   select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
   kable() |> 
@@ -1088,9 +1089,9 @@ if(run)
 design |>
   redesign(b = c(0, 0.25, 0.5, 1)) |>
   diagnose_design(sims = 10000) |>
-  write_rds("saved/simple_diagnosis_2")
+  write_rds(here::here("slides", "saved/simple_diagnosis_2"))
 
-  read_rds("saved/simple_diagnosis_2") |>
+  read_rds(here::here("slides", "saved/simple_diagnosis_2")) |>
     reshape_diagnosis() |>
     select(b, "Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
     kable() |> 
@@ -1150,7 +1151,7 @@ design <-
   declare_estimator(Y ~ Z,
                     inquiry = "ate",
                     .method = lm_robust,
-                    label = "estimator 1")
+                    label = "estimator 1"))
 
 ```
 
@@ -1268,8 +1269,8 @@ design <-
   declare_assignment(Z = block_ra(blocks = X), Y = reveal_outcomes(Y ~ Z)) + 
   declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
   declare_inquiry(cate = mean(Y_Z_1[X==0] - Y_Z_0[X==0])) + 
-  declare_estimator(Y ~ Z, inquiry = "ate", label = "ols") + 
-  declare_estimator(Y ~ Z*X, inquiry = "cate", label = "fe")
+  declare_estimator(Y ~ Z, inquiry = "ate", label = "ols")) + 
+  declare_estimator(Y ~ Z*X, inquiry = "cate", label = "fe"))
 
 ```
 
@@ -1426,8 +1427,8 @@ design <-
   ) +
   declare_inquiries(ate_2 = -1, ate_3 = 1) +
   declare_estimator(Y ~ X1 + X2 + X3,
-                    term = c("X2", "X3"),
-                    inquiry = c("ate_2", "ate_3"))
+                    term = c("X2", "X3")),
+                    inquiry = c("ate_2", "ate_3")))
 
 design  |> run_design()  |> kable(digits = 2) |> kable_styling(font_size = 20)
 ```
@@ -1438,8 +1439,8 @@ Sometimes it can be confusing what the names of a term is but you can figure thi
 
 ```{r}
 lm_robust(Y ~ A*B, 
-          data = data.frame(A = rep(c("a",  "b"), 3), 
-                            B = rep(c("p", "q"), each = 3), 
+          data = data.frame(A = rep(c("a",  "b")), 3), 
+                            B = rep(c("p", "q")), each = 3), 
                             Y = rnorm(6))) |>
   coef() |> kable() |> kable_styling(font_size = 20)
 ```
@@ -1459,7 +1460,7 @@ design <-
   declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
   declare_estimator(Y ~ Z, inquiry = "ate", 
                     .method = glm, 
-                    family = binomial(link = "probit"))
+                    family = binomial(link = "probit")))
 ```
 
 Note that we passed additional arguments to `glm`; that's easy. 
@@ -1474,9 +1475,9 @@ diagnose_design(design)
 
 ```{r, echo = FALSE}
 if(run)
-  diagnose_design(design) |> write_rds("saved/probit.rds")
+  diagnose_design(design) |> write_rds(here::here("slides", "saved/probit.rds"))
 
-read_rds("saved/probit.rds") |> 
+read_rds(here::here("slides", "saved/probit.rds")) |> 
   reshape_diagnosis() |>
   kable() |> 
   kable_styling(font_size = 20)
@@ -1501,18 +1502,18 @@ tidy_margins <- function(x)
 design <- design +  
   declare_estimator(Y ~ Z, inquiry = "ate", 
                     .method = glm, 
-                    family = binomial(link = "probit"),
+                    family = binomial(link = "probit")),
                     .summary = tidy_margins,
-                    label = "margins")
+                    label = "margins"))
 ```
 
 ### A: Answers: other packages
 
 ```{r, echo = FALSE}
 if(run)
-  diagnose_design(design) |> write_rds("saved/probit_2.rds")
+  diagnose_design(design) |> write_rds(here::here("slides", "saved/probit_2.rds"))
 
-read_rds("saved/probit_2.rds") |> reshape_diagnosis() |> kable() |> 
+read_rds(here::here("slides", "saved/probit_2.rds")) |> reshape_diagnosis() |> kable() |> 
   kable_styling(font_size = 20)
 ```
 

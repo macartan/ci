@@ -1,0 +1,41 @@
+<script>
+(function() {
+  function hideLevel3InMenu() {
+    var topSections = document.querySelectorAll('.slides > section');
+    var flatSections = [];
+    topSections.forEach(function(section) {
+      var subs = section.querySelectorAll('section');
+      if (subs.length > 0) {
+        subs.forEach(function(s) { flatSections.push(s); });
+      } else {
+        flatSections.push(section);
+      }
+    });
+    var menuItems = document.querySelectorAll('.slide-menu-panel[data-panel="Slides"] .slide-menu-items > li');
+    menuItems.forEach(function(li, i) {
+      if (flatSections[i] && flatSections[i].classList.contains('level3')) {
+        li.style.display = 'none';
+      }
+    });
+  }
+  function runWhenReady() {
+    if (typeof Reveal !== 'undefined') {
+      Reveal.on('ready', function() {
+        hideLevel3InMenu();
+        setTimeout(hideLevel3InMenu, 300);
+        setTimeout(hideLevel3InMenu, 1000);
+      });
+      if (Reveal.isReady && Reveal.isReady()) {
+        hideLevel3InMenu();
+        setTimeout(hideLevel3InMenu, 200);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(hideLevel3InMenu, 100);
+      setTimeout(hideLevel3InMenu, 500);
+      setTimeout(hideLevel3InMenu, 1200);
+    });
+  }
+  runWhenReady();
+})();
+</script>

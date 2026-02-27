@@ -24,30 +24,30 @@ child <- TRUE
 # Topics 2 {#topics_2}
 
 
-```{r, child = "topics/synthetic.qmd"}
+```{r, child = here::here("slides", "topics/synthetic.qmd")}
 
 ```
 
 
-```{r, child = "topics/late.qmd"}
-
-```
-
-
-
-
-```{r, child = "topics/ethics.qmd"}
-
-```
-
-
-```{r, child = "topics/survey_experiments.qmd"}
+```{r, child = here::here("slides", "topics/late.qmd")}
 
 ```
 
 
 
-```{r, child = "topics/RDD.qmd"}
+
+```{r, child = here::here("slides", "topics/ethics.qmd")}
+
+```
+
+
+```{r, child = here::here("slides", "topics/survey_experiments.qmd")}
+
+```
+
+
+
+```{r, child = here::here("slides", "topics/RDD.qmd")}
 
 ```
 

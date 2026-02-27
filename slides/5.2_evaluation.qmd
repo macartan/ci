@@ -409,10 +409,10 @@ sims_1 |> select(sim_ID, estimate, p.value)
 ```{r, echo = FALSE}
 if(run)
   simulate_design(design, sims = 3000) |>
-  write_rds("saved/simple_simulations_1")
+  write_rds(here::here("slides", "saved/simple_simulations_1"))
 
 sims_1 <- 
-  read_rds("saved/simple_simulations_1")
+  read_rds(here::here("slides", "saved/simple_simulations_1"))
 
 sims_1 |>  select(sim_ID, estimate, p.value) |> head() |> kable(digits = 2)
 ```
@@ -465,10 +465,10 @@ sims_2 <-
 if(run)
   redesign(design, b = 0) |> 
   simulate_design(sims = 10000) |>
-  write_rds("saved/simple_simulations_2")
+  write_rds(here::here("slides", "saved/simple_simulations_2"))
 
 sims_2 <- 
-  read_rds("saved/simple_simulations_2")
+  read_rds(here::here("slides", "saved/simple_simulations_2"))
 
 ```
 
@@ -493,9 +493,9 @@ sims_2 |>
 if(run)
   design |> 
   diagnose_design(sims = 10000) |>
-  write_rds("saved/simple_diagnosis_1")
+  write_rds(here::here("slides", "saved/simple_diagnosis_1"))
 
-read_rds("saved/simple_diagnosis_1") |>
+read_rds(here::here("slides", "saved/simple_diagnosis_1")) |>
   reshape_diagnosis() |>
   select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
   kable()
@@ -516,9 +516,9 @@ if(run)
 design |>
   redesign(b = c(0, 0.25, 0.5, 1)) |>
   diagnose_design(sims = 10000) |>
-  write_rds("saved/simple_diagnosis_2")
+  write_rds(here::here("slides", "saved/simple_diagnosis_2"))
 
-  read_rds("saved/simple_diagnosis_2") |>
+  read_rds(here::here("slides", "saved/simple_diagnosis_2")) |>
     reshape_diagnosis() |>
     select(b, "Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
     kable()
@@ -551,9 +551,9 @@ if(run)
 design |>
   redesign(b = c(0.1, 0.3, 0.5), N = c(100, 200, 300)) |>
   diagnose_design(sims = 2000) |>
-  write_rds("saved/simple_diagnosis_mult.rds")
+  write_rds(here::here("slides", "saved/simple_diagnosis_mult.rds"))
 
-read_rds("saved/simple_diagnosis_mult.rds") |>
+read_rds(here::here("slides", "saved/simple_diagnosis_mult.rds")) |>
     tidy() |> 
     filter(diagnosand == "power") |>
     ggplot(aes(N, estimate, color = factor(b))) +
@@ -590,9 +590,9 @@ if(run)
 design |>
   redesign(b = c(0.1, .3, .5), N = c(100, 200, 300)) |>
   diagnose_design(sims = 2000) |>
-  write_rds("saved/simple_diagnosis_mult.rds")
+  write_rds(here::here("slides", "saved/simple_diagnosis_mult.rds"))
 
-read_rds("saved/simple_diagnosis_mult.rds") |>
+read_rds(here::here("slides", "saved/simple_diagnosis_mult.rds")) |>
     tidy() |> 
     ggplot(aes(N, estimate, color = factor(b))) +
     geom_line() + 
@@ -665,9 +665,9 @@ design |> redesign(N = c(10, 100, 1000, 10000), rho = c(.1, .5, .9)) |>
 if(run)
 design |> redesign(N = c(10, 100, 1000, 10000), rho = c(.1, .5, .9)) |>
   diagnose_design(sims = 1000) |>
-  write_rds("saved/tolag.rds")
+  write_rds(here::here("slides", "saved/tolag.rds"))
 
-read_rds("saved/tolag.rds") |>
+read_rds(here::here("slides", "saved/tolag.rds")) |>
   tidy() |> filter(diagnosand == "rmse") |> 
   ggplot(aes(N, estimate, color = estimator)) + facet_grid(~rho, labeller = label_both) + geom_line() + ylab("rmse") + 
   theme_bw()   + scale_x_continuous(trans='log2')
@@ -711,9 +711,9 @@ diagnose_design(bad_design)
 ```{r, echo = FALSE}
 if(run)
   diagnose_design(bad_design) |>
-  write_rds("saved/bad_design_diagnosis.rds")
+  write_rds(here::here("slides", "saved/bad_design_diagnosis.rds"))
 
-read_rds("saved/bad_design_diagnosis.rds") |>
+read_rds(here::here("slides", "saved/bad_design_diagnosis.rds")) |>
     reshape_diagnosis() |>
     select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
     kable()
@@ -757,9 +757,9 @@ You can see from the null design that power is great but bias is terrible and co
 ```{r, echo = FALSE}
 if(run)
   diagnose_design(another_bad_design) |>
-  write_rds("saved/bad_design_diagnosis_2.rds")
+  write_rds(here::here("slides", "saved/bad_design_diagnosis_2.rds"))
 
-read_rds("saved/bad_design_diagnosis_2.rds") |>
+read_rds(here::here("slides", "saved/bad_design_diagnosis_2.rds")) |>
     reshape_diagnosis() |>
     select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
     kable()
@@ -785,9 +785,9 @@ clustered_design <-
 ```{r, echo = FALSE}
 if(run)
 diagnose_design(clustered_design, sims = 2000) |>
-write_rds("saved/clustered.rds")
+write_rds(here::here("slides", "saved/clustered.rds"))
 
-read_rds("saved/clustered.rds") |>
+read_rds(here::here("slides", "saved/clustered.rds")) |>
   reshape_diagnosis() |>
     select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
   kable()
@@ -807,9 +807,9 @@ clustered_design_2  <-
 ```{r, echo = FALSE}
 if(run)
 diagnose_design(clustered_design_2, sims = 2000) |>
-write_rds("saved/clustered_2.rds")
+write_rds(here::here("slides", "saved/clustered_2.rds"))
 
-read_rds("saved/clustered_2.rds") |>
+read_rds(here::here("slides", "saved/clustered_2.rds")) |>
   reshape_diagnosis() |>
     select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
   kable()
@@ -880,9 +880,9 @@ design_mc |>
 ```{r, echo = FALSE}
 if(run)
 simulate_designs(design_mc, sims = 5000) |>
-  write_rds("saved/multiple_comparisons.rds")
+  write_rds(here::here("slides", "saved/multiple_comparisons.rds"))
 
-read_rds("saved/multiple_comparisons.rds")  |>
+read_rds(here::here("slides", "saved/multiple_comparisons.rds"))  |>
   filter(term != "(Intercept)") |>
   group_by(sim_ID) |>
   mutate(p_bonferroni = p.adjust(p = p.value, method = "bonferroni"),
@@ -946,9 +946,9 @@ if(run)
   design_mc_2 |> 
   redesign(b = 0) |>
   diagnose_design(sims = 1000) |>
-  write_rds("saved/design_mc_3.rds")
+  write_rds(here::here("slides", "saved/design_mc_3.rds"))
 
-read_rds("saved/design_mc_3.rds") |> reshape_diagnosis() |>
+read_rds(here::here("slides", "saved/design_mc_3.rds")) |> reshape_diagnosis() |>
     select("Mean Estimate", "Bias", "SD Estimate", "RMSE", "Power", "Coverage" ) |>
   kable()
 

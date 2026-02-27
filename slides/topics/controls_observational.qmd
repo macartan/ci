@@ -18,7 +18,7 @@ bibliography: ../bib.bib
 ```{r, include = FALSE}
 if(!exists("child")) setwd("../")
 
-source("setup.R")
+source(here::here("slides", "setup.R"))
 
 ```
 
@@ -158,7 +158,7 @@ We would be happy if we could condition on the parent $T$, but $T$ is not observ
 ### Guidelines
 
 ```{r, echo = FALSE}
-knitr::include_graphics("figs/controls.png") 
+knitr::include_graphics(here::here("slides", "figs/controls.png")) 
 ```
 
 

@@ -323,7 +323,7 @@ A "**causal model**" is:
 
 ```{r HJ-F-2-1, echo = FALSE, out.width='60%', fig.align="center", out.width='80%', fig.cap = "A simple causal model in which high inequality ($I$) affects democratization ($D$) via redistributive demands ($R$) and mass mobilization ($M$), which is also a function of ethnic homogeneity ($E$). Arrows show relations of causal dependence between variables."}
 
-knitr::include_graphics("assets/theta_dag.png")
+knitr::include_graphics(here::here("slides", "assets", "theta_dag.png"))
 
 ```
 

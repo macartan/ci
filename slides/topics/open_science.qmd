@@ -18,7 +18,7 @@ bibliography: ../bib.bib
 ```{r, include = FALSE}
 if(!exists("child")) setwd("../")
 
-source("setup.R")
+source(here::here("slides", "setup.R"))
 
 ```
 

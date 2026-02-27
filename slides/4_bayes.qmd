@@ -463,9 +463,9 @@ M <- stan(file = "assets/one_var.stan",
 if(run)
   stan(file = "assets/one_var.stan", 
           data = some_data) |>
-  write_rds("saved/one_var.rds")
+  write_rds(here::here("slides", "saved/one_var.rds"))
 
-M <-   read_rds("saved/one_var.rds")
+M <-   read_rds(here::here("slides", "saved/one_var.rds"))
 
 ```
 
@@ -594,9 +594,9 @@ M2 <- stan(model_code = new_model, data = some_data)
 ```{r, warning = FALSE, echo = TRUE, comment = NA, results='hide', echo = FALSE}
 if(run)
   stan(model_code = new_model, data = some_data) |>
-  write_rds("saved/one_var_2.rds")
+  write_rds(here::here("slides", "saved/one_var_2.rds"))
 
-M2 <-   read_rds("saved/one_var_2.rds")
+M2 <-   read_rds(here::here("slides", "saved/one_var_2.rds"))
 ```
 
 ```{r, echo = FALSE}
@@ -679,9 +679,9 @@ M_ml <- stan(model_code = ml_model, data = ml_data)
 ```{r, warning = FALSE, echo = TRUE, comment = NA, results='hide', echo = FALSE}
 if(run) 
   stan(model_code = ml_model, data = ml_data) |>
-  write_rds("saved/ml_model.rds")
+  write_rds(here::here("slides", "saved/ml_model.rds"))
 
-M_ml  <-  read_rds("saved/ml_model.rds")
+M_ml  <-  read_rds(here::here("slides", "saved/ml_model.rds"))
 
 ```
 
@@ -787,9 +787,9 @@ M3 <- stan(model_code = game_model,
 if(run)
   stan(model_code = game_model,  
            data = list(play = c(10,10,10))) |>
-  write_rds("saved/M3.rds")
+  write_rds(here::here("slides", "saved/M3.rds"))
 
-M3 <- read_rds("saved/M3.rds")
+M3 <- read_rds(here::here("slides", "saved/M3.rds"))
 
 ```
 
@@ -808,9 +808,9 @@ M4 <- stan(model_code = game_model,
 if(run)
   stan(model_code = game_model,  
            data = list(play = c(20,6,4))) |>
-  write_rds("saved/M4.rds")
+  write_rds(here::here("slides", "saved/M4.rds"))
 
-M4 <- read_rds("saved/M4.rds")
+M4 <- read_rds(here::here("slides", "saved/M4.rds"))
 ```
 
 ```{r, warning = FALSE, echo = FALSE, comment = NA, fig.align="center", fig.asp=1, out.width="50%"}
@@ -967,7 +967,7 @@ if (run) {
     update_model(lipids_data, refresh = 0) 
   
   lipids_model |> 
-    readr::write_rds(x = _, file = "saved/lipids_model.rds")
+    readr::write_rds(x = _, file = "saved/lipids_model.rds"))
      
   lipids_model |>
     query_model(
@@ -976,13 +976,13 @@ if (run) {
       PoC  = "Y[X=1] - Y[X=0] :|: X==0 & Y==0",
       LATE = "Y[X=1] - Y[X=0] :|: X[Z=1] > X[Z=0]"),
       using = "posteriors") |>
-    readr::write_rds(x = _, file = "saved/lipids_results.rds")
+    readr::write_rds(x = _, file = "saved/lipids_results.rds"))
 
 }
 
-lipids_model <- read_rds("saved/lipids_model.rds")
+lipids_model <- read_rds(here::here("slides", "saved/lipids_model.rds"))
 
-results <- read_rds("saved/lipids_results.rds")
+results <- read_rds(here::here("slides", "saved/lipids_results.rds"))
 
 results |>
   dplyr::select(query, given, mean, sd, starts_with("cred")) |>

@@ -16,7 +16,7 @@ bibliography: ../bib.bib
 ---
 
 ```{r, include = FALSE}
-if(exists("child")) source("setup.R")
+if(exists("child")) source(here::here("slides", "setup.R"))
 if(!exists("child")) source("../setup.R")
 
 library(MatchIt)

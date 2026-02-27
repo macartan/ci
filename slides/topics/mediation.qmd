@@ -16,7 +16,7 @@ bibliography: ../bib.bib
 ---
 
 ```{r, include = FALSE}
-source("setup.R")
+source(here::here("slides", "setup.R"))
 ```
 
 
@@ -242,9 +242,9 @@ model |> update_model(data = truth |> make_data(n = 1000)) |>
 
 if(run)
 model |> update_model(data = truth |> make_data(n = 1000), iter = 5000) |>
-  write_rds("saved/cq-mediation.rds")
+  write_rds(here::here("slides", "saved/cq-mediation.rds"))
 
-read_rds("saved/cq-mediation.rds") |> 
+read_rds(here::here("slides", "saved/cq-mediation.rds")) |> 
     query_distribution(queries = queries, using = "posteriors") |>
   gather(var, val) |> 
   ggplot(aes(val)) + geom_histogram() + facet_grid(~var)  + xlab("posterior")
@@ -255,13 +255,13 @@ Why such poor behavior? Why isn't weight going onto indirect effects?
 Turns out the data *is* consistent with direct effects only: specifically that whenever $M$ is responsive to $X$, $Y$ is responsive to $X$.
 
 ```{r, include = FALSE}
-read_rds("saved/cq-mediation.rds")$posterior_distribution |> apply(2, mean)
+read_rds(here::here("slides", "saved/cq-mediation.rds"))$posterior_distribution |> apply(2, mean)
 ```
 
 ### In `CausalQueries` {.smaller}
 
 ```{r, echo = FALSE}
-read_rds("saved/cq-mediation.rds") |> 
+read_rds(here::here("slides", "saved/cq-mediation.rds")) |> 
     query_distribution(queries = queries, using = "posteriors") |>
     ggplot(aes(direct, indirect)) + geom_point()
 ```

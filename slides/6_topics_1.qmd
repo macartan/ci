@@ -26,21 +26,21 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 # Topics 1 {#topics_1}
 
 
-```{r, child = "topics/controls_observational.qmd"}
+```{r top1a, child = here::here("slides", "topics/controls_observational.qmd")}
 
 ```
 
-```{r, child = "topics/controls.qmd"}
-
-```
-
-
-```{r, child = "topics/matching.qmd"}
+```{r top1b, child = here::here("slides", "topics/controls.qmd")}
 
 ```
 
 
-```{r, child = "topics/diffdiff.qmd"}
+```{r top1c, child = here::here("slides", "topics/matching.qmd")}
+
+```
+
+
+```{r top1d, child = here::here("slides", "topics/diffdiff.qmd")}
 
 ```
 

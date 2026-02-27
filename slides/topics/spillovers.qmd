@@ -16,7 +16,7 @@ bibliography: ../bib.bib
 ---
 
 ```{r, include = FALSE}
-source("setup.R")
+source(here::here("slides", "setup.R"))
 ```
 
 
@@ -132,8 +132,8 @@ draw_data(spillover_design) %>%
 
 if(run)
   diagnose_design(spillover_design) |>
-  write_rds(file = "saved/11_model_spillovers_1.rds")
-diagnosis <- read_rds("saved/11_model_spillovers_1.rds")
+  write_rds(file = "saved/11_model_spillovers_1.rds"))
+diagnosis <- read_rds(here::here("slides", "saved/11_model_spillovers_1.rds"))
 get_simulations(diagnosis) %>% 
   group_by(estimator, inquiry) %>% 
   mutate(

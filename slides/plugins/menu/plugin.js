@@ -755,6 +755,13 @@ const Plugin = () => {
           'data-slide-h': h,
           'data-slide-v': v === undefined ? 0 : v
         });
+        if (section.classList.contains('level3')) {
+          item.setAttribute('data-level', '3');
+        } else if (section.classList.contains('level2')) {
+          item.setAttribute('data-level', '2');
+        } else if (section.classList.contains('level1')) {
+          item.setAttribute('data-level', '1');
+        }
 
         if (options.markers) {
           item.appendChild(

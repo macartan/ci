@@ -17,7 +17,7 @@ bibliography: ../bib.bib
   
 ```{r, include = FALSE}
 
-source("setup.R")
+source(here::here("slides", "setup.R"))
 
 ```
 
@@ -119,9 +119,9 @@ diagnose_design(declaration_17.3, diagnosands = diagnosands)
 ```{r, echo = FALSE}
 if(run)
   diagnose_design(declaration_17.3, diagnosands = diagnosands) |>
-  write_rds("saved/list1.rds")
+  write_rds(here::here("slides", "saved/list1.rds"))
 
-read_rds("saved/list1.rds") |>
+read_rds(here::here("slides", "saved/list1.rds")) |>
   reshape_diagnosis() |> select("Design", "Inquiry", "Bias", "Mean CI Width") |> kable()
   
 
@@ -165,9 +165,9 @@ declaration_17.4 |>
   redesign(proportion_hiding = seq(from = 0, to = 0.3, by = 0.1), 
            N = seq(from = 500, to = 2500, by = 500)) |> 
   diagnose_design() |>
-  write_rds("saved/list2.rds")
+  write_rds(here::here("slides", "saved/list2.rds"))
 
-read_rds("saved/list2.rds") |>
+read_rds(here::here("slides", "saved/list2.rds")) |>
   tidy() |>  filter(diagnosand == "rmse") |>
   ggplot(aes(N, estimate, color = estimator)) + geom_line() + facet_grid(~proportion_hiding, labeller = label_both) + theme_bw()
 
@@ -218,9 +218,9 @@ correlated_lists |> redesign(rho = c(-.8, 0, .8)) |> diagnose_design()
 ```{r, echo = FALSE, height = 2, width = 8}
 if(run)
 correlated_lists |> redesign(rho = c(-.8, 0, .8)) |> diagnose_design() |>
-  write_rds("saved/correlated_list.rds")
+  write_rds(here::here("slides", "saved/correlated_list.rds"))
 
-read_rds("saved/correlated_list.rds") |> tidy() |> filter(diagnosand == "rmse") |> ggplot(aes(rho, estimate)) + geom_line() + ylim(0, NA) + theme_bw() + ylab("rmse")
+read_rds(here::here("slides", "saved/correlated_list.rds")) |> tidy() |> filter(diagnosand == "rmse") |> ggplot(aes(rho, estimate)) + geom_line() + ylim(0, NA) + theme_bw() + ylab("rmse")
 
 ```
 

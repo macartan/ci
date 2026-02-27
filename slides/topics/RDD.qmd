@@ -16,7 +16,7 @@ bibliography: ../bib.bib
 ---
 
 ```{r, include = FALSE}
-source("setup.R")
+source(here::here("slides", "setup.R"))
 ```
 
 
@@ -155,9 +155,9 @@ rdd_design |> diagnose_design()
 
 ```{r, echo = FALSE, eval = TRUE}
 if(run)
-  rdd_design |> diagnose_design() |> write_rds("saved/rdd_diagnosis.rds")
+  rdd_design |> diagnose_design() |> write_rds(here::here("slides", "saved/rdd_diagnosis.rds"))
 
-read_rds("saved/rdd_diagnosis.rds") |> reshape_diagnosis() |> 
+read_rds(here::here("slides", "saved/rdd_diagnosis.rds")) |> reshape_diagnosis() |> 
   select(Estimator, 'Mean Estimate', 'Bias', 'SD Estimate', 'Coverage') |> kable()
 ```
 
@@ -175,9 +175,9 @@ if(run)
 rdd_design |> 
   redesign(bandwidth = seq(from = 0.1, to = 0.5, by = 0.05)) |> 
   diagnose_designs() |>
-  write_rds("saved/rddbandwidth.rds")
+  write_rds(here::here("slides", "saved/rddbandwidth.rds"))
 
-read_rds("saved/rddbandwidth.rds")|>  tidy() |>
+read_rds(here::here("slides", "saved/rddbandwidth.rds"))|>  tidy() |>
   filter(diagnosand %in% c("bias", "rmse", "sd_estimate")) |>
   ggplot(aes(bandwidth, estimate, color = diagnosand)) + geom_line()  + theme_bw() +
   facet_grid(~estimator)

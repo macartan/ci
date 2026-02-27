@@ -18,14 +18,14 @@ bibliography: ../bib.bib
 ```{r, include = FALSE}
 if(!exists("child")) setwd("../")
 
-source("setup.R")
+source(here::here("slides", "setup.R"))
 
 library(SCtools)
 library(Synth)
 ```
 
 
-## Covariate Adjustment
+## Adjustment strategies
 
 
 ### Example {.smaller}
@@ -173,9 +173,9 @@ design <-
 
 ```{r, echo = FALSE}
 if(run)
-  design |> diagnose_design(bootstrap_sims = 0) |>write_rds("saved/demeaned.rds")
+  design |> diagnose_design(bootstrap_sims = 0) |>write_rds(here::here("slides", "saved/demeaned.rds"))
 
-read_rds("saved/demeaned.rds") |> reshape_diagnosis() |> 
+read_rds(here::here("slides", "saved/demeaned.rds")) |> reshape_diagnosis() |> 
   select(Estimator,	 Inquiry,	Term,	'Mean Estimand',	'Mean Estimate') |>  
   arrange(Estimator, Inquiry) |>
   kable(align = c("l", "l", "l", "c", "c"))
@@ -323,9 +323,9 @@ if(run)
     control_slope = seq(-1, 1, 0.5), 
     prob = seq(0.1, 0.9, 0.1)) |> 
   diagnose_designs() |>
-  write_rds("saved/freedman18.3.rds") 
+  write_rds(here::here("slides", "saved/freedman18.3.rds")) 
 
-read_rds("saved/freedman18.3.rds")$diagnosands_df |> 
+read_rds(here::here("slides", "saved/freedman18.3.rds"))$diagnosands_df |> 
   ggplot(aes(prob, sd_estimate, color = estimator)) + geom_line() + facet_grid(~control_slope, labeller = label_both) + theme_bw() +
   xlab("Fraction assigned to treatment") + ylab("(real) standard error")
 
@@ -376,9 +376,9 @@ if(run)
   list(design |> redesign(a= 0, b = 0),  design |> redesign(a = 1, b = 0),  design |> redesign(a = 0, b = .8)) |>
   simulate_design(sims = 20000)|>
   mutate(design = paste("a =", a, ", b =", b))  |>
-  write_rds("saved/tocontrolornot.rds")
+  write_rds(here::here("slides", "saved/tocontrolornot.rds"))
 
-simulations <-  read_rds("saved/tocontrolornot.rds") |>
+simulations <-  read_rds(here::here("slides", "saved/tocontrolornot.rds")) |>
   mutate(design_label = factor(design, c("a = 0 , b = 0",    "a = 1 , b = 0", "a = 0 , b = 0.8"), c("X unrelated", "X also causes Y", "X moderates Z")))
 
 ```

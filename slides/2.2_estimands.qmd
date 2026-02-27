@@ -30,7 +30,7 @@ source(here::here("slides", "setup.R"))
 * Frontdoor
 * `dagitty`
 
-```{r, child = "2.2.1_estimand_types.qmd"}
+```{r, child = here::here("slides", "2.2.1_estimand_types.qmd")}
 
 ```
 
@@ -44,7 +44,7 @@ We already saw two instances of this:
 -   The probability that $X$ has a positive effect on $Y$ in an $X \rightarrow Y$ model is $\lambda^Y_{01}$ (last lecture)
 -   The share of "compliers" in an IV model $Z \rightarrow X \rightarrow Y \leftrightarrow X$ is $\lambda^X_{01}$
 
-```{r, child = "2.2_2_identification.qmd"}
+```{r, child = here::here("slides", "2.2_2_identification.qmd")}
 
 ```
 
