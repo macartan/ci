@@ -1,0 +1,64 @@
+<script>
+(function() {
+  function hideMermaidInInactiveTabs() {
+    var panes = document.querySelectorAll('.tab-pane');
+    if (!panes.length) return;
+    panes.forEach(function(pane) {
+      if (pane.classList.contains('active')) return;
+      pane.querySelectorAll('pre.mermaid-js').forEach(function(pre) {
+        pre.setAttribute('data-mermaid-deferred', pre.textContent);
+        pre.classList.remove('mermaid-js');
+      });
+    });
+  }
+
+  function renderMermaidInPane(pane) {
+    var pres = Array.from(pane.querySelectorAll('pre[data-mermaid-deferred]'));
+    if (!pres.length || typeof mermaid === 'undefined' || !mermaid.mermaidAPI) return;
+
+    pres.forEach(function(pre, idx) {
+      var text = pre.getAttribute('data-mermaid-deferred').replace(/&nbsp;/g, ' ');
+      var id = 'mermaid-deferred-' + Date.now() + '-' + idx;
+      mermaid.mermaidAPI.render(id, text, pre).then(function(result) {
+        var output = result.svg;
+        pre.innerHTML = output;
+        if (pre.dataset.label) {
+          var svg = pre.firstChild;
+          var style = svg && svg.querySelector('style');
+          if (style) {
+            style.innerHTML = style.innerHTML.replace(new RegExp('#' + svg.id, 'g'), '#' + pre.dataset.label + '-mermaid');
+          }
+          if (svg) {
+            svg.id = pre.dataset.label + '-mermaid';
+          }
+          delete pre.dataset.label;
+        }
+        var svg = pre.querySelector('svg');
+        if (svg) {
+          var parent = pre.parentElement;
+          parent.removeChild(pre);
+          parent.appendChild(svg);
+          svg.classList.add('mermaid-js');
+          if (window._quartoMermaid && typeof _quartoMermaid.postProcess === 'function') {
+            _quartoMermaid.postProcess(svg);
+          }
+        }
+        pre.removeAttribute('data-mermaid-deferred');
+      }).catch(function() {});
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', hideMermaidInInactiveTabs);
+  } else {
+    hideMermaidInInactiveTabs();
+  }
+
+  document.addEventListener('shown.bs.tab', function(e) {
+    var link = e.target;
+    var id = link && (link.getAttribute('data-bs-target') || link.getAttribute('href'));
+    var pane = id ? document.querySelector(id) : null;
+    if (pane) renderMermaidInPane(pane);
+  });
+})();
+</script>

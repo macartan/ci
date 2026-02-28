@@ -4,20 +4,95 @@ author: Macartan Humphreys
 format: 
   html:
     embed-resources: true
+    include-after-body: mermaid-tabs.html
 ---
 
 ::: panel-tabset
-## Experiments 2026
+
+## Causal inference [2025]
+
+
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+flowchart LR
+    Z("all slides")
+    click Z "https://macartan.github.io/ci/ci_2025.html"
+```
+
+**Foundations**
+
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+flowchart LR
+    A("Getting<br>started") --- B("Intro to<br>DeclareDesign") --- C("Causality") --- D("Inquiries and<br>identification")
+    click A "https://macartan.github.io/ci/ci_2025/1.1_intro.html"
+    click B "https://macartan.github.io/ci/ci_2025/1.2_declaredesign.html"
+    click C "https://macartan.github.io/ci/ci_2025/2.1_causality.html"
+    click D "https://macartan.github.io/ci/ci_2025/2.2_estimands.html"
+```
+
+**Estimation and design strategies**
+
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+flowchart LR
+    E("Design-based<br>estimation") --- F("Bayesian<br>inference") --- G("Experimental<br>design") --- H("Design<br>evaluation")
+    click E "https://macartan.github.io/ci/ci_2025/3_fisher.html"
+    click F "https://macartan.github.io/ci/ci_2025/4_bayes.html"
+    click G "https://macartan.github.io/ci/ci_2025/5.1_design.html"
+    click H "https://macartan.github.io/ci/ci_2025/5.2_evaluation.html"
+```
+
+**Topics**
+
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+flowchart LR
+    I("Topics 1:<br>Controls") --- J("Topics 2:<br>Observational") --- K("Topics 3:<br>AMCE, ACME, NDE etc") --- L("Topics 4:<br>Getting to work")
+    click I "https://macartan.github.io/ci/ci_2025/6_topics_1.html"
+    click J "https://macartan.github.io/ci/ci_2025/7_topics_2.html"
+    click K "https://macartan.github.io/ci/ci_2025/8_topics_3.html"
+    click L "https://macartan.github.io/ci/ci_2025/9_topics_4.html"
+```
+
+
+-   Puzzles: <https://macartan.github.io/ci/exercises.html>
+
+-   This syllabus: <https://macartan.github.io/ci/ci_2025/syllabus_ci_2025.pdf>
+
+-   [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
+
+2025 Times and places
+
+| Date        | Time    | Location     | Topic                          |
+|-------------|---------|--------------|--------------------------------|
+| 10 Jan 2025 | 10 - 12 | WZB B002/003 | Intro                          |
+| 17 Jan 2025 | 9 - 1   | WZB B002/003 | Causality and causal inquiries |
+| 24 Jan 2025 | 9 - 1   | WZB B002/003 | Frequentist answer strategies  |
+| 31 Jan 2025 | 9 - 1   | WZB B002/003 | Bayesian answer strategies     |
+| 14 Feb 2025 | 9 - 1   | WZB B002/003 | Design and evaluation          |
+| 21 Feb 2025 | 9 - 1   | WZB B002/003 | Topics 1                       |
+| 28 Feb 2025 | 9 - 1   | WZB B002/003 | Topics 2                       |
+
+[AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&vmfile=no&publishid=224623&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
+
+## Experiments [2026]
 
 ### Slides
 
 ```{mermaid}
 %%{init: {"flowchart": {"htmlLabels": true}} }%%
 flowchart LR
-    A("Intro") === B("Experimenting") === C("Causality") === D("Answer<br>strategies") === E("Design") === F("Topics")
+    A("Intro") --- B("Experimenting") --- C("Causality")
     click A "https://macartan.github.io/ci/experiments_2026/intro.html"
     click B "https://macartan.github.io/ci/experiments_2026/experimenting.html"
     click C "https://macartan.github.io/ci/experiments_2026/causality.html"
+```
+
+```{mermaid}
+%%{init: {"flowchart": {"htmlLabels": true}} }%%
+flowchart LR
+    D("Answer<br>strategies") --- E("Design") --- F("Topics")
     click D "https://macartan.github.io/ci/experiments_2026/analysis.html"
     click E "https://macartan.github.io/ci/experiments_2026/design.html"
     click F "https://macartan.github.io/ci/experiments_2026/topics.html"
@@ -29,11 +104,10 @@ flowchart LR
 ```{mermaid}
 %%{init: {"flowchart": {"htmlLabels": true}} }%%
 flowchart LR
-    G("RI<br>intuition") === H("interactions<br>intuition") === I("in class<br>experiment") === J("DeclareDesign<br>shiny app")
+    I("in class<br>experiment") --- G("RI<br>intuition") --- H("interactions<br>intuition")
+    click I "https://macartan.github.io/ci/in_class_experiment.html"
     click G "https://macartan.github.io/ci/experiments_2026/ri_exercise.pdf"
     click H "https://macartan.github.io/ci/experiments_2026/interaction_exercise.pdf"
-    click I "https://macartan.github.io/ci/in_class_experiment.html"
-    click J "https://shiny2.wzb.eu/ipi/declaredesign/"
 ```
 
 ### Resources
@@ -41,12 +115,14 @@ flowchart LR
 ```{mermaid}
 %%{init: {"flowchart": {"htmlLabels": true}} }%%
 flowchart LR
-    S("Syllabus") --- V("Student<br>survey")
+    S("Syllabus") === V("Student<br>survey")  --- J("DeclareDesign<br>shiny app")
     click S "https://macartan.github.io/ci/experiments_2026/syllabus.pdf"
     click V "https://cloud.wzb.eu/apps/forms/s/6Sdi6JEYTS59c6rMJCEcYErJ"
+    click J "https://shiny2.wzb.eu/ipi/declaredesign/"
     style S fill:#f472b6,stroke:#be123d,stroke-width:2px,color:#ffffff
     style V fill:#fb7185,stroke:#be123c,stroke-width:2px,color:#ffffff
 ```
+
 
 ### Times and locations 2026
 
@@ -75,39 +151,5 @@ The sessions will be structured roughly as follows.
 
 **Teaching assistant:** Wednesdays, 13:00 - 14:00 on [Zoom](https://hu-berlin.zoom-x.de/j/68850907617) (excluding 25 Feb)
 
-## Causal inference 2025
 
--   [All slides](https://macartan.github.io/ci/ci_2025.html)
-
-    -   [1.1 Intro](https://macartan.github.io/ci/ci_2025/1.1_intro.html)
-    -   [1.2 Design declaration](https://macartan.github.io/ci/ci_2025/1.2_declaredesign.html)
-    -   [2.1 Causality](https://macartan.github.io/ci/ci_2025/2.1_causality.html)
-    -   [2.2 Estimands and Identification](https://macartan.github.io/ci/ci_2025/2.2_estimands.html)
-    -   [3 Frequentists inference](https://macartan.github.io/ci/ci_2025/3_fisher.html)
-    -   [4 Bayesian inference](https://macartan.github.io/ci/ci_2025/4_bayes.html)
-    -   [5.1 Experimental design](https://macartan.github.io/ci/ci_2025/5.1_design.html)
-    -   [5.2 Design evaluation](https://macartan.github.io/ci/ci_2025/5.2_evaluation.html)
-    -   [6. Topics 1 incl controls, doubly robust, Diff in Diff, matching](https://macartan.github.io/ci/ci_2025/6_topics_1.html)
-    -   [7. Topics 2: incl synth, IV, survey experiments, RDD, ethics](https://macartan.github.io/ci/ci_2025/7_topics_2.html)
-    -   [8. Topics 3: incl mediation, SUTVA, open science](https://macartan.github.io/ci/ci_2025/8_topics_3.html)
-
--   Puzzles: <https://macartan.github.io/ci/exercises.html>
-
--   This syllabus: <https://macartan.github.io/ci/ci_2025/syllabus_ci_2025.pdf>
-
--   [Student survey](https://cloud.wzb.eu/apps/forms/s/8QmokT5GeQfkmkrBHDzrzN4j)
-
-2025 Times and places
-
-| Date        | Time    | Location     | Topic                          |
-|-------------|---------|--------------|--------------------------------|
-| 10 Jan 2025 | 10 - 12 | WZB B002/003 | Intro                          |
-| 17 Jan 2025 | 9 - 1   | WZB B002/003 | Causality and causal inquiries |
-| 24 Jan 2025 | 9 - 1   | WZB B002/003 | Frequentist answer strategies  |
-| 31 Jan 2025 | 9 - 1   | WZB B002/003 | Bayesian answer strategies     |
-| 14 Feb 2025 | 9 - 1   | WZB B002/003 | Design and evaluation          |
-| 21 Feb 2025 | 9 - 1   | WZB B002/003 | Topics 1                       |
-| 28 Feb 2025 | 9 - 1   | WZB B002/003 | Topics 2                       |
-
-[AGNES page](https://agnes.hu-berlin.de/lupo/rds?state=verpublish&status=init&vmfile=no&publishid=224623&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung)
 :::

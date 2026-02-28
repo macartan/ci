@@ -753,7 +753,7 @@ designs |> lapply(draw_data)
 ### Redesign warnings
 
 
-A parameter has to be called correctly. And you get no warning if you misname.
+A parameter has to be called correctly. You get a warning if you misname.
 
 ```{r}
 simplest_design_N  |> redesign(n = 200) |> draw_data() |> nrow()
@@ -1269,8 +1269,8 @@ design <-
   declare_assignment(Z = block_ra(blocks = X), Y = reveal_outcomes(Y ~ Z)) + 
   declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
   declare_inquiry(cate = mean(Y_Z_1[X==0] - Y_Z_0[X==0])) + 
-  declare_estimator(Y ~ Z, inquiry = "ate", label = "ols")) + 
-  declare_estimator(Y ~ Z*X, inquiry = "cate", label = "fe"))
+  declare_estimator(Y ~ Z, inquiry = "ate", label = "ols") + 
+  declare_estimator(Y ~ Z*X, inquiry = "cate", label = "fe")
 
 ```
 
@@ -1439,8 +1439,8 @@ Sometimes it can be confusing what the names of a term is but you can figure thi
 
 ```{r}
 lm_robust(Y ~ A*B, 
-          data = data.frame(A = rep(c("a",  "b")), 3), 
-                            B = rep(c("p", "q")), each = 3), 
+          data = data.frame(A = rep(c("a",  "b"), 3), 
+                            B = rep(c("p", "q"), each = 3), 
                             Y = rnorm(6))) |>
   coef() |> kable() |> kable_styling(font_size = 20)
 ```
@@ -1460,7 +1460,7 @@ design <-
   declare_inquiry(ate = mean(Y_Z_1 - Y_Z_0)) + 
   declare_estimator(Y ~ Z, inquiry = "ate", 
                     .method = glm, 
-                    family = binomial(link = "probit")))
+                    family = binomial(link = "probit"))
 ```
 
 Note that we passed additional arguments to `glm`; that's easy. 
@@ -1502,9 +1502,9 @@ tidy_margins <- function(x)
 design <- design +  
   declare_estimator(Y ~ Z, inquiry = "ate", 
                     .method = glm, 
-                    family = binomial(link = "probit")),
+                    family = binomial(link = "probit"),
                     .summary = tidy_margins,
-                    label = "margins"))
+                    label = "margins")
 ```
 
 ### A: Answers: other packages

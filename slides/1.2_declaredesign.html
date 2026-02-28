@@ -19008,7 +19008,7 @@ $design_3
 </section>
 <section id="redesign-warnings" class="slide level3" data-number="6.10">
 <h3><span class="header-section-number">6.10</span> Redesign warnings</h3>
-<p>A parameter has to be called correctly. And you get no warning if you misname.</p>
+<p>A parameter has to be called correctly. You get a warning if you misname.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href></a>simplest_design_N  <span class="sc">|&gt;</span> <span class="fu">redesign</span>(<span class="at">n =</span> <span class="dv">200</span>) <span class="sc">|&gt;</span> <span class="fu">draw_data</span>() <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -19873,7 +19873,13 @@ $design_3
 <span id="cb73-9"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z,</span>
 <span id="cb73-10"><a href></a>                    <span class="at">inquiry =</span> <span class="st">&quot;ate&quot;</span>,</span>
 <span id="cb73-11"><a href></a>                    <span class="at">.method =</span> lm_robust,</span>
-<span id="cb73-12"><a href></a>                    <span class="at">label =</span> <span class="st">&quot;estimator 1&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb73-12"><a href></a>                    <span class="at">label =</span> <span class="st">&quot;estimator 1&quot;</span>)<span class="er">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in parse(text = input): &lt;text&gt;:13:43: unexpected &#39;)&#39;
+12:                     .method = lm_robust,
+13:                     label = &quot;estimator 1&quot;))
+                                              ^</code></pre>
+</div>
 </div>
 <p>A few new elements here:</p>
 <ul>
@@ -19885,12 +19891,12 @@ $design_3
 <h3><span class="header-section-number">8.3</span> Steps: Order matters</h3>
 <p>e.g. If you sample before defining the inquiry you get a different inquiry to if you sample after you define the inquiry</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href></a>design_1 <span class="ot">&lt;-</span> </span>
-<span id="cb74-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">X =</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, N<span class="sc">/</span><span class="dv">2</span>), <span class="at">Y =</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N)) <span class="sc">+</span> </span>
-<span id="cb74-3"><a href></a>  <span class="fu">declare_sampling</span>(<span class="at">S=</span> <span class="fu">strata_rs</span>(<span class="at">strata =</span> X, <span class="at">strata_prob =</span> <span class="fu">c</span>(.<span class="dv">2</span>, .<span class="dv">8</span>))) <span class="sc">+</span></span>
-<span id="cb74-4"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">m =</span> <span class="fu">mean</span>(Y))</span>
-<span id="cb74-5"><a href></a></span>
-<span id="cb74-6"><a href></a>design_1 <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href></a>design_1 <span class="ot">&lt;-</span> </span>
+<span id="cb75-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">X =</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, N<span class="sc">/</span><span class="dv">2</span>), <span class="at">Y =</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N)) <span class="sc">+</span> </span>
+<span id="cb75-3"><a href></a>  <span class="fu">declare_sampling</span>(<span class="at">S=</span> <span class="fu">strata_rs</span>(<span class="at">strata =</span> X, <span class="at">strata_prob =</span> <span class="fu">c</span>(.<span class="dv">2</span>, .<span class="dv">8</span>))) <span class="sc">+</span></span>
+<span id="cb75-4"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">m =</span> <span class="fu">mean</span>(Y))</span>
+<span id="cb75-5"><a href></a></span>
+<span id="cb75-6"><a href></a>design_1 <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  inquiry  estimand
 1       m 0.6959198</code></pre>
@@ -19901,12 +19907,12 @@ $design_3
 <h3><span class="header-section-number">8.4</span> Steps: Order matters</h3>
 <p>e.g. If you sample before defining the inquiry you get a different inquiry to if you sample after you define the inquiry</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href></a>design_2 <span class="ot">&lt;-</span> </span>
-<span id="cb76-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">X =</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, N<span class="sc">/</span><span class="dv">2</span>), <span class="at">Y =</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N)) <span class="sc">+</span> </span>
-<span id="cb76-3"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">m =</span> <span class="fu">mean</span>(Y)) <span class="sc">+</span></span>
-<span id="cb76-4"><a href></a>  <span class="fu">declare_sampling</span>(<span class="at">S=</span> <span class="fu">strata_rs</span>(<span class="at">strata =</span> X, <span class="at">strata_prob =</span> <span class="fu">c</span>(.<span class="dv">2</span>, .<span class="dv">8</span>))) </span>
-<span id="cb76-5"><a href></a></span>
-<span id="cb76-6"><a href></a>design_2 <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href></a>design_2 <span class="ot">&lt;-</span> </span>
+<span id="cb77-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">X =</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, N<span class="sc">/</span><span class="dv">2</span>), <span class="at">Y =</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(N)) <span class="sc">+</span> </span>
+<span id="cb77-3"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">m =</span> <span class="fu">mean</span>(Y)) <span class="sc">+</span></span>
+<span id="cb77-4"><a href></a>  <span class="fu">declare_sampling</span>(<span class="at">S=</span> <span class="fu">strata_rs</span>(<span class="at">strata =</span> X, <span class="at">strata_prob =</span> <span class="fu">c</span>(.<span class="dv">2</span>, .<span class="dv">8</span>))) </span>
+<span id="cb77-5"><a href></a></span>
+<span id="cb77-6"><a href></a>design_2 <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  inquiry  estimand
 1       m 0.5328363</code></pre>
@@ -19917,25 +19923,25 @@ $design_3
 <h3><span class="header-section-number">8.5</span> M: Key extensions to model declaration</h3>
 <p>You can generate hierarchical data like this:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href></a>M <span class="ot">&lt;-</span> </span>
-<span id="cb78-2"><a href></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb78-3"><a href></a>    <span class="at">households =</span> <span class="fu">add_level</span>(</span>
-<span id="cb78-4"><a href></a>      <span class="at">N =</span> <span class="dv">100</span>, </span>
-<span id="cb78-5"><a href></a>      <span class="at">N_members =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>), N, </span>
-<span id="cb78-6"><a href></a>                         <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb78-7"><a href></a>    ),</span>
-<span id="cb78-8"><a href></a>    <span class="at">individuals =</span> <span class="fu">add_level</span>(</span>
-<span id="cb78-9"><a href></a>      <span class="at">N =</span> N_members, </span>
-<span id="cb78-10"><a href></a>      <span class="at">age =</span> <span class="fu">sample</span>(<span class="dv">18</span><span class="sc">:</span><span class="dv">90</span>, N, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb78-11"><a href></a>    )</span>
-<span id="cb78-12"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href></a>M <span class="ot">&lt;-</span> </span>
+<span id="cb79-2"><a href></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb79-3"><a href></a>    <span class="at">households =</span> <span class="fu">add_level</span>(</span>
+<span id="cb79-4"><a href></a>      <span class="at">N =</span> <span class="dv">100</span>, </span>
+<span id="cb79-5"><a href></a>      <span class="at">N_members =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>), N, </span>
+<span id="cb79-6"><a href></a>                         <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb79-7"><a href></a>    ),</span>
+<span id="cb79-8"><a href></a>    <span class="at">individuals =</span> <span class="fu">add_level</span>(</span>
+<span id="cb79-9"><a href></a>      <span class="at">N =</span> N_members, </span>
+<span id="cb79-10"><a href></a>      <span class="at">age =</span> <span class="fu">sample</span>(<span class="dv">18</span><span class="sc">:</span><span class="dv">90</span>, N, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb79-11"><a href></a>    )</span>
+<span id="cb79-12"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="m-key-extensions-to-model-declaration-1" class="slide level3" data-number="8.6">
 <h3><span class="header-section-number">8.6</span> M: Key extensions to model declaration</h3>
 <p>You can generate hierarchical data like this:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href></a><span class="fu">M</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href></a><span class="fu">M</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed caption-top" style="font-size: 20px; margin-left: auto; margin-right: auto;">
@@ -19994,31 +20000,31 @@ $design_3
 <h3><span class="header-section-number">8.7</span> M: Key extensions to model declaration</h3>
 <p>You can generate panel data like this:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href></a>M <span class="ot">&lt;-</span> </span>
-<span id="cb80-2"><a href></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb80-3"><a href></a>    <span class="at">countries =</span> <span class="fu">add_level</span>(</span>
-<span id="cb80-4"><a href></a>      <span class="at">N =</span> <span class="dv">196</span>, </span>
-<span id="cb80-5"><a href></a>      <span class="at">country_shock =</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb80-6"><a href></a>    ),</span>
-<span id="cb80-7"><a href></a>    <span class="at">years =</span> <span class="fu">add_level</span>(</span>
-<span id="cb80-8"><a href></a>      <span class="at">N =</span> <span class="dv">100</span>, </span>
-<span id="cb80-9"><a href></a>      <span class="at">time_trend =</span> <span class="dv">1</span><span class="sc">:</span>N,</span>
-<span id="cb80-10"><a href></a>      <span class="at">year_shock =</span> <span class="fu">runif</span>(N, <span class="dv">1</span>, <span class="dv">10</span>), </span>
-<span id="cb80-11"><a href></a>      <span class="at">nest =</span> <span class="cn">FALSE</span></span>
-<span id="cb80-12"><a href></a>    ),</span>
-<span id="cb80-13"><a href></a>    <span class="at">observation =</span> <span class="fu">cross_levels</span>(</span>
-<span id="cb80-14"><a href></a>      <span class="at">by =</span> <span class="fu">join_using</span>(countries, years),</span>
-<span id="cb80-15"><a href></a>      <span class="at">observation_shock =</span> <span class="fu">rnorm</span>(N),</span>
-<span id="cb80-16"><a href></a>      <span class="at">Y =</span> <span class="fl">0.01</span> <span class="sc">*</span> time_trend <span class="sc">+</span> country_shock <span class="sc">+</span> year_shock <span class="sc">+</span> observation_shock </span>
-<span id="cb80-17"><a href></a>    )</span>
-<span id="cb80-18"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href></a>M <span class="ot">&lt;-</span> </span>
+<span id="cb81-2"><a href></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb81-3"><a href></a>    <span class="at">countries =</span> <span class="fu">add_level</span>(</span>
+<span id="cb81-4"><a href></a>      <span class="at">N =</span> <span class="dv">196</span>, </span>
+<span id="cb81-5"><a href></a>      <span class="at">country_shock =</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb81-6"><a href></a>    ),</span>
+<span id="cb81-7"><a href></a>    <span class="at">years =</span> <span class="fu">add_level</span>(</span>
+<span id="cb81-8"><a href></a>      <span class="at">N =</span> <span class="dv">100</span>, </span>
+<span id="cb81-9"><a href></a>      <span class="at">time_trend =</span> <span class="dv">1</span><span class="sc">:</span>N,</span>
+<span id="cb81-10"><a href></a>      <span class="at">year_shock =</span> <span class="fu">runif</span>(N, <span class="dv">1</span>, <span class="dv">10</span>), </span>
+<span id="cb81-11"><a href></a>      <span class="at">nest =</span> <span class="cn">FALSE</span></span>
+<span id="cb81-12"><a href></a>    ),</span>
+<span id="cb81-13"><a href></a>    <span class="at">observation =</span> <span class="fu">cross_levels</span>(</span>
+<span id="cb81-14"><a href></a>      <span class="at">by =</span> <span class="fu">join_using</span>(countries, years),</span>
+<span id="cb81-15"><a href></a>      <span class="at">observation_shock =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb81-16"><a href></a>      <span class="at">Y =</span> <span class="fl">0.01</span> <span class="sc">*</span> time_trend <span class="sc">+</span> country_shock <span class="sc">+</span> year_shock <span class="sc">+</span> observation_shock </span>
+<span id="cb81-17"><a href></a>    )</span>
+<span id="cb81-18"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="m-key-extensions-to-model-declaration-3" class="slide level3" data-number="8.8">
 <h3><span class="header-section-number">8.8</span> M: Key extensions to model declaration</h3>
 <p>You can generate panel data like this:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href></a><span class="fu">M</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href></a><span class="fu">M</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed caption-top" style="font-size: 20px; margin-left: auto; margin-right: auto;">
@@ -20104,43 +20110,43 @@ $design_3
 <section id="m-you-can-pull-in-preexisting-data" class="slide level3" data-number="8.9">
 <h3><span class="header-section-number">8.9</span> M: You can pull in preexisting data</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href></a>M <span class="ot">&lt;-</span> </span>
-<span id="cb82-2"><a href></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb82-3"><a href></a>    <span class="at">data =</span> baseline_data,</span>
-<span id="cb82-4"><a href></a>    <span class="at">attitudes =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, N, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb82-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href></a>M <span class="ot">&lt;-</span> </span>
+<span id="cb83-2"><a href></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb83-3"><a href></a>    <span class="at">data =</span> baseline_data,</span>
+<span id="cb83-4"><a href></a>    <span class="at">attitudes =</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, N, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb83-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="m-a-simple-experimental-design" class="slide level3" data-number="8.10">
 <h3><span class="header-section-number">8.10</span> M: A simple experimental design</h3>
 <p>You can repeat steps and play with the order, always conscious of the direction of the pipe</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href></a>design <span class="ot">&lt;-</span> </span>
-<span id="cb83-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> N, <span class="at">X =</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, N<span class="sc">/</span><span class="dv">2</span>)) <span class="sc">+</span></span>
-<span id="cb83-3"><a href></a>  <span class="fu">declare_model</span>(<span class="at">U =</span> <span class="fu">rnorm</span>(N), <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> b <span class="sc">*</span> Z <span class="sc">*</span> X <span class="sc">+</span> U)) <span class="sc">+</span> </span>
-<span id="cb83-4"><a href></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">block_ra</span>(<span class="at">blocks =</span> X), <span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z)) <span class="sc">+</span> </span>
-<span id="cb83-5"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">ate =</span> <span class="fu">mean</span>(Y_Z_1 <span class="sc">-</span> Y_Z_0)) <span class="sc">+</span> </span>
-<span id="cb83-6"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">cate =</span> <span class="fu">mean</span>(Y_Z_1[X<span class="sc">==</span><span class="dv">0</span>] <span class="sc">-</span> Y_Z_0[X<span class="sc">==</span><span class="dv">0</span>])) <span class="sc">+</span> </span>
-<span id="cb83-7"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">&quot;ate&quot;</span>, <span class="at">label =</span> <span class="st">&quot;ols&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb83-8"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z<span class="sc">*</span>X, <span class="at">inquiry =</span> <span class="st">&quot;cate&quot;</span>, <span class="at">label =</span> <span class="st">&quot;fe&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href></a>design <span class="ot">&lt;-</span> </span>
+<span id="cb84-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> N, <span class="at">X =</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, N<span class="sc">/</span><span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb84-3"><a href></a>  <span class="fu">declare_model</span>(<span class="at">U =</span> <span class="fu">rnorm</span>(N), <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> b <span class="sc">*</span> Z <span class="sc">*</span> X <span class="sc">+</span> U)) <span class="sc">+</span> </span>
+<span id="cb84-4"><a href></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">block_ra</span>(<span class="at">blocks =</span> X), <span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z)) <span class="sc">+</span> </span>
+<span id="cb84-5"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">ate =</span> <span class="fu">mean</span>(Y_Z_1 <span class="sc">-</span> Y_Z_0)) <span class="sc">+</span> </span>
+<span id="cb84-6"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">cate =</span> <span class="fu">mean</span>(Y_Z_1[X<span class="sc">==</span><span class="dv">0</span>] <span class="sc">-</span> Y_Z_0[X<span class="sc">==</span><span class="dv">0</span>])) <span class="sc">+</span> </span>
+<span id="cb84-7"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">&quot;ate&quot;</span>, <span class="at">label =</span> <span class="st">&quot;ols&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb84-8"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z<span class="sc">*</span>X, <span class="at">inquiry =</span> <span class="st">&quot;cate&quot;</span>, <span class="at">label =</span> <span class="st">&quot;fe&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="m-you-can-generate-multiple-columns-together" class="slide level3" data-number="8.11">
 <h3><span class="header-section-number">8.11</span> M: You can generate multiple columns together</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href></a>M2 <span class="ot">&lt;-</span></span>
-<span id="cb84-2"><a href></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb84-3"><a href></a>    <span class="fu">draw_multivariate</span>(<span class="fu">c</span>(X1, X2) <span class="sc">~</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(</span>
-<span id="cb84-4"><a href></a>      <span class="at">n =</span> <span class="dv">1000</span>,</span>
-<span id="cb84-5"><a href></a>      <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),</span>
-<span id="cb84-6"><a href></a>      <span class="at">Sigma =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
-<span id="cb84-7"><a href></a>    )))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href></a>M2 <span class="ot">&lt;-</span></span>
+<span id="cb85-2"><a href></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb85-3"><a href></a>    <span class="fu">draw_multivariate</span>(<span class="fu">c</span>(X1, X2) <span class="sc">~</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(</span>
+<span id="cb85-4"><a href></a>      <span class="at">n =</span> <span class="dv">1000</span>,</span>
+<span id="cb85-5"><a href></a>      <span class="at">mu =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb85-6"><a href></a>      <span class="at">Sigma =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb85-7"><a href></a>    )))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="m-you-can-generate-multiple-columns-together-1" class="slide level3" data-number="8.12">
 <h3><span class="header-section-number">8.12</span> M: You can generate multiple columns together</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href></a><span class="fu">M2</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">28</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href></a><span class="fu">M2</span>() <span class="sc">|&gt;</span> <span class="fu">head</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">28</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed caption-top" style="font-size: 28px; margin-left: auto; margin-right: auto;">
@@ -20184,23 +20190,23 @@ $design_3
 <section id="m-cluster-structures-with-cluster-correlations" class="slide level3" data-number="8.13">
 <h3><span class="header-section-number">8.13</span> M: Cluster structures with cluster correlations</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href></a>M <span class="ot">&lt;-</span></span>
-<span id="cb86-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">households =</span> <span class="fu">add_level</span>(<span class="at">N =</span> <span class="dv">1000</span>),</span>
-<span id="cb86-3"><a href></a>                <span class="at">individuals =</span> <span class="fu">add_level</span>(</span>
-<span id="cb86-4"><a href></a>                  <span class="at">N =</span> <span class="dv">4</span>,</span>
-<span id="cb86-5"><a href></a>                  <span class="at">X =</span> <span class="fu">draw_normal_icc</span>(</span>
-<span id="cb86-6"><a href></a>                    <span class="at">mean =</span> <span class="dv">0</span>,</span>
-<span id="cb86-7"><a href></a>                    <span class="at">clusters =</span> households,</span>
-<span id="cb86-8"><a href></a>                    <span class="at">ICC =</span> <span class="fl">0.65</span></span>
-<span id="cb86-9"><a href></a>                  )</span>
-<span id="cb86-10"><a href></a>                ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href></a>M <span class="ot">&lt;-</span></span>
+<span id="cb87-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">households =</span> <span class="fu">add_level</span>(<span class="at">N =</span> <span class="dv">1000</span>),</span>
+<span id="cb87-3"><a href></a>                <span class="at">individuals =</span> <span class="fu">add_level</span>(</span>
+<span id="cb87-4"><a href></a>                  <span class="at">N =</span> <span class="dv">4</span>,</span>
+<span id="cb87-5"><a href></a>                  <span class="at">X =</span> <span class="fu">draw_normal_icc</span>(</span>
+<span id="cb87-6"><a href></a>                    <span class="at">mean =</span> <span class="dv">0</span>,</span>
+<span id="cb87-7"><a href></a>                    <span class="at">clusters =</span> households,</span>
+<span id="cb87-8"><a href></a>                    <span class="at">ICC =</span> <span class="fl">0.65</span></span>
+<span id="cb87-9"><a href></a>                  )</span>
+<span id="cb87-10"><a href></a>                ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="m-cluster-structures-with-cluster-correlations-1" class="slide level3" data-number="8.14">
 <h3><span class="header-section-number">8.14</span> M: Cluster structures with cluster correlations</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href></a>model <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(X <span class="sc">~</span> households, <span class="at">data =</span> <span class="fu">M</span>())</span>
-<span id="cb87-2"><a href></a>model<span class="sc">$</span>adj.r.squared</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href></a>model <span class="ot">&lt;-</span> <span class="fu">lm_robust</span>(X <span class="sc">~</span> households, <span class="at">data =</span> <span class="fu">M</span>())</span>
+<span id="cb88-2"><a href></a>model<span class="sc">$</span>adj.r.squared</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.6758031</code></pre>
 </div>
@@ -20262,19 +20268,19 @@ $design_3
 <h3><span class="header-section-number">8.17</span> I: Inquiries: Complex counterfactuals</h3>
 <p>Here is an example of using functions to define complex counterfactuals:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href></a>f_M <span class="ot">&lt;-</span> <span class="cf">function</span>(X, UM) <span class="dv">1</span><span class="sc">*</span>(UM <span class="sc">&lt;</span> X)</span>
-<span id="cb89-2"><a href></a>f_Y <span class="ot">&lt;-</span> <span class="cf">function</span>(X, M, UY) X <span class="sc">+</span> M <span class="sc">-</span> .<span class="dv">4</span><span class="sc">*</span>X<span class="sc">*</span>M <span class="sc">+</span> UY</span>
-<span id="cb89-3"><a href></a></span>
-<span id="cb89-4"><a href></a>design <span class="ot">&lt;-</span> </span>
-<span id="cb89-5"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb89-6"><a href></a>                <span class="at">X =</span> <span class="fu">simple_rs</span>(N),</span>
-<span id="cb89-7"><a href></a>                <span class="at">UM =</span> <span class="fu">runif</span>(N),</span>
-<span id="cb89-8"><a href></a>                <span class="at">UY =</span> <span class="fu">rnorm</span>(N),</span>
-<span id="cb89-9"><a href></a>                <span class="at">M =</span> <span class="fu">f_M</span>(X, UM),</span>
-<span id="cb89-10"><a href></a>                <span class="at">Y =</span> <span class="fu">f_Y</span>(X, M, UY)) <span class="sc">+</span></span>
-<span id="cb89-11"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">Q1 =</span> <span class="fu">mean</span>(<span class="fu">f_Y</span>(<span class="dv">1</span>, <span class="fu">f_M</span>(<span class="dv">0</span>, UM), UY) <span class="sc">-</span> <span class="fu">f_Y</span>(<span class="dv">0</span>, <span class="fu">f_M</span>(<span class="dv">0</span>, UM), UY)))</span>
-<span id="cb89-12"><a href></a></span>
-<span id="cb89-13"><a href></a>design <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href></a>f_M <span class="ot">&lt;-</span> <span class="cf">function</span>(X, UM) <span class="dv">1</span><span class="sc">*</span>(UM <span class="sc">&lt;</span> X)</span>
+<span id="cb90-2"><a href></a>f_Y <span class="ot">&lt;-</span> <span class="cf">function</span>(X, M, UY) X <span class="sc">+</span> M <span class="sc">-</span> .<span class="dv">4</span><span class="sc">*</span>X<span class="sc">*</span>M <span class="sc">+</span> UY</span>
+<span id="cb90-3"><a href></a></span>
+<span id="cb90-4"><a href></a>design <span class="ot">&lt;-</span> </span>
+<span id="cb90-5"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">100</span>,</span>
+<span id="cb90-6"><a href></a>                <span class="at">X =</span> <span class="fu">simple_rs</span>(N),</span>
+<span id="cb90-7"><a href></a>                <span class="at">UM =</span> <span class="fu">runif</span>(N),</span>
+<span id="cb90-8"><a href></a>                <span class="at">UY =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb90-9"><a href></a>                <span class="at">M =</span> <span class="fu">f_M</span>(X, UM),</span>
+<span id="cb90-10"><a href></a>                <span class="at">Y =</span> <span class="fu">f_Y</span>(X, M, UY)) <span class="sc">+</span></span>
+<span id="cb90-11"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">Q1 =</span> <span class="fu">mean</span>(<span class="fu">f_Y</span>(<span class="dv">1</span>, <span class="fu">f_M</span>(<span class="dv">0</span>, UM), UY) <span class="sc">-</span> <span class="fu">f_Y</span>(<span class="dv">0</span>, <span class="fu">f_M</span>(<span class="dv">0</span>, UM), UY)))</span>
+<span id="cb90-12"><a href></a></span>
+<span id="cb90-13"><a href></a>design <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed caption-top" style="font-size: 20px; margin-left: auto; margin-right: auto;">
@@ -20299,20 +20305,20 @@ $design_3
 <h3><span class="header-section-number">8.18</span> I: Inquiries: Complex counterfactuals</h3>
 <p>Here is an example of using functions to define effects of continuous treatments.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href></a>f_Y <span class="ot">&lt;-</span> <span class="cf">function</span>(X, UY) X <span class="sc">-</span> .<span class="dv">25</span><span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> UY</span>
-<span id="cb90-2"><a href></a></span>
-<span id="cb90-3"><a href></a>design <span class="ot">&lt;-</span> </span>
-<span id="cb90-4"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb90-5"><a href></a>                <span class="at">X  =</span> <span class="fu">rnorm</span>(N),</span>
-<span id="cb90-6"><a href></a>                <span class="at">UY =</span> <span class="fu">rnorm</span>(N),</span>
-<span id="cb90-7"><a href></a>                <span class="at">Y =</span> <span class="fu">f_Y</span>(X, UY)) <span class="sc">+</span></span>
-<span id="cb90-8"><a href></a>  <span class="fu">declare_inquiry</span>(</span>
-<span id="cb90-9"><a href></a>    <span class="at">Q1 =</span> <span class="fu">mean</span>(<span class="fu">f_Y</span>(X<span class="sc">+</span><span class="dv">1</span>, UY) <span class="sc">-</span> <span class="fu">f_Y</span>(X, UY)),</span>
-<span id="cb90-10"><a href></a>    <span class="at">Q2 =</span> <span class="fu">mean</span>(<span class="fu">f_Y</span>(<span class="dv">1</span>, UY) <span class="sc">-</span> <span class="fu">f_Y</span>(<span class="dv">0</span>, UY)),</span>
-<span id="cb90-11"><a href></a>    <span class="at">Q3 =</span> (<span class="fu">lm_robust</span>(Y <span class="sc">~</span> X)<span class="sc">|&gt;</span> <span class="fu">tidy</span>())[<span class="dv">2</span>,<span class="dv">2</span>]</span>
-<span id="cb90-12"><a href></a>    )</span>
-<span id="cb90-13"><a href></a></span>
-<span id="cb90-14"><a href></a>design <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href></a>f_Y <span class="ot">&lt;-</span> <span class="cf">function</span>(X, UY) X <span class="sc">-</span> .<span class="dv">25</span><span class="sc">*</span>X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> UY</span>
+<span id="cb91-2"><a href></a></span>
+<span id="cb91-3"><a href></a>design <span class="ot">&lt;-</span> </span>
+<span id="cb91-4"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">100</span>,</span>
+<span id="cb91-5"><a href></a>                <span class="at">X  =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb91-6"><a href></a>                <span class="at">UY =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb91-7"><a href></a>                <span class="at">Y =</span> <span class="fu">f_Y</span>(X, UY)) <span class="sc">+</span></span>
+<span id="cb91-8"><a href></a>  <span class="fu">declare_inquiry</span>(</span>
+<span id="cb91-9"><a href></a>    <span class="at">Q1 =</span> <span class="fu">mean</span>(<span class="fu">f_Y</span>(X<span class="sc">+</span><span class="dv">1</span>, UY) <span class="sc">-</span> <span class="fu">f_Y</span>(X, UY)),</span>
+<span id="cb91-10"><a href></a>    <span class="at">Q2 =</span> <span class="fu">mean</span>(<span class="fu">f_Y</span>(<span class="dv">1</span>, UY) <span class="sc">-</span> <span class="fu">f_Y</span>(<span class="dv">0</span>, UY)),</span>
+<span id="cb91-11"><a href></a>    <span class="at">Q3 =</span> (<span class="fu">lm_robust</span>(Y <span class="sc">~</span> X)<span class="sc">|&gt;</span> <span class="fu">tidy</span>())[<span class="dv">2</span>,<span class="dv">2</span>]</span>
+<span id="cb91-12"><a href></a>    )</span>
+<span id="cb91-13"><a href></a></span>
+<span id="cb91-14"><a href></a>design <span class="sc">|&gt;</span> <span class="fu">draw_estimands</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed caption-top" style="font-size: 20px; margin-left: auto; margin-right: auto;">
@@ -20361,8 +20367,8 @@ $design_3
 <h3><span class="header-section-number">8.21</span> D: Assignment schemes</h3>
 <p>You can combine these in various ways. For examples with saturation random assignment first clusters are assigned to a saturation level, then units within clusters are assigned to treatment conditions according to the saturation level:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href></a>saturation <span class="ot">=</span> <span class="fu">cluster_ra</span>(<span class="at">clusters =</span> villages, <span class="at">conditions =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>))</span>
-<span id="cb91-2"><a href></a><span class="fu">block_ra</span>(<span class="at">blocks =</span> villages, <span class="at">prob_unit =</span> saturation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href></a>saturation <span class="ot">=</span> <span class="fu">cluster_ra</span>(<span class="at">clusters =</span> villages, <span class="at">conditions =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>))</span>
+<span id="cb92-2"><a href></a><span class="fu">block_ra</span>(<span class="at">blocks =</span> villages, <span class="at">prob_unit =</span> saturation)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="a-answers-terms" class="slide level3 smaller" data-number="8.22">
@@ -20370,71 +20376,25 @@ $design_3
 <p>By default <code>declare_estimates()</code> assumes you are interested in the <em>first term after the constant</em> from the output of an estimation procedure.</p>
 <p>But you can say what you are interested in directly using <code>term</code> and you can also associate different terms with different quantities of interest using <code>inquiry</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href></a>design <span class="ot">&lt;-</span></span>
-<span id="cb92-2"><a href></a>  <span class="fu">declare_model</span>(</span>
-<span id="cb92-3"><a href></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
-<span id="cb92-4"><a href></a>    <span class="at">X1 =</span> <span class="fu">rnorm</span>(N),</span>
-<span id="cb92-5"><a href></a>    <span class="at">X2 =</span> <span class="fu">rnorm</span>(N),</span>
-<span id="cb92-6"><a href></a>    <span class="at">X3 =</span> <span class="fu">rnorm</span>(N),</span>
-<span id="cb92-7"><a href></a>    <span class="at">Y =</span> X1 <span class="sc">-</span> X2 <span class="sc">+</span> X3 <span class="sc">+</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb92-8"><a href></a>  ) <span class="sc">+</span></span>
-<span id="cb92-9"><a href></a>  <span class="fu">declare_inquiries</span>(<span class="at">ate_2 =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">ate_3 =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb92-10"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> X1 <span class="sc">+</span> X2 <span class="sc">+</span> X3,</span>
-<span id="cb92-11"><a href></a>                    <span class="at">term =</span> <span class="fu">c</span>(<span class="st">&quot;X2&quot;</span>, <span class="st">&quot;X3&quot;</span>),</span>
-<span id="cb92-12"><a href></a>                    <span class="at">inquiry =</span> <span class="fu">c</span>(<span class="st">&quot;ate_2&quot;</span>, <span class="st">&quot;ate_3&quot;</span>))</span>
-<span id="cb92-13"><a href></a></span>
-<span id="cb92-14"><a href></a>design  <span class="sc">|&gt;</span> <span class="fu">run_design</span>()  <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="table-responsive">
-<table class="table table-striped table-hover table-condensed caption-top" style="font-size: 20px; margin-left: auto; margin-right: auto;">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">inquiry</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">estimand</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">term</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">estimator</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">estimate</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">std.error</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">statistic</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">p.value</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">conf.low</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">conf.high</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">df</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">outcome</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">ate_2</td>
-<td style="text-align: right;">-1</td>
-<td style="text-align: left;">X2</td>
-<td style="text-align: left;">estimator</td>
-<td style="text-align: right;">-1.15</td>
-<td style="text-align: right;">0.11</td>
-<td style="text-align: right;">-10.40</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">-1.37</td>
-<td style="text-align: right;">-0.93</td>
-<td style="text-align: right;">96</td>
-<td style="text-align: left;">Y</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ate_3</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">X3</td>
-<td style="text-align: left;">estimator</td>
-<td style="text-align: right;">0.95</td>
-<td style="text-align: right;">0.09</td>
-<td style="text-align: right;">10.11</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.76</td>
-<td style="text-align: right;">1.14</td>
-<td style="text-align: right;">96</td>
-<td style="text-align: left;">Y</td>
-</tr>
-</tbody>
-</table>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href></a>design <span class="ot">&lt;-</span></span>
+<span id="cb93-2"><a href></a>  <span class="fu">declare_model</span>(</span>
+<span id="cb93-3"><a href></a>    <span class="at">N =</span> <span class="dv">100</span>,</span>
+<span id="cb93-4"><a href></a>    <span class="at">X1 =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb93-5"><a href></a>    <span class="at">X2 =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb93-6"><a href></a>    <span class="at">X3 =</span> <span class="fu">rnorm</span>(N),</span>
+<span id="cb93-7"><a href></a>    <span class="at">Y =</span> X1 <span class="sc">-</span> X2 <span class="sc">+</span> X3 <span class="sc">+</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb93-8"><a href></a>  ) <span class="sc">+</span></span>
+<span id="cb93-9"><a href></a>  <span class="fu">declare_inquiries</span>(<span class="at">ate_2 =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">ate_3 =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb93-10"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> X1 <span class="sc">+</span> X2 <span class="sc">+</span> X3,</span>
+<span id="cb93-11"><a href></a>                    <span class="at">term =</span> <span class="fu">c</span>(<span class="st">&quot;X2&quot;</span>, <span class="st">&quot;X3&quot;</span>)),</span>
+<span id="cb93-12"><a href></a>                    inquiry <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;ate_2&quot;</span>, <span class="st">&quot;ate_3&quot;</span>)<span class="er">))</span></span>
+<span id="cb93-13"><a href></a></span>
+<span id="cb93-14"><a href></a>design  <span class="sc">|&gt;</span> <span class="fu">run_design</span>()  <span class="sc">|&gt;</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in parse(text = input): &lt;text&gt;:11:42: unexpected &#39;,&#39;
+10:   declare_estimator(Y ~ X1 + X2 + X3,
+11:                     term = c(&quot;X2&quot;, &quot;X3&quot;)),
+                                             ^</code></pre>
 </div>
 </div>
 </section>
@@ -20442,11 +20402,11 @@ $design_3
 <h3><span class="header-section-number">8.23</span> A: Answers: terms</h3>
 <p>Sometimes it can be confusing what the names of a term is but you can figure this by running the estimation strategy directly. Here’s an example where the names of a term might be confusing.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href></a><span class="fu">lm_robust</span>(Y <span class="sc">~</span> A<span class="sc">*</span>B, </span>
-<span id="cb93-2"><a href></a>          <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">A =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>,  <span class="st">&quot;b&quot;</span>), <span class="dv">3</span>), </span>
-<span id="cb93-3"><a href></a>                            <span class="at">B =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;p&quot;</span>, <span class="st">&quot;q&quot;</span>), <span class="at">each =</span> <span class="dv">3</span>), </span>
-<span id="cb93-4"><a href></a>                            <span class="at">Y =</span> <span class="fu">rnorm</span>(<span class="dv">6</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb93-5"><a href></a>  <span class="fu">coef</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href></a><span class="fu">lm_robust</span>(Y <span class="sc">~</span> A<span class="sc">*</span>B, </span>
+<span id="cb95-2"><a href></a>          <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">A =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>,  <span class="st">&quot;b&quot;</span>), <span class="dv">3</span>), </span>
+<span id="cb95-3"><a href></a>                            <span class="at">B =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;p&quot;</span>, <span class="st">&quot;q&quot;</span>), <span class="at">each =</span> <span class="dv">3</span>), </span>
+<span id="cb95-4"><a href></a>                            <span class="at">Y =</span> <span class="fu">rnorm</span>(<span class="dv">6</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb95-5"><a href></a>  <span class="fu">coef</span>() <span class="sc">|&gt;</span> <span class="fu">kable</span>() <span class="sc">|&gt;</span> <span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">20</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="table-responsive">
 <table class="table table-striped table-hover table-condensed caption-top" style="font-size: 20px; margin-left: auto; margin-right: auto;">
@@ -20459,19 +20419,19 @@ $design_3
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">-0.1057152</td>
+<td style="text-align: right;">-1.054321</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Ab</td>
-<td style="text-align: right;">-1.8103783</td>
+<td style="text-align: right;">1.287197</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Bq</td>
-<td style="text-align: right;">-0.3677228</td>
+<td style="text-align: right;">2.435291</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Ab:Bq</td>
-<td style="text-align: right;">3.1769633</td>
+<td style="text-align: right;">-3.127040</td>
 </tr>
 </tbody>
 </table>
@@ -20484,14 +20444,14 @@ $design_3
 <h3><span class="header-section-number">8.24</span> A: Answers: other packages</h3>
 <p><code>DeclareDesign</code> works natively with <code>estimatr</code> but you you can use whatever packages you like. You do have to make sure though that estimatr gets as input a nice tidy dataframe of estimates, and that might require some tidying.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href></a>design <span class="ot">&lt;-</span> </span>
-<span id="cb94-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">U =</span> <span class="fu">runif</span>(N), </span>
-<span id="cb94-3"><a href></a>                <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> <span class="fu">as.numeric</span>(U <span class="sc">&lt;</span> .<span class="dv">5</span> <span class="sc">+</span> Z<span class="sc">/</span><span class="dv">3</span>))) <span class="sc">+</span> </span>
-<span id="cb94-4"><a href></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">simple_ra</span>(N), <span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z)) <span class="sc">+</span> </span>
-<span id="cb94-5"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">ate =</span> <span class="fu">mean</span>(Y_Z_1 <span class="sc">-</span> Y_Z_0)) <span class="sc">+</span> </span>
-<span id="cb94-6"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">&quot;ate&quot;</span>, </span>
-<span id="cb94-7"><a href></a>                    <span class="at">.method =</span> glm, </span>
-<span id="cb94-8"><a href></a>                    <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href></a>design <span class="ot">&lt;-</span> </span>
+<span id="cb96-2"><a href></a>  <span class="fu">declare_model</span>(<span class="at">N =</span> <span class="dv">1000</span>, <span class="at">U =</span> <span class="fu">runif</span>(N), </span>
+<span id="cb96-3"><a href></a>                <span class="fu">potential_outcomes</span>(Y <span class="sc">~</span> <span class="fu">as.numeric</span>(U <span class="sc">&lt;</span> .<span class="dv">5</span> <span class="sc">+</span> Z<span class="sc">/</span><span class="dv">3</span>))) <span class="sc">+</span> </span>
+<span id="cb96-4"><a href></a>  <span class="fu">declare_assignment</span>(<span class="at">Z =</span> <span class="fu">simple_ra</span>(N), <span class="at">Y =</span> <span class="fu">reveal_outcomes</span>(Y <span class="sc">~</span> Z)) <span class="sc">+</span> </span>
+<span id="cb96-5"><a href></a>  <span class="fu">declare_inquiry</span>(<span class="at">ate =</span> <span class="fu">mean</span>(Y_Z_1 <span class="sc">-</span> Y_Z_0)) <span class="sc">+</span> </span>
+<span id="cb96-6"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">&quot;ate&quot;</span>, </span>
+<span id="cb96-7"><a href></a>                    <span class="at">.method =</span> glm, </span>
+<span id="cb96-8"><a href></a>                    <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Note that we passed additional arguments to <code>glm</code>; that’s easy.</p>
 <p>It’s not a good design though. Just look at the diagnosis:</p>
@@ -20499,7 +20459,7 @@ $design_3
 <section id="a-answers-other-packages-1" class="slide level3" data-number="8.25">
 <h3><span class="header-section-number">8.25</span> A: Answers: other packages</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href></a><span class="fu">diagnose_design</span>(design)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href></a><span class="fu">diagnose_design</span>(design)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -20563,15 +20523,15 @@ $design_3
 <p>You essentially have to write a function to get the estimates, calculate the quantity of interest and other stats, and turn these into a nice dataframe.</p>
 <p>Luckily you can use the <code>margins</code> package with <code>tidy</code> to create a <code>.summary</code> function which you can pass to <code>declare_estimator</code> to do all this for you</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href></a>tidy_margins <span class="ot">&lt;-</span> <span class="cf">function</span>(x) </span>
-<span id="cb96-2"><a href></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(margins<span class="sc">::</span><span class="fu">margins</span>(x, <span class="at">data =</span> x<span class="sc">$</span>data), <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb96-3"><a href></a></span>
-<span id="cb96-4"><a href></a>design <span class="ot">&lt;-</span> design <span class="sc">+</span>  </span>
-<span id="cb96-5"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">&quot;ate&quot;</span>, </span>
-<span id="cb96-6"><a href></a>                    <span class="at">.method =</span> glm, </span>
-<span id="cb96-7"><a href></a>                    <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>),</span>
-<span id="cb96-8"><a href></a>                    <span class="at">.summary =</span> tidy_margins,</span>
-<span id="cb96-9"><a href></a>                    <span class="at">label =</span> <span class="st">&quot;margins&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href></a>tidy_margins <span class="ot">&lt;-</span> <span class="cf">function</span>(x) </span>
+<span id="cb98-2"><a href></a>  broom<span class="sc">::</span><span class="fu">tidy</span>(margins<span class="sc">::</span><span class="fu">margins</span>(x, <span class="at">data =</span> x<span class="sc">$</span>data), <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb98-3"><a href></a></span>
+<span id="cb98-4"><a href></a>design <span class="ot">&lt;-</span> design <span class="sc">+</span>  </span>
+<span id="cb98-5"><a href></a>  <span class="fu">declare_estimator</span>(Y <span class="sc">~</span> Z, <span class="at">inquiry =</span> <span class="st">&quot;ate&quot;</span>, </span>
+<span id="cb98-6"><a href></a>                    <span class="at">.method =</span> glm, </span>
+<span id="cb98-7"><a href></a>                    <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;probit&quot;</span>),</span>
+<span id="cb98-8"><a href></a>                    <span class="at">.summary =</span> tidy_margins,</span>
+<span id="cb98-9"><a href></a>                    <span class="at">label =</span> <span class="st">&quot;margins&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="a-answers-other-packages-3" class="slide level3" data-number="8.27">

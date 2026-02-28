@@ -23,9 +23,6 @@ options(future.globals.maxSize = 3 * 1024^3)  # 2GB
 ```
 
 
-# Topics 1 {#topics_1}
-
-
 ```{r top1a, child = here::here("slides", "topics/controls_observational.qmd")}
 
 ```

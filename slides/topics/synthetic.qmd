@@ -45,7 +45,7 @@ Available data: time series for unit of interest and possible comparison groups
 * Note, in @abadie2003economic weights are chosen to minimize $(X_1 - X_0W)'V(X_1 - X_0W)$ where $X_1$, $X_0$ are covariates in the unit of interest and the "donor" units respectively. $V$ is chosen so that the pre treatment *outcomes* are as close as possible. 
 
 
-## Optimization problem
+### Optimization problem
 
 In practice weights are found using a two stage minimization procedure:
 

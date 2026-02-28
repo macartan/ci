@@ -1,6 +1,6 @@
 ---
 title: "Causal Inference"
-subtitle: "Topics III"
+subtitle: "Topics III: Mediation, spillovers, survey experiments"
 format: 
    revealjs:
     embed-resources: true
@@ -21,9 +21,6 @@ child <- TRUE
 ```
 
 
-# Topics 3 {#topics_3}
-
-
 
 ```{r, child = here::here("slides", "topics/mediation.qmd")}
 
@@ -34,7 +31,7 @@ child <- TRUE
 
 ```
 
-```{r, child = here::here("slides", "topics/open_science.qmd")}
+
+```{r, child = here::here("slides", "topics/survey_experiments.qmd")}
 
 ```
-

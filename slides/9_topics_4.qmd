@@ -1,6 +1,6 @@
 ---
 title: "Causal Inference"
-subtitle: "Topics II"
+subtitle: "Topics IV: Getting to work"
 format: 
    revealjs:
     embed-resources: true
@@ -21,19 +21,16 @@ child <- TRUE
 ```
 
 
-
-```{r, child = here::here("slides", "topics/late.qmd")}
-
-```
-
-
-
-```{r, child = here::here("slides", "topics/RDD.qmd")}
+```{r, child = here::here("slides", "topics/ethics.qmd")}
 
 ```
 
 
-
-```{r, child = here::here("slides", "topics/synthetic.qmd")}
+```{r, child = here::here("slides", "topics/stages.qmd")}
 
 ```
+
+```{r, child = here::here("slides", "topics/open_science.qmd")}
+
+```
+
