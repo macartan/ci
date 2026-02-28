@@ -13,7 +13,7 @@ slides <- c(
   "9_topics_4.qmd"
 )
 
-# slides <- "8_topics_4.qmd"
+slides <- "7_topics_2.qmd"
 # slides <- "1.2_declaredesign.qmd"
 
 if (!requireNamespace("quarto", quietly = TRUE)) {

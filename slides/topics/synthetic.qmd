@@ -21,7 +21,7 @@ if(!exists("child")) source("../setup.R")
 
 library(SCtools)
 library(Synth)
-
+library(tidysynth)
 # devtools::install_github("edunford/tidysynth")
 
 require(tidysynth)
