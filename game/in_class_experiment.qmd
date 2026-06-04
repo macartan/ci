@@ -31,9 +31,6 @@ run <- FALSE
 # Experiments by hand
 
 
-For each experiment
-
-
 ```{r, echo = FALSE}
 set.seed(1)
 
@@ -61,9 +58,9 @@ You have been given an envelope with 20 cards. Each card has two numbers. One in
 
 Here is an example of two cards, turned over:
 
-![Example of cards](cards.jpg)
+![Example of cards (two of four have been turned over)](cards.jpg)
 
-**You have one job.** *Your job* is to figure out whether--on average--the black numbers are larger or smaller than the white numbers or the same. 
+**You have one job.** *Your job* is to figure out whether--on average--the black numbers are larger or smaller than the white numbers (or the same). 
 
 **The catch**: when you turn over a  card you are only allowed to read the black number *or* the white number (honor code!!).  You have to decide *before reading the card* which number you will look at (though of course you can see the symbol on the card, if there is one, before reading the numbers) 
 
