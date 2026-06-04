@@ -1,7 +1,7 @@
 ---
 title: "in-class exercise for causal inference and experimental design"
 author: "Macartan Humphreys"
-date: "2025-01-04"
+date: "2026-01-04"
 format: 
   html:
     toc: true
@@ -59,9 +59,13 @@ full_data |> write.csv("card_game.csv")
 
 You have been given an envelope with 20 cards. Each card has two numbers. One in black lettering (on white) and one in white lettering (on black). On the other side of the card there may or may not be writing.
 
-Your job is to figure out whether--on average--the black numbers are larger or smaller than the white numbers or the same. 
+Here is an example of two cards, turned over:
 
-The catch: when you turn over a  card you are only allowed to read the black number *or* the white number (honor code!!).  You have to decide *before reading the card* which number you will look at (though of course you can see the symbol on the card, if there is one, before reading the numbers) 
+![Example of cards](cards.jpg)
+
+**You have one job.** *Your job* is to figure out whether--on average--the black numbers are larger or smaller than the white numbers or the same. 
+
+**The catch**: when you turn over a  card you are only allowed to read the black number *or* the white number (honor code!!).  You have to decide *before reading the card* which number you will look at (though of course you can see the symbol on the card, if there is one, before reading the numbers) 
 
 Proceed as follows:
 
